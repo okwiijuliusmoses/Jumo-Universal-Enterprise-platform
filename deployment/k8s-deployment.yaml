@@ -1,0 +1,77 @@
+# JUMO UEOS Kubernetes Deployment Spec
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jumo-ueos-deployment
+  namespace: ueos
+  labels:
+    app: jumo-ueos
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jumo-ueos
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: jumo-ueos
+    spec:
+      containers:
+        - name: ueos-kernel-node
+          image: gcr.io/jumo-ueos-platform/kernel:v2.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ueos-secrets
+                  key: gemini-api-key
+          readinessProbe:
+            httpGet:
+              path: /api/ueos/security/identity
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/ueos/security/identity
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+# JUMO UEOS Kubernetes LoadBalancer Service Spec
+apiVersion: v1
+kind: Service
+metadata:
+  name: jumo-ueos-service
+  namespace: ueos
+  labels:
+    app: jumo-ueos
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app: jumo-ueos

@@ -1,0 +1,45 @@
+{
+  "hosting": {
+    "site": "jumo-digital-hybrid-platform",
+    "public": "experience/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "jumo-ueos-core",
+          "region": "europe-west1"
+        }
+      },
+      {
+        "source": "/domain/**",
+        "run": {
+          "serviceId": "jumo-ueos-core",
+          "region": "europe-west1"
+        }
+      },
+      {
+        "source": "/owner",
+        "run": {
+          "serviceId": "jumo-ueos-core",
+          "region": "europe-west1"
+        }
+      },
+      {
+        "source": "/dashboard",
+        "run": {
+          "serviceId": "jumo-ueos-core",
+          "region": "europe-west1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
