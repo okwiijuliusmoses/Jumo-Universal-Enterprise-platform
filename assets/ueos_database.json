@@ -232,7 +232,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "APPROVED",
       "approvers": "SecOps_Administrator",
-      "lastTriggered": "2026-07-23T11:13:38.334Z"
+      "lastTriggered": "2026-07-23T11:25:03.664Z"
     },
     {
       "id": "WF-TASK-101",
@@ -240,7 +240,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "PENDING",
       "approvers": "FAAP_Controller,SecOps_Administrator",
-      "lastTriggered": "2026-07-23T11:13:38.334Z"
+      "lastTriggered": "2026-07-23T11:25:03.664Z"
     }
   ],
   "ai_agent_memory": [],
