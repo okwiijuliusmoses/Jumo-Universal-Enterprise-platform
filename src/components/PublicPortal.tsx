@@ -122,26 +122,6 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
           localStorage.setItem("jumo_current_user", JSON.stringify(user));
 
           onLoginSuccess(user, token);
-
-          // Perform Redirect
-          let redirectUrl = "/experience/pages/owner/system-owner-console.html";
-          if (selectedTenant === "CORE") {
-            redirectUrl = "/experience/pages/owner/system-owner-console.html";
-          } else if (selectedTenant === "ALUMNI") {
-            redirectUrl = "/domain/alumni/";
-          } else if (selectedTenant === "SACCO") {
-            redirectUrl = "/domain/sacco/";
-          } else if (selectedTenant === "CHURCH") {
-            redirectUrl = "/domain/church/";
-          } else if (selectedTenant === "NGO") {
-            redirectUrl = "/domain/ngo/";
-          } else if (data.redirectUrl) {
-            redirectUrl = data.redirectUrl;
-          }
-
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 300);
           return;
         }
       }
@@ -166,16 +146,6 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
         localStorage.setItem("jumo_current_user", JSON.stringify(user));
 
         onLoginSuccess(user, token);
-
-        let redirectUrl = "/experience/pages/owner/system-owner-console.html";
-        if (selectedTenant === "ALUMNI") redirectUrl = "/domain/alumni/";
-        else if (selectedTenant === "SACCO") redirectUrl = "/domain/sacco/";
-        else if (selectedTenant === "CHURCH") redirectUrl = "/domain/church/";
-        else if (selectedTenant === "NGO") redirectUrl = "/domain/ngo/";
-
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 300);
       }
     } catch (err: any) {
       setErrorMsg(`Connection error: ${err.message}`);

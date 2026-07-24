@@ -65,14 +65,6 @@ export default function App() {
       init.headers = init.headers || {};
       
       let targetInput = input;
-      const inputStr = typeof input === "string" ? input : input instanceof URL ? input.toString() : "";
-      if (inputStr.startsWith("/api/")) {
-        const isFirebase = window.location.hostname.includes("web.app") || window.location.hostname.includes("firebaseapp.com");
-        if (isFirebase) {
-          targetInput = "https://jumo-ueos-dhp-production-production.up.railway.app" + inputStr;
-          init.mode = "cors";
-        }
-      }
 
       if (init.headers instanceof Headers) {
         if (token) {
