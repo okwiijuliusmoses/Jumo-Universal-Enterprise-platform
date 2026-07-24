@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useRef, useEffect } from "react";
 import { MessageSquare, Send, X, Bot, Sparkles, User, Terminal, ChevronRight } from "lucide-react";
 import { ChatMessage, SoftwareBlueprint } from "../types";
@@ -38,7 +39,7 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
     setIsTyping(true);
 
     try {
-      const response = await fetch("/api/blueprint/chat", {
+      const response = await jumoFetch("/api/blueprint/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

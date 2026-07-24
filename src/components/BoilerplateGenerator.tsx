@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect } from "react";
 import { Code2, Database, Globe, Copy, Check, Terminal, Sparkles, Cpu } from "lucide-react";
 import { SoftwareBlueprint } from "../types";
@@ -36,7 +37,7 @@ export default function BoilerplateGenerator({ blueprint }: BoilerplateGenerator
     setGeneratedCode("");
 
     try {
-      const response = await fetch("/api/blueprint/boilerplate", {
+      const response = await jumoFetch("/api/blueprint/boilerplate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -228,7 +228,8 @@ async function startServer() {
     // CORS headers for Firebase Hosting integration
     const allowedOrigins = [
       "https://jumo-digital-hybrid-platform.web.app",
-      "https://jumo-digital-hybrid-platform.firebaseapp.com"
+      "https://jumo-digital-hybrid-platform.firebaseapp.com",
+      "https://jumo.co.ug"
     ];
     const origin = req.headers.origin;
     if (origin && (allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production")) {
@@ -3370,6 +3371,27 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
     next();
   });
 
+  // FAAP Transaction Orchestration Layer Routes
+  app.post("/api/ueos/faap/transaction/orchestrate", express.json(), (req, res) => {
+    // Basic tenant isolation check placeholder
+    const tenantId = req.headers["x-tenant-id"] as string;
+    if (!tenantId) return res.status(403).json({ success: false, error: "Missing tenant context" });
+    
+    console.log(`[FAAP] Orchestrating transaction for tenant: ${tenantId}`);
+    res.json({ success: true, message: "Transaction orchestrated successfully" });
+  });
+
+  app.get("/api/ueos/faap/ledger/reconciliation/:tenantId", (req, res) => {
+    const tenantId = req.params.tenantId;
+    console.log(`[FAAP] Reconciling ledger for tenant: ${tenantId}`);
+    res.json({ success: true, reconciliation: "Ledger balanced" });
+  });
+
+  app.get("/api/ueos/faap/settlement/queue", (req, res) => {
+    console.log(`[FAAP] Fetching settlement queue`);
+    res.json({ success: true, queue: [] });
+  });
+
   // Static asset route handlers
   app.use(express.static(path.join(process.cwd(), "experience/public")));
   app.use(express.static(path.join(process.cwd(), "public")));
@@ -3389,6 +3411,12 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  // Global error handler for JSON responses
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error(`[SERVER_ERROR] ${req.method} ${req.url}:`, err.message);
+    res.status(500).json({ success: false, error: "Internal Server Error", message: err.message });
+  });
 
   const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);

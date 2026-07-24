@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect } from "react";
 import { 
   AlertCircle, RefreshCw
@@ -35,7 +36,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 1. Platform / Kernel status
       try {
-        const res = await fetch("/api/v1/platform/status");
+        const res = await jumoFetch("/api/v1/platform/status");
         if (res.ok) {
           const data = await res.json();
           if (data.version) {
@@ -51,7 +52,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 2. Workflow status
       try {
-        const res = await fetch("/api/v1/workflow/status");
+        const res = await jumoFetch("/api/v1/workflow/status");
         if (res.ok) {
           const data = await res.json();
           if (typeof data.activeCount === "number") {
@@ -66,7 +67,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 3. Security status
       try {
-        const res = await fetch("/api/v1/security/events");
+        const res = await jumoFetch("/api/v1/security/events");
         if (res.ok) {
           const data = await res.json();
           if (data.threatLevel) {
@@ -93,7 +94,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
     try {
       // 1. Try primary endpoint /api/v1/ueos/identity/login
-      const res = await fetch("/api/v1/ueos/identity/login", {
+      const res = await jumoFetch("/api/v1/ueos/identity/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -146,9 +147,8 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
       }
 
       // Fallback: /api/auth/login if secondary auth endpoint is needed
-      const fallbackRes = await fetch("/api/auth/login", {
+      const data = await jumoFetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: username,
           password,
@@ -157,8 +157,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
         })
       });
 
-      if (fallbackRes.ok) {
-        const data = await fallbackRes.json();
+      if (data) {
         const token = data.token || "jumo_session_owner_prod";
         const user = data.user;
 
@@ -177,9 +176,6 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 300);
-      } else {
-        const errData = await fallbackRes.json();
-        setErrorMsg(errData.error || "Identity authentication failed. Please check credentials.");
       }
     } catch (err: any) {
       setErrorMsg(`Connection error: ${err.message}`);

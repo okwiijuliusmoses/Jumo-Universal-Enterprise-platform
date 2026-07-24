@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jumoFetch } from "./core/config/api";
 import { 
   Sparkles, Layers, ListChecks, Cpu, MessageSquare, 
   Trash2, Download, Upload, Plus, AlertTriangle, RefreshCw, Activity, Sliders
@@ -183,16 +184,11 @@ export default function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/blueprint/generate", {
+      const data = await jumoFetch("/api/blueprint/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate project blueprint.");
-      }
 
       const newProject: SavedProject = {
         id: `project_${Date.now()}`,

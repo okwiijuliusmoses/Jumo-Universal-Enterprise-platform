@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect } from "react";
 import { 
   ShieldCheck, Globe, Coins, Smartphone, FileText, CheckCircle2, 
@@ -125,7 +126,7 @@ export default function ProductionReleasePanel() {
   // Execute continuous production validation checks via real API endpoint
   const runProductionAudit = () => {
     setAuditProgress("running");
-    fetch("/api/ueos/db/diagnostics")
+    jumoFetch("/api/ueos/db/diagnostics")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.diagnostics) {
@@ -156,7 +157,7 @@ export default function ProductionReleasePanel() {
   // Trigger Database Backup snapshot
   const triggerBackup = () => {
     setDbLoading(true);
-    fetch("/api/ueos/db/backup", { method: "POST" })
+    jumoFetch("/api/ueos/db/backup", { method: "POST" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -178,7 +179,7 @@ export default function ProductionReleasePanel() {
   // Trigger Database Restore state
   const triggerRestore = () => {
     setDbLoading(true);
-    fetch("/api/ueos/db/restore", { method: "POST" })
+    jumoFetch("/api/ueos/db/restore", { method: "POST" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

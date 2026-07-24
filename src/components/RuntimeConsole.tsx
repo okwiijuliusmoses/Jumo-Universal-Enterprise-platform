@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect } from "react";
 import { 
   Power, Terminal, Cpu, Database, Coins, Bot, Sliders, Activity, 
@@ -199,7 +200,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     setLoadingAccounts(true);
     try {
       // Accounts balance sheet
-      const resAccounts = await fetch("/api/ueos/ledger/accounts");
+      const resAccounts = await jumoFetch("/api/ueos/ledger/accounts");
       if (resAccounts.ok) {
         const data = await resAccounts.ok ? await resAccounts.json() : [];
         setAccounts(data);
@@ -210,15 +211,15 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
       }
 
       // Registries
-      const resRegs = await fetch("/api/ueos/registries");
+      const resRegs = await jumoFetch("/api/ueos/registries");
       if (resRegs.ok) setRegistries(await resRegs.json());
 
       // Security Audit logs
-      const resAudits = await fetch("/api/ueos/security/audit-logs");
+      const resAudits = await jumoFetch("/api/ueos/security/audit-logs");
       if (resAudits.ok) setAuditLogs(await resAudits.json());
 
       // Current Identity metadata
-      const resIdentity = await fetch("/api/ueos/security/identity");
+      const resIdentity = await jumoFetch("/api/ueos/security/identity");
       if (resIdentity.ok) {
         const data = await resIdentity.json();
         setCurrentUserProfile(data);
@@ -226,11 +227,11 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
       }
 
       // Workflows definitions
-      const resWorkflows = await fetch("/api/ueos/workflows");
+      const resWorkflows = await jumoFetch("/api/ueos/workflows");
       if (resWorkflows.ok) setWorkflows(await resWorkflows.json());
 
       // Trial balance report calculator
-      const resTrial = await fetch("/api/ueos/ledger/trial-balance");
+      const resTrial = await jumoFetch("/api/ueos/ledger/trial-balance");
       if (resTrial.ok) setTrialBalance(await resTrial.json());
 
     } catch (err) {
@@ -267,7 +268,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
       await new Promise(r => setTimeout(r, 600));
       setTerminalLogs(prev => [...prev, "[SYS_CONF] Fetching row-level database structures... Done.", ""]);
       
-      const res = await fetch("/api/ueos/kernel/boot", { method: "POST" });
+      const res = await jumoFetch("/api/ueos/kernel/boot", { method: "POST" });
       if (res.ok) {
         const data: BootData = await res.json();
         
@@ -326,7 +327,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     if (!newModuleName.trim()) return;
 
     try {
-      const res = await fetch("/api/ueos/registries/register", {
+      const res = await jumoFetch("/api/ueos/registries/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -355,7 +356,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     setPostingLedger(true);
 
     try {
-      const res = await fetch("/api/ueos/ledger/transaction", {
+      const res = await jumoFetch("/api/ueos/ledger/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -408,7 +409,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
   const handleTriggerWorkflow = async (id: string) => {
     setTriggeringWorkflowId(id);
     try {
-      const res = await fetch("/api/ueos/workflows/trigger", {
+      const res = await jumoFetch("/api/ueos/workflows/trigger", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id })
@@ -435,7 +436,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
         `[USER_PROMPT] Dispatch request: "${aiGoal}" on tenant scope [${aiTenant}]`
       ]);
 
-      const res = await fetch("/api/v1/ueos/ai/orchestrate", {
+      const res = await jumoFetch("/api/v1/ueos/ai/orchestrate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -466,7 +467,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     setLoanResult(null);
 
     try {
-      const res = await fetch("/api/ueos/sacco/loans/evaluate", {
+      const res = await jumoFetch("/api/ueos/sacco/loans/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -508,7 +509,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     setChurchMessage(null);
 
     try {
-      const res = await fetch("/api/ueos/ledger/transaction", {
+      const res = await jumoFetch("/api/ueos/ledger/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -544,7 +545,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
     setEduMessage(null);
 
     try {
-      const res = await fetch("/api/ueos/ledger/transaction", {
+      const res = await jumoFetch("/api/ueos/ledger/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

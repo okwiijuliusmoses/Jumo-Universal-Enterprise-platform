@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { WorkspaceId, Workspace, Widget, UserPreferences, NotificationItem } from "../types";
 import OwnerControlCenter from "./OwnerControlCenter";
+import { API_BASE_URL } from "../core/config/api";
 
 interface ExperienceRuntimeProps {
   currentUser: { email: string; name: string; role: string; tenantId: string; trustLevel: string };
@@ -141,39 +143,37 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   const [v1Domains, setV1Domains] = useState<any[]>([]);
 
   // Load backend data securely
+
   const loadWorkspaceData = useCallback(async () => {
     setIsDataLoading(true);
     try {
       // 1. Fetch live v1 platform integration endpoints in parallel
-      const [platRes, treasRes, secRes, wfRes, domRes] = await Promise.all([
-        fetch("/api/v1/platform/status"),
-        fetch("/api/v1/treasury/summary"),
-        fetch("/api/v1/security/events"),
-        fetch("/api/v1/workflow/status"),
-        fetch("/api/v1/domains")
+      const [platData, treasData, secData, wfData, domData] = await Promise.all([
+        jumoFetch(`${API_BASE_URL}/api/v1/platform/status`),
+        jumoFetch(`${API_BASE_URL}/api/v1/treasury/summary`),
+        jumoFetch(`${API_BASE_URL}/api/v1/security/events`),
+        jumoFetch(`${API_BASE_URL}/api/v1/workflow/status`),
+        jumoFetch(`${API_BASE_URL}/api/v1/domains`)
       ]);
 
-      if (platRes.ok) setV1PlatformStatus(await platRes.json());
-      if (treasRes.ok) setV1TreasurySummary(await treasRes.json());
-      if (secRes.ok) setV1SecurityEvents(await secRes.json());
-      if (wfRes.ok) setV1WorkflowStatus(await wfRes.json());
-      if (domRes.ok) {
-        const domData = await domRes.json();
-        setV1Domains(domData.domains || []);
-      }
+      setV1PlatformStatus(platData);
+      setV1TreasurySummary(treasData);
+      setV1SecurityEvents(secData);
+      setV1WorkflowStatus(wfData);
+      setV1Domains(domData.domains || []);
 
       // 2. Fetch legacy and workspace specific profiles
       if (activeWorkspace === "owner_center" && currentUser.role === "SecOps_Administrator") {
-        const res = await fetch("/api/dashboard/owner");
+        const res = await jumoFetch("/api/dashboard/owner");
         if (res.ok) {
           const data = await res.json();
           setOwnerData(data);
         }
       } else if (activeWorkspace === "faap") {
         const [accRes, transRes, tbRes] = await Promise.all([
-          fetch("/api/ueos/ledger/accounts"),
-          fetch("/api/ueos/faap/transactions"),
-          fetch("/api/ueos/ledger/trial-balance")
+          jumoFetch("/api/ueos/ledger/accounts"),
+          jumoFetch("/api/ueos/faap/transactions"),
+          jumoFetch("/api/ueos/ledger/trial-balance")
         ]);
         if (accRes.ok) setLedgerAccounts(await accRes.json());
         if (transRes.ok) setLedgerTransactions(await transRes.json());
@@ -194,12 +194,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   const handleTriggerRebalance = async () => {
     setIsSyncing(true);
     try {
-      const res = await fetch("/api/ueos/faap/ledger/reconcile", { method: "POST" });
+      const res = await jumoFetch("/api/ueos/faap/ledger/reconcile", { method: "POST" });
       if (res.ok) {
         const data = await res.json();
         addToast("success", data.message || "Ledger balanced, parity score 100%!");
         // Update trial balance
-        const tbRes = await fetch("/api/ueos/ledger/trial-balance");
+        const tbRes = await jumoFetch("/api/ueos/ledger/trial-balance");
         if (tbRes.ok) setTrialBalance(await tbRes.json());
         // Append compliance audit log
         setNotifications(prev => [
@@ -219,7 +219,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   // Back up Database
   const handleTriggerBackup = async () => {
     try {
-      const res = await fetch("/api/ueos/db/backup", { method: "POST" });
+      const res = await jumoFetch("/api/ueos/db/backup", { method: "POST" });
       if (res.ok) {
         addToast("success", "Microkernel database backup committed successfully (AES-256 encrypted).");
       } else {
@@ -401,7 +401,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       const memberObj = saccoMembers.find(m => m.id === selectedMemberId);
       const shares_balance = memberObj ? memberObj.balance : 10000;
 
-      const res = await fetch("/api/ueos/sacco/loans/evaluate", {
+      const res = await jumoFetch("/api/ueos/sacco/loans/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -445,7 +445,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
     e.preventDefault();
     setIsPostingJournal(true);
     try {
-      const res = await fetch("/api/ueos/faap/transactions/post", {
+      const res = await jumoFetch("/api/ueos/faap/transactions/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -542,17 +542,17 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
   const loadOwnerRoomData = async () => {
     try {
-      const secretsRes = await fetch("/api/ueos/secrets");
+      const secretsRes = await jumoFetch("/api/ueos/secrets");
       if (secretsRes.ok) {
         const data = await secretsRes.json();
         setOwnerSecrets(data.secrets || []);
       }
-      const threatsRes = await fetch("/api/ueos/security/threats");
+      const threatsRes = await jumoFetch("/api/ueos/security/threats");
       if (threatsRes.ok) {
         const data = await threatsRes.json();
         setSecurityThreats(data.threats || []);
       }
-      const metricsRes = await fetch("/api/ueos/monitoring/metrics");
+      const metricsRes = await jumoFetch("/api/ueos/monitoring/metrics");
       if (metricsRes.ok) {
         const data = await metricsRes.json();
         setSystemMetrics(data.metrics || { cpu: 32, memory: 58, io: 18, nodesCount: 14 });
@@ -610,7 +610,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
     e.preventDefault();
     setIsPostingChurchOffering(true);
     try {
-      const res = await fetch("/api/ueos/faap/transactions/post", {
+      const res = await jumoFetch("/api/ueos/faap/transactions/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -649,7 +649,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
     const donationCode = newDonorGrantCode || "GEN-DHP-2026";
     
     try {
-      const res = await fetch("/api/ueos/faap/transactions/post", {
+      const res = await jumoFetch("/api/ueos/faap/transactions/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -692,7 +692,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       return;
     }
     try {
-      const res = await fetch("/api/ueos/faap/transactions/post", {
+      const res = await jumoFetch("/api/ueos/faap/transactions/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -747,7 +747,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
     setIsScanningThreats(true);
     addToast("info", "Starting multi-vector intrusion & threat scan...");
     try {
-      const res = await fetch("/api/ueos/security/threat-scan", {
+      const res = await jumoFetch("/api/ueos/security/threat-scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
@@ -774,7 +774,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       return;
     }
     try {
-      const res = await fetch("/api/ueos/secrets/register", {
+      const res = await jumoFetch("/api/ueos/secrets/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -799,7 +799,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   // Delete Secret
   const handleDeleteSecret = async (key: string) => {
     try {
-      const res = await fetch("/api/ueos/secrets/delete", {
+      const res = await jumoFetch("/api/ueos/secrets/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key })
@@ -1992,7 +1992,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   onClick={async () => {
                     addToast("info", "Compiling cluster diagnostics file...");
                     try {
-                      const res = await fetch("/api/ueos/db/diagnostics");
+                      const res = await jumoFetch("/api/ueos/db/diagnostics");
                       if (res.ok) {
                         const data = await res.json();
                         addToast("success", `DB Integrity: ${data.message || "Perfect Match"}`);
@@ -2056,7 +2056,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <button
                           onClick={async () => {
                             try {
-                              const res = await fetch("/api/ueos/secrets/reveal", {
+                              const res = await jumoFetch("/api/ueos/secrets/reveal", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ key: sec.key })
@@ -2702,7 +2702,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
     setIsAiResponding(true);
 
     try {
-      const res = await fetch("/api/ueos/ai/run-cognitive-task", {
+      const res = await jumoFetch("/api/ueos/ai/run-cognitive-task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

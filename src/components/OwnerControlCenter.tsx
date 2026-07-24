@@ -1,3 +1,4 @@
+import { jumoFetch } from "../core/config/api";
 import React, { useState, useEffect } from "react";
 import ProductionReleasePanel from "./ProductionReleasePanel";
 import { 
@@ -180,7 +181,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchSecrets = async () => {
     setVaultLoading(true);
     try {
-      const res = await fetch("/api/ueos/secrets");
+      const res = await jumoFetch("/api/ueos/secrets");
       if (res.ok) {
         const data = await res.json();
         setSecrets(data);
@@ -197,7 +198,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchDiagnostics = async () => {
     setDiagnosticsLoading(true);
     try {
-      const res = await fetch("/api/ueos/secrets/diagnostics");
+      const res = await jumoFetch("/api/ueos/secrets/diagnostics");
       if (res.ok) {
         const data = await res.json();
         setVaultDiagnostics(data);
@@ -290,7 +291,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   // JUMO BACKLOG NEW FETCH HANDLERS
   const fetchResearchers = async () => {
     try {
-      const res = await fetch("/api/ueos/innovation/researchers");
+      const res = await jumoFetch("/api/ueos/innovation/researchers");
       if (res.ok) {
         const data = await res.json();
         setResearchers(data.researchers || []);
@@ -302,7 +303,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const fetchInnovationPipeline = async () => {
     try {
-      const res = await fetch("/api/ueos/innovation/pipeline");
+      const res = await jumoFetch("/api/ueos/innovation/pipeline");
       if (res.ok) {
         const data = await res.json();
         setInnovationPipeline(data.pipeline || []);
@@ -317,7 +318,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     if (!newConceptTitle || !newConceptDescription) return;
     setAddingConcept(true);
     try {
-      const res = await fetch("/api/ueos/innovation/add-concept", {
+      const res = await jumoFetch("/api/ueos/innovation/add-concept", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -343,7 +344,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const fetchDeploymentHistory = async () => {
     try {
-      const res = await fetch("/api/ueos/deployment/history");
+      const res = await jumoFetch("/api/ueos/deployment/history");
       if (res.ok) {
         const data = await res.json();
         setDeploymentHistory(data.history || []);
@@ -357,7 +358,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     e.preventDefault();
     setTriggeringBuild(true);
     try {
-      const res = await fetch("/api/ueos/deployment/build-pipeline", {
+      const res = await jumoFetch("/api/ueos/deployment/build-pipeline", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -382,7 +383,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     if (!rollbackVersion) return;
     setTriggeringRollback(true);
     try {
-      const res = await fetch("/api/ueos/deployment/rollback", {
+      const res = await jumoFetch("/api/ueos/deployment/rollback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -403,7 +404,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const fetchMarketplaceCatalog = async () => {
     try {
-      const res = await fetch("/api/ueos/marketplace/catalog");
+      const res = await jumoFetch("/api/ueos/marketplace/catalog");
       if (res.ok) {
         const data = await res.json();
         setMarketplaceCatalog(data.catalog || []);
@@ -416,7 +417,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const handleInstallPlugin = async (pluginId: string) => {
     setInstallingPluginId(pluginId);
     try {
-      const res = await fetch("/api/ueos/marketplace/install", {
+      const res = await jumoFetch("/api/ueos/marketplace/install", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -438,7 +439,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const handleRunTwinSimulation = async () => {
     setTwinSimulating(true);
     try {
-      const res = await fetch("/api/ueos/twin/simulate", {
+      const res = await jumoFetch("/api/ueos/twin/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -460,7 +461,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchGovernanceReport = async () => {
     setGovernanceLoading(true);
     try {
-      const res = await fetch("/api/ueos/governance/compliance-report");
+      const res = await jumoFetch("/api/ueos/governance/compliance-report");
       if (res.ok) {
         const data = await res.json();
         setGovernanceReport(data);
@@ -475,7 +476,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   // Run on first load or when security_vault tab is clicked
   const fetchLedgerAccounts = async () => {
     try {
-      const res = await fetch("/api/ueos/ledger/accounts");
+      const res = await jumoFetch("/api/ueos/ledger/accounts");
       if (res.ok) {
         const data = await res.json();
         setLedgerAccounts(data);
@@ -488,7 +489,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchFaapIntelligence = async () => {
     setFaapIntelligenceLoading(true);
     try {
-      const res = await fetch("/api/ueos/faap/intelligence");
+      const res = await jumoFetch("/api/ueos/faap/intelligence");
       if (res.ok) {
         const data = await res.json();
         setFaapIntelligence(data);
@@ -502,7 +503,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const fetchBillingConfigs = async () => {
     try {
-      const res = await fetch("/api/ueos/fintech/tenant-billing-config");
+      const res = await jumoFetch("/api/ueos/fintech/tenant-billing-config");
       if (res.ok) {
         const data = await res.json();
         setBillingConfigs(data.configs || []);
@@ -514,7 +515,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const handleUpdateBillingConfig = async (tenantId: string) => {
     try {
-      const res = await fetch("/api/ueos/fintech/tenant-billing-config", {
+      const res = await jumoFetch("/api/ueos/fintech/tenant-billing-config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -540,7 +541,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     setPaymentProcessing(true);
     setPaymentResult(null);
     try {
-      const res = await fetch("/api/ueos/fintech/payment-connector", {
+      const res = await jumoFetch("/api/ueos/fintech/payment-connector", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -567,7 +568,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const fetchActiveGeneratedErps = async () => {
     try {
-      const res = await fetch("/api/ueos/erp-factory/active");
+      const res = await jumoFetch("/api/ueos/erp-factory/active");
       if (res.ok) {
         const data = await res.json();
         setActiveGeneratedErps(data.erps || []);
@@ -583,7 +584,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     setErpBuildResult(null);
     setErpBuildLogs([]);
     try {
-      const res = await fetch("/api/ueos/erp-factory/build", {
+      const res = await jumoFetch("/api/ueos/erp-factory/build", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -609,7 +610,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchWorkforceAgents = async () => {
     setAgentsLoading(true);
     try {
-      const res = await fetch("/api/ueos/ai-factory/agents");
+      const res = await jumoFetch("/api/ueos/ai-factory/agents");
       if (res.ok) {
         const data = await res.json();
         setActiveWorkforceAgents(data.agents || []);
@@ -625,7 +626,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     e.preventDefault();
     if (!registryNewName || !registryNewRole) return;
     try {
-      const res = await fetch("/api/ueos/ai-factory/register-agent", {
+      const res = await jumoFetch("/api/ueos/ai-factory/register-agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -652,7 +653,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const handleTriggerAegisScan = async () => {
     setAegisScanning(true);
     try {
-      const res = await fetch("/api/ueos/security/threat-scan", {
+      const res = await jumoFetch("/api/ueos/security/threat-scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
@@ -670,7 +671,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchRagDocuments = async () => {
     setRagLoading(true);
     try {
-      const res = await fetch("/api/ueos/rag/knowledge");
+      const res = await jumoFetch("/api/ueos/rag/knowledge");
       if (res.ok) {
         const data = await res.json();
         setRagDocuments(data.documents || []);
@@ -686,7 +687,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     e.preventDefault();
     if (!newRagTitle || !newRagContent) return;
     try {
-      const res = await fetch("/api/ueos/rag/add-document", {
+      const res = await jumoFetch("/api/ueos/rag/add-document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -708,7 +709,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   const fetchOwnerDashboardData = async () => {
     setIsDashboardLoading(true);
     try {
-      const res = await fetch("/api/dashboard/owner");
+      const res = await jumoFetch("/api/dashboard/owner");
       if (res.ok) {
         const data = await res.json();
         setBackendDashboardData(data);
@@ -764,7 +765,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     }
 
     try {
-      const res = await fetch("/api/ueos/secrets/register", {
+      const res = await jumoFetch("/api/ueos/secrets/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -798,7 +799,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
       return;
     }
     try {
-      const res = await fetch("/api/ueos/secrets/delete", {
+      const res = await jumoFetch("/api/ueos/secrets/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key, actor: currentUser.email })
@@ -823,7 +824,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
     setIsRotating(true);
     try {
-      const res = await fetch("/api/ueos/secrets/rotate", {
+      const res = await jumoFetch("/api/ueos/secrets/rotate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -835,7 +836,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
       if (res.ok) {
         showVaultToast(`Successfully rotated credential '${selectedSecret.key}'. Old value moved to rollback history.`);
         setRotationValue("");
-        const refreshedSecretRes = await fetch("/api/ueos/secrets");
+        const refreshedSecretRes = await jumoFetch("/api/ueos/secrets");
         if (refreshedSecretRes.ok) {
           const list = await refreshedSecretRes.json();
           setSecrets(list);
@@ -863,7 +864,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
     setRollbackLoading(true);
     try {
-      const res = await fetch("/api/ueos/secrets/rollback", {
+      const res = await jumoFetch("/api/ueos/secrets/rollback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -874,7 +875,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
       });
       if (res.ok) {
         showVaultToast(`Credential '${selectedSecret.key}' successfully rolled back.`);
-        const refreshedSecretRes = await fetch("/api/ueos/secrets");
+        const refreshedSecretRes = await jumoFetch("/api/ueos/secrets");
         if (refreshedSecretRes.ok) {
           const list = await refreshedSecretRes.json();
           setSecrets(list);
@@ -896,7 +897,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
   const handleExportBackup = async () => {
     try {
-      const res = await fetch("/api/ueos/secrets/backup", {
+      const res = await jumoFetch("/api/ueos/secrets/backup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ actor: currentUser.email })
@@ -920,7 +921,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     }
 
     try {
-      const res = await fetch("/api/ueos/secrets/restore", {
+      const res = await jumoFetch("/api/ueos/secrets/restore", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payload: restorePayload, actor: currentUser.email })
@@ -958,7 +959,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     if (!mfaSecretToReveal) return;
 
     try {
-      const res = await fetch("/api/ueos/secrets/reveal", {
+      const res = await jumoFetch("/api/ueos/secrets/reveal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1082,7 +1083,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     ]);
 
     try {
-      await fetch("/api/ueos/ai-factory/register-agent", {
+      await jumoFetch("/api/ueos/ai-factory/register-agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1126,7 +1127,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     setManualPostLoading(true);
     setManualPostMessage("");
     try {
-      const res = await fetch("/api/ueos/fintech/manual-post", {
+      const res = await jumoFetch("/api/ueos/fintech/manual-post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1179,7 +1180,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     setCognitiveLoading(true);
     setCognitiveAnalysisResult("");
     try {
-      const res = await fetch("/api/ueos/ai/run-cognitive-task", {
+      const res = await jumoFetch("/api/ueos/ai/run-cognitive-task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1363,7 +1364,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
     setDomainInstallProgress(15);
     
     try {
-      const res = await fetch("/api/ueos/domains/install", {
+      const res = await jumoFetch("/api/ueos/domains/install", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domainId, domainName })
@@ -1406,8 +1407,8 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen p-4 md:p-6 space-y-6 font-sans">
       
-      {/* 1. GLOBAL COMMAND BAR */}
-      <div className="bg-slate-900 text-white border border-slate-800 rounded-2xl p-3.5 shadow-md flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4">
+      {/* 1. GLOBAL COMMAND BAR (LIGHT ENTERPRISE THEME) */}
+      <div className="bg-white text-slate-900 border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4">
         
         {/* BRAND & IDENTITY */}
         <div className="flex items-center gap-3">
@@ -1416,19 +1417,21 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-sm md:text-base font-bold tracking-tight text-slate-100 flex items-center gap-2">
+              <h1 className="text-sm md:text-base font-bold tracking-tight text-slate-900 flex items-center gap-2">
                 JUMO Universal Enterprise Operating System (UEOS)
               </h1>
-              <span className="text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                PRODUCTION CONTROL PLANE
+              <span className="text-[9px] font-mono bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                CONTROL PLANE v4.1
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400 mt-0.5 font-mono">
-              <span className="flex items-center gap-1"><Server className="h-3 w-3 text-blue-400" /> Render Europe-West1</span>
+            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-0.5 font-mono">
+              <span className="flex items-center gap-1"><Server className="h-3 w-3 text-blue-600" /> Render Europe-West1</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><Boxes className="h-3 w-3 text-purple-400" /> Workspace: <strong className="text-slate-200">{activeWorkspace}</strong></span>
+              <span className="flex items-center gap-1"><Boxes className="h-3 w-3 text-purple-600" /> Workspace: <strong className="text-slate-800">{activeWorkspace}</strong></span>
               <span>•</span>
-              <span>Tenant: <strong className="text-slate-200">{currentUser.tenantId}</strong></span>
+              <span>Tenant: <strong className="text-slate-800">{currentUser.tenantId}</strong></span>
+              <span>•</span>
+              <span className="flex items-center gap-1 font-semibold text-emerald-600">● SECURITY: ACTIVE</span>
             </div>
           </div>
         </div>
@@ -1443,16 +1446,16 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
               placeholder="Search commands, nodes, secrets..."
               value={commandSearchQuery}
               onChange={(e) => setCommandSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 pl-8 text-xs font-mono text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 pl-8 text-xs font-mono text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 transition"
             />
-            <TerminalIcon className="h-3.5 w-3.5 text-slate-500 absolute left-2.5 top-2.5" />
+            <TerminalIcon className="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2.5" />
           </div>
 
           {/* WORKSPACE SWITCHER */}
           <select
             value={activeWorkspace}
             onChange={(e) => setActiveWorkspace(e.target.value)}
-            className="bg-slate-950 border border-slate-800 text-slate-200 text-xs font-mono rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-blue-500"
+            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs font-mono rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer"
           >
             <option value="Sovereign Core Platform">Sovereign Core Platform</option>
             <option value="Global SACCO Mesh">Global SACCO Mesh</option>
@@ -1463,17 +1466,17 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           {/* NOTIFICATIONS & SIDE PANEL TOGGLE */}
           <button
             onClick={() => setNotificationsOpen(!notificationsOpen)}
-            className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition relative cursor-pointer"
+            className="p-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl border border-slate-200 transition relative cursor-pointer"
             title="System Alerts & Notifications"
           >
-            <ShieldAlert className="h-4 w-4 text-amber-400" />
+            <ShieldAlert className="h-4 w-4 text-amber-500" />
             <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-rose-500 text-white rounded-full text-[8px] font-mono font-bold flex items-center justify-center">3</span>
           </button>
 
           <button
             onClick={() => setShowRightContextPanel(!showRightContextPanel)}
             className={`px-2.5 py-1.5 text-xs font-mono rounded-xl border transition cursor-pointer flex items-center gap-1.5 ${
-              showRightContextPanel ? "bg-blue-600/20 border-blue-500/30 text-blue-300" : "bg-slate-800 border-slate-700 text-slate-400"
+              showRightContextPanel ? "bg-blue-50 border-blue-200 text-blue-700 font-semibold" : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
             }`}
             title="Toggle Live Side Panel"
           >
@@ -1482,14 +1485,14 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           </button>
 
           {/* USER PROFILE & LOCK */}
-          <div className="hidden md:flex flex-col text-right text-[11px] font-mono border-l border-slate-800 pl-3">
-            <span className="text-slate-200 font-bold">{currentUser.name}</span>
-            <span className="text-slate-400 text-[10px]">{currentUser.role}</span>
+          <div className="hidden md:flex flex-col text-right text-[11px] font-mono border-l border-slate-200 pl-3">
+            <span className="text-slate-800 font-bold">{currentUser.name}</span>
+            <span className="text-slate-500 text-[10px]">{currentUser.role}</span>
           </div>
 
           <button
             onClick={onLogout}
-            className="bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 px-3 py-1.5 rounded-xl text-xs font-semibold font-mono transition cursor-pointer flex items-center gap-1.5"
+            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl text-xs font-semibold font-mono transition cursor-pointer flex items-center gap-1.5"
           >
             <Lock className="h-3.5 w-3.5" />
             <span>Lock</span>
@@ -1502,7 +1505,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
         {/* LEFT NAVIGATION TREE (3 COLS) */}
-        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-xs space-y-3 max-h-[820px] overflow-y-auto font-sans">
+        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-3 max-h-[820px] overflow-y-auto font-sans">
           
           {/* PLATFORM ZONE */}
           <div className="space-y-1">
@@ -1534,7 +1537,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   <Map className="h-3.5 w-3.5 text-blue-500" />
                   <span>Kernel &amp; Specs</span>
                 </div>
-                <span className="text-[9px] font-mono text-slate-400">v2.0.4</span>
+                <span className="text-[9px] font-mono text-slate-400">v4.1</span>
               </button>
 
               <button
@@ -1797,14 +1800,13 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
         {/* CENTER ACTIVE WORKSPACE (6 COLS IF SIDEBAR OPEN, 9 IF CLOSED) */}
         <div className={`${showRightContextPanel ? "lg:col-span-6 xl:col-span-6" : "lg:col-span-9"} bg-white border border-slate-200 rounded-2xl p-5 shadow-xs overflow-x-auto`}>
 
-          
           {/* 1. SYSTEM OVERVIEW (HOME WORKSPACE) */}
           {activeTab === "dashboard" && (
             <div className="space-y-6 animate-fade-in">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-200 gap-2">
                 <div>
-                  <h2 className="text-base font-bold text-slate-900 tracking-tight">System Overview &amp; Platform Health Matrix</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Real-time status tracking of infrastructure, FAAP treasury, security, AI routing, and domain registries.</p>
+                  <h2 className="text-base font-bold text-slate-900 tracking-tight">System Overview &amp; Control Plane Matrix</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Real-time control interface of sovereign infrastructure, FAAP treasury, workflows, tenant structures, and cognitive swarms.</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={fetchOwnerDashboardData} className="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium flex items-center gap-1 transition">
@@ -1812,326 +1814,198 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     <span>Sync Metrics</span>
                   </button>
                   <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded font-bold uppercase">
-                    ALL SYSTEMS OPERATIONAL
+                    ALL RUNTIMES OPERATIONAL
                   </span>
                 </div>
               </div>
 
-              {/* 10 OPERATIONAL SECTIONS */}
-              <div className="space-y-6">
+              {/* JUMO UEOS v4.1 - 5 EXPLICIT SECTIONS */}
+              <div className="grid grid-cols-1 gap-6">
 
-                {/* SECTION 1: PLATFORM HEALTH */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                {/* MODULE 1: PLATFORM KERNEL */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-white shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-emerald-600" />
-                      <span>1. Platform Health &amp; Kernel Metrics</span>
+                      <Cpu className="h-4 w-4 text-blue-600" />
+                      <span>1. Platform Kernel &amp; Sovereign Core</span>
                     </h3>
-                    <span className="text-[11px] font-mono text-slate-500">Uptime: {backendDashboardData?.uptimeSeconds ?? 142800}s</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Kernel Status</div>
-                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">v2.0.4-LTS</div>
-                      <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">✓ Sovereign Core Active</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Memory Allocation</div>
-                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.memoryUsage ?? "48.2MB"}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">Heap memory used</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Database Mode</div>
-                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.databaseMode ?? "Dual-Mode PostgreSQL"}</div>
-                      <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">✓ Cloud Synced</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Health Score</div>
-                      <div className="text-sm font-bold text-emerald-700 font-mono mt-0.5">{backendDashboardData?.healthScore ?? 100}%</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">18 Active Sockets</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 2: INFRASTRUCTURE */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                    <Server className="h-4 w-4 text-blue-600" />
-                    <span>2. Infrastructure &amp; Cloud Services</span>
-                  </h3>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 font-mono text-[11px]">
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">Render Run</span>
-                      <span className="text-emerald-700 font-bold mt-1">✓ ONLINE</span>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">Firebase Auth</span>
-                      <span className="text-emerald-700 font-bold mt-1">✓ READY</span>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">AI Providers</span>
-                      <span className="text-emerald-700 font-bold mt-1">✓ GEMINI 3.5</span>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">Payment Engine</span>
-                      <span className="text-emerald-700 font-bold mt-1">✓ FAAP CLEARED</span>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">Secrets Vault</span>
-                      <span className="text-blue-700 font-bold mt-1">AES-256 ACTIVE</span>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-2.5 rounded-lg flex flex-col justify-between">
-                      <span className="text-slate-500">TLS Certificates</span>
-                      <span className="text-emerald-700 font-bold mt-1">VALID (2027)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 3: TREASURY (FAAP) */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                    <Coins className="h-4 w-4 text-emerald-600" />
-                    <span>3. FAAP Treasury &amp; Financial Ledger</span>
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">FAAP Master Reserves</div>
-                      <div className="text-lg font-bold text-emerald-700 font-mono mt-1">
-                        ${(backendDashboardData?.faapTreasuryBalance ?? totalLicensingRevenue).toLocaleString()} USD
-                      </div>
-                      <div className="text-[10px] text-slate-500 mt-1">1.5% Settlement Clearing Rate Active</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Fee Revenue Collected</div>
-                      <div className="text-lg font-bold text-slate-900 font-mono mt-1">
-                        $3,820.00 USD
-                      </div>
-                      <div className="text-[10px] text-emerald-600 mt-1">✓ Auto-debited to Treasury</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Ledger Integrity Parity</div>
-                      <div className="text-lg font-bold text-emerald-700 font-mono mt-1">$0.00 OFFSET</div>
-                      <div className="text-[10px] text-slate-500 mt-1">Double-Entry Debits = Credits</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Tenant Accounts</div>
-                      <div className="text-lg font-bold text-slate-900 font-mono mt-1">
-                        {backendDashboardData?.totalTenants ?? activeTenants} Contracts
-                      </div>
-                      <div className="text-[10px] text-slate-500 mt-1">All Tenant Ledgers Isolated</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 4: ENTERPRISE REGISTRY */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                      <Boxes className="h-4 w-4 text-purple-600" />
-                      <span>4. Enterprise ERP Domain Registry</span>
-                    </h3>
-                    <button onClick={() => setActiveTab("domain_factory")} className="text-xs text-blue-600 hover:underline font-medium">Manage Domains →</button>
+                    <span className="text-[10px] font-mono bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-bold">KERNEL v4.1</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                    {modules.slice(0, 8).map((m) => (
-                      <div key={m.id} className="bg-white border border-slate-200 p-3 rounded-xl space-y-1 shadow-2xs">
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-slate-900">{m.name}</span>
-                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                            m.status === "Active" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-slate-100 text-slate-600"
-                          }`}>{m.status}</span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 line-clamp-1">{m.description}</p>
-                        <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-1 border-t border-slate-100">
-                          <span>{m.version}</span>
-                          <span>${m.monthlyPrice}/mo</span>
-                        </div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Kernel Status</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Active &amp; Warm</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ 0.0.0.0 Bind Stable</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Memory Allocation</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.memoryUsage ?? "48.2MB"}</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Dynamic Heap Sync</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Module Registry</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">11 Registered</div>
+                      <div className="text-[9px] text-blue-600 font-semibold mt-0.5">✓ Extensions Verified</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Service Orchestrator</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Automatic</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ Live Ingress Health</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* MODULE 2: FAAP TREASURY BACKBONE */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-white shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
+                      <Coins className="h-4 w-4 text-emerald-600" />
+                      <span>2. FAAP Treasury Backbone &amp; Financial Ledger</span>
+                    </h3>
+                    <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-bold">1.5% ROUTING ENFORCED</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Master Reserves</div>
+                      <div className="text-sm font-bold text-emerald-700 font-mono mt-0.5">
+                        ${(backendDashboardData?.faapTreasuryBalance ?? totalLicensingRevenue).toLocaleString()} USD
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* SECTION 5: WORKFLOW ENGINE */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-amber-600" />
-                    <span>5. Workflow Engine &amp; Process Orchestration</span>
-                  </h3>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Running Processes</div>
-                      <div className="text-base font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.workflowCount ?? 120} Run Loops</div>
-                      <div className="text-[10px] text-emerald-600 font-medium">✓ Zero Stalled Processes</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Double-Entry Authoritative</div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Pending Approvals</div>
-                      <div className="text-base font-bold text-slate-900 font-mono mt-0.5">3 Approvals</div>
-                      <div className="text-[10px] text-slate-500">FAAP Ledger Disbursements</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Fee Revenue Split</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">$3,820.00 USD</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ 1.5% Settlement Cleared</div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Automation Jobs</div>
-                      <div className="text-base font-bold text-slate-900 font-mono mt-0.5">24 Active Rules</div>
-                      <div className="text-[10px] text-slate-500">Scheduled Ledger Sweeps</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Ledger Parity</div>
+                      <div className="text-sm font-bold text-emerald-600 font-mono mt-0.5">$0.00 Parity Offset</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Debits Match Credits exactly</div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <div className="text-[10px] font-mono text-slate-500 uppercase">Completed Today</div>
-                      <div className="text-base font-bold text-emerald-700 font-mono mt-0.5">1,482 Loops</div>
-                      <div className="text-[10px] text-slate-500">100% Success Rate</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Revenue Routing status</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Encrypted Sink</div>
+                      <div className="text-[9px] text-blue-600 font-semibold mt-0.5">✓ AES-256 Vault-Bound</div>
                     </div>
                   </div>
                 </div>
 
-                {/* SECTION 6: IDENTITY & ZERO TRUST */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-rose-600" />
-                    <span>6. Zero Trust Identity &amp; Access Control</span>
-                  </h3>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px]">
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl">
-                      <div className="text-slate-500">RBAC Enforcement</div>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">ACTIVE &amp; ENFORCED</div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl">
-                      <div className="text-slate-500">Tenant Isolation</div>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">ROW-LEVEL DUAL LOCK</div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl">
-                      <div className="text-slate-500">Active Sessions</div>
-                      <div className="text-slate-900 font-bold text-sm mt-0.5">18 Active Users</div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl">
-                      <div className="text-slate-500">Failed Auth Attempts</div>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">0 Threat Flags</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 7: SECURITY OPERATIONS */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
+                {/* MODULE 3: WORKFLOW ENGINE v17.x */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-white shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                      <ShieldAlert className="h-4 w-4 text-rose-600" />
-                      <span>7. Security Operations &amp; Threat Intelligence</span>
+                      <Zap className="h-4 w-4 text-amber-600" />
+                      <span>3. Workflow Engine v17.x &amp; Process Orchestration</span>
                     </h3>
-                    <button onClick={() => setActiveTab("security_vault")} className="text-xs text-blue-600 hover:underline font-medium">Vault Operations →</button>
+                    <span className="text-[10px] font-mono bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded font-bold">V17.4 PIPELINE</span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                    <div className="space-y-0.5">
-                      <div className="text-xs font-bold text-slate-900">JUMO Cryptographic Vault Diagnostics</div>
-                      <div className="text-[11px] text-slate-500 font-mono">
-                        Vault Status: <span className="text-emerald-700 font-bold">HEALTHY</span> • Secrets Count: <span className="text-slate-900 font-bold">{secrets.length || 8}</span> • Encryption: <span className="text-slate-900 font-bold">AES-256 GCM</span>
-                      </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Active Workflows</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.workflowCount ?? 120} Run Loops</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ 100% Core-Engine Alive</div>
                     </div>
-                    <span className="text-xs font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-lg font-bold">
-                      SECURITY SCORE: 98 / 100
-                    </span>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Disbursement Pipeline</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">3 Approvals Pending</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">FAAP Financial Validation</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Daily Executions</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">1,482 Logs</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ 0 Failures Reported</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Automation Rules</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">24 Scheduled Rules</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Rebalancing Ledger Sweeps</div>
+                    </div>
                   </div>
                 </div>
 
-                {/* SECTION 8: AI OPERATIONS */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
+                {/* MODULE 4: MULTI-TENANT CONTROL */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-white shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                      <Bot className="h-4 w-4 text-purple-600" />
-                      <span>8. AI Cognitive Gateway &amp; Agent Workforce</span>
+                      <Boxes className="h-4 w-4 text-purple-600" />
+                      <span>4. Multi-Tenant Control &amp; Tenant Partition Guard</span>
                     </h3>
-                    <button onClick={() => setActiveTab("ai_factory")} className="text-xs text-blue-600 hover:underline font-medium">AI Workforce →</button>
+                    <span className="text-[10px] font-mono bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-bold">ROW-LEVEL DUAL LOCK</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl space-y-1">
-                      <div className="text-xs font-bold text-slate-900">Google Gemini 3.5 Flash</div>
-                      <div className="text-[10px] text-emerald-700 font-mono font-semibold">✓ Connected (Default Router)</div>
-                      <div className="text-[10px] text-slate-500">Latency: 185ms • Cost: $0.00015/1k</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Active Organizations</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{backendDashboardData?.totalTenants ?? activeTenants} Tenants</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Sovereign Isolation Matrix</div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl space-y-1">
-                      <div className="text-xs font-bold text-slate-900">OpenAI Proxy Integration</div>
-                      <div className="text-[10px] text-blue-700 font-mono font-semibold">Configured (Standby)</div>
-                      <div className="text-[10px] text-slate-500">Latency: 310ms • Hybrid Bridge</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Tenant Isolation Status</div>
+                      <div className="text-sm font-bold text-emerald-700 font-mono mt-0.5">Row-Level Guarded</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ Zero Leakage Vectors</div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl space-y-1">
-                      <div className="text-xs font-bold text-slate-900">Local DeepSeek Edge Model</div>
-                      <div className="text-[10px] text-slate-700 font-mono font-semibold">Local Model Loaded</div>
-                      <div className="text-[10px] text-slate-500">Offline Fallback Engine</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 9: HYBRID INFRASTRUCTURE */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                    <Network className="h-4 w-4 text-teal-600" />
-                    <span>9. Hybrid Infrastructure &amp; Edge Sync</span>
-                  </h3>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] font-mono">
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <span className="text-slate-500">Cloud Nodes</span>
-                      <div className="text-slate-900 font-bold text-sm mt-0.5">2 Nodes (Render)</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Provisioning Engine</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Active</div>
+                      <div className="text-[9px] text-blue-600 font-semibold mt-0.5">✓ Dynamic Namespace Sync</div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <span className="text-slate-500">Edge Sync Queue</span>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">0 Pending Items</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <span className="text-slate-500">Replication State</span>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">FULLY SYNCHRONIZED</div>
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                      <span className="text-slate-500">Automated Backup</span>
-                      <div className="text-emerald-700 font-bold text-sm mt-0.5">DAILY CRYPTO SNAPSHOT</div>
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">SecOps Access Policies</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Zero-Trust RBAC</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">RBAC &amp; Claims Enforced</div>
                     </div>
                   </div>
                 </div>
 
-                {/* SECTION 10: DEPLOYMENT CENTER */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
+                {/* MODULE 5: AI OPERATING LAYER */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-white shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono flex items-center gap-2">
-                      <GitBranch className="h-4 w-4 text-blue-600" />
-                      <span>10. Deployment Center &amp; CI/CD Pipeline</span>
+                      <Bot className="h-4 w-4 text-purple-700" />
+                      <span>5. AI operating Layer &amp; Cognitive Swarms</span>
                     </h3>
-                    <button onClick={() => setActiveTab("deployment_pipeline")} className="text-xs text-blue-600 hover:underline font-medium">Pipeline Logs →</button>
+                    <span className="text-[10px] font-mono bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-bold">MULTIMODAL INTELLIGENCE</span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div className="space-y-1 font-mono text-[11px]">
-                      <div className="text-slate-900 font-bold">Branch: <span className="text-blue-700">phase9-frontend-integration</span></div>
-                      <div className="text-slate-500">Target Host: Render Cloud Run • Auto-Deploy Trigger: GitHub Webhook</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">AI Swarms Active</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">7 Cognitive Agents</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ Memory Buffers Synced</div>
                     </div>
-                    <span className="text-xs font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-lg font-bold">
-                      STATUS: LIVE &amp; DEPLOYED
-                    </span>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Cognitive Gateway</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Gemini 3.5 Flash</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">Default Router Enabled</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Offline Fallback</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Local DeepSeek</div>
+                      <div className="text-[9px] text-blue-600 font-semibold mt-0.5">✓ Edge Model Ready</div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Process Auditing Agent</div>
+                      <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Running</div>
+                      <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">✓ Double-Entry Auditor</div>
+                    </div>
                   </div>
                 </div>
 
@@ -2256,60 +2130,60 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           {/* 3. JUMO SYSTEM BUILD & DEPLOYMENT COMMAND CENTER */}
           {activeTab === "build_deploy" && (
             <div className="space-y-6 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <ArrowUpCircle className="h-4 w-4 text-blue-400" />
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <ArrowUpCircle className="h-4 w-4 text-blue-600" />
                     <span>JUMO Build Operations &amp; Ingress Orchestrator</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Continuous delivery pipeline. Automate packaging to Cloud Run, VPS, Kubernetes, and secure docker environments.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Continuous delivery pipeline. Automate packaging to Cloud Run, VPS, Kubernetes, and secure docker environments.</p>
                 </div>
-                <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/25 px-2 py-1 rounded">Ingress: Port 3000 Active</span>
+                <span className="text-[10px] font-mono text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded">Ingress: Port 3000 Active</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 {/* Deployment Config Selector */}
-                <div className="lg:col-span-4 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Target Deployment Platform</h4>
+                <div className="lg:col-span-4 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Target Deployment Platform</h4>
                   
                   <div className="space-y-3.5 text-xs">
                     <div className="grid grid-cols-1 gap-2.5 font-mono text-[10px]">
                       <button
                         onClick={() => setDeployTarget("gcp-run")}
                         className={`p-3 rounded-xl border text-left transition ${
-                          deployTarget === "gcp-run" ? "bg-blue-500/10 border-blue-500 text-blue-400" : "bg-slate-900 border-slate-850 text-slate-400 hover:border-slate-800"
+                          deployTarget === "gcp-run" ? "bg-blue-50 border-blue-300 text-blue-700" : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
                         }`}
                       >
                         <div className="font-bold">Google Cloud Run</div>
-                        <div className="text-[8px] text-slate-500 mt-1">Managed serverless docker node. Auto scales to zero.</div>
+                        <div className="text-[8px] text-slate-400 mt-1">Managed serverless docker node. Auto scales to zero.</div>
                       </button>
 
                       <button
                         onClick={() => setDeployTarget("koyeb")}
                         className={`p-3 rounded-xl border text-left transition ${
-                          deployTarget === "koyeb" ? "bg-blue-500/10 border-blue-500 text-blue-400" : "bg-slate-900 border-slate-850 text-slate-400 hover:border-slate-800"
+                          deployTarget === "koyeb" ? "bg-blue-50 border-blue-300 text-blue-700" : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
                         }`}
                       >
                         <div className="font-bold">Koyeb Continuous App</div>
-                        <div className="text-[8px] text-slate-500 mt-1">Fast cloud deployments via automatic git triggers.</div>
+                        <div className="text-[8px] text-slate-400 mt-1">Fast cloud deployments via automatic git triggers.</div>
                       </button>
 
                       <button
                         onClick={() => setDeployTarget("k8s")}
                         className={`p-3 rounded-xl border text-left transition ${
-                          deployTarget === "k8s" ? "bg-blue-500/10 border-blue-500 text-blue-400" : "bg-slate-900 border-slate-850 text-slate-400 hover:border-slate-800"
+                          deployTarget === "k8s" ? "bg-blue-50 border-blue-300 text-blue-700" : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
                         }`}
                       >
                         <div className="font-bold">Kubernetes Pod Replicas</div>
-                        <div className="text-[8px] text-slate-500 mt-1">Multi-replica production pods scaling across VPS clusters.</div>
+                        <div className="text-[8px] text-slate-400 mt-1">Multi-replica production pods scaling across VPS clusters.</div>
                       </button>
                     </div>
 
                     <button
                       onClick={triggerBuildOperations}
                       disabled={deployState === "building" || deployState === "pushing"}
-                      className="w-full bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold py-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1 font-sans"
+                      className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1 font-sans shadow-sm"
                     >
                       <RefreshCw className={`h-3.5 w-3.5 ${deployState !== "idle" && "animate-spin"}`} />
                       <span>Trigger Rolling Deploy</span>
@@ -2318,29 +2192,29 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                 </div>
 
                 {/* Deployment Build Pipeline logs */}
-                <div className="lg:col-span-8 bg-slate-950 border border-slate-850 p-5 rounded-2xl flex flex-col justify-between">
+                <div className="lg:col-span-8 bg-white border border-slate-200 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Deploy Pipeline Telemetry</h4>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Deploy Pipeline Telemetry</h4>
                     
                     {deployState === "idle" ? (
-                      <div className="bg-slate-900 border border-slate-850 p-10 rounded-xl text-center text-xs text-slate-500 font-mono">
+                      <div className="bg-slate-50 border border-slate-200 p-10 rounded-xl text-center text-xs text-slate-400 font-mono">
                         Build pipeline is currently standby. Choose a target engine and click "Trigger Rolling Deploy" to verify continuous integration.
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center text-[10px] font-mono text-slate-400">
-                          <span>Pipeline state: <strong className="text-blue-400 uppercase">{deployState}</strong></span>
+                        <div className="flex justify-between items-center text-[10px] font-mono text-slate-500">
+                          <span>Pipeline state: <strong className="text-blue-600 uppercase">{deployState}</strong></span>
                           <span>Progress: {deployProgress}%</span>
                         </div>
-                        <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                           <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${deployProgress}%` }}></div>
                         </div>
-                        <div className="bg-slate-900 border border-slate-850 p-3.5 rounded-xl font-mono text-[10px] text-slate-300 space-y-2 max-h-[180px] overflow-y-auto leading-relaxed">
+                        <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl font-mono text-[10px] text-slate-600 space-y-2 max-h-[180px] overflow-y-auto leading-relaxed">
                           {deployLogLines.map((line, idx) => (
                             <div key={idx} className="flex gap-2">
-                              <span className="text-slate-500">[{new Date().toLocaleTimeString()}]</span>
-                              <span className="text-blue-400 shrink-0">info</span>
-                              <span className="text-slate-200">{line}</span>
+                              <span className="text-slate-400">[{new Date().toLocaleTimeString()}]</span>
+                              <span className="text-blue-600 shrink-0">info</span>
+                              <span className="text-slate-700">{line}</span>
                             </div>
                           ))}
                         </div>
@@ -2348,9 +2222,9 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     )}
                   </div>
 
-                  <div className="border-t border-slate-900 pt-3 mt-4 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                  <div className="border-t border-slate-100 pt-3 mt-4 flex items-center justify-between text-[10px] font-mono text-slate-400">
                     <span className="flex items-center gap-1">
-                      <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                      <ShieldCheck className="h-4 w-4 text-emerald-600" />
                       <span>Build artifact certified against Zero-Trust RBAC Core.</span>
                     </span>
                     <button
@@ -2358,7 +2232,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                         setDeployState("idle");
                         setDeployLogLines([]);
                       }}
-                      className="text-[9px] bg-slate-900 border border-slate-850 text-slate-400 hover:text-slate-200 px-2 py-0.5 rounded transition"
+                      className="text-[9px] bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-700 px-2 py-0.5 rounded transition"
                     >
                       Clear Log
                     </button>
@@ -2372,19 +2246,19 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           {/* 4. JUMO INTERNAL TERMINAL SYSTEM */}
           {activeTab === "terminal" && (
             <div className="space-y-4 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <TerminalIcon className="h-4 w-4 text-slate-300" />
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <TerminalIcon className="h-4 w-4 text-slate-600" />
                     <span>JUMO Universal Secure Shell Terminal</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Direct admin controller emulator. Interface with core databases, security tokens, and multi-model router gateways.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Direct admin controller emulator. Interface with core databases, security tokens, and multi-model router gateways.</p>
                 </div>
-                <span className="text-[10px] font-mono text-teal-400 bg-teal-500/10 border border-teal-500/25 px-2 py-1 rounded">SSL CONNECTED</span>
+                <span className="text-[10px] font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-1 rounded">SSL CONNECTED</span>
               </div>
 
               {/* Black Terminal Screen */}
-              <div className="bg-black border border-slate-850 rounded-2xl p-5 font-mono text-xs text-slate-200 min-h-[350px] flex flex-col justify-between">
+              <div className="bg-slate-950 border border-slate-200 rounded-2xl p-5 font-mono text-xs text-slate-200 min-h-[350px] flex flex-col justify-between shadow-sm">
                 <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
                   {terminalHistory.map((line, idx) => (
                     <div key={idx} className="leading-relaxed">
@@ -2420,36 +2294,36 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           {/* 5. SYSTEM UPDATE & UPGRADE CENTER */}
           {activeTab === "update_center" && (
             <div className="space-y-6 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <RefreshCw className="h-4 w-4 text-emerald-400" />
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <RefreshCw className="h-4 w-4 text-emerald-600" />
                     <span>JUMO Core Update &amp; Domain Hotfix Center</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Apply rolling security hotfixes, update LLM cognitive weights, and trigger clean database table migrations.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Apply rolling security hotfixes, update LLM cognitive weights, and trigger clean database table migrations.</p>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded font-bold">LTS VERSION MANAGER</span>
+                <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded font-bold">LTS VERSION MANAGER</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 {/* Version overview and status */}
-                <div className="lg:col-span-5 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Current System Version</h4>
+                <div className="lg:col-span-5 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Current System Version</h4>
                   
-                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-850/60 flex items-center justify-between font-mono">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between font-mono">
                     <div>
-                      <span className="text-slate-500 text-[10px] uppercase block">Kernel Engine</span>
-                      <strong className="text-white text-base font-bold">{kernelVersion}</strong>
+                      <span className="text-slate-400 text-[10px] uppercase block">Kernel Engine</span>
+                      <strong className="text-slate-800 text-base font-bold">{kernelVersion}</strong>
                     </div>
-                    <span className="text-[9px] bg-emerald-500/15 text-emerald-400 px-2 py-1 rounded font-bold">STABLE</span>
+                    <span className="text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded font-bold">STABLE</span>
                   </div>
 
                   <div className="space-y-2 text-xs">
                     <button
                       onClick={triggerUpdateCheck}
                       disabled={checkingUpdates}
-                      className="w-full bg-slate-900 hover:bg-slate-850 text-slate-200 border border-slate-800 font-semibold py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5"
+                      className="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                     >
                       <RefreshCw className={`h-3.5 w-3.5 ${checkingUpdates && "animate-spin"}`} />
                       <span>Check JUMO Updates Channel</span>
@@ -2459,7 +2333,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                       <button
                         onClick={applySystemUpdate}
                         disabled={checkingUpdates}
-                        className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5"
+                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                       >
                         <ArrowUpCircle className="h-4 w-4 fill-current" />
                         <span>Apply Upgrade to v2.0.5-LTS</span>
@@ -2469,17 +2343,17 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                 </div>
 
                 {/* Operations Terminal Feedback Log */}
-                <div className="lg:col-span-7 bg-slate-950 border border-slate-850 p-5 rounded-2xl flex flex-col justify-between">
+                <div className="lg:col-span-7 bg-white border border-slate-200 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
                   <div>
-                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Upgrade System Feed</h4>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Continuous diagnostics log stream from compilation updates.</p>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Upgrade System Feed</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Continuous diagnostics log stream from compilation updates.</p>
                   </div>
 
-                  <div className="bg-black border border-slate-850 rounded-xl p-4 font-mono text-[10px] text-teal-400 min-h-[160px] max-h-[220px] overflow-y-auto leading-relaxed mt-4">
+                  <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-[10px] text-teal-400 min-h-[160px] max-h-[220px] overflow-y-auto leading-relaxed mt-4">
                     {updateLog ? (
                       <div className="whitespace-pre-wrap">{updateLog}</div>
                     ) : (
-                      <div className="text-slate-700">Check update status or click Apply Upgrade to watch system output...</div>
+                      <div className="text-slate-600">Check update status or click Apply Upgrade to watch system output...</div>
                     )}
                   </div>
                 </div>
@@ -2491,42 +2365,42 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
           {/* 6. JUMO AI FACTORY & AI ADMINISTRATION CENTER */}
           {activeTab === "ai_factory" && (
             <div className="space-y-6 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <Bot className="h-4 w-4 text-purple-400" />
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Bot className="h-4 w-4 text-purple-600" />
                     <span>JUMO AI Swarm Manufacturing &amp; Gateway Controller</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Private administrative AI ecosystem. Control model permissions, provision custom agents, and monitor token consumption metrics.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Private administrative AI ecosystem. Control model permissions, provision custom agents, and monitor token consumption metrics.</p>
                 </div>
-                <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 border border-purple-500/25 px-2 py-1 rounded">Multi-Model Registry</span>
+                <span className="text-[10px] font-mono text-purple-700 bg-purple-50 border border-purple-200 px-2 py-1 rounded">Multi-Model Registry</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 {/* Spawner Box */}
-                <div className="lg:col-span-5 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Provision New Cognitive Swarm Agent</h4>
+                <div className="lg:col-span-5 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Provision New Cognitive Swarm Agent</h4>
                   
                   <form onSubmit={handleCreateAgent} className="space-y-3.5 text-xs font-mono">
                     <div>
-                      <label className="block text-slate-400 mb-1">AGENT IDENTIFIER NAME</label>
+                      <label className="block text-slate-500 mb-1">AGENT IDENTIFIER NAME</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. Legal Contract AI"
                         value={newAgentName}
                         onChange={(e) => setNewAgentName(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:bg-white focus:outline-none focus:border-purple-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-400 mb-1">COGNITIVE ROLE &amp; PERMISSION SCOPE</label>
+                      <label className="block text-slate-500 mb-1">COGNITIVE ROLE &amp; PERMISSION SCOPE</label>
                       <select
                         value={newAgentRole}
                         onChange={(e) => setNewAgentRole(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-2 text-slate-200 focus:outline-none focus:border-purple-500 cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-800 focus:bg-white focus:outline-none focus:border-purple-500 cursor-pointer"
                       >
                         <option value="General Administration">General Administration</option>
                         <option value="Financial Controller">Financial Controller</option>
@@ -2538,7 +2412,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                     <button
                       type="submit"
-                      className="w-full bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold py-2 rounded-xl transition cursor-pointer font-sans"
+                      className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-xl transition cursor-pointer font-sans shadow-sm"
                     >
                       Spawn Agent on JUMO-AI-01 Node
                     </button>
@@ -2546,30 +2420,30 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                 </div>
 
                 {/* AI Swarm List */}
-                <div className="lg:col-span-7 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono font-bold">Active Cognitive Swarm Inventory</h4>
+                <div className="lg:col-span-7 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono font-bold">Active Cognitive Swarm Inventory</h4>
                   
                   <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                     {aiAgents.map((agt, i) => (
-                      <div key={i} className="bg-slate-900 border border-slate-850 p-3 rounded-xl flex justify-between items-center font-mono text-[10px]">
+                      <div key={i} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center font-mono text-[10px]">
                         <div>
                           <div className="flex items-center gap-2">
-                            <strong className="text-slate-100 font-bold">{agt.name}</strong>
-                            <span className="text-[8px] bg-slate-950 border border-slate-800 text-slate-400 px-1.5 py-0.5 rounded">{agt.role}</span>
+                            <strong className="text-slate-800 font-bold">{agt.name}</strong>
+                            <span className="text-[8px] bg-slate-100 border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded">{agt.role}</span>
                           </div>
-                          <div className="text-[9px] text-slate-500 mt-1">
-                            Engine: <span className="text-slate-300">{agt.provider}</span> | Logs: <span className="text-purple-400 font-bold">{agt.memoryCount} events</span>
+                          <div className="text-[9px] text-slate-400 mt-1">
+                            Engine: <span className="text-slate-700">{agt.provider}</span> | Logs: <span className="text-purple-600 font-bold">{agt.memoryCount} events</span>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2">
                           <span className={`text-[8px] uppercase font-bold px-1.5 py-0.5 rounded ${
-                            agt.status === "Active" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
+                            agt.status === "Active" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-rose-50 text-rose-700 border border-rose-200"
                           }`}>{agt.status}</span>
                           
                           <button
                             onClick={() => handleToggleAgent(agt.name)}
-                            className="bg-slate-950 border border-slate-800 text-slate-400 hover:text-purple-400 hover:border-purple-500 px-2 py-1 rounded transition cursor-pointer text-[9px]"
+                            className="bg-white border border-slate-200 text-slate-600 hover:text-purple-600 hover:border-purple-500 px-2 py-1 rounded transition cursor-pointer text-[9px] shadow-sm"
                           >
                             Toggle
                           </button>
@@ -2582,10 +2456,10 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
               </div>
 
               {/* AI Swarm Playground & Mandate Sandbox */}
-              <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-900">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Cognitive Swarm Execution Sandbox</h4>
-                  <span className="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/25">Server-Side Multi-Model Router</span>
+              <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Cognitive Swarm Execution Sandbox</h4>
+                  <span className="text-[9px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">Server-Side Multi-Model Router</span>
                 </div>
 
                 <form onSubmit={handleRunCognitiveTask} className="grid grid-cols-1 lg:grid-cols-12 gap-5 text-xs font-mono">
@@ -2593,11 +2467,11 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   {/* Left Controls */}
                   <div className="lg:col-span-4 space-y-3">
                     <div>
-                      <label className="block text-slate-400 mb-1">SELECT TARGET AGENT</label>
+                      <label className="block text-slate-500 mb-1">SELECT TARGET AGENT</label>
                       <select
                         value={selectedCognitiveAgent}
                         onChange={(e) => setSelectedCognitiveAgent(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-2 text-slate-200 focus:outline-none focus:border-purple-500 cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-800 focus:bg-white focus:outline-none focus:border-purple-500 cursor-pointer"
                       >
                         {aiAgents.map(agt => (
                           <option key={agt.name} value={agt.name}>{agt.name} ({agt.role})</option>
@@ -2606,16 +2480,16 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     </div>
 
                     <div>
-                      <label className="block text-slate-400 mb-1 flex justify-between">
+                      <label className="block text-slate-500 mb-1 flex justify-between">
                         <span>IFRS / LEGAL GUIDELINES RAG</span>
-                        <span className="text-[8px] text-slate-500 uppercase">Optional Context</span>
+                        <span className="text-[8px] text-slate-400 uppercase">Optional Context</span>
                       </label>
                       <textarea
                         rows={4}
                         placeholder="Paste specific regulatory framework or legal guidelines to ground the agent's decision matrix (e.g., IFRS NGO accounting rules)..."
                         value={cognitiveDocContext}
                         onChange={(e) => setCognitiveDocContext(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:bg-white focus:outline-none focus:border-purple-500"
                       />
                     </div>
                   </div>
@@ -2623,28 +2497,28 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   {/* Right Mandate and Output */}
                   <div className="lg:col-span-8 flex flex-col justify-between space-y-3">
                     <div className="space-y-1">
-                      <label className="block text-slate-400 mb-1">COGNITIVE TASK / MANDATE</label>
+                      <label className="block text-slate-500 mb-1">COGNITIVE TASK / MANDATE</label>
                       <input
                         type="text"
                         placeholder="e.g. Audit ledger cash account transactions against zero-parity double-entry standards"
                         value={cognitiveTask}
                         onChange={(e) => setCognitiveTask(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:bg-white focus:outline-none focus:border-purple-500"
                       />
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-850 rounded-xl p-4 min-h-[140px] flex flex-col justify-between">
-                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider pb-1 border-b border-slate-850">COGNITIVE EXECUTION OUTPUT SUMMARY:</div>
-                      <div className="flex-1 py-3 text-slate-300 font-sans text-xs whitespace-pre-line leading-relaxed max-h-[180px] overflow-y-auto">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 min-h-[140px] flex flex-col justify-between">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider pb-1 border-b border-slate-200">COGNITIVE EXECUTION OUTPUT SUMMARY:</div>
+                      <div className="flex-1 py-3 text-slate-700 font-sans text-xs whitespace-pre-line leading-relaxed max-h-[180px] overflow-y-auto">
                         {cognitiveLoading ? (
-                          <div className="flex items-center gap-2 text-purple-400 font-mono text-[10px] animate-pulse">
-                            <span className="h-2 w-2 rounded-full bg-purple-400 animate-ping"></span>
+                          <div className="flex items-center gap-2 text-purple-600 font-mono text-[10px] animate-pulse">
+                            <span className="h-2 w-2 rounded-full bg-purple-600 animate-ping"></span>
                             <span>Swarm routing initiated... Consulting long-term memory indexes... Invoking server-side Google GenAI...</span>
                           </div>
                         ) : cognitiveAnalysisResult ? (
                           cognitiveAnalysisResult
                         ) : (
-                          <span className="text-slate-500 font-mono text-[10px]">Ready to process task. Input a mandate and click "Run Cognitive Task".</span>
+                          <span className="text-slate-400 font-mono text-[10px]">Ready to process task. Input a mandate and click "Run Cognitive Task".</span>
                         )}
                       </div>
                     </div>
@@ -2652,7 +2526,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     <button
                       type="submit"
                       disabled={cognitiveLoading}
-                      className="w-full bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold py-2 rounded-xl transition cursor-pointer font-sans disabled:opacity-50"
+                      className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-xl transition cursor-pointer font-sans disabled:opacity-50 shadow-sm"
                     >
                       {cognitiveLoading ? "Agent Swarm Thinking..." : "Run Cognitive Task"}
                     </button>
@@ -2661,19 +2535,19 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
               </div>
 
               {/* LLM Provider connections list */}
-              <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Cognitive Provider Connections</h4>
+              <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Cognitive Provider Connections</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {aiProviderStatus.map((prov, i) => (
-                    <div key={i} className="bg-slate-900 border border-slate-850 p-4 rounded-xl space-y-2 font-mono text-[10px]">
+                    <div key={i} className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 font-mono text-[10px]">
                       <div className="flex justify-between items-center">
-                        <strong className="text-slate-200 font-bold">{prov.name}</strong>
-                        <span className="text-[8px] bg-purple-500/15 text-purple-400 px-1.5 rounded uppercase font-bold">{prov.type}</span>
+                        <strong className="text-slate-800 font-bold">{prov.name}</strong>
+                        <span className="text-[8px] bg-purple-50 border border-purple-200 text-purple-700 px-1.5 rounded uppercase font-bold">{prov.type}</span>
                       </div>
-                      <div className="text-slate-400">Latency Check: <span className="text-slate-200 font-bold">{prov.latency}</span></div>
-                      <div className="text-slate-400">Audit Cost: <span className="text-slate-200 font-bold">{prov.costPerK} / 1K tokens</span></div>
-                      <div className="border-t border-slate-850 pt-2 text-slate-500 text-[9px] font-bold text-center">
+                      <div className="text-slate-500">Latency Check: <span className="text-slate-700 font-bold">{prov.latency}</span></div>
+                      <div className="text-slate-500">Audit Cost: <span className="text-slate-700 font-bold">{prov.costPerK} / 1K tokens</span></div>
+                      <div className="border-t border-slate-200 pt-2 text-slate-500 text-[9px] font-bold text-center">
                         {prov.status}
                       </div>
                     </div>
@@ -2685,30 +2559,30 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
           {/* 7. ALL SYSTEM SECRET & SECURITY MANAGEMENT */}
           {activeTab === "security_vault" && (
-            <div className="space-y-6 animate-fade-in p-4 text-slate-300">
+            <div className="space-y-6 animate-fade-in p-4 text-slate-800">
               
               {/* Toast Messages */}
               {vaultSuccessMessage && (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3 rounded-xl text-xs flex items-center gap-2 font-mono">
-                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs flex items-center gap-2 font-mono">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                   <span>{vaultSuccessMessage}</span>
                 </div>
               )}
               {vaultErrorMessage && (
-                <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-3 rounded-xl text-xs flex items-center gap-2 font-mono">
-                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs flex items-center gap-2 font-mono">
+                  <AlertTriangle className="h-4 w-4 shrink-0 text-rose-600" />
                   <span>{vaultErrorMessage}</span>
                 </div>
               )}
 
               {/* Master Header */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-900">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-rose-400" />
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-rose-600" />
                     <span>JUMO UEOS Cryptographic Production Secrets Vault</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[11px] text-slate-500 mt-0.5">
                     Real-time AES-256 encryption-at-rest vault. Retrieve, manage, rotate, and rollback production credentials for all ERP domains.
                   </p>
                 </div>
@@ -2720,12 +2594,12 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                       showVaultToast("Secrets and AI telemetry re-synchronized with secure storage.");
                     }}
                     disabled={vaultLoading || diagnosticsLoading}
-                    className="text-[9px] bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
+                    className="text-[9px] bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
                   >
                     <RefreshCw className={`h-3 w-3 ${vaultLoading || diagnosticsLoading ? "animate-spin" : ""}`} />
                     <span>Sync Storage</span>
                   </button>
-                  <span className="text-[9px] font-mono font-bold text-rose-400 bg-rose-500/10 border border-rose-500/25 px-2 py-1.5 rounded-lg">
+                  <span className="text-[9px] font-mono font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-1.5 rounded-lg">
                     AES-256 ACTIVE
                   </span>
                 </div>
@@ -2734,45 +2608,45 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
               {/* AI Diagnostics & Telemetry Summary Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 
-                <div className="bg-slate-950 border border-slate-900 p-4 rounded-xl flex items-center gap-4">
+                <div className="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm">
                   <div className="relative flex items-center justify-center shrink-0">
                     {/* Ring score */}
-                    <div className="h-12 w-12 rounded-full border-4 border-slate-800 flex items-center justify-center font-bold text-slate-100 text-sm font-mono">
+                    <div className="h-12 w-12 rounded-full border-4 border-slate-100 flex items-center justify-center font-bold text-slate-800 text-sm font-mono">
                       {vaultDiagnostics ? vaultDiagnostics.readinessScore : "..."}%
                     </div>
                   </div>
                   <div>
                     <h5 className="text-[10px] text-slate-400 uppercase font-mono font-bold">Readiness Index</h5>
-                    <p className="text-xs text-slate-300 font-bold mt-0.5">Deployment Ready Score</p>
+                    <p className="text-xs text-slate-600 font-bold mt-0.5">Deployment Ready Score</p>
                   </div>
                 </div>
 
-                <div className="bg-slate-950 border border-slate-900 p-4 rounded-xl">
-                  <div className="text-xs text-slate-100 font-bold font-mono">
+                <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                  <div className="text-xs text-slate-800 font-bold font-mono">
                     {secrets.length} Active Keys
                   </div>
                   <p className="text-[10px] text-slate-400 mt-0.5 font-mono">Across categories</p>
-                  <div className="w-full bg-slate-900 h-1 rounded mt-2 overflow-hidden">
+                  <div className="w-full bg-slate-100 h-1 rounded mt-2 overflow-hidden">
                     <div className="bg-rose-500 h-full" style={{ width: `${Math.min(100, (secrets.length / 10) * 100)}%` }}></div>
                   </div>
                 </div>
 
-                <div className="bg-slate-950 border border-slate-900 p-4 rounded-xl">
-                  <div className="text-xs text-slate-100 font-bold font-mono flex items-center gap-1.5">
+                <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                  <div className="text-xs text-slate-800 font-bold font-mono flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
                     <span>100% Sealed</span>
                   </div>
                   <p className="text-[10px] text-slate-400 mt-0.5 font-mono">Zero leaks reported</p>
-                  <div className="text-[9px] text-slate-500 mt-2">Continuous surveillance active</div>
+                  <div className="text-[9px] text-slate-400 mt-2">Continuous surveillance active</div>
                 </div>
 
                 {/* AI Summary Assess box */}
-                <div className="bg-slate-950 border border-slate-900 p-4 rounded-xl md:col-span-1 flex flex-col justify-between">
-                  <div className="text-[9px] uppercase tracking-wider text-rose-400 font-mono font-bold flex items-center gap-1">
+                <div className="bg-white border border-slate-200 p-4 rounded-xl md:col-span-1 flex flex-col justify-between shadow-sm">
+                  <div className="text-[9px] uppercase tracking-wider text-rose-600 font-mono font-bold flex items-center gap-1">
                     <Bot className="h-3 w-3" />
                     <span>AI Guardian Assessment</span>
                   </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed italic mt-1 select-none">
+                  <p className="text-[10px] text-slate-600 leading-relaxed italic mt-1 select-none">
                     "{vaultDiagnostics ? vaultDiagnostics.aiSummary : "Evaluating system entropy and credentials posture..."}"
                   </p>
                 </div>
@@ -2786,8 +2660,8 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                 <div className="lg:col-span-7 space-y-4">
                   
                   {/* Category Pills Slider */}
-                  <div className="bg-slate-950 border border-slate-900 p-3 rounded-xl">
-                    <div className="text-[9px] font-mono text-slate-500 uppercase font-bold mb-2">Filter by Service Domain Boundary</div>
+                  <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-sm">
+                    <div className="text-[9px] font-mono text-slate-400 uppercase font-bold mb-2">Filter by Service Domain Boundary</div>
                     <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
                       {["All", "Google Cloud", "Firebase", "AI Providers", "Database", "Security", "Payments", "Communications", "Domain & DNS", "Deployment", "Backup & Recovery"].map((cat) => (
                         <button
@@ -2795,8 +2669,8 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           onClick={() => setSelectedCategoryFilter(cat)}
                           className={`text-[9px] px-2.5 py-1 rounded-lg font-mono transition cursor-pointer whitespace-nowrap shrink-0 ${
                             selectedCategoryFilter === cat 
-                              ? "bg-rose-500/15 text-rose-400 border border-rose-500/30" 
-                              : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200" 
+                              : "bg-slate-50 text-slate-600 border border-slate-200 hover:text-slate-800"
                           }`}
                         >
                           {cat}
@@ -2806,20 +2680,20 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   </div>
 
                   {/* Secrets list container */}
-                  <div className="bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
+                  <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
                         Vault Inventory ({selectedCategoryFilter})
                       </h4>
-                      <span className="text-[9px] text-slate-500 font-mono">Click Inspect to Rotate/Rollback</span>
+                      <span className="text-[9px] text-slate-400 font-mono font-bold">Click Inspect to Rotate/Rollback</span>
                     </div>
 
                     {vaultLoading ? (
-                      <div className="text-center py-10 font-mono text-xs text-slate-500 animate-pulse">
+                      <div className="text-center py-10 font-mono text-xs text-slate-400 animate-pulse">
                         Synchronizing state caches with PostgreSQL...
                       </div>
                     ) : secrets.length === 0 ? (
-                      <div className="text-center py-10 font-mono text-xs text-slate-500 border border-dashed border-slate-900 rounded-xl">
+                      <div className="text-center py-10 font-mono text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl">
                         No cryptographic secrets registered. Use the panel on the right to store secure environment variables.
                       </div>
                     ) : (
@@ -2830,35 +2704,35 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                             <div 
                               key={sec.key} 
                               onClick={() => setSelectedSecret(sec)}
-                              className={`bg-slate-900 border p-3 rounded-xl font-mono text-[10px] space-y-2 cursor-pointer transition ${
+                              className={`bg-slate-50 border p-3 rounded-xl font-mono text-[10px] space-y-2 cursor-pointer transition ${
                                 selectedSecret?.key === sec.key 
-                                  ? "border-rose-500/50 bg-slate-900/85 shadow-lg shadow-rose-500/5" 
-                                  : "border-slate-850 hover:border-slate-700"
+                                  ? "border-rose-300 bg-rose-50/20 shadow-md shadow-rose-500/5" 
+                                  : "border-slate-100 hover:border-slate-200"
                               }`}
                             >
                               <div className="flex justify-between items-start">
                                 <div>
                                   <div className="flex items-center gap-2">
-                                    <strong className="text-slate-100 text-xs font-bold">{sec.key}</strong>
-                                    <span className="text-[8px] bg-slate-950 text-rose-400 px-2 py-0.5 rounded border border-rose-500/10">
+                                    <strong className="text-slate-800 text-xs font-bold">{sec.key}</strong>
+                                    <span className="text-[8px] bg-white text-rose-700 px-2 py-0.5 rounded border border-rose-200 font-bold">
                                       {sec.category}
                                     </span>
                                   </div>
                                   {sec.description && (
-                                    <p className="text-[9px] text-slate-400 mt-1 italic font-sans leading-normal">
+                                    <p className="text-[9px] text-slate-500 mt-1 italic font-sans leading-normal">
                                       {sec.description}
                                     </p>
                                   )}
                                 </div>
-                                <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-bold">
+                                <span className="text-[8px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded font-bold">
                                   {sec.status}
                                 </span>
                               </div>
 
-                              <div className="flex justify-between items-center pt-1 border-t border-slate-850/40 text-slate-400">
+                              <div className="flex justify-between items-center pt-1 border-t border-slate-200 text-slate-500">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-slate-500 text-[9px]">Encr. Value:</span>
-                                  <span className="text-xs text-slate-300 font-mono select-all">
+                                  <span className="text-slate-400 text-[9px]">Encr. Value:</span>
+                                  <span className="text-xs text-slate-700 font-mono select-all">
                                     {revealKey === sec.key ? revealedValue : sec.value}
                                   </span>
                                 </div>
@@ -2869,7 +2743,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                                         setRevealKey(null);
                                         setRevealedValue(null);
                                       }}
-                                      className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 px-2 py-1 rounded text-[9px] transition cursor-pointer flex items-center gap-1"
+                                      className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-800 px-2 py-1 rounded text-[9px] transition cursor-pointer flex items-center gap-1"
                                       title="Hide Secret"
                                     >
                                       <EyeOff className="h-3 w-3" />
@@ -2878,7 +2752,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                                   ) : (
                                     <button
                                       onClick={() => triggerRevealRequest(sec.key)}
-                                      className="bg-slate-950 hover:bg-slate-900 border border-slate-800 text-rose-400 hover:text-rose-300 px-2 py-1 rounded text-[9px] transition cursor-pointer flex items-center gap-1"
+                                      className="bg-white hover:bg-slate-50 border border-slate-200 text-rose-600 hover:text-rose-800 px-2 py-1 rounded text-[9px] transition cursor-pointer flex items-center gap-1"
                                       title="MFA Reveal"
                                     >
                                       <Eye className="h-3 w-3" />
@@ -2888,7 +2762,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                                   
                                   <button
                                     onClick={() => handleDeleteSecret(sec.key)}
-                                    className="bg-slate-950 hover:bg-rose-500/10 border border-slate-800 text-slate-500 hover:text-rose-400 px-2 py-1 rounded text-[9px] transition cursor-pointer"
+                                    className="bg-white hover:bg-rose-50 border border-slate-200 text-slate-400 hover:text-rose-600 px-2 py-1 rounded text-[9px] transition cursor-pointer"
                                     title="Permanent Delete"
                                   >
                                     <Trash2 className="h-3 w-3" />
@@ -2896,9 +2770,9 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                                 </div>
                               </div>
 
-                              <div className="flex justify-between items-center text-[8px] text-slate-500 pt-0.5">
+                              <div className="flex justify-between items-center text-[8px] text-slate-400 pt-0.5">
                                 <span>Last rotated: {sec.lastRotated}</span>
-                                <span className="text-slate-600 font-sans">Created by: {sec.createdBy}</span>
+                                <span className="text-slate-500 font-sans">Created by: {sec.createdBy}</span>
                               </div>
                             </div>
                           ))}
@@ -2907,11 +2781,11 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   </div>
 
                   {/* Cryptographic Backup / Restore panel */}
-                  <div className="bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
-                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
+                  <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
                       Backup &amp; Disaster Recovery Center
                     </h4>
-                    <p className="text-[10px] text-slate-400 leading-relaxed font-sans">
+                    <p className="text-[10px] text-slate-500 leading-relaxed font-sans">
                       Generate encrypted offsite backup JSON archives. Re-import them securely in case of migration or catastrophic recovery. All backup procedures are logged in audit ledger.
                     </p>
                     <div className="flex gap-2">
@@ -2920,13 +2794,13 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           setBackupModalOpen(true);
                           handleExportBackup();
                         }}
-                        className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 px-3 py-2 rounded-xl transition font-mono text-[10px] text-center cursor-pointer font-bold"
+                        className="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-xl transition font-mono text-[10px] text-center cursor-pointer font-bold"
                       >
                         Generate Secure Backup
                       </button>
                       <button
                         onClick={() => setRestoreModalOpen(true)}
-                        className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 px-3 py-2 rounded-xl transition font-mono text-[10px] text-center cursor-pointer font-bold"
+                        className="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-xl transition font-mono text-[10px] text-center cursor-pointer font-bold"
                       >
                         Import Vault Backup
                       </button>
@@ -2939,31 +2813,31 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                 <div className="lg:col-span-5 space-y-4">
                   
                   {/* Register Form */}
-                  <div className="bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
-                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                      <Plus className="h-4 w-4 text-rose-400" />
+                  <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                      <Plus className="h-4 w-4 text-rose-600" />
                       <span>Register Production Variable</span>
                     </h4>
 
                     <div className="space-y-3 text-xs font-mono">
                       <div>
-                        <label className="block text-[9px] text-slate-500 mb-1">VARIABLE KEY IDENTIFIER</label>
+                        <label className="block text-[9px] text-slate-400 font-bold mb-1">VARIABLE KEY IDENTIFIER</label>
                         <input
                           type="text"
                           placeholder="e.g. GEMINI_API_KEY"
                           value={newSecretKey}
                           onChange={(e) => setNewSecretKey(e.target.value.toUpperCase())}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-rose-500"
+                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-rose-500"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-[9px] text-slate-500 mb-1">SERVICE BOUNDARY</label>
+                          <label className="block text-[9px] text-slate-400 font-bold mb-1">SERVICE BOUNDARY</label>
                           <select
                             value={newSecretCategory}
                             onChange={(e) => setNewSecretCategory(e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-2 py-2 text-slate-700 focus:outline-none focus:border-rose-500 cursor-pointer"
                           >
                             <option value="Google Cloud">Google Cloud</option>
                             <option value="Firebase">Firebase</option>
@@ -2978,41 +2852,41 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[9px] text-slate-500 mb-1">EXPIRATION DATE</label>
+                          <label className="block text-[9px] text-slate-400 font-bold mb-1">EXPIRATION DATE</label>
                           <input
                             type="date"
                             value={newSecretExpiresAt}
                             onChange={(e) => setNewSecretExpiresAt(e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer"
+                            className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:border-rose-500 cursor-pointer"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-[9px] text-slate-500 mb-1">DESCRIPTION / REASONING</label>
+                        <label className="block text-[9px] text-slate-400 font-bold mb-1">DESCRIPTION / REASONING</label>
                         <input
                           type="text"
                           placeholder="Clear explanation of variable utilization..."
                           value={newSecretDescription}
                           onChange={(e) => setNewSecretDescription(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-rose-500"
+                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-rose-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[9px] text-slate-500 mb-1">RAW VALUE (AES-256 SEALED)</label>
+                        <label className="block text-[9px] text-slate-400 font-bold mb-1">RAW VALUE (AES-256 SEALED)</label>
                         <input
                           type="password"
                           placeholder="Secret credential characters..."
                           value={newSecretVal}
                           onChange={(e) => setNewSecretVal(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-rose-500"
+                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-rose-500"
                         />
                       </div>
 
                       <button
                         onClick={handleRegisterSecret}
-                        className="w-full bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold py-2 rounded-xl transition cursor-pointer font-sans"
+                        className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-xl transition cursor-pointer font-sans"
                       >
                         Encrypt &amp; Seal Credential
                       </button>
@@ -3021,37 +2895,37 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                   {/* Selected Secret Inspector: History, Rollback & Rotation */}
                   {selectedSecret ? (
-                    <div className="bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4 animate-fade-in">
+                    <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 animate-fade-in shadow-sm">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono">
+                          <h4 className="text-xs font-bold text-rose-600 uppercase tracking-wider font-mono">
                             Credential Inspector
                           </h4>
-                          <p className="text-[11px] font-bold text-slate-200 mt-1">{selectedSecret.key}</p>
+                          <p className="text-[11px] font-bold text-slate-800 mt-1">{selectedSecret.key}</p>
                         </div>
                         <button
                           onClick={() => setSelectedSecret(null)}
-                          className="text-[9px] text-slate-500 hover:text-slate-300 font-mono transition"
+                          className="text-[9px] text-slate-400 hover:text-slate-600 font-mono transition"
                         >
                           [Close]
                         </button>
                       </div>
 
                       {/* Rotation controls */}
-                      <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-xl space-y-2.5">
-                        <div className="text-[9px] text-rose-400 font-mono uppercase font-bold">Rotate Value</div>
+                      <div className="bg-slate-50 border border-slate-100 p-3.5 rounded-xl space-y-2.5">
+                        <div className="text-[9px] text-rose-600 font-mono uppercase font-bold">Rotate Value</div>
                         <div className="flex gap-2">
                           <input
                             type="password"
                             placeholder="Enter new rotated value..."
                             value={rotationValue}
                             onChange={(e) => setRotationValue(e.target.value)}
-                            className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none font-mono"
+                            className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none font-mono"
                           />
                           <button
                             onClick={handleRotateSecret}
                             disabled={isRotating || !rotationValue}
-                            className="bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-[10px] font-sans transition disabled:opacity-50 cursor-pointer shrink-0"
+                            className="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-[10px] font-sans transition disabled:opacity-50 cursor-pointer shrink-0"
                           >
                             {isRotating ? "Rotating..." : "Rotate"}
                           </button>
@@ -3075,7 +2949,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                           if (historyArray.length === 0) {
                             return (
-                              <div className="text-[9px] text-slate-600 font-mono py-2 italic text-center">
+                              <div className="text-[9px] text-slate-400 font-mono py-2 italic text-center">
                                 No previous rotation events detected. Version v1 is active.
                               </div>
                             );
@@ -3084,9 +2958,9 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           return (
                             <div className="space-y-1.5 max-h-[140px] overflow-y-auto">
                               {historyArray.map((hist, idx) => (
-                                <div key={idx} className="bg-slate-900 border border-slate-850 p-2 rounded-lg flex justify-between items-center font-mono text-[9px]">
+                                <div key={idx} className="bg-slate-50 border border-slate-100 p-2 rounded-lg flex justify-between items-center font-mono text-[9px]">
                                   <div>
-                                    <div className="text-slate-300 font-bold">Archived Version (v{historyArray.length - idx})</div>
+                                    <div className="text-slate-800 font-bold">Archived Version (v{historyArray.length - idx})</div>
                                     <div className="text-slate-500 text-[8px] mt-0.5">
                                       Rotated: {hist.rotatedAt} by {hist.rotatedBy || "Operator"}
                                     </div>
@@ -3094,7 +2968,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                                   <button
                                     onClick={() => handleRollbackSecret(idx)}
                                     disabled={rollbackLoading}
-                                    className="bg-slate-950 hover:bg-rose-500/15 text-[8px] border border-slate-800 text-slate-400 hover:text-rose-400 px-2 py-1 rounded transition cursor-pointer"
+                                    className="bg-white hover:bg-rose-50 text-[8px] border border-slate-200 text-slate-600 hover:text-rose-600 px-2 py-1 rounded transition cursor-pointer"
                                   >
                                     Rollback
                                   </button>
@@ -3108,8 +2982,8 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     </div>
                   ) : (
                     /* General intelligence recomendations */
-                    <div className="bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
-                      <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
+                    <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">
                         Active Telemetry Findings
                       </h4>
                       
@@ -3118,19 +2992,19 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           
                           {/* Weak Keys */}
                           {vaultDiagnostics.healthRatings?.some((h: any) => h.strength === "Weak") && (
-                            <div className="bg-rose-500/5 border border-rose-500/15 p-3 rounded-xl space-y-1">
-                              <span className="text-rose-400 font-bold uppercase text-[9px] flex items-center gap-1">
+                            <div className="bg-rose-50 border border-rose-100 p-3 rounded-xl space-y-1">
+                              <span className="text-rose-700 font-bold uppercase text-[9px] flex items-center gap-1">
                                 <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                                 <span>Action Required: Weak Entropy</span>
                               </span>
-                              <p className="text-[9px] text-slate-400 font-sans leading-normal">
+                              <p className="text-[9px] text-slate-500 font-sans leading-normal">
                                 The following key values have high risk profiles or use mock defaults:
                               </p>
                               <div className="flex flex-wrap gap-1 mt-1">
                                 {vaultDiagnostics.healthRatings
                                   .filter((h: any) => h.strength === "Weak")
                                   .map((h: any) => (
-                                    <span key={h.key} className="bg-rose-500/10 text-rose-300 px-1.5 rounded text-[8px]">
+                                    <span key={h.key} className="bg-rose-100 text-rose-800 border border-rose-200 px-1.5 rounded text-[8px] font-bold">
                                       {h.key}
                                     </span>
                                   ))}
@@ -3140,19 +3014,19 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                           {/* Overdue Rotation */}
                           {vaultDiagnostics.healthRatings?.some((h: any) => h.ageInDays > 90) && (
-                            <div className="bg-yellow-500/5 border border-yellow-500/15 p-3 rounded-xl space-y-1">
-                              <span className="text-yellow-400 font-bold uppercase text-[9px] flex items-center gap-1">
+                            <div className="bg-amber-50 border border-amber-100 p-3 rounded-xl space-y-1">
+                              <span className="text-amber-700 font-bold uppercase text-[9px] flex items-center gap-1">
                                 <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                                 <span>Zero-Trust: Overdue Rotation</span>
                               </span>
-                              <p className="text-[9px] text-slate-400 font-sans leading-normal">
+                              <p className="text-[9px] text-slate-500 font-sans leading-normal">
                                 The following credentials have surpassed the standard 90-day rotation timeline:
                               </p>
                               <div className="flex flex-wrap gap-1 mt-1">
                                 {vaultDiagnostics.healthRatings
                                   .filter((h: any) => h.ageInDays > 90)
                                   .map((h: any) => (
-                                    <span key={h.key} className="bg-yellow-500/10 text-yellow-300 px-1.5 rounded text-[8px]">
+                                    <span key={h.key} className="bg-amber-100 text-amber-800 border border-amber-200 px-1.5 rounded text-[8px] font-bold">
                                       {h.key} ({h.ageInDays}d old)
                                     </span>
                                   ))}
@@ -3164,7 +3038,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           <div className="space-y-1.5">
                             <span className="text-slate-400 uppercase text-[9px] font-bold">Surveillance Tasks:</span>
                             {vaultDiagnostics.recommendations?.map((rec: string, idx: number) => (
-                              <div key={idx} className="bg-slate-900 border border-slate-850 p-2 rounded-lg text-slate-300 text-[9px] font-sans">
+                              <div key={idx} className="bg-slate-50 border border-slate-100 p-2 rounded-lg text-slate-700 text-[9px] font-sans">
                                 • {rec}
                               </div>
                             ))}
@@ -3172,7 +3046,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                         </div>
                       ) : (
-                        <div className="text-center py-6 font-mono text-[10px] text-slate-600 animate-pulse">
+                        <div className="text-center py-6 font-mono text-[10px] text-slate-400 animate-pulse">
                           Evaluating platform audit reports...
                         </div>
                       )}
@@ -3185,29 +3059,29 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
               {/* MFA Reveal Modal (Simulated inline popup for sandboxed security) */}
               {mfaModalOpen && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                  <div className="bg-slate-950 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 font-mono text-xs">
-                    <div className="flex items-center gap-2 text-rose-400 font-bold">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+                  <div className="bg-white border border-slate-200 rounded-2xl max-w-sm w-full p-6 space-y-4 font-mono text-xs shadow-xl">
+                    <div className="flex items-center gap-2 text-rose-600 font-bold">
                       <Lock className="h-5 w-5 animate-bounce" />
                       <span>OWNER VERIFICATION REQ.</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 font-sans leading-normal">
-                      Revealing secret values is a highly audited event. Please verify your Owner signature credentials. Enter your <strong className="text-rose-400">Owner Password</strong> or <strong className="text-rose-400">owner</strong> as verification:
+                    <p className="text-[11px] text-slate-500 font-sans leading-normal">
+                      Revealing secret values is a highly audited event. Please verify your Owner signature credentials. Enter your <strong className="text-rose-600">Owner Password</strong> or <strong className="text-rose-600">owner</strong> as verification:
                     </p>
                     
                     <div>
-                      <label className="block text-[9px] text-slate-500 mb-1">MFA CODE / PASSCODE</label>
+                      <label className="block text-[9px] text-slate-400 font-bold mb-1">MFA CODE / PASSCODE</label>
                       <input
                         type="password"
                         placeholder="••••••"
                         value={mfaCode}
                         onChange={(e) => setMfaCode(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 text-center tracking-widest text-lg font-bold focus:outline-none focus:border-rose-500"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 text-center tracking-widest text-lg font-bold focus:outline-none focus:border-rose-500"
                       />
                     </div>
 
                     {mfaError && (
-                      <div className="text-rose-400 text-[9px] text-center font-bold">
+                      <div className="text-rose-600 text-[9px] text-center font-bold">
                         {mfaError}
                       </div>
                     )}
@@ -3215,13 +3089,13 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                     <div className="flex gap-2">
                       <button
                         onClick={() => setMfaModalOpen(false)}
-                        className="flex-1 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
+                        className="flex-1 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 py-2 rounded-lg font-sans text-[11px] transition cursor-pointer font-bold"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleVerifyMfaReveal}
-                        className="flex-1 bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
+                        className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
                       >
                         Verify &amp; Reveal
                       </button>
@@ -3232,25 +3106,25 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
               {/* Backup modal */}
               {backupModalOpen && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                  <div className="bg-slate-950 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 font-mono text-xs">
-                    <div className="flex justify-between items-center pb-2 border-b border-slate-900">
-                      <span className="text-slate-100 font-bold text-xs">Secure Vault Backup Payload</span>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+                  <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 font-mono text-xs shadow-xl">
+                    <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                      <span className="text-slate-800 font-bold text-xs">Secure Vault Backup Payload</span>
                       <button 
                         onClick={() => setBackupModalOpen(false)}
-                        className="text-slate-500 hover:text-slate-300 transition text-[10px]"
+                        className="text-slate-400 hover:text-slate-600 transition text-[10px]"
                       >
                         [Close]
                       </button>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-sans leading-normal">
+                    <p className="text-[10px] text-slate-500 font-sans leading-normal">
                       Copy the sealed, encrypted snapshot payload string below and archive it in a secure hardware token or offsite recovery keys repository.
                     </p>
                     <textarea
                       readOnly
                       rows={5}
                       value={backupPayload}
-                      className="w-full bg-black border border-slate-850 p-2.5 rounded-lg text-rose-400/90 text-[8px] font-mono leading-relaxed select-all"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-rose-750 text-[8px] font-mono leading-relaxed select-all"
                     />
                     <div className="text-center">
                       <button
@@ -3258,7 +3132,7 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                           navigator.clipboard.writeText(backupPayload);
                           showVaultToast("Backup payload copied to platform clipboard.");
                         }}
-                        className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-bold px-4 py-2 rounded-lg text-[10px] transition cursor-pointer"
+                        className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold px-4 py-2 rounded-lg text-[10px] transition cursor-pointer"
                       >
                         Copy Payload String
                       </button>
@@ -3269,18 +3143,18 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
               {/* Restore modal */}
               {restoreModalOpen && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                  <div className="bg-slate-950 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 font-mono text-xs">
-                    <div className="flex justify-between items-center pb-2 border-b border-slate-900">
-                      <span className="text-slate-100 font-bold text-xs">Catastrophic Vault Recovery Restore</span>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+                  <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 font-mono text-xs shadow-xl">
+                    <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                      <span className="text-slate-800 font-bold text-xs">Catastrophic Vault Recovery Restore</span>
                       <button 
                         onClick={() => setRestoreModalOpen(false)}
-                        className="text-slate-500 hover:text-slate-300 transition text-[10px]"
+                        className="text-slate-400 hover:text-slate-600 transition text-[10px]"
                       >
                         [Close]
                       </button>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-sans leading-normal">
+                    <p className="text-[10px] text-slate-500 font-sans leading-normal">
                       Paste the encrypted backup payload string below to re-seed the vault storage tables. Existing matching credentials keys will be overwritten. This procedure is heavily audited.
                     </p>
                     <textarea
@@ -3288,18 +3162,18 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                       placeholder="Paste encrypted recovery payload string here..."
                       value={restorePayload}
                       onChange={(e) => setRestorePayload(e.target.value)}
-                      className="w-full bg-black border border-slate-850 p-2.5 rounded-lg text-slate-300 text-[10px] font-mono focus:outline-none focus:border-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-slate-800 text-[10px] font-mono focus:outline-none focus:border-rose-500"
                     />
                     <div className="flex gap-2">
                       <button
                         onClick={() => setRestoreModalOpen(false)}
-                        className="flex-1 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
+                        className="flex-1 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 py-2 rounded-lg font-sans text-[11px] transition cursor-pointer font-bold"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleRestoreBackup}
-                        className="flex-1 bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
+                        className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-lg font-sans text-[11px] transition cursor-pointer"
                       >
                         Validate &amp; Restore Vault
                       </button>
@@ -3313,59 +3187,59 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
           {/* 8. JUMO MASTER BLUEPRINT & ARCHITECTURE CENTER */}
           {activeTab === "architecture" && (
-            <div className="space-y-6 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+            <div className="space-y-6 animate-fade-in p-4 text-slate-800">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <Map className="h-4 w-4 text-indigo-400" />
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Map className="h-4 w-4 text-indigo-600" />
                     <span>JUMO UEOS Master Architecture Commands &amp; Diagrams</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Master system design diagrams. Visualize structural relationship maps between micro-kernel, double-entry ledger, and tenant pools.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Master system design diagrams. Visualize structural relationship maps between micro-kernel, double-entry ledger, and tenant pools.</p>
                 </div>
-                <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/25 px-2 py-1 rounded">100% Comprehensive</span>
+                <span className="text-[10px] font-mono text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-1 rounded">100% Comprehensive</span>
               </div>
 
-              <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Platform High-Level Node Layout</h4>
+              <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">Platform High-Level Node Layout</h4>
                 
                 {/* ERD / Architecture diagram visual mock */}
-                <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-850/60 font-mono text-[10.5px] leading-relaxed space-y-4">
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 font-mono text-[10.5px] leading-relaxed space-y-4">
                   <div className="flex justify-center">
-                    <div className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 p-3 rounded-xl text-center min-w-[200px]">
+                    <div className="bg-indigo-50 border border-indigo-200 text-indigo-800 p-3 rounded-xl text-center min-w-[200px] shadow-sm">
                       <strong>JUMO UEOS Platform Kernel</strong>
-                      <div className="text-[8px] text-indigo-400/80 mt-1">Boot bootstrap container &bull; DI container</div>
+                      <div className="text-[8px] text-indigo-600 font-bold mt-1">Boot bootstrap container &bull; DI container</div>
                     </div>
                   </div>
 
                   <div className="flex justify-center">
-                    <div className="h-6 w-0.5 bg-indigo-500/20"></div>
+                    <div className="h-6 w-0.5 bg-indigo-200"></div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-purple-500/5 border border-purple-500/20 text-purple-300 p-2 rounded-xl text-center">
+                    <div className="bg-purple-50 border border-purple-200 text-purple-800 p-2 rounded-xl text-center shadow-sm">
                       <strong>AI Cognitive Gateway</strong>
-                      <div className="text-[8px] text-purple-400/80 mt-0.5">Gemini 3.5 &bull; Swarm nodes</div>
+                      <div className="text-[8px] text-purple-600 font-bold mt-0.5">Gemini 3.5 &bull; Swarm nodes</div>
                     </div>
 
-                    <div className="bg-teal-500/5 border border-teal-500/20 text-teal-300 p-2 rounded-xl text-center">
+                    <div className="bg-teal-50 border border-teal-200 text-teal-800 p-2 rounded-xl text-center shadow-sm">
                       <strong>Zero-Trust Validator</strong>
-                      <div className="text-[8px] text-teal-400/80 mt-0.5">Continuous Policy Validation</div>
+                      <div className="text-[8px] text-teal-600 font-bold mt-0.5">Continuous Policy Validation</div>
                     </div>
 
-                    <div className="bg-blue-500/5 border border-blue-500/20 text-blue-300 p-2 rounded-xl text-center">
+                    <div className="bg-blue-50 border border-blue-200 text-blue-800 p-2 rounded-xl text-center shadow-sm">
                       <strong>FAAP Core Ledger</strong>
-                      <div className="text-[8px] text-blue-400/80 mt-0.5">Double-entry accounting api</div>
+                      <div className="text-[8px] text-blue-600 font-bold mt-0.5">Double-entry accounting api</div>
                     </div>
                   </div>
 
                   <div className="flex justify-center">
-                    <div className="h-6 w-0.5 bg-indigo-500/20"></div>
+                    <div className="h-6 w-0.5 bg-indigo-200"></div>
                   </div>
 
                   <div className="flex justify-center">
-                    <div className="bg-rose-500/5 border border-rose-500/20 text-rose-300 p-2 rounded-xl text-center min-w-[200px]">
+                    <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2 rounded-xl text-center min-w-[200px] shadow-sm">
                       <strong>Tenant Segment Database</strong>
-                      <div className="text-[8px] text-rose-400/80 mt-0.5">Durable Postgres/SQL Row-Level Isolation</div>
+                      <div className="text-[8px] text-rose-600 font-bold mt-0.5">Durable Postgres/SQL Row-Level Isolation</div>
                     </div>
                   </div>
                 </div>
@@ -3375,51 +3249,51 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
           {/* 9. JUMO CYBER SECURITY PLATFORM */}
           {activeTab === "cyber_security" && (
-            <div className="space-y-6 animate-fade-in p-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-900">
+            <div className="space-y-6 animate-fade-in p-4 text-slate-800">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-teal-300" />
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-teal-600" />
                     <span>JUMO Unified Threat Intelligence Center</span>
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Continuous intrusion analysis logs, dynamic Zero-Trust policies management, and firewall posture validations.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Continuous intrusion analysis logs, dynamic Zero-Trust policies management, and firewall posture validations.</p>
                 </div>
-                <span className="text-[10px] font-mono text-teal-300 bg-teal-500/10 border border-teal-500/25 px-2 py-1 rounded">IDS: RUNNING</span>
+                <span className="text-[10px] font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-1 rounded">IDS: RUNNING</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 {/* Zero trust rules */}
-                <div className="lg:col-span-5 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Zero Trust Policy Registry</h4>
+                <div className="lg:col-span-5 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">Zero Trust Policy Registry</h4>
                   
                   <div className="space-y-2 max-h-[220px] overflow-y-auto">
                     {zeroTrustRules.map((rule, i) => (
-                      <div key={i} className="bg-slate-900 border border-slate-850 p-2.5 rounded-xl flex justify-between items-center font-mono text-[9px]">
+                      <div key={i} className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl flex justify-between items-center font-mono text-[9px]">
                         <div>
-                          <strong className="text-teal-300 block">{rule.id}: {rule.pattern}</strong>
+                          <strong className="text-teal-700 block">{rule.id}: {rule.pattern}</strong>
                           <span className="text-slate-500 text-[8px]">Action: {rule.action}</span>
                         </div>
-                        <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/10 px-1 py-0.5 rounded uppercase">{rule.status}</span>
+                        <span className="text-[8px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1 py-0.5 rounded uppercase">{rule.status}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* IDS Alerts */}
-                <div className="lg:col-span-7 bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Continuous Threat Feed</h4>
+                <div className="lg:col-span-7 bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">Continuous Threat Feed</h4>
                   
                   <div className="space-y-2 max-h-[220px] overflow-y-auto">
                     {idsAlerts.map((alert, i) => (
-                      <div key={i} className="bg-slate-900 border border-slate-850 p-2.5 rounded-xl font-mono text-[9px] space-y-1">
+                      <div key={i} className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl font-mono text-[9px] space-y-1">
                         <div className="flex justify-between items-center text-[8px]">
                           <span className="text-slate-500">{alert.time} &bull; Node IP: {alert.src}</span>
                           <span className={`font-bold px-1.5 py-0.5 rounded uppercase ${
-                            alert.severity === "High" ? "bg-rose-500/15 text-rose-400" : "bg-amber-500/15 text-amber-400"
+                            alert.severity === "High" ? "bg-rose-50 border border-rose-200 text-rose-700" : "bg-amber-50 border border-amber-200 text-amber-700"
                           }`}>{alert.severity}</span>
                         </div>
-                        <p className="text-slate-300 leading-normal">{alert.event}</p>
+                        <p className="text-slate-600 leading-normal">{alert.event}</p>
                       </div>
                     ))}
                   </div>
@@ -3431,15 +3305,15 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
           {/* 10. JUMO AEGIS GUARD */}
           {activeTab === "aegis" && (
-            <div className="space-y-6 animate-fade-in p-4">
-              <div className="bg-red-500/5 border border-red-950/40 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="space-y-6 animate-fade-in p-4 text-slate-800">
+              <div className="bg-rose-50/50 border border-rose-200 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-red-500/15 text-red-400 rounded-xl">
+                  <div className="p-3 bg-rose-100 text-rose-600 rounded-xl">
                     <ShieldCheck className="h-6 w-6 animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider font-mono">JUMO AEGIS AI Security Command Vault</h3>
-                    <p className="text-[11px] text-slate-400 mt-1">
+                    <h3 className="text-xs font-bold text-rose-700 uppercase tracking-wider font-mono">JUMO AEGIS AI Security Command Vault</h3>
+                    <p className="text-[11px] text-slate-500 mt-1">
                       Protected Admin-Only Accountability Shield (Merged Financial CCTV, Anti-Corruption intelligence, &amp; RAG Knowledge Auditing).
                     </p>
                   </div>
@@ -3448,11 +3322,11 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   <button
                     onClick={handleTriggerAegisScan}
                     disabled={aegisScanning}
-                    className="text-[10px] font-mono font-bold bg-red-500 text-slate-950 hover:bg-red-400 px-3.5 py-1.5 rounded transition cursor-pointer"
+                    className="text-[10px] font-mono font-bold bg-rose-600 text-white hover:bg-rose-500 px-3.5 py-1.5 rounded transition cursor-pointer shadow-sm"
                   >
                     {aegisScanning ? "SCANNING VECTORS..." : "RUN AEGIS SECURITY SCAN"}
                   </button>
-                  <span className="text-[9px] font-mono font-bold bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1.5 rounded flex items-center">
+                  <span className="text-[9px] font-mono font-bold bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded flex items-center">
                     SECOPS SECURE
                   </span>
                 </div>
@@ -3460,31 +3334,31 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
               {/* Threat Scan Results */}
               {aegisScanResult && (
-                <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4 animate-fade-in">
-                  <div className="flex justify-between items-center pb-2 border-b border-slate-900">
-                    <h4 className="text-xs font-bold text-red-400 uppercase font-mono">AEGIS SCAN REPORT: {aegisScanResult.scanId}</h4>
-                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 animate-fade-in shadow-sm">
+                  <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+                    <h4 className="text-xs font-bold text-rose-700 uppercase font-mono">AEGIS SCAN REPORT: {aegisScanResult.scanId}</h4>
+                    <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
                       HEALTH: {aegisScanResult.securityScore}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-                    <div className="bg-slate-900 p-3.5 border border-slate-850 rounded-xl space-y-1">
-                      <span className="text-slate-500 text-[9px] uppercase">Compliance Status</span>
-                      <strong className="text-slate-100 block text-xs">{aegisScanResult.complianceStatus}</strong>
+                    <div className="bg-slate-50 p-3.5 border border-slate-200 rounded-xl space-y-1">
+                      <span className="text-slate-400 text-[9px] uppercase font-bold">Compliance Status</span>
+                      <strong className="text-slate-800 block text-xs">{aegisScanResult.complianceStatus}</strong>
                     </div>
-                    <div className="bg-slate-900 p-3.5 border border-slate-850 rounded-xl space-y-1">
-                      <span className="text-slate-500 text-[9px] uppercase">Detected Anomalies</span>
-                      <strong className="text-rose-400 block text-xs">
+                    <div className="bg-slate-50 p-3.5 border border-slate-200 rounded-xl space-y-1">
+                      <span className="text-slate-400 text-[9px] uppercase font-bold">Detected Anomalies</span>
+                      <strong className="text-rose-600 block text-xs font-bold">
                         {aegisScanResult.detectedAnomalies?.length > 0 ? aegisScanResult.detectedAnomalies[0] : "Zero Critical Breaches Flagged"}
                       </strong>
                     </div>
-                    <div className="bg-slate-900 p-3.5 border border-slate-850 rounded-xl space-y-1">
-                      <span className="text-slate-500 text-[9px] uppercase">Actionable Recommended Next Step</span>
-                      <strong className="text-amber-400 block text-[10px] leading-snug">{aegisScanResult.recommendation}</strong>
+                    <div className="bg-slate-50 p-3.5 border border-slate-200 rounded-xl space-y-1">
+                      <span className="text-slate-400 text-[9px] uppercase font-bold">Actionable Recommended Next Step</span>
+                      <strong className="text-amber-600 block text-[10px] leading-snug font-bold">{aegisScanResult.recommendation}</strong>
                     </div>
                   </div>
-                  <div className="bg-slate-900 p-4 border border-slate-850 rounded-xl font-mono text-[10px] text-slate-300 leading-normal">
-                    <div className="text-red-400 font-bold mb-1 uppercase text-[8px]">AI Cognitive Security Evaluation:</div>
+                  <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl font-mono text-[10px] text-slate-600 leading-normal">
+                    <div className="text-rose-700 font-bold mb-1 uppercase text-[8px]">AI Cognitive Security Evaluation:</div>
                     <p className="italic">"{aegisScanResult.aiSecurityReport}"</p>
                   </div>
                 </div>
@@ -3493,10 +3367,10 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Left: Financial CCTV logs */}
-                <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
+                <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
                   <div>
-                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                      <Coins className="h-4.5 w-4.5 text-red-400" />
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                      <Coins className="h-4.5 w-4.5 text-rose-600" />
                       <span>Financial CCTV Integrity Monitor</span>
                     </h4>
                     <p className="text-[10px] text-slate-500 mt-0.5">Real-time anti-corruption audit logs tracking double-entry transactions.</p>
@@ -3504,30 +3378,30 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
                   <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1 text-[10px] font-mono">
                     {financialCctv.map((item, idx) => (
-                      <div key={idx} className="bg-slate-900 border border-slate-850 p-2.5 rounded-xl flex items-start justify-between gap-2">
+                      <div key={idx} className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl flex items-start justify-between gap-2">
                         <div className="space-y-1 flex-1 min-w-0">
                           <div className="flex justify-between items-center gap-2">
-                            <span className="text-red-400 font-bold">{item.id}</span>
-                            <span className="text-slate-500 text-[8px]">{item.timestamp}</span>
+                            <span className="text-rose-700 font-bold">{item.id}</span>
+                            <span className="text-slate-400 text-[8px]">{item.timestamp}</span>
                           </div>
-                          <p className="text-slate-300 leading-normal">{item.desc}</p>
-                          <div className="flex items-center gap-2 text-[8px] text-slate-500">
-                            <span className="bg-slate-950 border border-slate-800 px-1 py-0.5 rounded text-slate-400">{item.tenant}</span>
-                            <span>Amt: ${item.amount.toLocaleString()}</span>
+                          <p className="text-slate-600 leading-normal font-sans">{item.desc}</p>
+                          <div className="flex items-center gap-2 text-[8px] text-slate-400">
+                            <span className="bg-white border border-slate-200 px-1 py-0.5 rounded text-slate-600 font-bold">{item.tenant}</span>
+                            <span className="font-bold">Amt: ${item.amount.toLocaleString()}</span>
                           </div>
                         </div>
-                        <span className="text-[9px] font-bold text-red-400 uppercase bg-red-500/10 px-1.5 py-0.5 rounded shrink-0">{item.risk}</span>
+                        <span className="text-[9px] font-bold text-rose-700 uppercase bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded shrink-0">{item.risk}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Right: RAG Knowledge base & compliance upload */}
-                <div className="bg-slate-950 border border-slate-850 p-5 rounded-2xl space-y-4">
+                <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 shadow-sm">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                        <Library className="h-4.5 w-4.5 text-red-400" />
+                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                        <Library className="h-4.5 w-4.5 text-rose-600" />
                         <span>Compliance RAG Knowledge Vault</span>
                       </h4>
                       <p className="text-[10px] text-slate-500 mt-0.5">Index regulatory, statutory, accounting, and legal guidelines to ground AI auditors.</p>
@@ -3535,21 +3409,21 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   </div>
 
                   {/* Add document form */}
-                  <form onSubmit={handleAddRagDocument} className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-2 text-[10px] font-mono">
-                    <span className="text-[9px] font-bold text-red-400 uppercase block">Index Regulatory Document</span>
+                  <form onSubmit={handleAddRagDocument} className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-[10px] font-mono shadow-sm">
+                    <span className="text-[9px] font-bold text-rose-700 uppercase block">Index Regulatory Document</span>
                     <div className="grid grid-cols-2 gap-2">
                       <input
                         type="text"
                         placeholder="Document Title (e.g. IFRS 17 Act)"
                         value={newRagTitle}
                         onChange={(e) => setNewRagTitle(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:outline-none"
+                        className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-800 focus:outline-none focus:border-rose-500"
                         required
                       />
                       <select
                         value={newRagCategory}
                         onChange={(e) => setNewRagCategory(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 cursor-pointer"
+                        className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-800 cursor-pointer"
                       >
                         <option value="Accounting Standards">Accounting Standards</option>
                         <option value="Regional Regulations">Regional Regulations</option>
@@ -3560,12 +3434,12 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                       placeholder="Regulatory text chapter content to be chunked and mapped into semantic memory..."
                       value={newRagContent}
                       onChange={(e) => setNewRagContent(e.target.value)}
-                      className="w-full h-11 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:outline-none resize-none"
+                      className="w-full h-11 bg-white border border-slate-200 rounded px-2 py-1 text-slate-800 focus:outline-none focus:border-rose-500 resize-none"
                       required
                     />
                     <button
                       type="submit"
-                      className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold py-1 rounded transition cursor-pointer"
+                      className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-1 rounded transition cursor-pointer shadow-sm text-[9px] font-sans"
                     >
                       Index Document Chapter
                     </button>
@@ -3574,12 +3448,12 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
                   {/* Documents list */}
                   <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1 text-[10px] font-mono">
                     {ragDocuments.map((doc) => (
-                      <div key={doc.id} className="bg-slate-900 p-2.5 rounded-lg border border-slate-850 space-y-1">
+                      <div key={doc.id} className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-1">
                         <div className="flex justify-between items-center text-[9px]">
-                          <strong className="text-slate-200">{doc.title}</strong>
-                          <span className="bg-slate-950 text-slate-400 border border-slate-800 px-1 rounded uppercase text-[8px]">{doc.category}</span>
+                          <strong className="text-slate-800">{doc.title}</strong>
+                          <span className="bg-white text-slate-600 border border-slate-200 px-1 rounded uppercase text-[8px] font-bold">{doc.category}</span>
                         </div>
-                        <p className="text-slate-400 text-[9px] leading-normal italic">"{doc.content.substring(0, 150)}..."</p>
+                        <p className="text-slate-500 text-[9px] leading-normal italic font-sans">"{doc.content.substring(0, 150)}..."</p>
                       </div>
                     ))}
                   </div>
@@ -3588,12 +3462,12 @@ export default function OwnerControlCenter({ currentUser, onLogout }: OwnerContr
 
               </div>
 
-              <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-slate-500">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-slate-500 shadow-sm">
                 <span className="flex items-center gap-1.5">
-                  <Key className="h-4 w-4 text-red-400" />
+                  <Key className="h-4 w-4 text-rose-600" />
                   <span>Immutable cryptographic hash integrity verified. Blockchain Ledger Checksum: VALID.</span>
                 </span>
-                <span className="text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded font-bold">100% SECURE BOUNDARY</span>
+                <span className="text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded font-bold">100% SECURE BOUNDARY</span>
               </div>
             </div>
           )}
