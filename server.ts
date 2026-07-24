@@ -727,6 +727,13 @@ async function startServer() {
   });
 
   // Health and Platform Monitoring Endpoints with Active Telemetry & Diagnostics (Hardened)
+  app.get("/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      platform: "JUMO UEOS-DHP"
+    });
+  });
+
   app.get("/api/health", async (req, res) => {
     const memory = process.memoryUsage();
     const upTime = process.uptime();
