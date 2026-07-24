@@ -36,15 +36,12 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 1. Platform / Kernel status
       try {
-        const res = await jumoFetch("/api/v1/platform/status");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.version) {
-            setKernelStatus({
-              version: data.version,
-              badge: `v${data.version} ${data.status ? data.status.toUpperCase() : "ONLINE"}`
-            });
-          }
+        const data = await jumoFetch("/api/v1/platform/status");
+        if (data && data.version) {
+          setKernelStatus({
+            version: data.version,
+            badge: `v${data.version} ${data.status ? data.status.toUpperCase() : "ONLINE"}`
+          });
         }
       } catch (e) {
         console.warn("Status fetch error (platform):", e);
@@ -52,14 +49,11 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 2. Workflow status
       try {
-        const res = await jumoFetch("/api/v1/workflow/status");
-        if (res.ok) {
-          const data = await res.json();
-          if (typeof data.activeCount === "number") {
-            setWorkflowStatus({
-              badge: `${data.activeCount} ACTIVE`
-            });
-          }
+        const data = await jumoFetch("/api/v1/workflow/status");
+        if (data && typeof data.activeCount === "number") {
+          setWorkflowStatus({
+            badge: `${data.activeCount} ACTIVE`
+          });
         }
       } catch (e) {
         console.warn("Status fetch error (workflow):", e);
@@ -67,14 +61,11 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
 
       // 3. Security status
       try {
-        const res = await jumoFetch("/api/v1/security/events");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.threatLevel) {
-            setSecurityStatus({
-              badge: `THREAT: ${data.threatLevel.toUpperCase()}`
-            });
-          }
+        const data = await jumoFetch("/api/v1/security/events");
+        if (data && data.threatLevel) {
+          setSecurityStatus({
+            badge: `THREAT: ${data.threatLevel.toUpperCase()}`
+          });
         }
       } catch (e) {
         console.warn("Status fetch error (security):", e);
@@ -93,62 +84,53 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
     const selectedTenant = (tenant || "CORE").trim().toUpperCase();
 
     try {
-      // 1. Try primary endpoint /api/v1/ueos/identity/login
-      const res = await jumoFetch("/api/v1/ueos/identity/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          password,
-          tenant: selectedTenant
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          const token = data.token || (data.session && data.session.token) || "jumo_session_owner_prod";
-          const user = data.user || {
-            email: username.includes("@") ? username : `${username}@jumo.net`,
-            name: username,
-            role: selectedTenant === "CORE" ? "SecOps_Administrator" : "Tenant_User",
-            tenantId: selectedTenant,
-            trustLevel: "L4_High_Trust"
-          };
-
-          // Store in localStorage
-          localStorage.setItem("JUMO_SESSION", token);
-          localStorage.setItem("jumo_session_token", token);
-          localStorage.setItem("jumo_current_user", JSON.stringify(user));
-
-          onLoginSuccess(user, token);
-          return;
-        }
+      let data: any = null;
+      try {
+        // 1. Try primary endpoint /api/v1/ueos/identity/login
+        data = await jumoFetch("/api/v1/ueos/identity/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username,
+            password,
+            tenant: selectedTenant
+          })
+        });
+      } catch (primaryErr) {
+        console.warn("[AUTH] Primary login endpoint failed, trying fallback...", primaryErr);
+        // Fallback: /api/auth/login if secondary auth endpoint is needed
+        data = await jumoFetch("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email: username,
+            password,
+            loginType: selectedTenant === "CORE" ? "owner" : "tenant",
+            tenantSlug: selectedTenant.toLowerCase()
+          })
+        });
       }
 
-      // Fallback: /api/auth/login if secondary auth endpoint is needed
-      const data = await jumoFetch("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: username,
-          password,
-          loginType: selectedTenant === "CORE" ? "owner" : "tenant",
-          tenantSlug: selectedTenant.toLowerCase()
-        })
-      });
+      if (data && (data.success || data.token)) {
+        const token = data.token || (data.session && data.session.token) || "jumo_session_owner_prod";
+        const user = data.user || {
+          email: username.includes("@") ? username : `${username}@jumo.net`,
+          name: username,
+          role: selectedTenant === "CORE" ? "SecOps_Administrator" : "Tenant_User",
+          tenantId: selectedTenant,
+          trustLevel: "L4_High_Trust"
+        };
 
-      if (data) {
-        const token = data.token || "jumo_session_owner_prod";
-        const user = data.user;
-
+        // Store in localStorage
         localStorage.setItem("JUMO_SESSION", token);
         localStorage.setItem("jumo_session_token", token);
         localStorage.setItem("jumo_current_user", JSON.stringify(user));
 
         onLoginSuccess(user, token);
+      } else {
+        setErrorMsg(data?.error || data?.message || "Authentication failed. Please verify credentials.");
       }
     } catch (err: any) {
-      setErrorMsg(`Connection error: ${err.message}`);
+      setErrorMsg(`Connection error: ${err.message || "Failed to reach backend API"}`);
     } finally {
       setIsAuthenticating(false);
     }
