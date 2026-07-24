@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { jumoFetch } from "./core/config/api";
 import { 
   Sparkles, Layers, ListChecks, Cpu, MessageSquare, 
   Trash2, Download, Upload, Plus, AlertTriangle, RefreshCw, Activity, Sliders
 } from "lucide-react";
 import { SavedProject, SoftwareBlueprint, ChatMessage, KanbanTask } from "./types";
+
+
+
+
 import RuntimeConsole from "./components/RuntimeConsole";
 import ChatPanel from "./components/ChatPanel";
 import PublicPortal from "./components/PublicPortal";
@@ -13,6 +16,7 @@ import ExperienceRuntime from "./components/ExperienceRuntime";
 import { SAMPLE_BLUEPRINT } from "./mockBlueprint";
 import { UEOS_BLUEPRINT } from "./ueosBlueprint";
 
+const STORAGE_KEY = "dev_blueprint_projects";
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<{ email: string; name: string; role: string; tenantId: string; trustLevel: string } | null>(() => {
@@ -31,7 +35,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<"console" | "owner_center" | "runtime_os">(() => {
+  const [activeTab, setActiveTab] = useState<"blueprint" | "kanban" | "boilerplate" | "console" | "owner_center" | "runtime_os">(() => {
     const saved = localStorage.getItem("jumo_current_user");
     if (saved) {
       try {
@@ -39,7 +43,7 @@ export default function App() {
         return "runtime_os";
       } catch (e) {}
     }
-    return "runtime_os";
+    return "blueprint";
   });
 
   // Transparent global fetch interceptor to inject Zero-Trust security tokens & tenant headers
@@ -60,6 +64,14 @@ export default function App() {
       init.headers = init.headers || {};
       
       let targetInput = input;
+      const inputStr = typeof input === "string" ? input : input instanceof URL ? input.toString() : "";
+      if (inputStr.startsWith("/api/")) {
+        const isFirebase = window.location.hostname.includes("web.app") || window.location.hostname.includes("firebaseapp.com");
+        if (isFirebase) {
+          targetInput = "https://jumo-ueos-dhp-production-production.up.railway.app" + inputStr;
+          init.mode = "cors";
+        }
+      }
 
       if (init.headers instanceof Headers) {
         if (token) {
@@ -171,11 +183,16 @@ export default function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await jumoFetch("/api/blueprint/generate", {
+      const response = await fetch("/api/blueprint/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate project blueprint.");
+      }
 
       const newProject: SavedProject = {
         id: `project_${Date.now()}`,
@@ -360,71 +377,240 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            
-{/* JUMO UEOS Runtime Control Center Header */}
+            {/* Project Selector */}
+            {projects.length > 0 && (
+              <select
+                value={activeProjectId}
+                onChange={(e) => {
+                  setActiveProjectId(e.target.value);
+                  setError(null);
+                }}
+                className="bg-slate-900 text-slate-200 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-emerald-500/50 cursor-pointer"
+              >
+                <option value="" disabled>Select Blueprint...</option>
+                {projects.map((proj) => (
+                  <option key={proj.id} value={proj.id}>
+                    {proj.title}
+                  </option>
+                ))}
+              </select>
+            )}
 
-<div className="flex items-center gap-3">
+            {/* Clear Custom / Back to Onboarding */}
+            {activeProjectId && (
+              <button
+                onClick={() => {
+                  setActiveProjectId("");
+                  setError(null);
+                }}
+                className="bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-2 rounded-xl text-xs font-bold text-slate-300 flex items-center gap-1.5 transition cursor-pointer"
+                title="Create a new system blueprint"
+              >
+                <Plus className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="hidden sm:inline">New Project</span>
+              </button>
+            )}
 
-<button
-onClick={() => setActiveTab("runtime_os")}
-className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl text-xs font-bold"
->
-<Cpu className="h-4 w-4 inline mr-2"/>
-UEOS Runtime
-</button>
+            <button
+              onClick={() => {
+                localStorage.removeItem("jumo_current_user");
+                localStorage.removeItem("jumo_session_token");
+                localStorage.removeItem("jumo_session_expires_at");
+                setCurrentUser(null);
+                setActiveTab("blueprint");
+              }}
+              className="bg-rose-950/20 text-rose-400 hover:bg-rose-950/40 border border-rose-900/40 px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
 
-{currentUser.role === "SecOps_Administrator" && (
-<button
-onClick={() => setActiveTab("owner_center")}
-className="bg-slate-900 border border-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold"
->
-<Sliders className="h-4 w-4 inline mr-2"/>
-Owner Command Center
-</button>
-)}
+      {/* Main Container Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-6 min-h-0 overflow-visible">
+        {/* If no project is selected and we're not loading, show the Wizard form */}
+        {!activeProject && !isLoading ? (
+          <div className="flex-1 flex flex-col items-center">
 
-<button
-onClick={() => {
-localStorage.removeItem("jumo_current_user");
-localStorage.removeItem("jumo_session_token");
-setCurrentUser(null);
-}}
-className="bg-rose-950/20 border border-rose-900 text-rose-400 px-4 py-2 rounded-xl text-xs font-bold"
->
-Sign Out
-</button>
+            {projects.length > 0 && (
+              <div className="mt-8 text-center bg-slate-900/20 border border-slate-850 p-6 rounded-2xl max-w-lg w-full">
+                <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Or Resume Active Work</h4>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {projects.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setActiveProjectId(p.id)}
+                      className="bg-slate-950 hover:bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 transition cursor-pointer"
+                    >
+                      {p.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : isLoading ? (
+          <div className="flex-1 flex items-center justify-center">
 
-</div>
+          </div>
+        ) : activeProject ? (
+          /* Active Project Workbench Layout */
+          <div className="flex-1 flex flex-col md:flex-row gap-6 min-h-0">
+            {/* Left Column Workbench */}
+            <div className="flex-1 space-y-6 min-w-0">
+              {/* Project Bar Context */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/20 border border-slate-850 p-4 rounded-2xl gap-3">
+                <div>
+                  <div className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">Active Design Context</div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    {activeProject.title}
+                    <span className="text-[10px] bg-slate-800 font-normal px-2 py-0.5 rounded-full text-slate-400">
+                      {activeProject.createdAt}
+                    </span>
+                  </h2>
+                </div>
 
-</header>
+                {/* Workbench utilities */}
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={handleExportJSON}
+                    className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 border border-slate-800 p-2 rounded-xl text-xs text-slate-300 flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    title="Export blueprint as JSON file"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span>Export</span>
+                  </button>
 
-<main className="flex-1 w-full px-4 py-6">
+                  <label className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 border border-slate-800 p-2 rounded-xl text-xs text-slate-300 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                    <Upload className="h-3.5 w-3.5" />
+                    <span>Import</span>
+                    <input
+                      type="file"
+                      accept=".json"
+                      onChange={handleImportJSON}
+                      className="hidden"
+                    />
+                  </label>
 
-{activeTab === "runtime_os" && (
-<ExperienceRuntime
-currentUser={currentUser}
-onLogout={()=>{
-localStorage.removeItem("jumo_current_user");
-localStorage.removeItem("jumo_session_token");
-setCurrentUser(null);
-}}
-/>
-)}
+                  {activeProject.id !== "demo_gym_saas" && activeProject.id !== "demo_ueos" ? (
+                    <button
+                      onClick={() => handleDeleteProject(activeProject.id)}
+                      className="p-2 border border-rose-950 hover:bg-rose-950/20 text-rose-400 rounded-xl transition cursor-pointer"
+                      title="Delete design"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleLoadDemo}
+                      className="p-2 border border-slate-800 hover:bg-slate-850 text-slate-400 rounded-xl transition cursor-pointer"
+                      title="Reset templates to default core state"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-{activeTab === "owner_center" && currentUser.role === "SecOps_Administrator" && (
-<OwnerControlCenter
-currentUser={currentUser}
-onLogout={()=>{
-localStorage.removeItem("jumo_current_user");
-localStorage.removeItem("jumo_session_token");
-setCurrentUser(null);
-}}
-/>
-)}
+              {/* API Key Missing Alert Callout Banner */}
+              {error && (
+                <div className="bg-rose-950/25 border border-rose-900/60 p-4 rounded-xl flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-rose-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h5 className="text-xs font-bold text-rose-400 mb-1">Architecture Pipeline Interrupted</h5>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      {error}. If you don't have an API key set, you can still test full functionality by clicking the columns in the **Sprint Kanban Board**, selecting templates in the **Boilerplate Scaffolder**, or exporting files.
+                    </p>
+                  </div>
+                </div>
+              )}
 
-</main>
+              {/* View Selector Controls */}
+              <div className="flex flex-wrap bg-slate-950 border border-slate-850 p-1 rounded-xl gap-1">
+                <button
+                  onClick={() => setActiveTab("runtime_os")}
+                  className="flex-1 min-w-[140px] py-2 rounded-lg text-xs font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 text-emerald-400 hover:from-emerald-500/20 hover:to-teal-500/20 hover:border-emerald-500/50"
+                >
+                  <Cpu className="h-4 w-4 text-emerald-400 animate-pulse" />
+                  <span>Launch Sovereign OS</span>
+                </button>
+                {currentUser.role === "SecOps_Administrator" && (
+                  <button
+                    onClick={() => setActiveTab("owner_center")}
+                    className={`flex-1 min-w-[120px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      activeTab === "owner_center"
+                        ? "bg-slate-900 text-teal-400 shadow"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    <Sliders className="h-4 w-4" />
+                    <span>Owner Command Room</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => setActiveTab("blueprint")}
+                  className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeTab === "blueprint"
+                      ? "bg-slate-900 text-emerald-400 shadow"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Layers className="h-4 w-4" />
+                  <span>Architecture Specs</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("kanban")}
+                  className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeTab === "kanban"
+                      ? "bg-slate-900 text-emerald-400 shadow"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <ListChecks className="h-4 w-4" />
+                  <span>Sprint Kanban</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("boilerplate")}
+                  className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeTab === "boilerplate"
+                      ? "bg-slate-900 text-emerald-400 shadow"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Cpu className="h-4 w-4" />
+                  <span>Boilerplate Scaffolder</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("console")}
+                  className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    activeTab === "console"
+                      ? "bg-slate-900 text-emerald-400 shadow"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Activity className="h-4 w-4" />
+                  <span>Platform Console</span>
+                </button>
+              </div>
 
-{/* AI Assistant Chat Sidebar Toggle button (for small displays) */}
+              {/* Active Tab Panel Views */}
+              <div className="min-h-0">
+                {activeTab === "owner_center" && currentUser.role === "SecOps_Administrator" && (
+                  <OwnerControlCenter currentUser={currentUser} onLogout={() => {
+                    localStorage.removeItem("jumo_current_user");
+                    localStorage.removeItem("jumo_session_token");
+                    setCurrentUser(null);
+                    setActiveTab("blueprint");
+                  }} />
+                )}
+                {activeTab === "console" && (
+                  <RuntimeConsole blueprintName={activeProject.title} />
+                )}
+              </div>
+            </div>
+
+            {/* AI Assistant Chat Sidebar Toggle button (for small displays) */}
             <button
               onClick={() => setIsChatOpen(!isChatOpen)}
               className="md:hidden fixed bottom-6 right-6 h-12 w-12 bg-emerald-500 text-slate-950 font-bold rounded-full shadow-2xl flex items-center justify-center z-50 cursor-pointer"
