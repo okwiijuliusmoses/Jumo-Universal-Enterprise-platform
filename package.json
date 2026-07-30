@@ -5,7 +5,7 @@
   "type": "module",
   "description": "JUMO DIGITAL ENTERPRISE PLATFORM powered by JUMO UNIVERSAL ENTERPRISE OPERATING SYSTEM",
   "scripts": {
-    "start": "node server.js",
+    "start": "node ueos-web-server.js",
     "build": "echo \"JUMO UEOS Genesis build successful\""
   }
 }
