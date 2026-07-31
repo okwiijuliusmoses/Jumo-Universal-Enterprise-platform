@@ -1,10 +1,10 @@
 import React from 'react';
 import { ControlCenterWorkspace } from './workspace';
-import { LayoutDashboard, Package, ShoppingCart, Cpu, Building2, Users } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Cpu, Building2, Users, ShieldCheck, Database, Terminal, Settings } from 'lucide-react';
 
-const LauncherApp = ({ icon: Icon, title, desc }) => (
-  <div className="p-6 bg-white rounded-lg border border-slate-200 hover:border-blue-500 transition-all cursor-pointer flex flex-col items-center text-center">
-    <div className="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center text-green-700 mb-4">
+const Tile = ({ icon: Icon, title, desc, color = "green" }) => (
+  <div className="p-6 bg-white rounded-lg border border-slate-200 hover:border-emerald-500 transition-all cursor-pointer flex flex-col items-center text-center shadow-sm">
+    <div className={`w-16 h-16 rounded-xl bg-${color}-100 flex items-center justify-center text-${color}-700 mb-4`}>
       <Icon className="w-8 h-8" />
     </div>
     <h2 className="font-bold text-slate-900">{title}</h2>
@@ -15,16 +15,30 @@ const LauncherApp = ({ icon: Icon, title, desc }) => (
 export const ControlCenterOverview = () => {
   return (
     <ControlCenterWorkspace>
-      <div className="p-8">
-        <h1 className="text-xl font-bold mb-8 text-slate-900">JUMO UEOS Digital Control Center</h1>
-        <div className="grid grid-cols-4 gap-6">
-          <LauncherApp icon={LayoutDashboard} title="ERP Factory" desc="Design ERP Blueprints" />
-          <LauncherApp icon={ShoppingCart} title="ERP Store" desc="Manage ERP Installs" />
-          <LauncherApp icon={Cpu} title="AI Services" desc="JUMO AI Core" />
-          <LauncherApp icon={Building2} title="FAAP Financials" desc="Global Treasury" />
-          <LauncherApp icon={Users} title="Identity" desc="Governance" />
-          <LauncherApp icon={Package} title="Registry" desc="All Ecosystems" />
-        </div>
+      <div className="p-8 max-w-7xl mx-auto">
+        
+        {/* Platform Services */}
+        <section className="mb-12">
+            <h1 className="text-xl font-bold mb-6 text-slate-900">Platform Services</h1>
+            <div className="grid grid-cols-4 gap-6">
+              <Tile icon={LayoutDashboard} title="ERP Factory" desc="Design ERP Blueprints" />
+              <Tile icon={ShoppingCart} title="ERP Store" desc="Manage ERP Installs" />
+              <Tile icon={Cpu} title="AI Services" desc="JUMO AI Core" />
+              <Tile icon={Building2} title="FAAP Financials" desc="Global Treasury" />
+              <Tile icon={Users} title="Identity" desc="Governance" />
+              <Tile icon={ShieldCheck} title="AEGIS Security" desc="Protection" />
+            </div>
+        </section>
+
+        {/* System Services (Old Kernel Stuff) */}
+        <section className="border-t pt-8">
+            <h1 className="text-xl font-bold mb-6 text-slate-900">System Services</h1>
+            <div className="grid grid-cols-4 gap-6">
+              <Tile icon={Database} title="Service Registry" desc="Kernel Services" color="slate" />
+              <Tile icon={Terminal} title="Runtime Monitor" desc="Kernel Diagnostics" color="slate" />
+              <Tile icon={Settings} title="Platform Policies" desc="Governance" color="slate" />
+            </div>
+        </section>
       </div>
     </ControlCenterWorkspace>
   );
