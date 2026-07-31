@@ -4,224 +4,457 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
  * Public Homepage Template
  */
 export const publicTemplate = (state) => {
-  const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
+  const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "light" });
   
   app.innerHTML = `
-    <!-- Top Bar -->
-    <div class="bg-slate-900 text-slate-300 py-2 px-6 border-b border-slate-800 hidden md:block text-xs font-medium">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold font-mono text-[11px]">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            SOVEREIGN SYSTEM OPERATIONAL
-          </span>
-          <span class="text-slate-700">|</span>
-          <span class="text-slate-400 text-[11px]">Region: East Africa (${BRAND_CONFIG.officeLocations.country})</span>
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <!-- Public Sidebar Overlay -->
+    <div id="public-sidebar-overlay" onclick="togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Public Sidebar -->
+    <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-950 z-[70] -translate-x-full transition-transform duration-300 flex flex-col border-r border-slate-800">
+        <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
+            ${logoHtml}
+            <button onclick="togglePublicSidebar()" class="text-slate-400 hover:text-white cursor-pointer transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
-        <div class="flex items-center gap-6 text-[11px]">
-          <a href="tel:${BRAND_CONFIG.telephones.mobile}" class="hover:text-white transition">📞 ${BRAND_CONFIG.telephones.mobile}</a>
-          <a href="mailto:${BRAND_CONFIG.emails.contact}" class="hover:text-white transition">✉️ ${BRAND_CONFIG.emails.contact}</a>
-          <span class="text-slate-700">|</span>
-          <span class="font-mono text-amber-400">${BRAND_CONFIG.poweredBy}</span>
+        <div class="flex-1 overflow-y-auto py-6 px-4 space-y-8">
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Home</div>
+                <button onclick="navigate('/')" class="w-full text-left px-3 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Start Page</button>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Platform</div>
+                <div class="space-y-1">
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">JUMO UEOS Overview</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Architecture</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Security</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">AI Platform</button>
+                </div>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Enterprise Solutions</div>
+                <div class="space-y-1">
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Education Platforms</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Government Platforms</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Healthcare Platforms</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Finance & Treasury</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Agriculture Platforms</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Enterprise Applications</button>
+                </div>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Digital Services</div>
+                <div class="space-y-1">
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Digital Identity</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Document Verification</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Workflow Services</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Payment Services</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Analytics Services</button>
+                </div>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Account Services</div>
+                <div class="space-y-1">
+                    <button onclick="navigate('/register')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Individual Registration</button>
+                    <button onclick="navigate('/register')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Institution Registration</button>
+                    <button onclick="navigate('/login')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Sign In</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Forgot Password</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Account Recovery</button>
+                    <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Support Centre</button>
+                </div>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Resources</div>
+                <div class="space-y-1">
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Documentation</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">News</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Notices</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">FAQs</button>
+                    <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Contact</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div class="cursor-pointer" onclick="navigate('/')">
-          ${logoHtml}
-        </div>
-        
-        <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold tracking-wider text-slate-600">
-          <button onclick="navigate('/')" class="text-enterprise-blue hover:text-blue-700 transition">Home</button>
-          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Enterprise Platforms</button>
-          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Products</button>
-          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Marketplace</button>
-          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Resources</button>
-          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Support</button>
-        </nav>
-
-        <div class="flex items-center space-x-3">
-          ${state.session ? `
-            <div class="relative flex items-center gap-3">
-              <!-- Top-Right User Profile Component -->
-              <div class="hidden sm:flex flex-col items-end text-right">
-                <div class="flex items-center gap-1.5">
-                  <span class="font-extrabold text-xs text-slate-900">${state.session.user.name}</span>
-                  <span class="text-[9px] font-mono font-bold bg-blue-50 text-enterprise-blue border border-blue-200 px-1.5 py-0.2 rounded uppercase">${state.session.user.role}</span>
-                </div>
-                <span class="text-[10px] text-slate-500 font-medium">${state.session.organization || 'University of Kampala'}</span>
-              </div>
-
-              <!-- Avatar & Account Access Menu Dropdown Toggle -->
-              <div class="relative">
-                <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
-                  <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                    ${state.session.user.name.split(' ').map(n=>n[0]).join('')}
-                  </div>
-                  <span class="text-slate-400 text-xs">▼</span>
+    <header class="bg-enterprise-blue border-b border-blue-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="togglePublicSidebar()" class="lg:hidden text-white hover:text-blue-200 transition cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs font-semibold">
-                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 mb-2">
-                    <p class="font-bold text-slate-900 text-sm">${state.session.user.name}</p>
-                    <p class="text-slate-500 text-[11px] font-mono truncate">${state.session.user.email}</p>
-                    <div class="mt-2 flex items-center justify-between text-[10px]">
-                      <span class="font-bold text-slate-600">Org: ${state.session.organization}</span>
-                      <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        Verified
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="space-y-1 divide-y divide-slate-100">
-                    <div class="pt-1">
-                      <button onclick="navigate('/gateway'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-enterprise-blue font-bold hover:bg-blue-50 rounded-md">🏠 Enterprise Gateway &rarr;</button>
-                      <button onclick="navigate('/workspace'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🏢 Workspace Resolver</button>
-                      <button onclick="alert('Viewing Account Security Access Matrix'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🔒 Security & Access Credentials</button>
-                    </div>
-
-                    ${state.session.user.isAdmin ? `
-                      <div class="pt-2">
-                        <button onclick="navigate('/control-center'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 rounded-md flex items-center justify-between">
-                          <span>🛠️ Admin Control Center</span>
-                          <span class="text-[9px] font-mono bg-indigo-200 px-1.5 py-0.5 rounded text-indigo-900">ADMIN</span>
-                        </button>
-                      </div>
-                    ` : ''}
-
-                    <div class="pt-2">
-                      <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
-                    </div>
-                  </div>
+                <div class="cursor-pointer" onclick="navigate('/')">
+                  ${logoHtml}
                 </div>
-              </div>
             </div>
-          ` : `
-            <button onclick="navigate('/login')" class="text-xs font-bold uppercase px-4 py-2.5 text-slate-700 hover:text-enterprise-blue transition cursor-pointer">Sign In</button>
-            <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
-          `}
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-blue-100">
+                <a href="#" class="hover:text-white transition">Platform</a>
+                <a href="#" class="hover:text-white transition">Solutions</a>
+                <a href="#" class="hover:text-white transition">Digital Services</a>
+                <a href="#" class="hover:text-white transition">Institutions</a>
+                <a href="#" class="hover:text-white transition">Resources</a>
+                <a href="#" class="hover:text-white transition">Security</a>
+                <a href="#" class="hover:text-white transition">Partners</a>
+                <a href="#" onclick="navigate('/contact')" class="hover:text-white transition">Contact</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <button onclick="navigate('/login')" class="text-sm font-bold text-white hover:text-blue-200 transition cursor-pointer mr-2">Sign In</button>
+                <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-white text-enterprise-blue hover:bg-blue-50 transition shadow-sm cursor-pointer hidden sm:block">Create Account</button>
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block" title="Language">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                </button>
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block" title="Help">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+            </div>
         </div>
-      </div>
     </header>
 
-    <main class="flex-1 bg-slate-50">
-      <!-- Hero Banner -->
-      <section class="bg-white border-b border-slate-200 py-16 px-6 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div class="lg:col-span-7 space-y-6">
-            <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-blue-50 text-enterprise-blue border border-blue-100 text-[11px] font-semibold tracking-wider uppercase font-mono">
-              <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
-              <span>Enterprise Operating Environment</span>
+    <main class="flex-1">
+        <!-- Main Reception Hero Section -->
+        <section class="bg-white py-20 px-6 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-enterprise-blue text-xs font-semibold tracking-widest uppercase font-mono">
+                        <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
+                        Enterprise Operating Environment
+                    </div>
+                    <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                        ${BRAND_CONFIG.platformName}
+                    </h1>
+                    <p class="text-lg text-slate-600 leading-relaxed max-w-xl">
+                        The unified digital reception and workspace environment connecting institutions, enterprises, state bodies and digital services under sovereign security governance.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="navigate('/register')" class="px-8 py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 font-bold text-sm text-white uppercase tracking-wider transition shadow-lg shadow-blue-500/30 cursor-pointer">Register Institution</button>
+                        <button onclick="navigate('/login')" class="px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-sm text-white uppercase tracking-wider transition shadow-lg cursor-pointer">Sign In To Platform</button>
+                    </div>
+                </div>
+                <!-- Enterprise Visual Panel -->
+                <div class="relative rounded-2xl bg-slate-900 border border-slate-800 p-8 shadow-2xl overflow-hidden min-h-[400px] flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-slate-900/90"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10 grid grid-cols-2 gap-4 h-full">
+                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3 text-lg">🏛️</div>
+                            <h4 class="text-white font-bold text-sm">Connected Institutions</h4>
+                            <p class="text-slate-400 text-xs mt-1">State bodies & enterprise tenants</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3 text-lg">🧠</div>
+                            <h4 class="text-white font-bold text-sm">AI Cognitive Nodes</h4>
+                            <p class="text-slate-400 text-xs mt-1">JUMO AI Gateway integration</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 text-lg">🛡️</div>
+                            <h4 class="text-white font-bold text-sm">AEGIS Security</h4>
+                            <p class="text-slate-400 text-xs mt-1">Zero-trust cryptographic layer</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
+                            <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center mb-3 text-lg">☁️</div>
+                            <h4 class="text-white font-bold text-sm">Cloud Operating Env</h4>
+                            <p class="text-slate-400 text-xs mt-1">Sovereign hybrid infrastructure</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              ${BRAND_CONFIG.platformName}
-            </h1>
-            <p class="text-slate-600 text-base max-w-xl leading-relaxed">
-              The unified digital reception and workspace environment connecting institutions, enterprises, state bodies, and digital services under sovereign security governance.
-            </p>
-            <div class="pt-3 flex flex-wrap gap-4">
-              <button onclick="navigate('/register')" class="px-6 py-3.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Register Institution</button>
-              <button onclick="navigate('/login')" class="px-6 py-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Sign In to Platform</button>
+        </section>
+
+        <!-- Authentication Gateway Section -->
+        <section class="bg-slate-50 py-16 px-6 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Individual Users Card -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:border-enterprise-blue hover:shadow-md transition">
+                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+                            <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-enterprise-blue text-2xl border border-blue-100">👤</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">Individual Users</h3>
+                                <p class="text-slate-500 text-sm mt-1">Citizens, Staff, and Personal Accounts</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="navigate('/register')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Create Account</div>
+                                <div class="text-xs text-slate-500">Register for a personal identity profile</div>
+                            </button>
+                            <button onclick="navigate('/login')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Sign In</div>
+                                <div class="text-xs text-slate-500">Access your digital workspace</div>
+                            </button>
+                            <button onclick="alert('Navigating to password reset...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Forgot Password</div>
+                                <div class="text-xs text-slate-500">Reset your access credentials</div>
+                            </button>
+                            <button onclick="alert('Navigating to account recovery...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Recover Account</div>
+                                <div class="text-xs text-slate-500">Regain access to your profile</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Institutions Card -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-md transition">
+                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl border border-emerald-100">🏛️</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">Institutions & Enterprises</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase bg-emerald-100 text-emerald-700">Official</span>
+                                    <p class="text-slate-500 text-sm">Government, Corporate, Education</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="navigate('/register')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Register Institution</div>
+                                <div class="text-xs text-slate-500">Onboard a new enterprise tenant</div>
+                            </button>
+                            <button onclick="navigate('/login')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Institution Login</div>
+                                <div class="text-xs text-slate-500">Access enterprise control center</div>
+                            </button>
+                            <button onclick="alert('Navigating to institution verification...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Institution Verification</div>
+                                <div class="text-xs text-slate-500">Submit official documentation</div>
+                            </button>
+                            <button onclick="alert('Navigating to admin setup...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
+                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Administrator Setup</div>
+                                <div class="text-xs text-slate-500">Configure core tenant settings</div>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-          </div>
+        </section>
 
-          <!-- Quick Platform Card -->
-          <div class="lg:col-span-5">
-            <div class="bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden">
-              <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
-                <div>
-                  <h3 class="font-bold text-sm tracking-wide">JUMO Platform Status</h3>
-                  <p class="text-[11px] text-slate-400 font-mono">Kernel Core: Operational</p>
-                </div>
-                <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">LIVE</span>
-              </div>
-              <div class="p-6 divide-y divide-slate-100 text-xs font-semibold text-slate-600 space-y-3">
-                <div class="pt-3 flex items-center justify-between">
-                  <span>Supported Regions</span>
-                  <span class="font-bold text-slate-900">${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
-                </div>
-                <div class="pt-3 flex items-center justify-between">
-                  <span>Head Office</span>
-                  <span class="font-mono text-enterprise-blue font-bold">${BRAND_CONFIG.officeLocations.headOffice}</span>
-                </div>
-                <div class="pt-3 flex items-center justify-between">
-                  <span>Regional Offices</span>
-                  <span class="font-mono text-slate-700">${BRAND_CONFIG.officeLocations.regionalOffices.join(", ")}</span>
-                </div>
-                <div class="pt-3 flex items-center justify-between">
-                  <span>Security & Compliance</span>
-                  <span class="font-mono text-emerald-600 font-bold">Cryptographic AEGIS Enforced</span>
-                </div>
-              </div>
+        <!-- Security Trust Strip -->
+        <div class="bg-slate-900 border-b border-slate-800 text-slate-300 py-6 px-6">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16 text-xs font-semibold tracking-wider uppercase">
+                <div class="flex items-center gap-2"><span class="text-emerald-400">🛡️</span> AEGIS Accountability Platform</div>
+                <div class="flex items-center gap-2"><span class="text-blue-400">🔑</span> Cryptographic Verification</div>
+                <div class="flex items-center gap-2"><span class="text-indigo-400">👤</span> Identity Governance</div>
+                <div class="flex items-center gap-2"><span class="text-rose-400">🏛️</span> Sovereign Data Protection</div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Enterprise Industry Solutions -->
-      <section class="py-16 max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-          <h2 class="text-2xl font-bold text-slate-900">Supported Enterprise Platforms</h2>
-          <p class="text-slate-600 text-xs mt-2">Discover sovereign institutional frameworks connected to ${BRAND_CONFIG.poweredBy}</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-blue-50 text-enterprise-blue flex items-center justify-center font-bold text-lg mb-4">🎓</div>
-            <h3 class="font-bold text-slate-900 text-base">Education ERP Platform</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Campus management, student admissions, academic grading, and degree verification ledgers.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
+        <!-- Enterprise Information Hub -->
+        <section class="bg-slate-50 py-20 px-6 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Enterprise Information Hub</h2>
+                    <p class="text-slate-600 mt-3">Digital ecosystem announcements, platform showcases, and institutional updates.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Video Showcase -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><span class="text-rose-500">▶</span> JUMO Digital Showcase</h3>
+                            <span class="text-[10px] font-mono text-slate-500 bg-slate-200 px-2 py-1 rounded">LIVE HUB</span>
+                        </div>
+                        <div class="aspect-video bg-slate-900 relative flex items-center justify-center group cursor-pointer">
+                            <div class="absolute inset-0 bg-slate-800 bg-cover bg-center opacity-40 group-hover:opacity-50 transition"></div>
+                            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition z-10">
+                                <div class="w-0 h-0 border-t-8 border-t-transparent border-l-[12px] border-l-white border-b-8 border-b-transparent ml-1"></div>
+                            </div>
+                            <div class="absolute bottom-4 left-4 right-4 z-10">
+                                <h4 class="text-white font-bold text-lg">Platform Demonstration: UEOS v4.1</h4>
+                                <p class="text-slate-300 text-xs mt-1">Enterprise digital transformation ledgers and AI cognitive services</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white grid grid-cols-2 gap-4">
+                            <button class="text-left p-3 rounded-lg border border-slate-100 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer">
+                                <div class="text-[10px] font-mono text-enterprise-blue font-bold mb-1">LATEST</div>
+                                <div class="text-xs font-semibold text-slate-800">Institution Success Stories</div>
+                            </button>
+                            <button class="text-left p-3 rounded-lg border border-slate-100 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer">
+                                <div class="text-[10px] font-mono text-purple-600 font-bold mb-1">INNOVATION</div>
+                                <div class="text-xs font-semibold text-slate-800">AI Gateway Updates</div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- News & Announcements -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
+                        <h3 class="font-bold text-slate-900 mb-6 flex items-center gap-2">📰 News & Announcements</h3>
+                        <div class="space-y-6 flex-1">
+                            <div class="group cursor-pointer">
+                                <div class="text-[10px] text-slate-500 font-mono mb-1">TODAY, 09:00 AM</div>
+                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">New State Body Onboarding</h4>
+                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">The Ministry of Digital Transformation has completed their integration with ${BRAND_CONFIG.poweredBy}.</p>
+                            </div>
+                            <div class="group cursor-pointer">
+                                <div class="text-[10px] text-slate-500 font-mono mb-1">YESTERDAY</div>
+                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">AEGIS Security Update v2.4</h4>
+                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">Enhanced cryptographic ledgers deployed across all tenant domains.</p>
+                            </div>
+                            <div class="group cursor-pointer">
+                                <div class="text-[10px] text-slate-500 font-mono mb-1">MAY 28, 2026</div>
+                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">Digital Services Expansion</h4>
+                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">Three new enterprise modules added to the JUMO registry.</p>
+                            </div>
+                        </div>
+                        <button class="w-full mt-4 py-2 text-xs font-bold text-enterprise-blue hover:bg-blue-50 rounded-lg transition border border-blue-100 cursor-pointer">View All Updates</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">🏛️</div>
-            <h3 class="font-bold text-slate-900 text-base">Government ERP Platform</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Citizen registry, civil records, public document audit trails, and departmental workflow governance.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
+        <!-- Enterprise Platforms Section -->
+        <section class="py-20 px-6 bg-white border-b border-slate-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Explore JUMO Enterprise Platforms</h2>
+                    <p class="text-slate-600 mt-3 max-w-2xl mx-auto">Future-ready registry architecture and domain solutions powered by ${BRAND_CONFIG.poweredBy}.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    ${[
+                        { name: "Education ERP", icon: "🎓", color: "blue", desc: "Campus management, student admissions, academic grading, and degree verification ledgers." },
+                        { name: "Government ERP", icon: "🏛️", color: "emerald", desc: "Citizen registry, civil records, public document audit trails, and workflow governance." },
+                        { name: "Healthcare ERP", icon: "🏥", color: "indigo", desc: "Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes." },
+                        { name: "Finance & FAAP Treasury", icon: "💳", color: "amber", desc: "Multi-currency accounting ledger, automated vendor settlements, and state treasury." },
+                        { name: "Agriculture ERP", icon: "🌱", color: "rose", desc: "Cooperative yield tracking, commodity shipping ledgers, and rural extension hubs." },
+                        { name: "AI Platform", icon: "🤖", color: "purple", desc: "Enterprise intelligent assistant, synthetic document verification, and policy auditing engines." },
+                        { name: "Recruitment Platform", icon: "👥", color: "cyan", desc: "Talent acquisition, background verification, and enterprise onboarding workflows." },
+                        { name: "FINTECH", icon: "💸", color: "teal", desc: "Digital payment gateways, cross-border settlements, and financial compliance." },
+                        { name: "AEGIS", icon: "🛡️", color: "slate", desc: "Zero-trust security, cryptographic identity governance, and compliance ledgers." },
+                        { name: "Research & Innovation", icon: "🔬", color: "fuchsia", desc: "R&D collaboration, patent registries, and academic grant management." },
+                        { name: "App Builder Platform", icon: "⚡", color: "orange", desc: "Low-code sovereign application deployment and enterprise customization." }
+                    ].map(p => `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-enterprise-blue hover:shadow-md transition flex flex-col">
+                            <div class="w-12 h-12 rounded-xl bg-${p.color}-50 text-${p.color}-600 flex items-center justify-center font-bold text-2xl mb-4 border border-${p.color}-100">
+                                ${p.icon}
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-base">${p.name}</h3>
+                            <p class="text-xs text-slate-600 mt-2 mb-6 flex-1 leading-relaxed">${p.desc}</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-[9px] font-mono text-slate-400 uppercase">UEOS Governed</span>
+                                <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline flex items-center gap-1 cursor-pointer">Access <span aria-hidden="true">&rarr;</span></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
 
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">🏥</div>
-            <h3 class="font-bold text-slate-900 text-base">Healthcare ERP Platform</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
+        <!-- Trusted Partners & Ecosystem -->
+        <section class="py-16 bg-slate-50 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-8">Trusted Partners & Ecosystem</h3>
+                <div class="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 transition duration-500">
+                    <div class="text-xl font-extrabold font-serif text-slate-800 cursor-pointer">Ministry of Tech</div>
+                    <div class="text-xl font-bold font-sans text-slate-800 flex items-center gap-2 cursor-pointer"><span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs">G</span> GlobalBank</div>
+                    <div class="text-xl font-extrabold italic text-slate-800 cursor-pointer">EduNet Africa</div>
+                    <div class="text-xl font-bold tracking-tighter text-slate-800 cursor-pointer">HEALTH<span class="text-slate-400">CORP</span></div>
+                    <div class="text-xl font-medium tracking-widest text-slate-800 uppercase cursor-pointer">AgriState</div>
+                </div>
+            </div>
+        </section>
 
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg mb-4">💳</div>
-            <h3 class="font-bold text-slate-900 text-base">Finance & FAAP Treasury</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Multi-currency accounting ledger, automated vendor settlements, and state treasury reconciliation.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
-
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg mb-4">🌱</div>
-            <h3 class="font-bold text-slate-900 text-base">Agriculture ERP Platform</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Cooperative yield tracking, commodity shipping ledgers, and rural extension service hubs.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
-
-          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-            <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-4">🤖</div>
-            <h3 class="font-bold text-slate-900 text-base">JUMO AI Gateway</h3>
-            <p class="text-xs text-slate-600 mt-2 mb-4">Enterprise intelligent assistant, synthetic document verification, and policy auditing engines.</p>
-            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-          </div>
-        </div>
-      </section>
     </main>
 
     <!-- Footer -->
     ${getEnterpriseFooterHtml()}
+    
+    <!-- Floating JUMO AI Assistant (Prominent) -->
+    <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+        
+        <!-- Welcome Card (Initially Visible) -->
+        <div id="public-ai-welcome" class="bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 p-5 w-72 transform transition-all duration-300 origin-bottom-right">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-50 text-enterprise-blue flex items-center justify-center text-xl shrink-0 border border-blue-100">🤖</div>
+                <div>
+                    <h4 class="font-bold text-slate-900 text-sm">JUMO AI ASSISTANT</h4>
+                    <p class="text-xs text-slate-600 mt-1">How can I help you today?</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-mono">Ask about:</p>
+                <ul class="text-xs text-slate-600 space-y-1.5 mb-4 font-medium">
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Platform services</li>
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Registration</li>
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Login support</li>
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Enterprise solutions</li>
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Security</li>
+                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> General inquiries</li>
+                </ul>
+                <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden'); document.getElementById('public-ai-chat').classList.remove('hidden');" class="w-full py-2.5 bg-enterprise-blue text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition shadow-sm cursor-pointer">
+                    Start Conversation
+                </button>
+            </div>
+            <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Chat Window -->
+        <div id="public-ai-chat" class="hidden w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 flex-col overflow-hidden transition-all duration-300">
+            <div class="bg-enterprise-blue p-4 flex items-center justify-between text-white shadow-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white text-enterprise-blue flex items-center justify-center font-bold text-xl border-2 border-blue-400">🤖</div>
+                    <div>
+                        <h4 class="font-bold text-sm">JUMO AI Assistant</h4>
+                        <p class="text-[10px] text-blue-200">Digital Front Desk &bull; Live</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-blue-200 hover:text-white transition p-1 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 h-[320px] overflow-y-auto bg-slate-50 text-xs space-y-4">
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white flex items-center justify-center shrink-0 text-sm shadow-sm">🤖</div>
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 rounded-tl-none shadow-sm text-slate-700 leading-relaxed">
+                        Welcome to the <strong>${BRAND_CONFIG.platformName}</strong>. I represent the JUMO AI Gateway. How can I assist you today?
+                    </div>
+                </div>
+                
+                <div class="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center my-2 font-mono">Suggested Topics</div>
+                
+                <div class="space-y-2">
+                    <button onclick="alert('Providing platform overview...')" class="w-full text-left p-3 bg-white hover:bg-blue-50 text-enterprise-blue font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
+                        <span class="text-blue-400">🌐</span> What is JUMO UEOS?
+                    </button>
+                    <button onclick="navigate('/register')" class="w-full text-left p-3 bg-white hover:bg-emerald-50 text-emerald-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
+                        <span class="text-emerald-500">🏛️</span> Register an Institution
+                    </button>
+                    <button onclick="navigate('/login')" class="w-full text-left p-3 bg-white hover:bg-indigo-50 text-indigo-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
+                        <span class="text-indigo-500">🔑</span> Account & Login Support
+                    </button>
+                    <button onclick="navigate('/contact')" class="w-full text-left p-3 bg-white hover:bg-amber-50 text-amber-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
+                        <span class="text-amber-500">📞</span> Contact Information
+                    </button>
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
+                <input type="text" placeholder="Type your inquiry here..." class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-enterprise-blue focus:ring-1 focus:ring-enterprise-blue bg-slate-50">
+                <button class="w-10 h-10 rounded-xl bg-enterprise-blue text-white flex items-center justify-center hover:bg-blue-700 transition cursor-pointer shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Floating Button -->
+        <button onclick="
+            document.getElementById('public-ai-welcome').classList.add('hidden');
+            document.getElementById('public-ai-chat').classList.toggle('hidden');
+        " class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-2xl hover:bg-slate-800 transition hover:scale-105 active:scale-95 border-2 border-white cursor-pointer relative group">
+            <span class="text-3xl">🤖</span>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+        </button>
+    </div>
+</div>
   `;
 };
 
-/**
- * Enterprise Login Page Template (/login)
- */
 export const loginTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "lg", textColor: "dark" });
 
@@ -770,102 +1003,234 @@ export const gatewayTemplate = (state) => {
  */
 function getEnterpriseFooterHtml() {
   const logoHtmlLight = getOfficialLogoHtml({ size: "md", textColor: "light" });
-
+  
   return `
-    <!-- Top Security Capability Ribbon -->
-    <div class="bg-slate-900 border-t border-slate-800 py-6 px-6 text-slate-300">
-      <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 text-center text-xs font-semibold">
-        <div class="p-2 flex flex-col items-center space-y-1">
-          <span class="text-lg">🛡️</span>
-          <span class="font-bold text-white">Secure</span>
-          <span class="text-[10px] text-slate-400 font-normal">Enterprise-Grade Security</span>
-        </div>
-        <div class="p-2 flex flex-col items-center space-y-1">
-          <span class="text-lg">🏛️</span>
-          <span class="font-bold text-white">Sovereign</span>
-          <span class="text-[10px] text-slate-400 font-normal">Data Sovereignty & Compliance</span>
-        </div>
-        <div class="p-2 flex flex-col items-center space-y-1">
-          <span class="text-lg">⚡</span>
-          <span class="font-bold text-white">Scalable</span>
-          <span class="text-[10px] text-slate-400 font-normal">Built for Growth & Performance</span>
-        </div>
-        <div class="p-2 flex flex-col items-center space-y-1">
-          <span class="text-lg">🌐</span>
-          <span class="font-bold text-white">Integrated</span>
-          <span class="text-[10px] text-slate-400 font-normal">United Platforms & Services</span>
-        </div>
-        <div class="p-2 flex flex-col items-center space-y-1 col-span-2 md:col-span-1">
-          <span class="text-lg">🤖</span>
-          <span class="font-bold text-white">Intelligent</span>
-          <span class="text-[10px] text-slate-400 font-normal">AI-Powered Operations</span>
-        </div>
-      </div>
-    </div>
-
     <!-- Main Footer Body -->
-    <footer class="bg-slate-950 text-slate-300 py-12 px-6 border-t border-slate-800 text-xs font-sans">
-      <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
-        <!-- Brand overview -->
-        <div class="md:col-span-4 space-y-4">
-          <div>
+    <footer class="bg-slate-950 text-slate-300 py-16 px-6 border-t border-slate-800 text-xs font-sans">
+      <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
+        
+        <!-- Column 1: Brand overview -->
+        <div class="lg:col-span-1 space-y-4">
+          <div class="-ml-2">
             ${logoHtmlLight}
           </div>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            ${BRAND_CONFIG.platformName} empowers institutions, state bodies, and digital enterprises across Africa and beyond with sovereign security, unified operations, and AI intelligence.
+          <p class="text-slate-400 text-[11px] leading-relaxed mt-4">
+            ${BRAND_CONFIG.platformName}
           </p>
-          <div class="pt-2">
-            <span class="text-[11px] font-mono text-amber-400 font-bold">One Platform. Infinite Possibilities.</span>
+          <div class="space-y-1.5 mt-4">
+            <a href="#" class="block text-slate-400 hover:text-white transition">About ${BRAND_CONFIG.ownership.ownedBy}</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">JUMO UEOS</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Architecture</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Security</a>
           </div>
         </div>
 
-        <!-- Get in Touch & Public Communication -->
-        <div class="md:col-span-3 space-y-3">
-          <h4 class="font-bold text-white text-sm uppercase tracking-wider font-mono">Public Communication</h4>
-          <div class="space-y-2 text-slate-400 text-xs">
-            <p><strong class="text-white">General:</strong> <a href="mailto:${BRAND_CONFIG.emails.support}" class="hover:text-white transition font-mono">${BRAND_CONFIG.emails.support}</a></p>
-            <p><strong class="text-white">Enterprise:</strong> <a href="mailto:${BRAND_CONFIG.emails.ueos}" class="hover:text-white transition font-mono">${BRAND_CONFIG.emails.ueos}</a></p>
-            <p><strong class="text-white">Security Contact:</strong> <a href="mailto:${BRAND_CONFIG.emails.security}" class="hover:text-white transition font-mono">${BRAND_CONFIG.emails.security}</a></p>
-            <p><strong class="text-white">Legal & Compliance:</strong> <a href="mailto:${BRAND_CONFIG.emails.legal}" class="hover:text-white transition font-mono">${BRAND_CONFIG.emails.legal}</a></p>
-            <p><strong class="text-white">Partnerships:</strong> <a href="mailto:${BRAND_CONFIG.emails.partnerships}" class="hover:text-white transition font-mono">${BRAND_CONFIG.emails.partnerships}</a></p>
-            <p>📞 <a href="tel:${BRAND_CONFIG.telephones.mobile}" class="hover:text-white transition">${BRAND_CONFIG.telephones.mobile}</a></p>
-            <p>💬 <a href="https://wa.me/256752964856" target="_blank" class="hover:text-white transition">${BRAND_CONFIG.telephones.whatsapp} (WhatsApp)</a></p>
+        <!-- Column 2: PLATFORMS -->
+        <div class="space-y-4">
+          <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Platforms</h4>
+          <div class="space-y-2">
+            <a href="#" class="block text-slate-400 hover:text-white transition">Education</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Government</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Healthcare</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Finance</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Agriculture</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">AI Services</a>
           </div>
         </div>
 
-        <!-- Office Locations -->
-        <div class="md:col-span-3 space-y-3">
-          <h4 class="font-bold text-white text-sm uppercase tracking-wider font-mono">Office Locations</h4>
-          <div class="space-y-2 text-slate-400 text-xs">
-            <p><strong class="text-white">Head Office:</strong> ${BRAND_CONFIG.officeLocations.headOffice}</p>
-            <p><strong class="text-white">Regional:</strong> ${BRAND_CONFIG.officeLocations.regionalOffices.join(", ")}</p>
-            <p><strong class="text-white">Home Office:</strong> ${BRAND_CONFIG.officeLocations.homeOffice}</p>
-            <p><strong class="text-white">Region:</strong> ${BRAND_CONFIG.officeLocations.region}, ${BRAND_CONFIG.officeLocations.continent}</p>
+        <!-- Column 3: SERVICES -->
+        <div class="space-y-4">
+          <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Services</h4>
+          <div class="space-y-2">
+            <a href="#" class="block text-slate-400 hover:text-white transition">Identity</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Authentication</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Digital Documents</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Workflow</a>
+            <a href="#" class="block text-slate-400 hover:text-white transition">Integrations</a>
           </div>
         </div>
 
-        <!-- Social Connections -->
-        <div class="md:col-span-2 space-y-3">
-          <h4 class="font-bold text-white text-sm uppercase tracking-wider font-mono">Connect With Us</h4>
-          <div class="flex flex-wrap gap-2 text-slate-400">
-            ${BRAND_CONFIG.socialLinks.map(s => `
-              <a href="${s.url}" target="_blank" title="${s.name}" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded hover:bg-enterprise-blue hover:text-white hover:border-enterprise-blue transition text-[11px] font-medium">
-                ${s.name}
+        <!-- Column 4: ACCOUNT -->
+        <div class="space-y-4">
+          <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Account</h4>
+          <div class="space-y-2">
+            <button onclick="navigate('/login')" class="block text-slate-400 hover:text-white transition cursor-pointer text-left w-full">Sign In</button>
+            <button onclick="navigate('/register')" class="block text-slate-400 hover:text-white transition cursor-pointer text-left w-full">Register Institution</button>
+            <button onclick="navigate('/register')" class="block text-slate-400 hover:text-white transition cursor-pointer text-left w-full">Create Account</button>
+            <button onclick="alert('Password Recovery')" class="block text-slate-400 hover:text-white transition cursor-pointer text-left w-full">Password Recovery</button>
+            <button onclick="navigate('/contact')" class="block text-slate-400 hover:text-white transition cursor-pointer text-left w-full">Support</button>
+          </div>
+        </div>
+
+        <!-- Column 5: CONTACT -->
+        <div class="space-y-4">
+          <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Contact</h4>
+          <div class="space-y-2 text-slate-400 text-[11px]">
+            <p><a href="mailto:${BRAND_CONFIG.communication.general}" class="hover:text-white transition">${BRAND_CONFIG.communication.general}</a></p>
+            <p><a href="mailto:${BRAND_CONFIG.communication.support}" class="hover:text-white transition">${BRAND_CONFIG.communication.support}</a></p>
+            <p class="pt-1">📞 <a href="tel:${BRAND_CONFIG.communication.mobile}" class="hover:text-white transition">${BRAND_CONFIG.communication.mobile}</a></p>
+            <p>💬 <a href="${BRAND_CONFIG.socialLinks.find(s=>s.officialLogo==='whatsapp')?.URL || 'https://wa.me/256752964856'}" target="_blank" class="hover:text-white transition">${BRAND_CONFIG.communication.whatsapp}</a></p>
+            <div class="pt-2 text-[10px] text-slate-500">
+              <p>${BRAND_CONFIG.offices.headOffice}</p>
+              <p>Mon - Fri: 08:00 - 17:00 (EAT)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 6: CONNECT -->
+        <div class="space-y-4">
+          <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Connect</h4>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            ${BRAND_CONFIG.socialLinks.filter(s => s.enabledStatus).map(s => `
+              <a href="${s.URL}" target="_blank" title="${s.platformName}" class="flex items-center gap-1.5 text-slate-400 hover:text-white transition group">
+                <span class="w-1 h-1 rounded-full bg-slate-700 group-hover:bg-enterprise-blue transition"></span>
+                ${s.platformName}
               </a>
             `).join('')}
           </div>
         </div>
       </div>
-
+      
       <!-- Bottom Copyright Bar -->
-      <div class="max-w-[1440px] mx-auto pt-6 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between text-slate-500 font-mono text-[11px] gap-4">
+      <div class="max-w-[1440px] mx-auto pt-6 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between text-slate-500 font-mono text-[10px] gap-4">
         <div>
-          - ${BRAND_CONFIG.ownership}
+          - ${BRAND_CONFIG.ownership.ownedBy}
         </div>
-        <div>
-          Powered by ${BRAND_CONFIG.poweredBy} &bull; ${BRAND_CONFIG.fullSystemName}
+        <div class="flex items-center gap-2">
+          <span>Powered by ${BRAND_CONFIG.poweredBy}</span>
+          <span class="w-1 h-1 rounded-full bg-slate-700"></span>
+          <span>${BRAND_CONFIG.fullPlatformName}</span>
         </div>
       </div>
     </footer>
   `;
 }
+
+export const contactTemplate = (state) => {
+  const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
+  
+  app.innerHTML = `
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="cursor-pointer" onclick="navigate('/')">
+              ${logoHtml}
+            </div>
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
+                <a href="#" onclick="navigate('/')" class="hover:text-enterprise-blue transition">Platform</a>
+                <a href="#" class="hover:text-enterprise-blue transition">Solutions</a>
+                <a href="#" class="text-enterprise-blue font-bold border-b-2 border-enterprise-blue pb-7 translate-y-3.5">Contact & Communication</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <button onclick="navigate('/login')" class="text-sm font-bold text-slate-700 hover:text-enterprise-blue transition cursor-pointer">Sign In</button>
+                <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-16">
+        <div class="mb-12">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-enterprise-blue text-[10px] font-bold tracking-widest uppercase font-mono mb-4">
+                Public Gateway
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Contact & Communication</h1>
+            <p class="text-slate-600 mt-4 max-w-2xl text-base leading-relaxed">Official communication channels for ${BRAND_CONFIG.fullPlatformName}. For immediate security or technical assistance, please use the designated enterprise contacts below.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Contact Information -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100">Digital Channels</h3>
+                    <div class="space-y-5 text-sm">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">General Enquiries</p>
+                            <a href="mailto:${BRAND_CONFIG.communication.general}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.general}</a>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Enterprise Support</p>
+                            <a href="mailto:${BRAND_CONFIG.communication.support}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.support}</a>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Security Operations</p>
+                            <a href="mailto:${BRAND_CONFIG.communication.security}" class="font-medium text-emerald-600 hover:underline">${BRAND_CONFIG.communication.security}</a>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Legal & Compliance</p>
+                            <a href="mailto:${BRAND_CONFIG.communication.legal}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.legal}</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Lines -->
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
+                    <h3 class="font-bold text-white text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-800">Direct Lines</h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">📞</div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-mono">Official Mobile</p>
+                                <p class="font-bold tracking-wide">${BRAND_CONFIG.communication.mobile}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">💬</div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-mono">WhatsApp Business</p>
+                                <p class="font-bold tracking-wide">${BRAND_CONFIG.communication.whatsapp}</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800">
+                            <p class="text-[10px] text-slate-400 font-mono mb-1">Business Hours</p>
+                            <p class="font-medium text-sm">Monday - Friday: 08:00 - 17:00 (EAT)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Location Directory -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-full">
+                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+                        <span>Office Directory</span>
+                        <span class="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded">${BRAND_CONFIG.location.region}</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-5 rounded-xl border border-blue-100 bg-blue-50/50">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-enterprise-blue flex items-center justify-center text-lg mb-4">🏛️</div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2">Head Office</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                ${BRAND_CONFIG.offices.headOffice}<br>
+                                ${BRAND_CONFIG.location.country}
+                            </p>
+                        </div>
+                        
+                        <div class="p-5 rounded-xl border border-slate-100 bg-slate-50">
+                            <div class="w-10 h-10 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center text-lg mb-4">📍</div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2">Home Office</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                ${BRAND_CONFIG.offices.homeOffice}<br>
+                                ${BRAND_CONFIG.location.country}
+                            </p>
+                        </div>
+                        
+                        <div class="md:col-span-2 p-5 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-slate-900 text-sm mb-4 font-mono uppercase tracking-widest text-slate-500">Regional Deployments</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${BRAND_CONFIG.offices.regional.map(city => 
+                                    `<span class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">${city}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    ${getEnterpriseFooterHtml()}
+</div>
+  `;
+};

@@ -3,46 +3,50 @@
 
 export const BRAND_CONFIG = {
   platformName: "JUMO DIGITAL HYBRID PLATFORM",
-  platformNameShort: "JUMO DIGITAL ENTERPRISE PLATFORM",
   poweredBy: "JUMO UEOS",
-  fullSystemName: "JUMO Universal Enterprise Operating System",
-  ownership: "Owned by JUMO",
-  founder: "JUMO Holdings",
-  
-  emails: {
+  fullPlatformName: "JUMO Universal Enterprise Operating System",
+  ownership: {
+    ownedBy: "JUMO",
+    founder: "Julius Moses Okwii"
+  },
+  communication: {
+    general: "ueos@jumo.com",
+    information: "info@jumodigitalplatform.ug.com",
+    contact: "contact@jumodigitalplatform.ug.com",
+    publicServices: "public@jumodigitalplatform.ug.com",
     support: "support@jumo.com",
-    ueos: "ueos@jumo.com",
     security: "security@jumo.com",
     legal: "legal@jumo.com",
     partnerships: "partners@jumo.com",
-    info: "info@jumodigitalplatform.ug.com",
-    contact: "contact@jumodigitalplatform.ug.com",
-    public: "public@jumodigitalplatform.ug.com"
-  },
-  
-  telephones: {
     mobile: "+256 786 981 892",
     whatsapp: "+256 752 964 856"
   },
-  
-  officeLocations: {
-    headOffice: "Kampala, Uganda",
-    regionalOffices: ["Mbale", "Mbarara", "Lira", "Arua", "Busia"],
-    homeOffice: "Kumi, Uganda",
+  location: {
     country: "Uganda",
     region: "East Africa",
-    continent: "Africa"
+    continent: "Africa",
+    city: "Kampala"
   },
-  
+  offices: {
+    headOffice: "Kampala, Uganda",
+    regional: [
+      "Mbale",
+      "Mbarara",
+      "Lira",
+      "Arua",
+      "Busia"
+    ],
+    homeOffice: "Kumi, Uganda"
+  },
   socialLinks: [
-    { name: "Facebook", icon: "facebook", url: "https://facebook.com/jumodigitalplatform" },
-    { name: "X (Twitter)", icon: "x", url: "https://x.com/jumodigital" },
-    { name: "TikTok", icon: "tiktok", url: "https://tiktok.com/@jumodigital" },
-    { name: "LinkedIn", icon: "linkedin", url: "https://linkedin.com/company/jumo-digital-platform" },
-    { name: "Instagram", icon: "instagram", url: "https://instagram.com/jumodigital" },
-    { name: "YouTube", icon: "youtube", url: "https://youtube.com/@jumodigitalplatform" },
-    { name: "Telegram", icon: "telegram", url: "https://t.me/jumodigital" },
-    { name: "WhatsApp Business", icon: "whatsapp", url: "https://wa.me/256752964856" }
+    { platformName: "Facebook", officialLogo: "facebook", accountName: "jumodigitalplatform", URL: "https://facebook.com/jumodigitalplatform", enabledStatus: true },
+    { platformName: "X (Twitter)", officialLogo: "x", accountName: "jumodigital", URL: "https://x.com/jumodigital", enabledStatus: true },
+    { platformName: "TikTok", officialLogo: "tiktok", accountName: "jumodigital", URL: "https://tiktok.com/@jumodigital", enabledStatus: true },
+    { platformName: "LinkedIn", officialLogo: "linkedin", accountName: "jumo-digital-platform", URL: "https://linkedin.com/company/jumo-digital-platform", enabledStatus: true },
+    { platformName: "Instagram", officialLogo: "instagram", accountName: "jumodigital", URL: "https://instagram.com/jumodigital", enabledStatus: true },
+    { platformName: "YouTube", officialLogo: "youtube", accountName: "jumodigitalplatform", URL: "https://youtube.com/@jumodigitalplatform", enabledStatus: true },
+    { platformName: "Telegram", officialLogo: "telegram", accountName: "jumodigital", URL: "https://t.me/jumodigital", enabledStatus: true },
+    { platformName: "WhatsApp Business", officialLogo: "whatsapp", accountName: "256752964856", URL: "https://wa.me/256752964856", enabledStatus: true }
   ]
 };
 

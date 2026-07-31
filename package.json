@@ -1,11 +1,12 @@
 {
-  "name": "jumo-digital-enterprise-platform",
+  "name": "jumo-universal-enterprise-platform",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "description": "JUMO DIGITAL ENTERPRISE PLATFORM powered by JUMO UNIVERSAL ENTERPRISE OPERATING SYSTEM",
   "scripts": {
     "dev": "node server.js",
-    "start": "node ueos-web-server.js",
+    "start": "node server.js",
     "build": "echo \"JUMO UEOS Genesis build successful\""
   }
 }

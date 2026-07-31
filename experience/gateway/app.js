@@ -1,5 +1,5 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
-import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate } from "./index.js";
+import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, contactTemplate } from "./index.js";
 import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
@@ -46,6 +46,8 @@ window.render = function() {
 
   if (path === "/" || path === "/index.html") {
     publicTemplate(window.state);
+  } else if (path === "/contact") {
+    contactTemplate(window.state);
   } else if (path === "/login") {
     loginTemplate(window.state);
   } else if (path === "/register") {
@@ -158,6 +160,15 @@ window.toggleNotificationsMenu = function() {
 window.toggleGatewaySidebar = function() {
   const sidebar = document.getElementById("gateway-sidebar");
   const overlay = document.getElementById("sidebar-overlay");
+  if (sidebar && overlay) {
+    sidebar.classList.toggle("-translate-x-full");
+    overlay.classList.toggle("hidden");
+  }
+};
+
+window.togglePublicSidebar = function() {
+  const sidebar = document.getElementById("public-sidebar");
+  const overlay = document.getElementById("public-sidebar-overlay");
   if (sidebar && overlay) {
     sidebar.classList.toggle("-translate-x-full");
     overlay.classList.toggle("hidden");
