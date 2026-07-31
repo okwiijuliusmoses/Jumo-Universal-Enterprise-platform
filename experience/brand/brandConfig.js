@@ -51,7 +51,7 @@ export const BRAND_CONFIG = {
 
 /**
  * Generates the Official Approved JUMO Logo SVG HTML
- * Features the Enterprise Shield, Stylized U, Connected Digital Ring, and Intelligence Core.
+ * Features a distinctive, sovereign enterprise emblem in blue and emerald green representing cloud infrastructure and unified governance.
  */
 export function getOfficialLogoHtml(options = {}) {
   const {
@@ -79,38 +79,22 @@ export function getOfficialLogoHtml(options = {}) {
   const tagColorClass = textColor === "light" ? "text-emerald-300" : "text-[#007A5A]";
 
   // Official JUMO Enterprise Logo SVG Architecture Specification
-  // 1. Enterprise Shield (rounded security shield)
-  // 2. Stylized U (custom engineered U representing institutions/enterprises & unified OS)
-  // 3. Connected Digital Ring (thin circular orbit with 12 nodes)
-  // 4. Intelligence Core (small emerald circle at center-bottom)
+  // Distinctive Enterprise Monogram & Gateway Emblem in Professional Blue and Emerald Green
   const logoSvgIcon = `
     <svg class="${iconSize} shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Connected Digital Ring (orbit with 12 nodes) -->
-      <circle cx="50" cy="50" r="42" stroke="#007A5A" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"/>
-      <circle cx="50" cy="8" r="3" fill="#00A86B"/>
-      <circle cx="71" cy="14" r="2.5" fill="#007A5A"/>
-      <circle cx="86" cy="29" r="2.5" fill="#007A5A"/>
-      <circle cx="92" cy="50" r="3" fill="#00A86B"/>
-      <circle cx="86" cy="71" r="2.5" fill="#007A5A"/>
-      <circle cx="71" cy="86" r="2.5" fill="#007A5A"/>
-      <circle cx="50" cy="92" r="3" fill="#00A86B"/>
-      <circle cx="29" cy="86" r="2.5" fill="#007A5A"/>
-      <circle cx="14" cy="71" r="2.5" fill="#007A5A"/>
-      <circle cx="8" cy="50" r="3" fill="#00A86B"/>
-      <circle cx="14" cy="29" r="2.5" fill="#007A5A"/>
-      <circle cx="29" cy="14" r="2.5" fill="#007A5A"/>
-
-      <!-- Enterprise Shield Background -->
-      <path d="M50 15 C68 15 82 22 82 40 C82 65 65 80 50 88 C35 80 18 65 18 40 C18 22 32 15 50 15 Z" fill="#F8FAFC" stroke="#007A5A" stroke-width="3"/>
-
-      <!-- Stylized U (custom architectural U with open gateway negative space) -->
-      <path d="M36 34 V54 C36 63 64 63 64 54 V34" stroke="#007A5A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M36 34 H42" stroke="#00A86B" stroke-width="4" stroke-linecap="round"/>
-      <path d="M58 34 H64" stroke="#00A86B" stroke-width="4" stroke-linecap="round"/>
-
-      <!-- Intelligence Core (UEOS Kernel Heart) -->
-      <circle cx="50" cy="58" r="4.5" fill="#00A86B"/>
-      <circle cx="50" cy="58" r="2" fill="#FFFFFF"/>
+      <!-- Outer Hexagon Sovereign Frame -->
+      <polygon points="50,6 90,27 90,73 50,94 10,73 10,27" fill="#0b3b9b" stroke="#007A5A" stroke-width="2.5" stroke-linejoin="round"/>
+      
+      <!-- Inner Geometric Gateway Pillars (Representing Unified Enterprise OS) -->
+      <path d="M32 30 V70 M68 30 V70" stroke="#00A86B" stroke-width="5" stroke-linecap="round"/>
+      <path d="M32 50 H68" stroke="#00A86B" stroke-width="4"/>
+      
+      <!-- Sovereign Apex Core -->
+      <polygon points="50,18 62,38 38,38" fill="#00A86B"/>
+      
+      <!-- Intelligence Core Node -->
+      <circle cx="50" cy="68" r="5" fill="#FFFFFF"/>
+      <circle cx="50" cy="68" r="2.5" fill="#007A5A"/>
     </svg>
   `;
 

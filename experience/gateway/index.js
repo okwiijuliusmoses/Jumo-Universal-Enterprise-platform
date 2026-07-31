@@ -173,6 +173,10 @@ export const publicTemplate = (state) => {
                             </button>
                         </div>
                         <div class="p-2 border-t border-slate-100 space-y-1">
+                            <button onclick="navigate('/control-center/login')" class="w-full text-left px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition cursor-pointer flex items-center justify-between">
+                                <span class="flex items-center gap-2">🛡️ Platform Owner Access</span>
+                                <span class="text-[9px] font-mono bg-emerald-200 px-1.5 py-0.5 rounded text-emerald-900">SOVEREIGN</span>
+                            </button>
                             <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Help Centre</button>
                             <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Language (EN)</button>
                             <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Contact Support</button>
