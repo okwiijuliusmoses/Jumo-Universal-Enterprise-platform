@@ -15,6 +15,8 @@ export const BRAND_CONFIG = {
     support: "support@jumodigitalplatform.ug.com",
     contact: "contact@jumodigitalplatform.ug.com",
     publicServices: "public@jumodigitalplatform.ug.com",
+    security: "security@jumodigitalplatform.ug.com",
+    legal: "legal@jumodigitalplatform.ug.com",
     mobile: "+256 786 981 892",
     whatsapp: "+256 752 964 856"
   },
@@ -49,7 +51,7 @@ export const BRAND_CONFIG = {
 
 /**
  * Generates the Official Approved JUMO Logo SVG HTML
- * Features the sovereign crest shield, gold crown accents, navy geometry & bold typography.
+ * Features the Enterprise Shield, Stylized U, Connected Digital Ring, and Intelligence Core.
  */
 export function getOfficialLogoHtml(options = {}) {
   const {
@@ -58,40 +60,57 @@ export function getOfficialLogoHtml(options = {}) {
     textColor = "dark" 
   } = options;
 
-  let logoHeight = "h-10";
   let iconSize = "w-10 h-10";
   let titleSize = "text-base";
   let subtitleSize = "text-[9px]";
   
   if (size === "sm") {
-    logoHeight = "h-8";
     iconSize = "w-8 h-8";
     titleSize = "text-xs";
     subtitleSize = "text-[8px]";
   } else if (size === "lg") {
-    logoHeight = "h-14";
     iconSize = "w-14 h-14";
     titleSize = "text-xl";
     subtitleSize = "text-[10px]";
   }
 
-  const titleColorClass = textColor === "light" ? "text-white" : "text-slate-900";
-  const subtitleColorClass = textColor === "light" ? "text-blue-200" : "text-slate-500";
-  const tagColorClass = textColor === "light" ? "text-blue-100" : "text-enterprise-blue";
+  const titleColorClass = textColor === "light" ? "text-white" : "text-[#1E293B]";
+  const subtitleColorClass = textColor === "light" ? "text-slate-200" : "text-[#64748B]";
+  const tagColorClass = textColor === "light" ? "text-emerald-300" : "text-[#007A5A]";
 
-  // Professional Enterprise Identity Symbol
+  // Official JUMO Enterprise Logo SVG Architecture Specification
+  // 1. Enterprise Shield (rounded security shield)
+  // 2. Stylized U (custom engineered U representing institutions/enterprises & unified OS)
+  // 3. Connected Digital Ring (thin circular orbit with 12 nodes)
+  // 4. Intelligence Core (small emerald circle at center-bottom)
   const logoSvgIcon = `
     <svg class="${iconSize} shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Circular Ecosystem -->
-      <circle cx="50" cy="50" r="45" stroke="#0F62FE" stroke-width="2" stroke-dasharray="10 5" opacity="0.3"/>
-      <!-- Interconnected Nodes -->
-      <circle cx="50" cy="20" r="6" fill="#0F62FE"/>
-      <circle cx="80" cy="50" r="6" fill="#0F62FE"/>
-      <circle cx="50" cy="80" r="6" fill="#0F62FE"/>
-      <circle cx="20" cy="50" r="6" fill="#0F62FE"/>
-      <!-- J Identity Path -->
-      <path d="M40 35 C40 30 50 25 60 30 C70 35 60 50 50 60 C40 70 30 75 30 70" stroke="#0F62FE" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="65" cy="65" r="8" fill="#F59E0B" />
+      <!-- Connected Digital Ring (orbit with 12 nodes) -->
+      <circle cx="50" cy="50" r="42" stroke="#007A5A" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"/>
+      <circle cx="50" cy="8" r="3" fill="#00A86B"/>
+      <circle cx="71" cy="14" r="2.5" fill="#007A5A"/>
+      <circle cx="86" cy="29" r="2.5" fill="#007A5A"/>
+      <circle cx="92" cy="50" r="3" fill="#00A86B"/>
+      <circle cx="86" cy="71" r="2.5" fill="#007A5A"/>
+      <circle cx="71" cy="86" r="2.5" fill="#007A5A"/>
+      <circle cx="50" cy="92" r="3" fill="#00A86B"/>
+      <circle cx="29" cy="86" r="2.5" fill="#007A5A"/>
+      <circle cx="14" cy="71" r="2.5" fill="#007A5A"/>
+      <circle cx="8" cy="50" r="3" fill="#00A86B"/>
+      <circle cx="14" cy="29" r="2.5" fill="#007A5A"/>
+      <circle cx="29" cy="14" r="2.5" fill="#007A5A"/>
+
+      <!-- Enterprise Shield Background -->
+      <path d="M50 15 C68 15 82 22 82 40 C82 65 65 80 50 88 C35 80 18 65 18 40 C18 22 32 15 50 15 Z" fill="#F8FAFC" stroke="#007A5A" stroke-width="3"/>
+
+      <!-- Stylized U (custom architectural U with open gateway negative space) -->
+      <path d="M36 34 V54 C36 63 64 63 64 54 V34" stroke="#007A5A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M36 34 H42" stroke="#00A86B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M58 34 H64" stroke="#00A86B" stroke-width="4" stroke-linecap="round"/>
+
+      <!-- Intelligence Core (UEOS Kernel Heart) -->
+      <circle cx="50" cy="58" r="4.5" fill="#00A86B"/>
+      <circle cx="50" cy="58" r="2" fill="#FFFFFF"/>
     </svg>
   `;
 
