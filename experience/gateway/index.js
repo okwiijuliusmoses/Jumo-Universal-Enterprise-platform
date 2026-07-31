@@ -185,14 +185,32 @@ export const publicTemplate = (state) => {
 
     <!-- 1. Enterprise Information Hub -->
     <section class="bg-white border-b border-slate-100 py-6">
-        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-slate-900">Welcome to JUMO Digital Enterprise Platform</h2>
-            <div class="flex gap-6 text-sm font-medium text-slate-600">
-                <a href="#" class="hover:text-enterprise-blue">Latest News</a>
-                <a href="#" class="hover:text-enterprise-blue">Platform Updates</a>
-                <a href="#" class="hover:text-enterprise-blue">Notices</a>
-                <a href="#" class="hover:text-enterprise-blue">JUMO Showcase</a>
-                <a href="#" class="hover:text-enterprise-blue">Resources</a>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-slate-900">JUMO Digital Enterprise Platform</h2>
+                <div class="flex gap-6 text-sm font-medium text-slate-600">
+                    <a href="#" class="hover:text-enterprise-blue">Latest News</a>
+                    <a href="#" class="hover:text-enterprise-blue">Platform Updates</a>
+                    <a href="#" class="hover:text-enterprise-blue">Public Notices</a>
+                    <a href="#" class="hover:text-enterprise-blue">JUMO Showcase</a>
+                    <a href="#" class="hover:text-enterprise-blue">Live Broadcast</a>
+                    <a href="#" class="hover:text-enterprise-blue">Resources</a>
+                </div>
+            </div>
+            <!-- Digital Notice Board Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-sm text-slate-900 mb-2">Platform Announcements</h3>
+                    <p class="text-xs text-slate-600">Latest updates on platform features and service releases.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-sm text-slate-900 mb-2">Institutional Notices</h3>
+                    <p class="text-xs text-slate-600">Important notices for partner institutions and government agencies.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-sm text-slate-900 mb-2">Upcoming Events</h3>
+                    <p class="text-xs text-slate-600">Scheduled webinars, training, and community sessions.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -206,18 +224,18 @@ export const publicTemplate = (state) => {
             
             <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
                 
-                <!-- Reception Desk Intro -->
+                <!-- Welcome Section -->
                 <div class="w-full lg:w-5/12 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Digital Reception is Open
+                        Digital Enterprise Ecosystem
                     </div>
                     <h1 class="text-4xl lg:text-5xl font-light text-slate-900 tracking-tight leading-tight">
-                        Welcome to the <br>
-                        <span class="font-bold text-enterprise-blue">Information Hub</span>
+                        Connecting <br>
+                        <span class="font-bold text-enterprise-blue">Digital Services</span>
                     </h1>
                     <p class="text-lg text-slate-600 leading-relaxed">
-                        Discover the latest institutional updates, platform announcements, and resources from the ${BRAND_CONFIG.platformName}.
+                        A secure, integrated platform for institutions, citizens, and enterprise services.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
                         <button class="px-6 py-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-enterprise-blue font-semibold text-slate-700 transition flex items-center justify-between cursor-pointer group">
@@ -1068,15 +1086,15 @@ export const gatewayTemplate = (state) => {
       <!-- FLOATING JUMO ASSISTANT -->
       <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         <div id="jumo-assistant-chat" class="hidden w-80 h-96 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 flex flex-col overflow-hidden animate-fade-in">
-          <div class="bg-enterprise-blue p-4 flex items-center justify-between text-white shadow-xs">
+          <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-xs">
             <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center font-bold text-xs">J</div>
+              ${getOfficialLogoHtml({ variant: "icon-only", size: "sm", textColor: "light" })}
               <div>
-                <h4 class="font-bold text-xs">JUMO Assistant</h4>
-                <p class="text-[9px] text-blue-200">Digital Front Desk</p>
+                <h4 class="font-bold text-xs">JUMO AI Assistant</h4>
+                <p class="text-[9px] text-emerald-100">Powered by JUMO UEOS</p>
               </div>
             </div>
-            <button onclick="toggleChat()" class="text-blue-200 hover:text-white">✕</button>
+            <button onclick="toggleChat()" class="text-emerald-100 hover:text-white">✕</button>
           </div>
           <div class="flex-1 bg-slate-50 p-4 overflow-y-auto space-y-3 text-xs">
             <div class="bg-white border border-slate-200 p-3 rounded-xl shadow-xs text-slate-700 leading-relaxed">
@@ -1095,8 +1113,8 @@ export const gatewayTemplate = (state) => {
           </div>
         </div>
         
-        <button onclick="toggleChat()" class="w-14 h-14 bg-enterprise-blue text-white rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center text-xl cursor-pointer">
-          💬
+        <button onclick="toggleChat()" class="w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 transition flex items-center justify-center text-xl cursor-pointer">
+          ${getOfficialLogoHtml({ variant: "icon-only", size: "sm", textColor: "light" })}
         </button>
       </div>
 
