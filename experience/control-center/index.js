@@ -904,6 +904,7 @@ function renderViewContent(view) {
 
 // UI Building Blocks for Views
 function ecosystemCard(title, emoji, desc, color, templates) {
+  const cardTabId = `card-tab-${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   const templatesHtml = templates.map(t => `
     <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 rounded-xl transition flex flex-col justify-between space-y-2">
       <div>
@@ -911,7 +912,7 @@ function ecosystemCard(title, emoji, desc, color, templates) {
         <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">${t.desc}</p>
       </div>
       <div class="flex items-center gap-2 pt-2.5 border-t border-slate-200/60">
-        <button onclick="alert('Provisioning ${t.name} institutional instance...');" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Install</button>
+        <button onclick="window.openErpInstallationFlow('${t.name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Install ERP</button>
         <button onclick="alert('Configuring ${t.name} blueprint settings...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Configure</button>
         <button onclick="alert('Cloning ${t.name} template...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Clone</button>
       </div>
@@ -929,8 +930,30 @@ function ecosystemCard(title, emoji, desc, color, templates) {
           <p class="text-xs text-slate-500 leading-relaxed">${desc}</p>
         </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+
+      <!-- Horizontal Card Tabs -->
+      <div class="flex items-center gap-2 border-b border-slate-200 pb-2 text-[11px] font-bold overflow-x-auto">
+        <button onclick="window.switchCardTab('${cardTabId}', 'templates')" class="${cardTabId}-btn border-b-2 border-emerald-600 text-emerald-700 px-3 py-1 whitespace-nowrap">Templates (${templates.length})</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'governance')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Governance Hierarchy</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'sacco')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Staff SACCO</button>
+      </div>
+
+      <div id="${cardTabId}-templates-content" class="${cardTabId}-content grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         ${templatesHtml}
+      </div>
+
+      <div id="${cardTabId}-governance-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Institution Governance → Office → Department → Module → Component → Form → Workflow → Audit</span>
+          <p class="text-[11px] text-slate-500">Every ERP installation strictly enforces institutional governance boundaries prior to module execution.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-sacco-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
+          <span class="font-bold text-emerald-900">Inherited Staff SACCO Platform</span>
+          <p class="text-[11px] text-emerald-700">Auto-provisions savings, loans, member registry & FAAP wallet settlements upon installation.</p>
+        </div>
       </div>
     </div>
   `;
@@ -1139,3 +1162,31 @@ function activityItem(action, detail, time) {
     </div>
   `;
 }
+
+window.switchCardTab = function(cardTabId, tabName) {
+  const contents = document.querySelectorAll(`.${cardTabId}-content`);
+  contents.forEach(c => c.classList.add('hidden'));
+
+  const target = document.getElementById(`${cardTabId}-${tabName}-content`);
+  if (target) target.classList.remove('hidden');
+
+  const btns = document.querySelectorAll(`.${cardTabId}-btn`);
+  btns.forEach(b => {
+    b.classList.remove('border-emerald-600', 'text-emerald-700');
+    b.classList.add('border-transparent', 'text-slate-500');
+  });
+
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.remove('border-transparent', 'text-slate-500');
+    event.currentTarget.classList.add('border-emerald-600', 'text-emerald-700');
+  }
+};
+
+window.openErpInstallationFlow = function(templateName) {
+  const customName = prompt(`Install & Provision ${templateName}\n\nEnter Institution Name:`, templateName);
+  if (customName !== null) {
+    alert(`[JUMO UEOS Deployment Agent]\n\nProvisioning enterprise instance for "${customName}"...\n✓ Tenant ID generated\n✓ FAAP Wallet auto-linked\n✓ Staff SACCO platform provisioned\n✓ Governance hierarchy created\n\nLaunching into workspace...`);
+    window.location.hash = "#workspace";
+  }
+};
+
