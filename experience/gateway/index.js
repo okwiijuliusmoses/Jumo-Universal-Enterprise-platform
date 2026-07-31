@@ -831,16 +831,6 @@ export const gatewayTemplate = (state) => {
                     <button onclick="alert('Help Centre')" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">❓ Help Centre</button>
                   </div>
 
-                  <!-- Privilege Protected Access option -->
-                  ${user.isAdmin ? `
-                    <div class="pt-2">
-                      <button onclick="navigate('/control-center'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 rounded-md flex items-center justify-between">
-                        <span>🛠️ Administrative Access</span>
-                        <span class="text-[9px] font-mono bg-indigo-200 px-1.5 py-0.5 rounded text-indigo-900">ADMIN</span>
-                      </button>
-                    </div>
-                  ` : ''}
-
                   <div class="pt-2">
                     <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
                   </div>
