@@ -1,10 +1,10 @@
 import React from 'react';
 import { Bell, HelpCircle, User, Settings, LayoutGrid, Menu } from 'lucide-react';
 
-export const Header = () => (
+export const Header = ({ toggleLauncher }) => (
   <header className="flex justify-between items-center bg-white p-4 border-b border-slate-200">
     <div className="flex items-center space-x-4">
-      <LayoutGrid className="w-6 h-6 text-slate-700 cursor-pointer" />
+      <LayoutGrid className="w-6 h-6 text-slate-700 cursor-pointer" onClick={toggleLauncher} />
       <div className="font-bold text-lg text-emerald-700">JUMO UEOS</div>
     </div>
     
