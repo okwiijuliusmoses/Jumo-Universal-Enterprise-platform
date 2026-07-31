@@ -18,7 +18,17 @@ export class ERPStore {
 
   installERP(id, tenantId) {
     console.log(`Installing ERP ${id} for tenant ${tenantId}`);
-    // Logic to activate ERP for a specific tenant
+    this.erpRegistry.updateLifecycle(id, 'installed');
     return { success: true, erpId: id, tenantId: tenantId };
+  }
+
+  enableERP(id) {
+    console.log(`Enabling ERP ${id}`);
+    this.erpRegistry.updateLifecycle(id, 'enabled');
+  }
+
+  disableERP(id) {
+    console.log(`Disabling ERP ${id}`);
+    this.erpRegistry.updateLifecycle(id, 'disabled');
   }
 }
