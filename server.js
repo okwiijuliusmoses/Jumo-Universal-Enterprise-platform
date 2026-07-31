@@ -6,6 +6,13 @@ import { fileURLToPath } from "url";
 import { RuntimeManager } from "./kernel/runtime/runtimeManager.js";
 import { ServiceRegistry } from "./kernel/registry/serviceRegistry.js";
 import { EventBus } from "./kernel/events/eventBus.js";
+import { ERPRegistry } from "./kernel/erp/erpRegistry.js";
+import { ERPConfigEngine } from "./kernel/erp/erpConfigEngine.js";
+import { ERPStore } from "./services/erp/erpStore.js";
+import { baseEducationConfig } from "./kernel/erp/education/baseEducationConfig.js";
+import { baseAlumniConfig } from "./kernel/erp/industry/baseAlumniConfig.js";
+import { baseHospitalityConfig } from "./kernel/erp/industry/baseHospitalityConfig.js";
+import { baseChurchConfig } from "./kernel/erp/industry/baseChurchConfig.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +20,19 @@ const __dirname = path.dirname(__filename);
 const runtime = new RuntimeManager();
 const registry = new ServiceRegistry();
 const eventBus = new EventBus();
+const erpRegistry = new ERPRegistry();
+const erpConfigEngine = new ERPConfigEngine(erpRegistry);
+const erpStore = new ERPStore(erpRegistry, erpConfigEngine);
+
+erpRegistry.register("Education-University", baseEducationConfig);
+erpRegistry.register("Alumni-Association", baseAlumniConfig);
+erpRegistry.register("Hospitality-Hotel", baseHospitalityConfig);
+erpRegistry.register("Church-Ministry", baseChurchConfig);
+
 registry.register("eventBus", eventBus);
+registry.register("ERPRegistry", erpRegistry);
+registry.register("ERPConfigEngine", erpConfigEngine);
+registry.register("ERPStore", erpStore);
 registry.register("Identity", { status: "active", version: "1.0.0", description: "Identity & Tenant Resolution Service" });
 registry.register("Workflow", { status: "active", version: "1.0.0", description: "Unified Workflow & Approval Engine" });
 registry.register("AIGateway", { status: "active", version: "1.0.0", description: "AI Model Abstraction & Request Router" });
