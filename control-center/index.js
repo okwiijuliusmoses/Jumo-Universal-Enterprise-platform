@@ -14,12 +14,13 @@ const Tile = ({ icon: Icon, title, desc, color = "emerald" }) => (
 
 export const ControlCenterOverview = () => {
   return (
-    <ControlCenterWorkspace>
-      <div className="p-8 max-w-7xl mx-auto">
-        
+    <ControlCenterWorkspace 
+        title="Platform Overview" 
+        description="Command center for JUMO UEOS platform operations."
+    >
         {/* Platform Services */}
         <section className="mb-12">
-            <h1 className="text-xl font-bold mb-6 text-slate-900">Platform Services</h1>
+            <h2 className="text-lg font-bold mb-6 text-slate-900">Platform Services</h2>
             <div className="grid grid-cols-4 gap-6">
               <Tile icon={LayoutDashboard} title="ERP Factory" desc="Design ERP Blueprints" />
               <Tile icon={ShoppingCart} title="ERP Store" desc="Manage ERP Installs" />
@@ -32,14 +33,13 @@ export const ControlCenterOverview = () => {
 
         {/* System Services */}
         <section className="border-t pt-8">
-            <h1 className="text-xl font-bold mb-6 text-slate-900">System Services</h1>
+            <h2 className="text-lg font-bold mb-6 text-slate-900">System Services</h2>
             <div className="grid grid-cols-4 gap-6">
               <Tile icon={Database} title="Service Registry" desc="Kernel Services" color="slate" />
               <Tile icon={Terminal} title="Runtime Monitor" desc="Kernel Diagnostics" color="slate" />
               <Tile icon={Settings} title="Platform Policies" desc="Governance" color="slate" />
             </div>
         </section>
-      </div>
     </ControlCenterWorkspace>
   );
 };

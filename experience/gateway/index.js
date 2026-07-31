@@ -542,7 +542,7 @@ export const publicTemplate = (state) => {
         
         <!-- Floating Button -->
         <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
-            🤖
+            <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
     </div>
 </div>

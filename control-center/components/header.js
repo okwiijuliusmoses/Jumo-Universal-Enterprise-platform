@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, HelpCircle, User, Settings, LayoutGrid, Menu } from 'lucide-react';
+import { Bell, HelpCircle, User, Settings, LayoutGrid, Menu, Activity } from 'lucide-react';
 
 export const Header = ({ toggleLauncher }) => (
   <header className="flex justify-between items-center bg-white p-4 border-b border-slate-200">
@@ -14,6 +14,7 @@ export const Header = ({ toggleLauncher }) => (
 
     <div className="flex items-center space-x-4">
       <Bell className="w-5 h-5 text-slate-500 cursor-pointer" />
+      <Activity className="w-5 h-5 text-slate-500 cursor-pointer" />
       <HelpCircle className="w-5 h-5 text-slate-500 cursor-pointer" />
       <Settings className="w-5 h-5 text-slate-500 cursor-pointer" />
       <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full cursor-pointer flex items-center justify-center">
