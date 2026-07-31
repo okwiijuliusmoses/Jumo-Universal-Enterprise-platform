@@ -523,98 +523,114 @@ function renderViewContent(view) {
     `;
   }
 
-  if (view === 'erp-factory') {
+  if (view === 'erp-factory' || view === 'erp-store') {
     return `
-      <div class="space-y-6">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="font-bold text-base text-slate-900">ERP Ecosystem Architecture Hierarchy</h2>
-              <p class="text-xs text-slate-500">Design and configure modular enterprise ERP blueprints across industries.</p>
+      <div class="space-y-8">
+        <!-- Enterprise Ecosystem Banner -->
+        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+              <span>🏭 JUMO ERP Ecosystem Factory & Store</span>
             </div>
-            <button onclick="alert('Creating new ecosystem blueprint...');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Create Blueprint</button>
+            <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Universal Enterprise Ecosystem Marketplace</h2>
+            <p class="text-xs text-slate-300 max-w-2xl">Provision, configure, and manage modular enterprise ERP ecosystems. Every template inherits the sovereign UEOS kernel, FAAP treasury, Digital Pay clearinghouse, AEGIS security, and Staff SACCO platform.</p>
           </div>
+          <button onclick="alert('Opening ERP Provisioning Wizard...');" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer shrink-0">
+            <span>➕ Create New ERP</span>
+          </button>
+        </div>
 
-          <div class="space-y-4">
-            <!-- 1. Education Ecosystem -->
-            <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">🎓</span>
-                <div>
-                  <h3 class="font-bold text-sm text-slate-900">Education Ecosystem</h3>
-                  <p class="text-xs text-slate-500">Multi-tier academic management blueprints</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">University ERP</div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">College ERP</div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Technical & Vocational ERP</div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Nursery & Primary School ERP</div>
-              </div>
-            </div>
-
-            <!-- 2. Hospitality Ecosystem -->
-            <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">🏨</span>
-                <div>
-                  <h3 class="font-bold text-sm text-slate-900">Hospitality Ecosystem</h3>
-                  <p class="text-xs text-slate-500">Hotels, resorts, tourism and lodge management</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Hospitality ERP (Configurable Hotel & Lodge)</div>
-              </div>
-            </div>
-
-            <!-- 3. Church Ecosystem -->
-            <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">⛪</span>
-                <div>
-                  <h3 class="font-bold text-sm text-slate-900">Church Ecosystem</h3>
-                  <p class="text-xs text-slate-500">Ecclesiastical governance and parish administration</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-3 gap-3 text-xs">
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Church ERP</div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Diocese ERP</div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">Province ERP</div>
-              </div>
-            </div>
-
-            <!-- 4. Alumni & Corporate Ecosystems -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                <div class="flex items-center gap-3">
-                  <span class="text-2xl">🤝</span>
-                  <div>
-                    <h3 class="font-bold text-sm text-slate-900">Alumni Ecosystem</h3>
-                    <p class="text-xs text-slate-500">Institution-specific alumni networks</p>
-                  </div>
-                </div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800 text-xs">Alumni Association Portal</div>
-              </div>
-
-              <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                <div class="flex items-center gap-3">
-                  <span class="text-2xl">🏢</span>
-                  <div>
-                    <h3 class="font-bold text-sm text-slate-900">Corporate Ecosystem</h3>
-                    <p class="text-xs text-slate-500">Enterprise subsidiary management</p>
-                  </div>
-                </div>
-                <div class="p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-800 text-xs">Enterprise Corporate ERP</div>
-              </div>
-            </div>
+        <!-- Inherited Platform Services Banner -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">⚡ Inherited Platform Services (Auto-Bound to Every ERP)</h3>
+            <span class="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full">Zero-Duplication Architecture</span>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-6 gap-3 text-[11px] font-semibold">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>FAAP Financials</div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>JUMO Digital Pay</div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>AEGIS Security</div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>AI Platform</div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>Staff SACCO</div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>Workflow Engine</div>
           </div>
         </div>
 
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-3">
-          <span class="text-xl">💡</span>
-          <div>
-            <p class="font-bold">Staff SACCO Shared Platform Service</p>
-            <p class="text-[11px] text-emerald-700">Automatically integrated into every ERP instance across all ecosystems, sharing FAAP treasury and Digital Pay clearinghouse rails.</p>
+        <!-- All 9 Ecosystems Catalog -->
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Templates</h3>
+            <span class="text-xs font-mono text-slate-500 font-bold">9 Certified Ecosystem Families</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 1. Education Ecosystem -->
+            ${ecosystemCard('Education ERP Ecosystem', '🎓', 'Multi-tier academic management across universities, colleges, technical institutes, secondary, and primary schools.', 'emerald', [
+              { name: 'University ERP', desc: 'Executive Council, Senate, faculties, student portal & research.' },
+              { name: 'College ERP', desc: 'Campuses, departments, certificates & timetabling.' },
+              { name: 'Vocational & Technical ERP', desc: 'Workshop management, practical grading & certifications.' },
+              { name: 'Secondary School ERP', desc: 'O/A-Level structures, term reports & discipline registries.' },
+              { name: 'Nursery & Primary School ERP', desc: 'Attendance, continuous assessment & parent communication.' }
+            ])}
+
+            <!-- 2. Church Ecosystem -->
+            ${ecosystemCard('Church ERP Ecosystem', '⛪', 'Ecclesiastical governance, parish administration, tithes, offerings, and SACCO integration.', 'emerald', [
+              { name: 'Local Church ERP', desc: 'Parishioners, local treasury, weekly collections & ministries.' },
+              { name: 'Diocese ERP', desc: 'Archdeaconries, clergy registry, diocesan projects & assets.' },
+              { name: 'Province ERP', desc: 'Provincial synods, bishoprics & multi-diocese reports.' },
+              { name: 'National & International Church', desc: 'Global assemblies, mission boards & international aid.' }
+            ])}
+
+            <!-- 3. Hospitality Ecosystem -->
+            ${ecosystemCard('Hospitality ERP Ecosystem', '🏨', 'Hotel, restaurant, resort, tourism, and lodge management.', 'emerald', [
+              { name: 'Hotel & Resort ERP', desc: 'Front desk, room inventory, housekeeping & billing.' },
+              { name: 'Restaurant & Dining ERP', desc: 'POS, kitchen display, table reservations & inventory.' },
+              { name: 'Tourism & Tour Operator ERP', desc: 'Safaris, bookings, transport & guide scheduling.' },
+              { name: 'Lodge & Conference Centre ERP', desc: 'Event halls, catering, guest check-in & billing.' }
+            ])}
+
+            <!-- 4. Alumni Ecosystem -->
+            ${ecosystemCard('Alumni ERP Ecosystem', '🤝', 'Comprehensive alumni networks, chapters, donations, and career portals.', 'emerald', [
+              { name: 'University Alumni Portal', desc: 'Graduation cohorts, chapters, endowment funds & mentoring.' },
+              { name: 'College & School Alumni Network', desc: 'Yearbook records, reunions & institutional fundraising.' },
+              { name: 'Professional Association Alumni', desc: 'Credential verification, continuing education & networking.' }
+            ])}
+
+            <!-- 5. Corporate Ecosystem -->
+            ${ecosystemCard('Corporate ERP Ecosystem', '🏢', 'Private companies, holding groups, manufacturing, retail, and SME enterprise suites.', 'emerald', [
+              { name: 'Enterprise Corporate ERP', desc: 'Subsidiaries, cross-company reporting, procurement & assets.' },
+              { name: 'Manufacturing & Supply Chain ERP', desc: 'BOM, production lines, warehouse & logistics.' },
+              { name: 'Retail Chain ERP', desc: 'Multi-branch POS, inventory synchronization & customer loyalty.' },
+              { name: 'SME Business Suite', desc: 'Invoicing, tax compliance, payroll & general ledger.' }
+            ])}
+
+            <!-- 6. NGO Ecosystem -->
+            ${ecosystemCard('NGO Ecosystem', '🌍', 'Non-governmental organisations, foundations, charities, and development partner aid tracking.', 'emerald', [
+              { name: 'NGO & Foundation ERP', desc: 'Grant management, donor reporting, project milestones & field audits.' },
+              { name: 'Charity & Community Organisation', desc: 'Beneficiary registries, volunteer management & relief distribution.' },
+              { name: 'Faith-Based Organisation Network', desc: 'Community development programs & cross-border aid.' }
+            ])}
+
+            <!-- 7. Government Ecosystem -->
+            ${ecosystemCard('Government Ecosystem', '🏛️', 'Ministries, departments, agencies, authorities, commissions, districts, and city councils.', 'emerald', [
+              { name: 'Ministry & Department ERP', desc: 'Public sector budgeting, legislative tracking & citizen services.' },
+              { name: 'District & City Council ERP', desc: 'Local revenue collection, public works, land registry & permits.' },
+              { name: 'Public Authority & Commission', desc: 'Regulatory oversight, licensing registries & public hearings.' }
+            ])}
+
+            <!-- 8. Healthcare Ecosystem -->
+            ${ecosystemCard('Healthcare Ecosystem', '🏥', 'National hospitals, regional clinics, medical laboratories, and health training institutions.', 'emerald', [
+              { name: 'National & Regional Hospital ERP', desc: 'Patient EMR, ward management, pharmacy, billing & surgery.' },
+              { name: 'District Health Centre & Clinic', desc: 'Outpatient queue, immunisation records & drug stock control.' },
+              { name: 'Medical Laboratory & Training', desc: 'Diagnostic results, specimen tracking & student enrollment.' }
+            ])}
+
+            <!-- 9. Agriculture Ecosystem -->
+            ${ecosystemCard('Agriculture Ecosystem', '🌾', 'Agricultural cooperatives, farmer groups, seed companies, processors, and exporters.', 'emerald', [
+              { name: 'Agricultural Cooperative ERP', desc: 'Farmer member registries, crop collection, grading & payouts.' },
+              { name: 'Agro-Processor & Exporter ERP', desc: 'Processing plant metrics, quality control, shipping & export documentation.' },
+              { name: 'Seed & Input Distribution Company', desc: 'Agro-input supply chain, agent networks & credit sales.' }
+            ])}
           </div>
         </div>
       </div>
@@ -639,25 +655,6 @@ function renderViewContent(view) {
             ${installedPlatformRow('Grand Serena Resort', 'Hospitality Ecosystem • Hospitality ERP', 'Active • 850 Users', 'emerald')}
             ${installedPlatformRow('Ministry of Finance', 'Government Ecosystem • Ministry ERP', 'Active • 3,200 Users', 'emerald')}
           </div>
-        </div>
-      </div>
-    `;
-  }
-
-  if (view === 'erp-store') {
-    return `
-      <div class="space-y-4">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <h3 class="font-bold text-sm text-slate-900">ERP Store Marketplace</h3>
-            <p class="text-xs text-slate-500">Distribute and manage certified enterprise packages across tenant clusters</p>
-          </div>
-          <button onclick="alert('Syncing marketplace repository...');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-emerald-700 cursor-pointer">Sync Catalog</button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          ${storeAppCard('University ERP', 'v1.2.0 • Education Ecosystem', 'Installed', 'emerald')}
-          ${storeAppCard('Church ERP', 'v1.0.5 • Church Ecosystem', 'Update Available', 'amber')}
-          ${storeAppCard('Hospitality ERP', 'v1.1.0 • Hospitality Ecosystem', 'Installed', 'emerald')}
         </div>
       </div>
     `;
@@ -777,6 +774,39 @@ function renderViewContent(view) {
 }
 
 // UI Building Blocks for Views
+function ecosystemCard(title, emoji, desc, color, templates) {
+  const templatesHtml = templates.map(t => `
+    <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 rounded-xl transition flex flex-col justify-between space-y-2">
+      <div>
+        <p class="font-extrabold text-slate-900 text-xs">${t.name}</p>
+        <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">${t.desc}</p>
+      </div>
+      <div class="flex items-center gap-2 pt-2.5 border-t border-slate-200/60">
+        <button onclick="alert('Provisioning ${t.name} institutional instance...');" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Install</button>
+        <button onclick="alert('Configuring ${t.name} blueprint settings...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Configure</button>
+        <button onclick="alert('Cloning ${t.name} template...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Clone</button>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+      <div class="flex items-start gap-4 pb-4 border-b border-slate-100">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
+          ${emoji}
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-extrabold text-base text-slate-900">${title}</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">${desc}</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        ${templatesHtml}
+      </div>
+    </div>
+  `;
+}
+
 function appCard(title, desc, emoji, viewKey, color) {
   return `
     <div onclick="setCCView('${viewKey}')" class="p-6 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group shadow-xs">
