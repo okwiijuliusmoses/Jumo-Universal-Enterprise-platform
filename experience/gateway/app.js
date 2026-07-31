@@ -1,7 +1,7 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, contactTemplate } from "./index.js";
 import { workspaceTemplate } from "../workspace/index.js";
-import { controlCenterTemplate } from "../control-center/index.js";
+import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
 
 // Global Application State
@@ -56,6 +56,8 @@ window.render = function() {
     gatewayTemplate(window.state);
   } else if (path === "/workspace" || path.startsWith("/workspace/")) {
     workspaceTemplate(window.state);
+  } else if (path === "/control-center/login") {
+    controlCenterLoginTemplate(window.state);
   } else if (path === "/control-center" || path.startsWith("/control-center/")) {
     controlCenterTemplate(window.state);
   } else if (path === "/shell" || path.startsWith("/shell/")) {
