@@ -6,8 +6,8 @@ export const BRAND_CONFIG = {
   platformNameShort: "JUMO DIGITAL ENTERPRISE PLATFORM",
   poweredBy: "JUMO UEOS",
   fullSystemName: "JUMO Universal Enterprise Operating System",
-  ownership: "Owned by JUMO | Julius Moses Okwii",
-  founder: "Julius Moses Okwii",
+  ownership: "Owned by JUMO",
+  founder: "JUMO Holdings",
   
   emails: {
     support: "support@jumo.com",
@@ -81,17 +81,19 @@ export function getOfficialLogoHtml(options = {}) {
   // Official Approved SVG Shield & Crown Logo Symbol
   const logoSvgIcon = `
     <svg class="${iconSize} shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Gold Outer Crest & Side Wing Prongs -->
-      <path d="M12 38 C12 24 20 12 30 12 L38 30 L50 8 L62 30 L70 12 C80 12 88 24 88 38 C88 62 70 82 50 94 C30 82 12 62 12 38 Z" fill="#D97706" />
-      <path d="M17 40 C17 28 24 18 32 18 L39 32 L50 14 L61 32 L68 18 C76 18 83 28 83 40 C83 60 67 78 50 88 C33 78 17 60 17 40 Z" fill="#F59E0B" />
+      <!-- Outer Shield / Geometry Base -->
+      <path d="M50 5 L88 20 V50 C88 72 70 90 50 96 C30 90 12 72 12 50 V20 L50 5 Z" fill="#0F172A" />
+      <path d="M50 10 L82 23 V48 C82 67 66 84 50 89 C34 84 18 67 18 48 V23 L50 10 Z" fill="#0F62FE" opacity="0.9" />
       
-      <!-- Inner Dark Navy Core Shield -->
-      <path d="M26 36 L50 20 L74 36 V58 C74 72 62 82 50 87 C38 82 26 72 26 58 V36 Z" fill="#0F172A" />
+      <!-- Crown Accent Header -->
+      <path d="M32 30 L40 40 L50 26 L60 40 L68 30 L64 46 H36 L32 30 Z" fill="#F59E0B" />
       
-      <!-- Stylized White Anchor & J Wings Geometry -->
-      <path d="M50 32 L64 42 V58 C64 64 58 68 50 70 C42 68 36 64 36 58 V42 L50 32 Z" fill="#1E293B" />
-      <path d="M44 42 L50 37 L56 42 V58 C56 61 53 63 50 64 C47 63 44 61 44 58 V42 Z" fill="#FFFFFF" />
-      <path d="M34 46 L40 46 V55 C40 60 45 62 50 62 C55 62 60 60 60 55 V46 L66 46 V55 C66 65 58 70 50 70 C42 70 34 65 34 55 V46 Z" fill="#F59E0B" />
+      <!-- Central J Wings Geometry -->
+      <path d="M50 34 L66 48 V64 C66 74 58 80 50 82 C42 80 34 74 34 64 V48 L50 34 Z" fill="#0F172A" />
+      <path d="M44 48 H56 V62 C56 66 53 68 50 68 C47 68 44 66 44 62 V48 Z" fill="#FFFFFF" />
+      
+      <!-- Gold Sovereign Star Dot -->
+      <circle cx="50" cy="54" r="3.5" fill="#F59E0B" />
     </svg>
   `;
 
@@ -108,7 +110,6 @@ export function getOfficialLogoHtml(options = {}) {
         </div>
         <span class="font-bold tracking-wider uppercase text-[10px] mt-0.5 ${subtitleColorClass}">DIGITAL ENTERPRISE PLATFORM</span>
         <span class="font-semibold tracking-widest uppercase ${subtitleSize} font-mono ${tagColorClass}">POWERED BY JUMO UEOS</span>
-        <span class="font-medium tracking-tighter uppercase text-[7px] ${textColor === 'light' ? 'text-slate-400' : 'text-slate-500'} font-mono">JUMO UNIVERSAL ENTERPRISE OPERATING SYSTEM</span>
       </div>
     </div>
   `;

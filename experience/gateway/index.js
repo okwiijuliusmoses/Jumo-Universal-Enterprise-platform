@@ -5,242 +5,217 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
  */
 export const publicTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
-  const user = state.session?.user || null;
-
+  
   app.innerHTML = `
-    <div class="min-h-screen bg-slate-100 flex flex-col text-slate-800 antialiased font-sans">
-      <!-- Top Sovereign Status Bar -->
-      <div class="bg-slate-900 text-slate-300 py-2 px-6 border-b border-slate-800 hidden md:block text-xs font-medium">
-        <div class="max-w-[1440px] mx-auto flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold font-mono text-[11px]">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              SOVEREIGN SYSTEM OPERATIONAL
-            </span>
-            <span class="text-slate-700">|</span>
-            <span class="text-slate-400 text-[11px]">Region: ${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
-          </div>
-          <div class="flex items-center gap-6 text-[11px]">
-            <a href="tel:${BRAND_CONFIG.telephones.mobile}" class="hover:text-white transition">📞 ${BRAND_CONFIG.telephones.mobile}</a>
-            <a href="mailto:${BRAND_CONFIG.emails.contact}" class="hover:text-white transition">✉️ ${BRAND_CONFIG.emails.contact}</a>
-            <span class="text-slate-700">|</span>
-            <span class="font-mono text-amber-400 font-bold">${BRAND_CONFIG.poweredBy}</span>
-          </div>
+    <!-- Top Bar -->
+    <div class="bg-slate-900 text-slate-300 py-2 px-6 border-b border-slate-800 hidden md:block text-xs font-medium">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold font-mono text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            SOVEREIGN SYSTEM OPERATIONAL
+          </span>
+          <span class="text-slate-700">|</span>
+          <span class="text-slate-400 text-[11px]">Region: East Africa (${BRAND_CONFIG.officeLocations.country})</span>
+        </div>
+        <div class="flex items-center gap-6 text-[11px]">
+          <a href="tel:${BRAND_CONFIG.telephones.mobile}" class="hover:text-white transition">📞 ${BRAND_CONFIG.telephones.mobile}</a>
+          <a href="mailto:${BRAND_CONFIG.emails.contact}" class="hover:text-white transition">✉️ ${BRAND_CONFIG.emails.contact}</a>
+          <span class="text-slate-700">|</span>
+          <span class="font-mono text-amber-400">${BRAND_CONFIG.poweredBy}</span>
         </div>
       </div>
+    </div>
 
-      <!-- Public Header -->
-      <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-        <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-          <div class="cursor-pointer" onclick="navigate('/')">
-            ${logoHtml}
-          </div>
-          
-          <!-- Platform Navigation -->
-          <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold tracking-wider text-slate-600">
-            <button onclick="navigate('/')" class="text-enterprise-blue font-bold">Home</button>
-            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Enterprise Platforms</button>
-            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Products</button>
-            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Marketplace</button>
-            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Resources</button>
-            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Support</button>
-          </nav>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div class="cursor-pointer" onclick="navigate('/')">
+          ${logoHtml}
+        </div>
+        
+        <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold tracking-wider text-slate-600">
+          <button onclick="navigate('/')" class="text-enterprise-blue hover:text-blue-700 transition">Home</button>
+          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Enterprise Platforms</button>
+          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Products</button>
+          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Marketplace</button>
+          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Resources</button>
+          <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Support</button>
+        </nav>
 
-          <!-- Top-Right User Profile Component or Auth Actions -->
-          <div class="flex items-center space-x-3">
-            ${user ? `
-              <div class="relative flex items-center gap-3">
-                <button onclick="navigate('/gateway')" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
-                  Go to Enterprise Gateway &rarr;
+        <div class="flex items-center space-x-3">
+          ${state.session ? `
+            <div class="relative flex items-center gap-3">
+              <!-- Top-Right User Profile Component -->
+              <div class="hidden sm:flex flex-col items-end text-right">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-extrabold text-xs text-slate-900">${state.session.user.name}</span>
+                  <span class="text-[9px] font-mono font-bold bg-blue-50 text-enterprise-blue border border-blue-200 px-1.5 py-0.2 rounded uppercase">${state.session.user.role}</span>
+                </div>
+                <span class="text-[10px] text-slate-500 font-medium">${state.session.organization || 'University of Kampala'}</span>
+              </div>
+
+              <!-- Avatar & Account Access Menu Dropdown Toggle -->
+              <div class="relative">
+                <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
+                  <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                    ${state.session.user.name.split(' ').map(n=>n[0]).join('')}
+                  </div>
+                  <span class="text-slate-400 text-xs">▼</span>
                 </button>
 
-                <!-- Top-Right User Profile Component -->
-                <div class="relative">
-                  <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
-                    <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                      ${user.name.split(' ').map(n=>n[0]).join('')}
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs font-semibold">
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 mb-2">
+                    <p class="font-bold text-slate-900 text-sm">${state.session.user.name}</p>
+                    <p class="text-slate-500 text-[11px] font-mono truncate">${state.session.user.email}</p>
+                    <div class="mt-2 flex items-center justify-between text-[10px]">
+                      <span class="font-bold text-slate-600">Org: ${state.session.organization}</span>
+                      <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                        Verified
+                      </span>
                     </div>
-                    <div class="hidden md:flex flex-col items-start text-left">
-                      <span class="font-bold text-xs text-slate-800 leading-tight">${user.name}</span>
-                      <span class="text-[10px] text-slate-500 font-medium">Authenticated</span>
-                    </div>
-                    <span class="text-slate-400 text-xs">▼</span>
-                  </button>
+                  </div>
 
-                  <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs font-semibold">
-                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 mb-2">
-                      <p class="font-bold text-slate-900 text-sm">${user.name}</p>
-                      <p class="text-slate-500 text-[11px] font-mono truncate">${user.email}</p>
-                      <div class="mt-2 flex items-center justify-between text-[10px]">
-                        <span class="font-bold text-slate-600">Org: ${state.session.organization || 'Enterprise'}</span>
-                        <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                          Verified
-                        </span>
-                      </div>
+                  <div class="space-y-1 divide-y divide-slate-100">
+                    <div class="pt-1">
+                      <button onclick="navigate('/gateway'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-enterprise-blue font-bold hover:bg-blue-50 rounded-md">🏠 Enterprise Gateway &rarr;</button>
+                      <button onclick="navigate('/workspace'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🏢 Workspace Resolver</button>
+                      <button onclick="alert('Viewing Account Security Access Matrix'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🔒 Security & Access Credentials</button>
                     </div>
 
-                    <div class="space-y-1 divide-y divide-slate-100">
-                      <div class="pt-1">
-                        <button onclick="navigate('/gateway'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-enterprise-blue font-bold hover:bg-blue-50 rounded-md">🏠 Enterprise Gateway &rarr;</button>
-                        <button onclick="navigate('/workspace'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🏢 Workspace Resolver</button>
-                      </div>
+                    ${state.session.user.isAdmin ? `
                       <div class="pt-2">
-                        <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
+                        <button onclick="navigate('/control-center'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 rounded-md flex items-center justify-between">
+                          <span>🛠️ Admin Control Center</span>
+                          <span class="text-[9px] font-mono bg-indigo-200 px-1.5 py-0.5 rounded text-indigo-900">ADMIN</span>
+                        </button>
                       </div>
+                    ` : ''}
+
+                    <div class="pt-2">
+                      <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
                     </div>
                   </div>
                 </div>
               </div>
-            ` : `
-              <button onclick="navigate('/login')" class="text-xs font-bold uppercase px-4 py-2 text-slate-700 hover:text-enterprise-blue transition cursor-pointer">Sign In</button>
-              <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
-            `}
-          </div>
+            </div>
+          ` : `
+            <button onclick="navigate('/login')" class="text-xs font-bold uppercase px-4 py-2.5 text-slate-700 hover:text-enterprise-blue transition cursor-pointer">Sign In</button>
+            <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
+          `}
         </div>
-      </header>
+      </div>
+    </header>
 
-      <!-- Main Public Hero & Platforms Content -->
-      <main class="flex-1 bg-slate-50">
-        <!-- Hero Section -->
-        <section class="bg-white border-b border-slate-200 py-16 px-6 relative overflow-hidden">
-          <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div class="lg:col-span-7 space-y-6">
-              <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-blue-50 text-enterprise-blue border border-blue-100 text-[11px] font-semibold tracking-wider uppercase font-mono">
-                <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
-                <span>Enterprise Operating Environment</span>
-              </div>
-              <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                ${BRAND_CONFIG.platformName}
-              </h1>
-              <p class="text-slate-600 text-base max-w-xl leading-relaxed font-medium">
-                The unified digital reception and workspace environment connecting institutions, enterprises, state bodies, and digital services under sovereign security governance.
-              </p>
-              <div class="pt-3 flex flex-wrap gap-4">
-                <button onclick="navigate('/register')" class="px-6 py-3.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Register Institution</button>
-                <button onclick="navigate('/login')" class="px-6 py-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Sign In to Platform</button>
-              </div>
+    <main class="flex-1 bg-slate-50">
+      <!-- Hero Banner -->
+      <section class="bg-white border-b border-slate-200 py-16 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-blue-50 text-enterprise-blue border border-blue-100 text-[11px] font-semibold tracking-wider uppercase font-mono">
+              <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
+              <span>Enterprise Operating Environment</span>
             </div>
+            <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              ${BRAND_CONFIG.platformName}
+            </h1>
+            <p class="text-slate-600 text-base max-w-xl leading-relaxed">
+              The unified digital reception and workspace environment connecting institutions, enterprises, state bodies, and digital services under sovereign security governance.
+            </p>
+            <div class="pt-3 flex flex-wrap gap-4">
+              <button onclick="navigate('/register')" class="px-6 py-3.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Register Institution</button>
+              <button onclick="navigate('/login')" class="px-6 py-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Sign In to Platform</button>
+            </div>
+          </div>
 
-            <!-- Quick Platform Status Card -->
-            <div class="lg:col-span-5">
-              <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
-                <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
-                  <div>
-                    <h3 class="font-bold text-sm tracking-wide">JUMO Platform Status</h3>
-                    <p class="text-[11px] text-slate-400 font-mono">Kernel Core: Operational</p>
-                  </div>
-                  <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">LIVE</span>
+          <!-- Quick Platform Card -->
+          <div class="lg:col-span-5">
+            <div class="bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden">
+              <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-sm tracking-wide">JUMO Platform Status</h3>
+                  <p class="text-[11px] text-slate-400 font-mono">Kernel Core: Operational</p>
                 </div>
-                <div class="p-6 divide-y divide-slate-100 text-xs font-semibold text-slate-600 space-y-3">
-                  <div class="pt-3 flex items-center justify-between">
-                    <span>Supported Regions</span>
-                    <span class="font-bold text-slate-900">${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
-                  </div>
-                  <div class="pt-3 flex items-center justify-between">
-                    <span>Head Office</span>
-                    <span class="font-mono text-enterprise-blue font-bold">${BRAND_CONFIG.officeLocations.headOffice}</span>
-                  </div>
-                  <div class="pt-3 flex items-center justify-between">
-                    <span>Regional Offices</span>
-                    <span class="font-mono text-slate-700">${BRAND_CONFIG.officeLocations.regionalOffices.join(", ")}</span>
-                  </div>
-                  <div class="pt-3 flex items-center justify-between">
-                    <span>Security & Compliance</span>
-                    <span class="font-mono text-emerald-600 font-bold">Cryptographic AEGIS Enforced</span>
-                  </div>
+                <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">LIVE</span>
+              </div>
+              <div class="p-6 divide-y divide-slate-100 text-xs font-semibold text-slate-600 space-y-3">
+                <div class="pt-3 flex items-center justify-between">
+                  <span>Supported Regions</span>
+                  <span class="font-bold text-slate-900">${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
+                </div>
+                <div class="pt-3 flex items-center justify-between">
+                  <span>Head Office</span>
+                  <span class="font-mono text-enterprise-blue font-bold">${BRAND_CONFIG.officeLocations.headOffice}</span>
+                </div>
+                <div class="pt-3 flex items-center justify-between">
+                  <span>Regional Offices</span>
+                  <span class="font-mono text-slate-700">${BRAND_CONFIG.officeLocations.regionalOffices.join(", ")}</span>
+                </div>
+                <div class="pt-3 flex items-center justify-between">
+                  <span>Security & Compliance</span>
+                  <span class="font-mono text-emerald-600 font-bold">Cryptographic AEGIS Enforced</span>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Enterprise Industry Solutions Grid -->
-        <section class="py-16 max-w-[1440px] mx-auto px-6">
-          <div class="text-center max-w-2xl mx-auto mb-12">
-            <h2 class="text-2xl font-bold text-slate-900">Supported Enterprise Platforms</h2>
-            <p class="text-slate-600 text-xs mt-2 font-medium">Discover sovereign institutional frameworks connected to ${BRAND_CONFIG.poweredBy}</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-blue-50 text-enterprise-blue flex items-center justify-center font-bold text-lg mb-4">🎓</div>
-              <h3 class="font-bold text-slate-900 text-base">Education ERP Platform</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Campus management, student admissions, academic grading, and degree verification ledgers.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">🏛️</div>
-              <h3 class="font-bold text-slate-900 text-base">Government ERP Platform</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Citizen registry, civil records, public document audit trails, and departmental workflow governance.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">🏥</div>
-              <h3 class="font-bold text-slate-900 text-base">Healthcare ERP Platform</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg mb-4">💳</div>
-              <h3 class="font-bold text-slate-900 text-base">Finance & FAAP Treasury</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Multi-currency accounting ledger, automated vendor settlements, and state treasury reconciliation.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg mb-4">🌱</div>
-              <h3 class="font-bold text-slate-900 text-base">Agriculture ERP Platform</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Cooperative yield tracking, commodity shipping ledgers, and rural extension service hubs.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
-              <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-4">🤖</div>
-              <h3 class="font-bold text-slate-900 text-base">JUMO AI Gateway</h3>
-              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Enterprise intelligent assistant, synthetic document verification, and policy auditing engines.</p>
-              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- 5-PILLAR ENTERPRISE BLUE BANNER -->
-        <div class="bg-[#0F172A] text-white py-6 px-6 border-y border-slate-800">
-          <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 text-center text-xs">
-            <div class="flex flex-col items-center space-y-1">
-              <span class="text-xl">🛡️</span>
-              <span class="font-bold text-white">Secure</span>
-              <span class="text-[10px] text-slate-400 font-normal">Enterprise-Grade Security</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1">
-              <span class="text-xl">🏛️</span>
-              <span class="font-bold text-white">Sovereign</span>
-              <span class="text-[10px] text-slate-400 font-normal">Data Sovereignty & Compliance</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1">
-              <span class="text-xl">☁️</span>
-              <span class="font-bold text-white">Scalable</span>
-              <span class="text-[10px] text-slate-400 font-normal">Built for Growth & Performance</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1">
-              <span class="text-xl">🔗</span>
-              <span class="font-bold text-white">Integrated</span>
-              <span class="text-[10px] text-slate-400 font-normal">Unified Platforms & Services</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1 col-span-2 md:col-span-1">
-              <span class="text-xl">🧠</span>
-              <span class="font-bold text-white">Intelligent</span>
-              <span class="text-[10px] text-slate-400 font-normal">AI-Powered Operations</span>
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      <!-- Enterprise Public Footer -->
-      ${getEnterpriseFooterHtml()}
-    </div>
+      <!-- Enterprise Industry Solutions -->
+      <section class="py-16 max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <h2 class="text-2xl font-bold text-slate-900">Supported Enterprise Platforms</h2>
+          <p class="text-slate-600 text-xs mt-2">Discover sovereign institutional frameworks connected to ${BRAND_CONFIG.poweredBy}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 text-enterprise-blue flex items-center justify-center font-bold text-lg mb-4">🎓</div>
+            <h3 class="font-bold text-slate-900 text-base">Education ERP Platform</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Campus management, student admissions, academic grading, and degree verification ledgers.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">🏛️</div>
+            <h3 class="font-bold text-slate-900 text-base">Government ERP Platform</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Citizen registry, civil records, public document audit trails, and departmental workflow governance.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">🏥</div>
+            <h3 class="font-bold text-slate-900 text-base">Healthcare ERP Platform</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg mb-4">💳</div>
+            <h3 class="font-bold text-slate-900 text-base">Finance & FAAP Treasury</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Multi-currency accounting ledger, automated vendor settlements, and state treasury reconciliation.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg mb-4">🌱</div>
+            <h3 class="font-bold text-slate-900 text-base">Agriculture ERP Platform</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Cooperative yield tracking, commodity shipping ledgers, and rural extension service hubs.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+            <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-4">🤖</div>
+            <h3 class="font-bold text-slate-900 text-base">JUMO AI Gateway</h3>
+            <p class="text-xs text-slate-600 mt-2 mb-4">Enterprise intelligent assistant, synthetic document verification, and policy auditing engines.</p>
+            <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    ${getEnterpriseFooterHtml()}
   `;
 };
 
@@ -284,7 +259,7 @@ export const loginTemplate = (state) => {
           <form onsubmit="handleLoginSubmit(event)" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Enterprise Email / Signature</label>
-              <input type="email" id="login-email" value="${state.loginEmail || 'okwiijuliusmoses@gmail.com'}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
+              <input type="email" id="login-email" value="${state.loginEmail || 'admin@enterprise.com'}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
 
             <div>
@@ -370,7 +345,7 @@ export const registerTemplate = (state) => {
 
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Administrator Signature Email</label>
-              <input type="email" id="reg-email" value="okwiijuliusmoses@gmail.com" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
+              <input type="email" id="reg-email" value="admin@enterprise.com" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
 
             <button type="submit" class="w-full py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
@@ -394,8 +369,8 @@ export const registerTemplate = (state) => {
 export const gatewayTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   const user = state.session?.user || {
-    name: "Julius Moses Okwii",
-    email: "okwiijuliusmoses@gmail.com",
+    name: "Enterprise Admin",
+    email: "admin@enterprise.com",
     role: "Enterprise Administrator",
     isAdmin: true,
     status: "Verified Enterprise Account"

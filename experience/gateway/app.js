@@ -7,17 +7,7 @@ import { shellTemplate } from "../shell/index.js";
 // Global Application State
 window.state = {
   currentPath: window.location.pathname || "/",
-  session: {
-    user: {
-      name: "Julius Moses Okwii",
-      email: "okwiijuliusmoses@gmail.com",
-      role: "Enterprise Administrator",
-      isAdmin: true,
-      status: "Verified Enterprise Account"
-    },
-    organization: "University of Kampala",
-    tenantId: "tenant-default-001"
-  },
+  session: null, // Start with no session for public landing page
   activeWorkspaceTab: "org",
   activeTab: "diagnostics",
   activeTenantId: "tenant-default-001",
@@ -82,11 +72,11 @@ window.render = function() {
 window.handleLoginSubmit = function(e) {
   e.preventDefault();
   const emailInput = document.getElementById("login-email");
-  const email = emailInput ? emailInput.value : "okwiijuliusmoses@gmail.com";
+  const email = emailInput ? emailInput.value : "admin@enterprise.com";
 
   window.state.session = {
     user: {
-      name: email.includes("okwii") ? "Julius Moses Okwii" : email.split("@")[0].replace(".", " "),
+      name: email.split("@")[0].replace(".", " "),
       email: email,
       role: "Enterprise Administrator",
       isAdmin: true,
@@ -118,8 +108,8 @@ window.handleRegisterSubmit = function(e) {
   if (!window.state.session) {
     window.state.session = {
       user: {
-        name: "Julius Moses Okwii",
-        email: emailInput ? emailInput.value : "okwiijuliusmoses@gmail.com",
+        name: emailInput ? emailInput.value.split("@")[0].replace(".", " ") : "Enterprise Admin",
+        email: emailInput ? emailInput.value : "admin@enterprise.com",
         role: "Enterprise Administrator",
         isAdmin: true,
         status: "Verified Enterprise Account"
