@@ -5,15 +5,16 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
  */
 export const publicTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "light" });
+  const darkLogoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   
   app.innerHTML = `
-<div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+<div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
     <!-- Public Sidebar Overlay -->
     <div id="public-sidebar-overlay" onclick="togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
     
     <!-- Public Sidebar -->
-    <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-950 z-[70] -translate-x-full transition-transform duration-300 flex flex-col border-r border-slate-800">
-        <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
+    <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-900 z-[70] -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-slate-900">
             ${logoHtml}
             <button onclick="togglePublicSidebar()" class="text-slate-400 hover:text-white cursor-pointer transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -27,7 +28,7 @@ export const publicTemplate = (state) => {
             <div>
                 <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Platform</div>
                 <div class="space-y-1">
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">JUMO UEOS Overview</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">JUMO Enterprise Overview</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Architecture</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Security</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">AI Platform</button>
@@ -41,17 +42,15 @@ export const publicTemplate = (state) => {
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Healthcare Platforms</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Finance & Treasury</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Agriculture Platforms</button>
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Enterprise Applications</button>
                 </div>
             </div>
             <div>
                 <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-3 px-3">Digital Services</div>
                 <div class="space-y-1">
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Digital Identity</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Digital Identity Services</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Document Verification</button>
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Workflow Services</button>
+                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Business Process Automation</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Payment Services</button>
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Analytics Services</button>
                 </div>
             </div>
             <div>
@@ -61,8 +60,6 @@ export const publicTemplate = (state) => {
                     <button onclick="navigate('/register')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Institution Registration</button>
                     <button onclick="navigate('/login')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Sign In</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Forgot Password</button>
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Account Recovery</button>
-                    <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Support Centre</button>
                 </div>
             </div>
             <div>
@@ -71,15 +68,14 @@ export const publicTemplate = (state) => {
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Documentation</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">News</button>
                     <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Notices</button>
-                    <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">FAQs</button>
                     <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition cursor-pointer">Contact</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Header -->
-    <header class="bg-enterprise-blue border-b border-blue-800 sticky top-0 z-50 shadow-md">
+    <!-- 1. Blue Enterprise Header -->
+    <header class="bg-[#0b3b9b] border-b border-[#0f4ac1] sticky top-0 z-50 shadow-md text-white">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <button onclick="togglePublicSidebar()" class="lg:hidden text-white hover:text-blue-200 transition cursor-pointer">
@@ -89,7 +85,8 @@ export const publicTemplate = (state) => {
                   ${logoHtml}
                 </div>
             </div>
-            <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-blue-100">
+            
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-blue-100">
                 <a href="#" class="hover:text-white transition">Platform</a>
                 <a href="#" class="hover:text-white transition">Solutions</a>
                 <a href="#" class="hover:text-white transition">Digital Services</a>
@@ -99,245 +96,228 @@ export const publicTemplate = (state) => {
                 <a href="#" class="hover:text-white transition">Partners</a>
                 <a href="#" onclick="navigate('/contact')" class="hover:text-white transition">Contact</a>
             </nav>
+            
             <div class="flex items-center gap-3">
-                <button onclick="navigate('/login')" class="text-sm font-bold text-white hover:text-blue-200 transition cursor-pointer mr-2">Sign In</button>
-                <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-white text-enterprise-blue hover:bg-blue-50 transition shadow-sm cursor-pointer hidden sm:block">Create Account</button>
-                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block" title="Language">
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Language">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
                 </button>
-                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block" title="Help">
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Help">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
+                
+                <!-- User Profile Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center gap-2 pl-3 ml-2 border-l border-white/20 cursor-pointer">
+                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100] transform origin-top-right">
+                        <div class="p-3 border-b border-slate-100">
+                            <p class="text-xs text-slate-500 font-medium">Welcome to JUMO</p>
+                            <p class="text-sm font-bold text-slate-900 mt-0.5">Enterprise Portal</p>
+                        </div>
+                        <div class="p-2 space-y-1">
+                            <button onclick="navigate('/login')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 hover:text-enterprise-blue hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                                Sign In
+                            </button>
+                            <button onclick="navigate('/register')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 hover:text-enterprise-blue hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                                Create Account
+                            </button>
+                            <button onclick="navigate('/register')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 hover:text-enterprise-blue hover:bg-blue-50 rounded-lg transition cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                Register Institution
+                            </button>
+                        </div>
+                        <div class="p-2 border-t border-slate-100 space-y-1">
+                            <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Help Centre</button>
+                            <button class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Language (EN)</button>
+                            <button onclick="navigate('/contact')" class="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition cursor-pointer">Contact Support</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="flex-1">
-        <!-- Main Reception Hero Section -->
-        <section class="bg-white py-20 px-6 border-b border-slate-200">
-            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div class="space-y-8">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-enterprise-blue text-xs font-semibold tracking-widest uppercase font-mono">
-                        <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
-                        Enterprise Operating Environment
+        
+        <!-- 2. Enterprise Information Hub (Digital Reception Desk) -->
+        <section class="relative bg-slate-50 border-b border-slate-200 overflow-hidden">
+            <!-- Background structural elements -->
+            <div class="absolute right-0 top-0 w-1/2 h-full bg-slate-100/50" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 py-12 lg:py-16 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+                
+                <!-- Reception Desk Intro -->
+                <div class="w-full lg:w-5/12 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Digital Reception is Open
                     </div>
-                    <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                        ${BRAND_CONFIG.platformName}
+                    <h1 class="text-4xl lg:text-5xl font-light text-slate-900 tracking-tight leading-tight">
+                        Welcome to the <br>
+                        <span class="font-bold text-enterprise-blue">Information Hub</span>
                     </h1>
-                    <p class="text-lg text-slate-600 leading-relaxed max-w-xl">
-                        The unified digital reception and workspace environment connecting institutions, enterprises, state bodies and digital services under sovereign security governance.
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        Discover the latest institutional updates, platform announcements, and resources from the ${BRAND_CONFIG.platformName}.
                     </p>
-                    <div class="flex flex-wrap gap-4 pt-4">
-                        <button onclick="navigate('/register')" class="px-8 py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 font-bold text-sm text-white uppercase tracking-wider transition shadow-lg shadow-blue-500/30 cursor-pointer">Register Institution</button>
-                        <button onclick="navigate('/login')" class="px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-sm text-white uppercase tracking-wider transition shadow-lg cursor-pointer">Sign In To Platform</button>
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button class="px-6 py-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-enterprise-blue font-semibold text-slate-700 transition flex items-center justify-between cursor-pointer group">
+                            <span>Browse News</span>
+                            <span class="text-slate-400 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
+                        </button>
+                        <button class="px-6 py-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-enterprise-blue font-semibold text-slate-700 transition flex items-center justify-between cursor-pointer group">
+                            <span>View Resources</span>
+                            <span class="text-slate-400 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
+                        </button>
                     </div>
                 </div>
-                <!-- Enterprise Visual Panel -->
-                <div class="relative rounded-2xl bg-slate-900 border border-slate-800 p-8 shadow-2xl overflow-hidden min-h-[400px] flex flex-col">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-slate-900/90"></div>
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
-                    
-                    <div class="relative z-10 grid grid-cols-2 gap-4 h-full">
-                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3 text-lg">🏛️</div>
-                            <h4 class="text-white font-bold text-sm">Connected Institutions</h4>
-                            <p class="text-slate-400 text-xs mt-1">State bodies & enterprise tenants</p>
+
+                <!-- Showcase / Reception Screen -->
+                <div class="w-full lg:w-7/12">
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[400px]">
+                        <!-- Top status bar -->
+                        <div class="bg-slate-900 px-4 py-3 flex items-center justify-between text-xs font-medium text-slate-400 border-b border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                Live Broadcast
+                            </div>
+                            <div class="font-mono">JUMO TV</div>
                         </div>
-                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-3 text-lg">🧠</div>
-                            <h4 class="text-white font-bold text-sm">AI Cognitive Nodes</h4>
-                            <p class="text-slate-400 text-xs mt-1">JUMO AI Gateway integration</p>
-                        </div>
-                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 text-lg">🛡️</div>
-                            <h4 class="text-white font-bold text-sm">AEGIS Security</h4>
-                            <p class="text-slate-400 text-xs mt-1">Zero-trust cryptographic layer</p>
-                        </div>
-                        <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 flex flex-col justify-center">
-                            <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center mb-3 text-lg">☁️</div>
-                            <h4 class="text-white font-bold text-sm">Cloud Operating Env</h4>
-                            <p class="text-slate-400 text-xs mt-1">Sovereign hybrid infrastructure</p>
+                        
+                        <!-- Media area -->
+                        <div class="flex-1 bg-slate-100 relative group cursor-pointer overflow-hidden flex items-center justify-center">
+                            <!-- Abstract placeholder for video/image -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-blue-900 to-slate-800 opacity-90 transition-transform duration-700 group-hover:scale-105"></div>
+                            
+                            <!-- Play button -->
+                            <div class="relative z-10 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:bg-white/30 transition shadow-2xl">
+                                <div class="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-white border-b-[10px] border-b-transparent ml-2"></div>
+                            </div>
+
+                            <!-- Overlay Content -->
+                            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900 to-transparent z-10">
+                                <span class="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase rounded mb-3 inline-block">Platform Showcase</span>
+                                <h3 class="text-2xl font-bold text-white mb-1">Accelerating Digital Transformation</h3>
+                                <p class="text-slate-300 text-sm">See how government agencies and enterprises are leveraging JUMO.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </section>
 
-        <!-- Authentication Gateway Section -->
-        <section class="bg-slate-50 py-16 px-6 border-b border-slate-200">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    
-                    <!-- Individual Users Card -->
-                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:border-enterprise-blue hover:shadow-md transition">
-                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
-                            <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-enterprise-blue text-2xl border border-blue-100">👤</div>
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-900">Individual Users</h3>
-                                <p class="text-slate-500 text-sm mt-1">Citizens, Staff, and Personal Accounts</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <button onclick="navigate('/register')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Create Account</div>
-                                <div class="text-xs text-slate-500">Register for a personal identity profile</div>
-                            </button>
-                            <button onclick="navigate('/login')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Sign In</div>
-                                <div class="text-xs text-slate-500">Access your digital workspace</div>
-                            </button>
-                            <button onclick="alert('Navigating to password reset...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Forgot Password</div>
-                                <div class="text-xs text-slate-500">Reset your access credentials</div>
-                            </button>
-                            <button onclick="alert('Navigating to account recovery...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-enterprise-blue text-sm mb-1">Recover Account</div>
-                                <div class="text-xs text-slate-500">Regain access to your profile</div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Institutions Card -->
-                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:border-emerald-500 hover:shadow-md transition">
-                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
-                            <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl border border-emerald-100">🏛️</div>
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-900">Institutions & Enterprises</h3>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase bg-emerald-100 text-emerald-700">Official</span>
-                                    <p class="text-slate-500 text-sm">Government, Corporate, Education</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <button onclick="navigate('/register')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Register Institution</div>
-                                <div class="text-xs text-slate-500">Onboard a new enterprise tenant</div>
-                            </button>
-                            <button onclick="navigate('/login')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Institution Login</div>
-                                <div class="text-xs text-slate-500">Access enterprise control center</div>
-                            </button>
-                            <button onclick="alert('Navigating to institution verification...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Institution Verification</div>
-                                <div class="text-xs text-slate-500">Submit official documentation</div>
-                            </button>
-                            <button onclick="alert('Navigating to admin setup...')" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer group">
-                                <div class="font-bold text-slate-900 group-hover:text-emerald-700 text-sm mb-1">Administrator Setup</div>
-                                <div class="text-xs text-slate-500">Configure core tenant settings</div>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
+        <!-- 3. Platform title and introduction -->
+        <section class="py-24 px-6 bg-white text-center">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    The Unified Digital Environment <br class="hidden md:block"> for Modern Enterprise
+                </h2>
+                <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                    A secure, integrated platform connecting institutions, digital services, and citizens under a unified governance framework.
+                </p>
             </div>
         </section>
 
-        <!-- Security Trust Strip -->
-        <div class="bg-slate-900 border-b border-slate-800 text-slate-300 py-6 px-6">
-            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16 text-xs font-semibold tracking-wider uppercase">
-                <div class="flex items-center gap-2"><span class="text-emerald-400">🛡️</span> AEGIS Accountability Platform</div>
-                <div class="flex items-center gap-2"><span class="text-blue-400">🔑</span> Cryptographic Verification</div>
-                <div class="flex items-center gap-2"><span class="text-indigo-400">👤</span> Identity Governance</div>
-                <div class="flex items-center gap-2"><span class="text-rose-400">🏛️</span> Sovereign Data Protection</div>
+        <!-- 4. Authentication Options (Access Cards) -->
+        <section class="py-12 px-6 bg-slate-50 border-y border-slate-200">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Individual Users -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
+                    <div class="flex items-start justify-between mb-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-900 group-hover:text-enterprise-blue transition">Personal Identity</h3>
+                            <p class="text-slate-500 mt-2">For citizens, staff, and individual profiles.</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 text-3xl group-hover:bg-enterprise-blue group-hover:text-white transition-colors duration-300">
+                            👤
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <button onclick="navigate('/login')" class="w-full py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                            Sign In to Workspace
+                        </button>
+                        <button onclick="navigate('/register')" class="w-full py-4 px-6 bg-white border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 text-slate-700 font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                            Create Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Institutions -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
+                    <div class="flex items-start justify-between mb-8">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-2xl font-bold text-slate-900 group-hover:text-enterprise-blue transition">Enterprise & Institutions</h3>
+                            </div>
+                            <p class="text-slate-500 mt-2">For government bodies, schools, and corporations.</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-700 text-3xl group-hover:bg-enterprise-blue group-hover:text-white transition-colors duration-300">
+                            🏛️
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <button onclick="navigate('/login')" class="w-full py-4 px-6 bg-enterprise-blue hover:bg-blue-700 text-white font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                            Institution Login
+                        </button>
+                        <button onclick="navigate('/register')" class="w-full py-4 px-6 bg-white border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 text-slate-700 font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                            Register Institution
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="max-w-6xl mx-auto mt-8 flex flex-wrap justify-center gap-6 text-sm">
+                <button onclick="alert('Password Reset')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Forgot Password?</button>
+                <button onclick="alert('Account Recovery')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path></svg> Recover Account</button>
+                <button onclick="navigate('/contact')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> Contact Support</button>
+            </div>
+        </section>
+
+        <!-- Core Features / Trust Strip -->
+        <div class="bg-white border-b border-slate-200 py-10 px-6">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16 text-sm font-semibold text-slate-700">
+                <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center">🛡️</span> Enterprise Security & Compliance</div>
+                <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center">🔑</span> Verified Digital Trust</div>
+                <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">👤</span> Digital Identity Services</div>
+                <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-amber-50 text-amber-600 flex items-center justify-center">⚙️</span> Business Process Automation</div>
             </div>
         </div>
 
-        <!-- Enterprise Information Hub -->
-        <section class="bg-slate-50 py-20 px-6 border-b border-slate-200">
+        <!-- 5. Enterprise Solutions -->
+        <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-slate-900">Enterprise Information Hub</h2>
-                    <p class="text-slate-600 mt-3">Digital ecosystem announcements, platform showcases, and institutional updates.</p>
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-extrabold text-slate-900">JUMO Enterprise Solutions</h2>
+                    <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Comprehensive digital platforms tailored for the unique workflows of major sectors.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Video Showcase -->
-                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><span class="text-rose-500">▶</span> JUMO Digital Showcase</h3>
-                            <span class="text-[10px] font-mono text-slate-500 bg-slate-200 px-2 py-1 rounded">LIVE HUB</span>
-                        </div>
-                        <div class="aspect-video bg-slate-900 relative flex items-center justify-center group cursor-pointer">
-                            <div class="absolute inset-0 bg-slate-800 bg-cover bg-center opacity-40 group-hover:opacity-50 transition"></div>
-                            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition z-10">
-                                <div class="w-0 h-0 border-t-8 border-t-transparent border-l-[12px] border-l-white border-b-8 border-b-transparent ml-1"></div>
-                            </div>
-                            <div class="absolute bottom-4 left-4 right-4 z-10">
-                                <h4 class="text-white font-bold text-lg">Platform Demonstration: UEOS v4.1</h4>
-                                <p class="text-slate-300 text-xs mt-1">Enterprise digital transformation ledgers and AI cognitive services</p>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-white grid grid-cols-2 gap-4">
-                            <button class="text-left p-3 rounded-lg border border-slate-100 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer">
-                                <div class="text-[10px] font-mono text-enterprise-blue font-bold mb-1">LATEST</div>
-                                <div class="text-xs font-semibold text-slate-800">Institution Success Stories</div>
-                            </button>
-                            <button class="text-left p-3 rounded-lg border border-slate-100 hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer">
-                                <div class="text-[10px] font-mono text-purple-600 font-bold mb-1">INNOVATION</div>
-                                <div class="text-xs font-semibold text-slate-800">AI Gateway Updates</div>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- News & Announcements -->
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
-                        <h3 class="font-bold text-slate-900 mb-6 flex items-center gap-2">📰 News & Announcements</h3>
-                        <div class="space-y-6 flex-1">
-                            <div class="group cursor-pointer">
-                                <div class="text-[10px] text-slate-500 font-mono mb-1">TODAY, 09:00 AM</div>
-                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">New State Body Onboarding</h4>
-                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">The Ministry of Digital Transformation has completed their integration with ${BRAND_CONFIG.poweredBy}.</p>
-                            </div>
-                            <div class="group cursor-pointer">
-                                <div class="text-[10px] text-slate-500 font-mono mb-1">YESTERDAY</div>
-                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">AEGIS Security Update v2.4</h4>
-                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">Enhanced cryptographic ledgers deployed across all tenant domains.</p>
-                            </div>
-                            <div class="group cursor-pointer">
-                                <div class="text-[10px] text-slate-500 font-mono mb-1">MAY 28, 2026</div>
-                                <h4 class="text-sm font-semibold text-slate-800 group-hover:text-enterprise-blue transition">Digital Services Expansion</h4>
-                                <p class="text-xs text-slate-600 mt-1 line-clamp-2">Three new enterprise modules added to the JUMO registry.</p>
-                            </div>
-                        </div>
-                        <button class="w-full mt-4 py-2 text-xs font-bold text-enterprise-blue hover:bg-blue-50 rounded-lg transition border border-blue-100 cursor-pointer">View All Updates</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Enterprise Platforms Section -->
-        <section class="py-20 px-6 bg-white border-b border-slate-200">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-slate-900">Explore JUMO Enterprise Platforms</h2>
-                    <p class="text-slate-600 mt-3 max-w-2xl mx-auto">Future-ready registry architecture and domain solutions powered by ${BRAND_CONFIG.poweredBy}.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     ${[
-                        { name: "Education ERP", icon: "🎓", color: "blue", desc: "Campus management, student admissions, academic grading, and degree verification ledgers." },
-                        { name: "Government ERP", icon: "🏛️", color: "emerald", desc: "Citizen registry, civil records, public document audit trails, and workflow governance." },
-                        { name: "Healthcare ERP", icon: "🏥", color: "indigo", desc: "Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes." },
-                        { name: "Finance & FAAP Treasury", icon: "💳", color: "amber", desc: "Multi-currency accounting ledger, automated vendor settlements, and state treasury." },
-                        { name: "Agriculture ERP", icon: "🌱", color: "rose", desc: "Cooperative yield tracking, commodity shipping ledgers, and rural extension hubs." },
-                        { name: "AI Platform", icon: "🤖", color: "purple", desc: "Enterprise intelligent assistant, synthetic document verification, and policy auditing engines." },
-                        { name: "Recruitment Platform", icon: "👥", color: "cyan", desc: "Talent acquisition, background verification, and enterprise onboarding workflows." },
-                        { name: "FINTECH", icon: "💸", color: "teal", desc: "Digital payment gateways, cross-border settlements, and financial compliance." },
-                        { name: "AEGIS", icon: "🛡️", color: "slate", desc: "Zero-trust security, cryptographic identity governance, and compliance ledgers." },
-                        { name: "Research & Innovation", icon: "🔬", color: "fuchsia", desc: "R&D collaboration, patent registries, and academic grant management." },
-                        { name: "App Builder Platform", icon: "⚡", color: "orange", desc: "Low-code sovereign application deployment and enterprise customization." }
+                        { name: "Education Management", icon: "🎓", desc: "Comprehensive administration for universities and schools, including admissions and academic records." },
+                        { name: "Government Services", icon: "🏛️", desc: "Digital infrastructure for civil records, public administration, and citizen engagement." },
+                        { name: "Healthcare Systems", icon: "🏥", desc: "Secure management of clinical records, hospital administration, and health resources." },
+                        { name: "Finance & Treasury", icon: "💳", desc: "Integrated financial ledgers, automated settlements, and secure accounting platforms." },
+                        { name: "Agriculture Cooperatives", icon: "🌱", desc: "Digital tracking for agricultural yields, supply chains, and cooperative management." },
+                        { name: "Enterprise AI Services", icon: "🧠", desc: "Intelligent automation and cognitive assistance to streamline enterprise operations." },
+                        { name: "Human Resources", icon: "👥", desc: "End-to-end talent acquisition, onboarding, and workforce management." },
+                        { name: "Financial Technology", icon: "💸", desc: "Secure digital payment gateways and robust financial compliance tools." },
+                        { name: "Enterprise Security", icon: "🛡️", desc: "Advanced cryptographic ledgers and compliance infrastructure for institutional data." }
                     ].map(p => `
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-enterprise-blue hover:shadow-md transition flex flex-col">
-                            <div class="w-12 h-12 rounded-xl bg-${p.color}-50 text-${p.color}-600 flex items-center justify-center font-bold text-2xl mb-4 border border-${p.color}-100">
+                        <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:border-enterprise-blue hover:shadow-md transition flex flex-col group">
+                            <div class="w-12 h-12 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center text-2xl mb-6 border border-slate-100 group-hover:bg-blue-50 group-hover:text-enterprise-blue transition">
                                 ${p.icon}
                             </div>
-                            <h3 class="font-bold text-slate-900 text-base">${p.name}</h3>
-                            <p class="text-xs text-slate-600 mt-2 mb-6 flex-1 leading-relaxed">${p.desc}</p>
-                            <div class="flex items-center justify-between mt-auto">
-                                <span class="text-[9px] font-mono text-slate-400 uppercase">UEOS Governed</span>
-                                <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline flex items-center gap-1 cursor-pointer">Access <span aria-hidden="true">&rarr;</span></button>
+                            <h3 class="font-bold text-slate-900 text-lg mb-3">${p.name}</h3>
+                            <p class="text-sm text-slate-600 mb-8 flex-1 leading-relaxed">${p.desc}</p>
+                            <div class="mt-auto pt-4 border-t border-slate-100">
+                                <button onclick="navigate('/login')" class="text-sm font-semibold text-enterprise-blue hover:text-blue-700 flex items-center gap-1 cursor-pointer">Learn more <span aria-hidden="true">&rarr;</span></button>
                             </div>
                         </div>
                     `).join('')}
@@ -345,16 +325,103 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        <!-- Trusted Partners & Ecosystem -->
-        <section class="py-16 bg-slate-50 border-b border-slate-200">
-            <div class="max-w-7xl mx-auto px-6 text-center">
-                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-8">Trusted Partners & Ecosystem</h3>
-                <div class="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 transition duration-500">
-                    <div class="text-xl font-extrabold font-serif text-slate-800 cursor-pointer">Ministry of Tech</div>
-                    <div class="text-xl font-bold font-sans text-slate-800 flex items-center gap-2 cursor-pointer"><span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs">G</span> GlobalBank</div>
-                    <div class="text-xl font-extrabold italic text-slate-800 cursor-pointer">EduNet Africa</div>
-                    <div class="text-xl font-bold tracking-tighter text-slate-800 cursor-pointer">HEALTH<span class="text-slate-400">CORP</span></div>
-                    <div class="text-xl font-medium tracking-widest text-slate-800 uppercase cursor-pointer">AgriState</div>
+        <!-- 6. Success Stories -->
+        <section class="py-24 px-6 bg-white border-b border-slate-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900">Success Stories</h2>
+                        <p class="text-slate-600 mt-2">How organizations are transforming with JUMO.</p>
+                    </div>
+                    <button class="px-6 py-2.5 rounded-lg border border-slate-200 text-sm font-semibold hover:bg-slate-50 transition cursor-pointer">Read all stories</button>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Featured Story -->
+                    <div class="bg-slate-900 rounded-2xl p-10 text-white relative overflow-hidden group cursor-pointer flex flex-col justify-end min-h-[400px]">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/80 to-transparent z-0"></div>
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="inline-flex px-3 py-1 bg-white/20 backdrop-blur-md rounded border border-white/10 text-xs font-bold mb-6 uppercase tracking-wider">Government Agency</div>
+                            <h3 class="text-3xl font-bold mb-4 leading-tight">Digitalizing Civil Services at National Scale</h3>
+                            <p class="text-slate-300 mb-6 max-w-lg">A complete transformation of public service delivery using JUMO Government Solutions, reducing processing times by 80%.</p>
+                            <div class="flex items-center gap-2 text-sm font-semibold text-blue-300 group-hover:text-white transition">Read Case Study &rarr;</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-8">
+                        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-md transition cursor-pointer group">
+                            <div class="w-full sm:w-1/3 aspect-video sm:aspect-square bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200">
+                                <span class="text-4xl text-slate-300">🎓</span>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-center">
+                                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Public University</div>
+                                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-enterprise-blue transition">Unified Campus Administration</h3>
+                                <p class="text-sm text-slate-600 line-clamp-2 mb-4">Integrating 50,000 students and faculty onto a single secure management platform.</p>
+                                <span class="text-sm font-semibold text-enterprise-blue">Read Article</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-md transition cursor-pointer group">
+                            <div class="w-full sm:w-1/3 aspect-video sm:aspect-square bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200">
+                                <span class="text-4xl text-slate-300">🏥</span>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-center">
+                                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Regional Hospital</div>
+                                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-enterprise-blue transition">Secure Patient Records</h3>
+                                <p class="text-sm text-slate-600 line-clamp-2 mb-4">Implementing zero-trust architecture for sensitive clinical data across multiple care centers.</p>
+                                <span class="text-sm font-semibold text-enterprise-blue">Read Article</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. FAQ -->
+        <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-extrabold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
+                
+                <div class="space-y-4">
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                        <h4 class="font-bold text-slate-900 text-lg mb-2">How does an institution get started with JUMO?</h4>
+                        <p class="text-slate-600 text-sm">Institutions must complete the official registration process, which includes verification of legal status and administrative authorization. Once approved, you will receive access to the Enterprise Control Center.</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                        <h4 class="font-bold text-slate-900 text-lg mb-2">Is the platform available for individual users?</h4>
+                        <p class="text-slate-600 text-sm">Yes. Individuals can create personal accounts to interact with connected institutions, access public services, and manage their personal digital identity.</p>
+                    </div>
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                        <h4 class="font-bold text-slate-900 text-lg mb-2">How secure is the data stored on the platform?</h4>
+                        <p class="text-slate-600 text-sm">JUMO employs enterprise-grade security, including advanced encryption, secure access controls, and strict compliance protocols to ensure all institutional and personal data remains protected.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 8. Contact (Simplified CTA) -->
+        <section class="py-24 px-6 bg-enterprise-blue text-white text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Ready to transform your organization?</h2>
+                <p class="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">Connect with our enterprise onboarding team to discuss how JUMO can integrate with your institutional workflows.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="navigate('/contact')" class="px-8 py-4 bg-white text-enterprise-blue font-bold rounded-xl shadow-lg hover:bg-blue-50 transition cursor-pointer">Contact Our Team</button>
+                    <button onclick="navigate('/register')" class="px-8 py-4 bg-transparent border-2 border-white/30 hover:border-white font-bold rounded-xl transition cursor-pointer">Register Institution</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Trusted Partners -->
+        <section class="py-16 bg-white border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-10">Trusted by institutions across sectors</h3>
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
+                    <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Ministries & Government</div>
+                    <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Public Universities</div>
+                    <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Regional Hospitals</div>
+                    <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Financial Institutions</div>
+                    <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Development Partners</div>
                 </div>
             </div>
         </section>
@@ -364,74 +431,80 @@ export const publicTemplate = (state) => {
     <!-- Footer -->
     ${getEnterpriseFooterHtml()}
     
-    <!-- Floating JUMO AI Assistant (Prominent) -->
+    <!-- 6. Public AI Assistant (Concierge) -->
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         
         <!-- Welcome Card (Initially Visible) -->
-        <div id="public-ai-welcome" class="bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 p-5 w-72 transform transition-all duration-300 origin-bottom-right">
-            <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-50 text-enterprise-blue flex items-center justify-center text-xl shrink-0 border border-blue-100">🤖</div>
-                <div>
-                    <h4 class="font-bold text-slate-900 text-sm">JUMO AI ASSISTANT</h4>
-                    <p class="text-xs text-slate-600 mt-1">How can I help you today?</p>
+        <div id="public-ai-welcome" class="bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 overflow-hidden w-80 transform transition-all duration-300 origin-bottom-right">
+            <!-- Header -->
+            <div class="bg-slate-900 p-5 flex items-center gap-4 text-white">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl border border-white/20">
+                    🤖
                 </div>
-            </div>
-            <div class="mt-4 pt-4 border-t border-slate-100">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 font-mono">Ask about:</p>
-                <ul class="text-xs text-slate-600 space-y-1.5 mb-4 font-medium">
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Platform services</li>
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Registration</li>
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Login support</li>
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Enterprise solutions</li>
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> Security</li>
-                    <li class="flex items-center gap-1.5"><span class="text-enterprise-blue">•</span> General inquiries</li>
-                </ul>
-                <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden'); document.getElementById('public-ai-chat').classList.remove('hidden');" class="w-full py-2.5 bg-enterprise-blue text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition shadow-sm cursor-pointer">
-                    Start Conversation
+                <div>
+                    <h4 class="font-bold text-white text-base">JUMO AI Assistant</h4>
+                    <p class="text-xs text-slate-400">Enterprise Concierge</p>
+                </div>
+                <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            
+            <!-- Body -->
+            <div class="p-5">
+                <p class="text-sm text-slate-700 font-medium mb-4">How may I assist you today?</p>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="navigate('/register')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
+                        <span class="text-lg mb-1">🏛️</span>
+                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Register Institution</span>
+                    </button>
+                    <button onclick="navigate('/login')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
+                        <span class="text-lg mb-1">🔑</span>
+                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Sign In</span>
+                    </button>
+                    <button onclick="navigate('/register')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
+                        <span class="text-lg mb-1">👤</span>
+                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Create Account</span>
+                    </button>
+                    <button onclick="alert('Exploring Services')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
+                        <span class="text-lg mb-1">🌐</span>
+                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Explore Services</span>
+                    </button>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-slate-100 flex gap-2">
+                    <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden'); document.getElementById('public-ai-chat').classList.remove('hidden');" class="flex-1 py-2.5 bg-enterprise-blue text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition shadow-sm cursor-pointer flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        Chat with Assistant
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Chat Window -->
         <div id="public-ai-chat" class="hidden w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 flex-col overflow-hidden transition-all duration-300">
-            <div class="bg-enterprise-blue p-4 flex items-center justify-between text-white shadow-xs">
+            <div class="bg-slate-900 p-4 flex items-center justify-between text-white shadow-xs">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-white text-enterprise-blue flex items-center justify-center font-bold text-xl border-2 border-blue-400">🤖</div>
+                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        🤖
+                    </div>
                     <div>
                         <h4 class="font-bold text-sm">JUMO AI Assistant</h4>
-                        <p class="text-[10px] text-blue-200">Digital Front Desk &bull; Live</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-blue-200 hover:text-white transition p-1 cursor-pointer">
+                <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-slate-400 hover:text-white transition p-1 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div class="p-4 h-[320px] overflow-y-auto bg-slate-50 text-xs space-y-4">
                 <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white flex items-center justify-center shrink-0 text-sm shadow-sm">🤖</div>
-                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 rounded-tl-none shadow-sm text-slate-700 leading-relaxed">
-                        Welcome to the <strong>${BRAND_CONFIG.platformName}</strong>. I represent the JUMO AI Gateway. How can I assist you today?
+                    <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 text-sm shadow-sm">
+                        🤖
                     </div>
-                </div>
-                
-                <div class="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center my-2 font-mono">Suggested Topics</div>
-                
-                <div class="space-y-2">
-                    <button onclick="alert('Providing platform overview...')" class="w-full text-left p-3 bg-white hover:bg-blue-50 text-enterprise-blue font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
-                        <span class="text-blue-400">🌐</span> What is JUMO UEOS?
-                    </button>
-                    <button onclick="navigate('/register')" class="w-full text-left p-3 bg-white hover:bg-emerald-50 text-emerald-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
-                        <span class="text-emerald-500">🏛️</span> Register an Institution
-                    </button>
-                    <button onclick="navigate('/login')" class="w-full text-left p-3 bg-white hover:bg-indigo-50 text-indigo-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
-                        <span class="text-indigo-500">🔑</span> Account & Login Support
-                    </button>
-                    <button onclick="navigate('/contact')" class="w-full text-left p-3 bg-white hover:bg-amber-50 text-amber-700 font-semibold rounded-xl border border-slate-200 transition shadow-sm cursor-pointer flex items-center gap-2">
-                        <span class="text-amber-500">📞</span> Contact Information
-                    </button>
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 rounded-tl-none shadow-sm text-slate-700 leading-relaxed">
+                        Welcome to the <strong>${BRAND_CONFIG.platformName}</strong>. I represent the JUMO AI Assistant. How can I assist you today?
+                    </div>
                 </div>
             </div>
             <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
@@ -444,11 +517,10 @@ export const publicTemplate = (state) => {
         
         <!-- Floating Button -->
         <button onclick="
-            document.getElementById('public-ai-welcome').classList.add('hidden');
-            document.getElementById('public-ai-chat').classList.toggle('hidden');
-        " class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-2xl hover:bg-slate-800 transition hover:scale-105 active:scale-95 border-2 border-white cursor-pointer relative group">
-            <span class="text-3xl">🤖</span>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            document.getElementById('public-ai-welcome').classList.toggle('hidden');
+            document.getElementById('public-ai-chat').classList.add('hidden');
+        " class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-2xl hover:bg-slate-800 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
+            🤖
         </button>
     </div>
 </div>
