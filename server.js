@@ -10,6 +10,7 @@ import { ERPRegistry } from "./kernel/erp/erpRegistry.js";
 import { ERPConfigEngine } from "./kernel/erp/erpConfigEngine.js";
 import { ERPStore } from "./services/erp/erpStore.js";
 import { baseEducationConfig } from "./kernel/erp/education/baseEducationConfig.js";
+import { universityConfig } from "./kernel/erp/education/universityConfig.js";
 import { baseAlumniConfig } from "./kernel/erp/industry/baseAlumniConfig.js";
 import { baseHospitalityConfig } from "./kernel/erp/industry/baseHospitalityConfig.js";
 import { baseChurchConfig } from "./kernel/erp/industry/baseChurchConfig.js";
@@ -25,6 +26,7 @@ const erpConfigEngine = new ERPConfigEngine(erpRegistry);
 const erpStore = new ERPStore(erpRegistry, erpConfigEngine);
 
 erpRegistry.register("Education-University", baseEducationConfig);
+erpRegistry.register("University-ERP", universityConfig);
 erpRegistry.register("Alumni-Association", baseAlumniConfig);
 erpRegistry.register("Hospitality-Hotel", baseHospitalityConfig);
 erpRegistry.register("Church-Ministry", baseChurchConfig);
