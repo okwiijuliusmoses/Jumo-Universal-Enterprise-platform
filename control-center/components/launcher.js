@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Package, ShoppingCart, Cpu, Building2, Users, ShieldCheck, Database, Terminal, Settings, X } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Cpu, Building2, Users, ShieldCheck, Database, Terminal, Settings, X, LayoutGrid } from 'lucide-react';
 
 export const Launcher = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -21,6 +21,7 @@ export const Launcher = ({ isOpen, onClose }) => {
           <X className="w-6 h-6 cursor-pointer" onClick={onClose} />
         </div>
         <div className="grid grid-cols-3 gap-4">
+          <Tile icon={LayoutGrid} title="Platform Services" />
           <Tile icon={LayoutDashboard} title="ERP Factory" />
           <Tile icon={ShoppingCart} title="ERP Store" />
           <Tile icon={Cpu} title="AI Platform" />
