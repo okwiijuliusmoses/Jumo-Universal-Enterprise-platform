@@ -2,7 +2,7 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 
 /**
  * JUMO UEOS Digital Control Center Login (/control-center/login)
- * Dedicated Platform Owner Authentication (Strictly independent of institutional Admin Access)
+ * Dedicated Platform Owner Authentication (Strictly sovereign platform headquarters - updated 2026)
  */
 export const controlCenterLoginTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "lg", textColor: "dark" });
