@@ -1,7 +1,8 @@
 /**
- * JUMO UEOS ERP Runtime Engine & Application Registry
+ * JUMO UEOS ERP Runtime Engine & Application Registry (Consolidated & Synchronized)
  * Manages installable ERP templates, active module loading, governance portals,
  * departments, offices, components, digital forms, and workflows.
+ * Updated: 2026-07-31
  */
 
 export const ERP_CATALOGUE = [
