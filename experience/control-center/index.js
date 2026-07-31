@@ -201,6 +201,9 @@ export const controlCenterTemplate = (state) => {
               <div class="grid grid-cols-3 gap-4">
                 ${launcherTile('overview', '🏠', 'Platform Overview', 'Executive Dashboard')}
                 ${launcherTile('platform-services', '⚙️', 'Platform Services', 'Identity, Workflow, Messaging')}
+                ${launcherTile('ai-command-center', '🧠', 'AI Command Center', 'Master AI Authority & Agent Registry')}
+                ${launcherTile('engineering-workspace', '🛠️', 'Engineering Center', 'ERP Provisioning, Build & Deploy')}
+                ${launcherTile('release-center', '🚀', 'Release Center', 'Version Control & Rollbacks')}
                 ${launcherTile('erp-factory', '🏭', 'ERP Factory', 'Ecosystem Blueprints')}
                 ${launcherTile('erp-store', '🛒', 'ERP Store', 'Marketplace & Distribution')}
                 ${launcherTile('installed-apps', '📦', 'Installed Platforms', 'Active Enterprise Instances')}
@@ -417,6 +420,9 @@ function getViewTitle(view) {
   switch(view) {
     case 'overview': return 'JUMO UEOS Control Center • Executive Dashboard';
     case 'platform-services': return 'Platform Services Catalog';
+    case 'ai-command-center': return 'JUMO AI Command & Management Center';
+    case 'engineering-workspace': return 'JUMO ERP Engineering & Deployment Workspace';
+    case 'release-center': return 'JUMO Release & Version Management Center';
     case 'erp-factory': return 'ERP Factory & Ecosystem Blueprints';
     case 'erp-store': return 'ERP Store Marketplace & Distribution';
     case 'installed-apps': return 'Installed Enterprise Platforms';
@@ -436,6 +442,9 @@ function getViewDescription(view) {
   switch(view) {
     case 'overview': return 'Good morning. Executive overview of platform applications, ecosystem factory, installed instances, and overall system health.';
     case 'platform-services': return 'Identity, authentication, workflow, notifications, messaging, reporting, and licensing.';
+    case 'ai-command-center': return 'Centralized AI authority managing all enterprise agents, LLM models, prompt policies, and AI security audit logs across the JUMO ecosystem.';
+    case 'engineering-workspace': return 'Platform engineering headquarters for ERP template provisioning, building, deployment targets, build monitoring, and runtime diagnostics.';
+    case 'release-center': return 'Manage platform version releases, deployment history, changelogs, and instant cryptographic rollbacks.';
     case 'erp-factory': return 'Design and configure modular enterprise ERP blueprints across Education, Hospitality, Church, Alumni, and Corporate.';
     case 'erp-store': return 'Manage installed ERP packages, version upgrades, and marketplace distributions.';
     case 'installed-apps': return 'Comprehensive master registry of every deployed ERP installation across all tenant institutions.';
@@ -504,6 +513,122 @@ function renderViewContent(view) {
             ${recentTile('ai-platform', 'AI Platform', '🤖')}
             ${recentTile('faap', 'FAAP Financials', '💰')}
             ${recentTile('system-services', 'System Services', '📊')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (view === 'ai-command-center') {
+    return `
+      <div class="space-y-8">
+        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+              <span>🧠 Centralized Master AI Authority</span>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight">JUMO AI Command & Management Center</h2>
+            <p class="text-xs text-slate-300 max-w-2xl">Master oversight of all autonomous enterprise agents, LLM model registries, prompt governance, task queues, and AEGIS AI security audit logs.</p>
+          </div>
+          <button onclick="alert('Synchronizing all agent clusters...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Sync AI Fleet</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          ${serviceCard('AI Agent Registry', '142 Active Enterprise Agents across all tenants', '🤖')}
+          ${serviceCard('Model Registry', 'Gemini, Llama and custom enterprise LLM weights', '🧠')}
+          ${serviceCard('Prompt Governance', 'Version-controlled security prompt policies', '✍️')}
+          ${serviceCard('Task Queue', 'Active asynchronous agent reasoning jobs', '⚡')}
+          ${serviceCard('AEGIS AI Audit Logs', 'Immutable reasoning trace and compliance logs', '🛡️')}
+          ${serviceCard('Memory & Knowledge RAG', 'Vector embeddings and document indices', '📚')}
+        </div>
+      </div>
+    `;
+  }
+
+  if (view === 'engineering-workspace') {
+    return `
+      <div class="space-y-8">
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+              <span>🛠️ Platform Engineering Headquarters</span>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight">JUMO ERP Engineering & Deployment Workspace</h2>
+            <p class="text-xs text-slate-300 max-w-2xl">Provisioning, building, upgrading, and maintaining certified ERP templates and tenant instances. Strictly restricted to Platform Engineers.</p>
+          </div>
+          <button onclick="alert('Initializing new ERP build sequence...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">New Build Sequence</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-bold text-sm text-slate-900">Assigned Platform Engineer & Status</h3>
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500">Assigned Lead Engineer</span>
+                <span class="font-bold text-slate-900">Dr. Julius Moses Okwii (Sovereign Lead)</span>
+              </div>
+              <div class="flex justify-between p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500">Current Release</span>
+                <span class="font-mono font-bold text-emerald-700">v1.0-genesis (Production)</span>
+              </div>
+              <div class="flex justify-between p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500">Repository Status</span>
+                <span class="font-bold text-emerald-600">Clean &bull; Synchronized with Origin</span>
+              </div>
+              <div class="flex justify-between p-3 bg-slate-50 rounded-xl">
+                <span class="text-slate-500">Next Scheduled Release</span>
+                <span class="font-mono font-bold text-slate-800">2026-08-15 (v1.1-enterprise)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-bold text-sm text-slate-900">Engineering Operations & Actions</h3>
+            <div class="grid grid-cols-2 gap-3 text-xs font-bold">
+              <button onclick="alert('Provisioning ERP blueprint container...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">➕ Provision ERP</button>
+              <button onclick="alert('Running rolling upgrade across all nodes...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">🚀 Upgrade ERP</button>
+              <button onclick="alert('Backing up master state database...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">💾 Backup State</button>
+              <button onclick="alert('Restoring from cryptographic snapshot...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">🔄 Restore Snapshot</button>
+              <button onclick="alert('Opening secure Linux terminal console...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">💻 Open Terminal</button>
+              <button onclick="alert('Exporting build diagnostics report...');" class="p-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition cursor-pointer">📊 Export Logs</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (view === 'release-center') {
+    return `
+      <div class="space-y-8">
+        <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+              <span>🚀 Version Control & Rollback Management</span>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight">JUMO Release Center</h2>
+            <p class="text-xs text-slate-300 max-w-2xl">Manage platform build versions, deployment history, changelogs, and instant cryptographic rollbacks.</p>
+          </div>
+          <button onclick="alert('Creating new release tag...');" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Publish Release</button>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-sm text-slate-900">Recent Platform Releases & Deployment History</h3>
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <div>
+                <p class="font-bold text-slate-900">v1.0-genesis &bull; Sovereign UEOS Core Architecture</p>
+                <p class="text-[11px] text-slate-500">Deployed to production clusters with full FAAP, Digital Pay, AEGIS security, and 9 ERP ecosystems.</p>
+              </div>
+              <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Active Production</span>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <div>
+                <p class="font-bold text-slate-900">v0.9-beta &bull; Public Experience Gateway</p>
+                <p class="text-[11px] text-slate-500">Initial public gateway and assistant integration.</p>
+              </div>
+              <span class="px-3 py-1 bg-slate-200 text-slate-700 font-bold rounded-full text-[10px]">Archived</span>
+            </div>
           </div>
         </div>
       </div>
