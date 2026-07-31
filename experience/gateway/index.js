@@ -259,7 +259,7 @@ export const loginTemplate = (state) => {
           <form onsubmit="handleLoginSubmit(event)" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Enterprise Email / Signature</label>
-              <input type="email" id="login-email" value="${state.loginEmail || 'admin@enterprise.com'}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
+              <input type="email" id="login-email" value="${state.loginEmail || 'okwiijuliusmoses@gmail.com'}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
 
             <div>
@@ -345,7 +345,7 @@ export const registerTemplate = (state) => {
 
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Administrator Signature Email</label>
-              <input type="email" id="reg-email" value="admin@enterprise.com" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
+              <input type="email" id="reg-email" value="okwiijuliusmoses@gmail.com" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
 
             <button type="submit" class="w-full py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
@@ -369,8 +369,8 @@ export const registerTemplate = (state) => {
 export const gatewayTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   const user = state.session?.user || {
-    name: "Enterprise Admin",
-    email: "admin@enterprise.com",
+    name: "Julius Moses Okwii",
+    email: "okwiijuliusmoses@gmail.com",
     role: "Enterprise Administrator",
     isAdmin: true,
     status: "Verified Enterprise Account"

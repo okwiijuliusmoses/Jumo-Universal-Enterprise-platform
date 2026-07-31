@@ -6,8 +6,8 @@ export const BRAND_CONFIG = {
   platformNameShort: "JUMO DIGITAL ENTERPRISE PLATFORM",
   poweredBy: "JUMO UEOS",
   fullSystemName: "JUMO Universal Enterprise Operating System",
-  ownership: "Owned by JUMO",
-  founder: "JUMO Holdings",
+  ownership: "Owned by JUMO | Julius Moses Okwii",
+  founder: "Julius Moses Okwii",
   
   emails: {
     support: "support@jumo.com",
