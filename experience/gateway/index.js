@@ -5,416 +5,240 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
  */
 export const publicTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
-  const user = state.session?.user || {
-    name: "Julius Moses Okwii",
-    email: "okwiijuliusmoses@gmail.com",
-    role: "Enterprise Administrator",
-    isAdmin: true,
-    status: "Verified Enterprise Account"
-  };
-
-  const orgs = state.organizations || [
-    { id: "org-1", name: "University of Kampala", role: "Administrator", status: "Active", badge: "Education ERP", color: "blue" },
-    { id: "org-2", name: "JUMO Health Network", role: "Staff", status: "Active", badge: "Healthcare ERP", color: "emerald" },
-    { id: "org-3", name: "Africa's Business Solutions Ltd", role: "Manager", status: "Pending", badge: "Corporate", color: "amber" }
-  ];
-
-  const notifications = state.notifications || [
-    { title: "Invitation to Join", desc: "University of Kampala has invited you as Administrator.", time: "2 mins ago" },
-    { title: "System Maintenance", desc: "Scheduled maintenance for East Africa node on 20 May 2026.", time: "1 hr ago" },
-    { title: "New Platform Update", desc: "JUMO HRM v2.2 released with automated attendance logging.", time: "3 hrs ago" },
-    { title: "Marketplace Update", desc: "New FAAP Treasury reconciliation apps added.", time: "1 day ago" }
-  ];
+  const user = state.session?.user || null;
 
   app.innerHTML = `
     <div class="min-h-screen bg-slate-100 flex flex-col text-slate-800 antialiased font-sans">
-      <!-- SIDEBAR OVERLAY & COLLAPSIBLE DRAWER -->
-      <div id="sidebar-overlay" onclick="toggleGatewaySidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-[90] hidden"></div>
-      
-      <div id="gateway-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100 bg-slate-50">
-          <span class="font-bold text-xs text-slate-900 tracking-wider uppercase">JUMO Navigation</span>
-          <button onclick="toggleGatewaySidebar()" class="text-slate-400 hover:text-slate-600 transition p-1.5 rounded hover:bg-slate-200">
-            ✕
-          </button>
-        </div>
-        <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1 text-xs font-semibold">
-          <div class="px-3 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Personal Account</div>
-          <button onclick="navigate('/'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-900 bg-blue-50 text-enterprise-blue rounded-lg font-bold">🏠 Home Gateway</button>
-          <button onclick="alert('Profile details loaded'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">👤 My Profile</button>
-          <button onclick="navigate('/workspace'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">🏢 My Organizations</button>
-
-          <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Institutional Actions</div>
-          <button onclick="openRegisterModal(); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">+ Register Institution</button>
-          <button onclick="openJoinModal(); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">🔑 Join Organization</button>
-
-          <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Services & Solutions</div>
-          <button onclick="alert('Navigating to Marketplace'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">🛍️ Marketplace</button>
-          <button onclick="alert('Navigating to Documentation'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">📖 Documentation</button>
-          <button onclick="alert('Navigating to Downloads'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">📥 Downloads</button>
-          <button onclick="alert('Navigating to Support Centre'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">🎧 Support Centre</button>
-
-          <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Preferences</div>
-          <button onclick="alert('Settings modal opened'); toggleGatewaySidebar();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg">⚙️ Settings</button>
-          <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-lg font-bold">🚪 Sign Out</button>
+      <!-- Top Sovereign Status Bar -->
+      <div class="bg-slate-900 text-slate-300 py-2 px-6 border-b border-slate-800 hidden md:block text-xs font-medium">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold font-mono text-[11px]">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              SOVEREIGN SYSTEM OPERATIONAL
+            </span>
+            <span class="text-slate-700">|</span>
+            <span class="text-slate-400 text-[11px]">Region: ${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
+          </div>
+          <div class="flex items-center gap-6 text-[11px]">
+            <a href="tel:${BRAND_CONFIG.telephones.mobile}" class="hover:text-white transition">📞 ${BRAND_CONFIG.telephones.mobile}</a>
+            <a href="mailto:${BRAND_CONFIG.emails.contact}" class="hover:text-white transition">✉️ ${BRAND_CONFIG.emails.contact}</a>
+            <span class="text-slate-700">|</span>
+            <span class="font-mono text-amber-400 font-bold">${BRAND_CONFIG.poweredBy}</span>
+          </div>
         </div>
       </div>
 
-      <!-- APPROVED HEADER (Exact match to screenshot image) -->
+      <!-- Public Header -->
       <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <button onclick="toggleGatewaySidebar()" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <div class="cursor-pointer" onclick="navigate('/')">
-              ${logoHtml}
-            </div>
+          <div class="cursor-pointer" onclick="navigate('/')">
+            ${logoHtml}
           </div>
-
+          
           <!-- Platform Navigation -->
           <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold tracking-wider text-slate-600">
             <button onclick="navigate('/')" class="text-enterprise-blue font-bold">Home</button>
-            <button onclick="alert('Browsing Enterprise Platforms')" class="hover:text-enterprise-blue transition">Enterprise Platforms</button>
-            <button onclick="alert('Browsing Products')" class="hover:text-enterprise-blue transition">Products</button>
-            <button onclick="alert('Browsing Marketplace')" class="hover:text-enterprise-blue transition">Marketplace</button>
-            <button onclick="alert('Browsing Resources')" class="hover:text-enterprise-blue transition">Resources</button>
-            <button onclick="alert('Opening Support Centre')" class="hover:text-enterprise-blue transition">Support</button>
+            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Enterprise Platforms</button>
+            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Products</button>
+            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Marketplace</button>
+            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Resources</button>
+            <button onclick="navigate('/login')" class="hover:text-enterprise-blue transition">Support</button>
           </nav>
 
-          <!-- Right controls: Search, Notification Bell, User Profile Area -->
-          <div class="flex items-center space-x-4">
-            <!-- Search Icon & Input -->
-            <div class="hidden sm:flex items-center bg-slate-100 border border-slate-200 rounded-full px-3 py-1.5 text-xs">
-              <span class="text-slate-400 mr-2">🔍</span>
-              <input type="text" placeholder="Global search..." class="bg-transparent border-none outline-none text-xs w-28 focus:w-40 transition-all font-semibold text-slate-800">
-            </div>
-
-            <!-- Notification Bell -->
-            <div class="relative">
-              <button onclick="toggleNotificationsMenu()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-700 transition relative">
-                🔔
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center">4</span>
-              </button>
-
-              <div id="notifications-menu" class="hidden absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 text-xs">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-2">
-                  <span class="font-bold text-slate-900">Notifications</span>
-                  <button onclick="toggleNotificationsMenu()" class="text-[10px] text-enterprise-blue hover:underline">Mark all read</button>
-                </div>
-                <div class="space-y-3 max-h-60 overflow-y-auto">
-                  ${notifications.map(n => `
-                    <div class="p-2 rounded bg-slate-50 border border-slate-100">
-                      <p class="font-bold text-slate-900">${n.title}</p>
-                      <p class="text-slate-600 text-[11px] mt-0.5">${n.desc}</p>
-                      <span class="text-[9px] text-slate-400 font-mono mt-1 block">${n.time}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            </div>
-
-            <!-- Top-Right User Profile Component (Exact Requirement) -->
-            ${state.session ? `
-              <div class="relative">
-                <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
-                  <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                    ${user.name.split(' ').map(n=>n[0]).join('')}
-                  </div>
-                  <div class="hidden md:flex flex-col items-start text-left">
-                    <span class="font-bold text-xs text-slate-800 leading-tight">${user.name}</span>
-                    <span class="text-[10px] text-slate-500 font-medium">My Account</span>
-                  </div>
-                  <span class="text-slate-400 text-xs">▼</span>
+          <!-- Top-Right User Profile Component or Auth Actions -->
+          <div class="flex items-center space-x-3">
+            ${user ? `
+              <div class="relative flex items-center gap-3">
+                <button onclick="navigate('/gateway')" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
+                  Go to Enterprise Gateway &rarr;
                 </button>
 
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs font-semibold">
-                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 mb-2">
-                    <p class="font-bold text-slate-900 text-sm">${user.name}</p>
-                    <p class="text-slate-500 text-[11px] font-mono truncate">${user.email}</p>
-                    <div class="mt-2 flex items-center justify-between text-[10px]">
-                      <span class="font-bold text-slate-600">Org: ${state.session.organization || 'University of Kampala'}</span>
-                      <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        Verified
-                      </span>
+                <!-- Top-Right User Profile Component -->
+                <div class="relative">
+                  <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
+                    <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                      ${user.name.split(' ').map(n=>n[0]).join('')}
                     </div>
-                  </div>
-
-                  <div class="space-y-1 divide-y divide-slate-100">
-                    <div class="pt-1">
-                      <button onclick="navigate('/gateway'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-enterprise-blue font-bold hover:bg-blue-50 rounded-md">🏠 Enterprise Gateway &rarr;</button>
-                      <button onclick="navigate('/workspace'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🏢 Workspace Resolver</button>
-                      <button onclick="alert('Viewing Account Security Access Matrix'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🔒 Security Credentials</button>
+                    <div class="hidden md:flex flex-col items-start text-left">
+                      <span class="font-bold text-xs text-slate-800 leading-tight">${user.name}</span>
+                      <span class="text-[10px] text-slate-500 font-medium">Authenticated</span>
                     </div>
+                    <span class="text-slate-400 text-xs">▼</span>
+                  </button>
 
-                    ${user.isAdmin ? `
-                      <div class="pt-2">
-                        <button onclick="navigate('/control-center'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100 rounded-md flex items-center justify-between">
-                          <span>🛠️ Admin Control Center</span>
-                          <span class="text-[9px] font-mono bg-indigo-200 px-1.5 py-0.5 rounded text-indigo-900">ADMIN</span>
-                        </button>
+                  <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs font-semibold">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 mb-2">
+                      <p class="font-bold text-slate-900 text-sm">${user.name}</p>
+                      <p class="text-slate-500 text-[11px] font-mono truncate">${user.email}</p>
+                      <div class="mt-2 flex items-center justify-between text-[10px]">
+                        <span class="font-bold text-slate-600">Org: ${state.session.organization || 'Enterprise'}</span>
+                        <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          Verified
+                        </span>
                       </div>
-                    ` : ''}
+                    </div>
 
-                    <div class="pt-2">
-                      <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
+                    <div class="space-y-1 divide-y divide-slate-100">
+                      <div class="pt-1">
+                        <button onclick="navigate('/gateway'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-enterprise-blue font-bold hover:bg-blue-50 rounded-md">🏠 Enterprise Gateway &rarr;</button>
+                        <button onclick="navigate('/workspace'); toggleProfileDropdown();" class="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-md">🏢 Workspace Resolver</button>
+                      </div>
+                      <div class="pt-2">
+                        <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-rose-600 font-bold hover:bg-rose-50 rounded-md">🚪 Sign Out</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             ` : `
               <button onclick="navigate('/login')" class="text-xs font-bold uppercase px-4 py-2 text-slate-700 hover:text-enterprise-blue transition cursor-pointer">Sign In</button>
-              <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-4 py-2 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
+              <button onclick="navigate('/register')" class="text-xs font-bold uppercase px-5 py-2.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 text-white transition shadow-sm cursor-pointer">Register Institution</button>
             `}
           </div>
         </div>
       </header>
 
-      <!-- MAIN BODY (Exact Match to Approved Layout Screenshot) -->
-      <main class="flex-1 max-w-[1440px] mx-auto w-full px-6 py-6 space-y-6">
-        <!-- WELCOME HERO SECTION -->
-        <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 lg:p-8 items-center bg-gradient-to-r from-slate-50 via-white to-blue-50/30">
-            <!-- Left Welcome Text & Action Cards (7 cols) -->
-            <div class="lg:col-span-8 space-y-6">
-              <div>
-                <h1 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  Welcome back, <span class="text-enterprise-blue">${user.name}</span>
-                </h1>
-                <p class="text-xs lg:text-sm text-slate-600 mt-1 font-medium">
-                  Manage your organizations, access platform and explore global solutions.
-                </p>
+      <!-- Main Public Hero & Platforms Content -->
+      <main class="flex-1 bg-slate-50">
+        <!-- Hero Section -->
+        <section class="bg-white border-b border-slate-200 py-16 px-6 relative overflow-hidden">
+          <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-blue-50 text-enterprise-blue border border-blue-100 text-[11px] font-semibold tracking-wider uppercase font-mono">
+                <span class="w-2 h-2 rounded-full bg-enterprise-blue animate-pulse"></span>
+                <span>Enterprise Operating Environment</span>
               </div>
-
-              <!-- 3 Hero Action Cards -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <!-- Register Institution Card -->
-                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-blue-400 transition flex flex-col justify-between">
-                  <div>
-                    <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center font-bold text-lg mb-3 shadow-xs">
-                      🏛️
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-xs">Register Institution</h3>
-                    <p class="text-[11px] text-slate-500 mt-1 leading-snug">
-                      Create a new digital environment for your institution.
-                    </p>
-                  </div>
-                  <button onclick="openRegisterModal()" class="mt-4 w-full py-2 bg-enterprise-blue hover:bg-blue-700 text-white rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 cursor-pointer">
-                    Register Institution &rarr;
-                  </button>
-                </div>
-
-                <!-- Join Organization Card -->
-                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-emerald-400 transition flex flex-col justify-between">
-                  <div>
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-lg mb-3 shadow-xs">
-                      👥
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-xs">Join Organization</h3>
-                    <p class="text-[11px] text-slate-500 mt-1 leading-snug">
-                      Join an existing organization using an invitation or code.
-                    </p>
-                  </div>
-                  <button onclick="openJoinModal()" class="mt-4 w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 cursor-pointer">
-                    Join Organization &rarr;
-                  </button>
-                </div>
-
-                <!-- Explore Solutions Card -->
-                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-purple-400 transition flex flex-col justify-between">
-                  <div>
-                    <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-lg mb-3 shadow-xs">
-                      🧩
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-xs">Explore Solutions</h3>
-                    <p class="text-[11px] text-slate-500 mt-1 leading-snug">
-                      Discover enterprise platforms, applications and services.
-                    </p>
-                  </div>
-                  <button onclick="navigate('/workspace')" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs transition flex items-center justify-center gap-1 cursor-pointer">
-                    Explore Solutions &rarr;
-                  </button>
-                </div>
+              <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                ${BRAND_CONFIG.platformName}
+              </h1>
+              <p class="text-slate-600 text-base max-w-xl leading-relaxed font-medium">
+                The unified digital reception and workspace environment connecting institutions, enterprises, state bodies, and digital services under sovereign security governance.
+              </p>
+              <div class="pt-3 flex flex-wrap gap-4">
+                <button onclick="navigate('/register')" class="px-6 py-3.5 rounded-lg bg-enterprise-blue hover:bg-blue-700 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Register Institution</button>
+                <button onclick="navigate('/login')" class="px-6 py-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 font-bold text-xs text-white uppercase tracking-wider transition shadow-sm cursor-pointer">Sign In to Platform</button>
               </div>
             </div>
 
-            <!-- Right Notifications Card (4 cols) -->
-            <div class="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 class="font-bold text-xs text-slate-900">Notifications</h3>
-                <button onclick="toggleNotificationsMenu()" class="text-[10px] text-enterprise-blue font-bold hover:underline">View all</button>
-              </div>
-
-              <div class="mt-3 space-y-3">
-                ${notifications.map(n => `
-                  <div class="flex items-start gap-3 text-xs">
-                    <div class="w-7 h-7 rounded-full bg-blue-50 text-enterprise-blue flex items-center justify-center shrink-0 mt-0.5">
-                      🔔
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-slate-900 text-[11px]">${n.title}</p>
-                      <p class="text-slate-500 text-[10px] leading-snug">${n.desc}</p>
-                      <span class="text-[9px] text-slate-400 font-mono mt-0.5 block">${n.time}</span>
-                    </div>
+            <!-- Quick Platform Status Card -->
+            <div class="lg:col-span-5">
+              <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
+                <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
+                  <div>
+                    <h3 class="font-bold text-sm tracking-wide">JUMO Platform Status</h3>
+                    <p class="text-[11px] text-slate-400 font-mono">Kernel Core: Operational</p>
                   </div>
-                `).join('')}
+                  <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">LIVE</span>
+                </div>
+                <div class="p-6 divide-y divide-slate-100 text-xs font-semibold text-slate-600 space-y-3">
+                  <div class="pt-3 flex items-center justify-between">
+                    <span>Supported Regions</span>
+                    <span class="font-bold text-slate-900">${BRAND_CONFIG.officeLocations.region} (${BRAND_CONFIG.officeLocations.country})</span>
+                  </div>
+                  <div class="pt-3 flex items-center justify-between">
+                    <span>Head Office</span>
+                    <span class="font-mono text-enterprise-blue font-bold">${BRAND_CONFIG.officeLocations.headOffice}</span>
+                  </div>
+                  <div class="pt-3 flex items-center justify-between">
+                    <span>Regional Offices</span>
+                    <span class="font-mono text-slate-700">${BRAND_CONFIG.officeLocations.regionalOffices.join(", ")}</span>
+                  </div>
+                  <div class="pt-3 flex items-center justify-between">
+                    <span>Security & Compliance</span>
+                    <span class="font-mono text-emerald-600 font-bold">Cryptographic AEGIS Enforced</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- MIDDLE CONTENT GRID: My Organizations, Quick Access, JUMO Assistant -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- My Organizations Section (6 cols) -->
-          <div class="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="font-bold text-sm text-slate-900">My Organizations</h2>
-              <button onclick="navigate('/workspace')" class="text-[11px] text-enterprise-blue font-bold hover:underline">View all</button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              ${orgs.map(org => `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-enterprise-blue transition">
-                  <div class="text-center">
-                    <div class="w-12 h-12 mx-auto rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-800 text-sm shadow-2xs mb-2">
-                      ${org.name.includes("Kampala") ? "🎓" : org.name.includes("Health") ? "🏥" : "🏢"}
-                    </div>
-                    <h3 class="font-extrabold text-slate-900 text-xs line-clamp-1">${org.name}</h3>
-                    <p class="text-[10px] text-slate-500 font-semibold">${org.role}</p>
-                    <span class="mt-1.5 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ${org.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                      ${org.status}
-                    </span>
-                  </div>
-
-                  <button onclick="navigate('/workspace')" class="mt-4 w-full py-1.5 bg-enterprise-blue hover:bg-blue-700 text-white rounded-lg font-bold text-[11px] transition cursor-pointer">
-                    Open Workspace
-                  </button>
-                </div>
-              `).join('')}
-            </div>
+        <!-- Enterprise Industry Solutions Grid -->
+        <section class="py-16 max-w-[1440px] mx-auto px-6">
+          <div class="text-center max-w-2xl mx-auto mb-12">
+            <h2 class="text-2xl font-bold text-slate-900">Supported Enterprise Platforms</h2>
+            <p class="text-slate-600 text-xs mt-2 font-medium">Discover sovereign institutional frameworks connected to ${BRAND_CONFIG.poweredBy}</p>
           </div>
 
-          <!-- Quick Access Links (3 cols) -->
-          <div class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3">
-            <h2 class="font-bold text-sm text-slate-900 mb-2">Quick Access</h2>
-            <div class="space-y-2 text-xs font-medium">
-              <a href="#" onclick="alert('Navigating to Marketplace'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">🛍️</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">Marketplace</p>
-                  <p class="text-[10px] text-slate-500">Browse applications</p>
-                </div>
-              </a>
-              <a href="#" onclick="alert('Navigating to Documentation'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">📖</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">Documentation</p>
-                  <p class="text-[10px] text-slate-500">Guides and resources</p>
-                </div>
-              </a>
-              <a href="#" onclick="alert('Navigating to Training'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">🎓</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">Training</p>
-                  <p class="text-[10px] text-slate-500">Learn and grow</p>
-                </div>
-              </a>
-              <a href="#" onclick="alert('Opening Support Centre'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">🎧</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">Support Centre</p>
-                  <p class="text-[10px] text-slate-500">Get help anytime</p>
-                </div>
-              </a>
-              <a href="#" onclick="alert('Opening Downloads'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">📥</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">Downloads</p>
-                  <p class="text-[10px] text-slate-500">Forms, sdk, data models</p>
-                </div>
-              </a>
-              <a href="#" onclick="alert('System status: Operational'); return false;" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-slate-200">
-                <span class="text-base">🛡️</span>
-                <div>
-                  <p class="font-bold text-slate-900 text-xs">System Status</p>
-                  <p class="text-[10px] text-emerald-600 font-bold">All systems operational</p>
-                </div>
-              </a>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-blue-50 text-enterprise-blue flex items-center justify-center font-bold text-lg mb-4">🎓</div>
+              <h3 class="font-bold text-slate-900 text-base">Education ERP Platform</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Campus management, student admissions, academic grading, and degree verification ledgers.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">🏛️</div>
+              <h3 class="font-bold text-slate-900 text-base">Government ERP Platform</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Citizen registry, civil records, public document audit trails, and departmental workflow governance.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg mb-4">🏥</div>
+              <h3 class="font-bold text-slate-900 text-base">Healthcare ERP Platform</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Hospital management, clinical logs, patient privacy isolation, and medical inventory nodes.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg mb-4">💳</div>
+              <h3 class="font-bold text-slate-900 text-base">Finance & FAAP Treasury</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Multi-currency accounting ledger, automated vendor settlements, and state treasury reconciliation.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg mb-4">🌱</div>
+              <h3 class="font-bold text-slate-900 text-base">Agriculture ERP Platform</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Cooperative yield tracking, commodity shipping ledgers, and rural extension service hubs.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-enterprise-blue transition">
+              <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-4">🤖</div>
+              <h3 class="font-bold text-slate-900 text-base">JUMO AI Gateway</h3>
+              <p class="text-xs text-slate-600 mt-2 mb-4 leading-relaxed">Enterprise intelligent assistant, synthetic document verification, and policy auditing engines.</p>
+              <button onclick="navigate('/login')" class="text-xs font-bold text-enterprise-blue hover:underline">Access Solution &rarr;</button>
             </div>
           </div>
+        </section>
 
-          <!-- JUMO Assistant Floating Chat Component (3 cols) -->
-          <div class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
-            <div class="space-y-3">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-enterprise-blue text-white flex items-center justify-center font-bold text-xs">
-                    🤖
-                  </div>
-                  <h3 class="font-bold text-xs text-slate-900">JUMO Assistant</h3>
-                </div>
-                <span class="text-[9px] font-mono text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">ONLINE</span>
-              </div>
-              <p class="text-[11px] text-slate-600">Hi Julius, how can I help you today?</p>
-              
-              <div class="space-y-1.5 pt-1">
-                <button onclick="alert('Assistant: To register an institution, click on Register Institution above.')" class="w-full text-left p-2 bg-slate-50 hover:bg-blue-50 text-[10px] text-slate-700 font-medium rounded-lg border border-slate-100 transition">
-                  💡 How to register an institution
-                </button>
-                <button onclick="alert('Assistant: Use your invitation code under Join Organization.')" class="w-full text-left p-2 bg-slate-50 hover:bg-blue-50 text-[10px] text-slate-700 font-medium rounded-lg border border-slate-100 transition">
-                  💡 How to join an organization
-                </button>
-                <button onclick="alert('Assistant: Browse Education, Health, and State solutions in Marketplace.')" class="w-full text-left p-2 bg-slate-50 hover:bg-blue-50 text-[10px] text-slate-700 font-medium rounded-lg border border-slate-100 transition">
-                  💡 Explore enterprise platforms
-                </button>
-                <button onclick="alert('Assistant: Zero-trust AEGIS security credentials active.')" class="w-full text-left p-2 bg-slate-50 hover:bg-blue-50 text-[10px] text-slate-700 font-medium rounded-lg border border-slate-100 transition">
-                  💡 Account and security
-                </button>
-              </div>
+        <!-- 5-PILLAR ENTERPRISE BLUE BANNER -->
+        <div class="bg-[#0F172A] text-white py-6 px-6 border-y border-slate-800">
+          <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 text-center text-xs">
+            <div class="flex flex-col items-center space-y-1">
+              <span class="text-xl">🛡️</span>
+              <span class="font-bold text-white">Secure</span>
+              <span class="text-[10px] text-slate-400 font-normal">Enterprise-Grade Security</span>
             </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-              <input type="text" placeholder="Type your question..." class="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-enterprise-blue bg-slate-50 font-medium">
-              <button onclick="alert('Assistant query sent.')" class="p-1.5 bg-enterprise-blue text-white rounded-lg text-xs font-bold hover:bg-blue-700">
-                ➢
-              </button>
+            <div class="flex flex-col items-center space-y-1">
+              <span class="text-xl">🏛️</span>
+              <span class="font-bold text-white">Sovereign</span>
+              <span class="text-[10px] text-slate-400 font-normal">Data Sovereignty & Compliance</span>
+            </div>
+            <div class="flex flex-col items-center space-y-1">
+              <span class="text-xl">☁️</span>
+              <span class="font-bold text-white">Scalable</span>
+              <span class="text-[10px] text-slate-400 font-normal">Built for Growth & Performance</span>
+            </div>
+            <div class="flex flex-col items-center space-y-1">
+              <span class="text-xl">🔗</span>
+              <span class="font-bold text-white">Integrated</span>
+              <span class="text-[10px] text-slate-400 font-normal">Unified Platforms & Services</span>
+            </div>
+            <div class="flex flex-col items-center space-y-1 col-span-2 md:col-span-1">
+              <span class="text-xl">🧠</span>
+              <span class="font-bold text-white">Intelligent</span>
+              <span class="text-[10px] text-slate-400 font-normal">AI-Powered Operations</span>
             </div>
           </div>
         </div>
       </main>
 
-      <!-- 5-PILLAR ENTERPRISE BLUE BANNER -->
-      <div class="bg-[#0F172A] text-white py-4 px-6 border-y border-slate-800 my-4">
-        <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 text-center text-xs">
-          <div class="flex flex-col items-center">
-            <span class="text-base mb-0.5">🛡️</span>
-            <span class="font-bold text-white">Secure</span>
-            <span class="text-[10px] text-slate-400 font-normal">Enterprise-Grade Security</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span class="text-base mb-0.5">🏛️</span>
-            <span class="font-bold text-white">Sovereign</span>
-            <span class="text-[10px] text-slate-400 font-normal">Data Sovereignty & Compliance</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span class="text-base mb-0.5">☁️</span>
-            <span class="font-bold text-white">Scalable</span>
-            <span class="text-[10px] text-slate-400 font-normal">Built for Growth & Performance</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span class="text-base mb-0.5">🔗</span>
-            <span class="font-bold text-white">Integrated</span>
-            <span class="text-[10px] text-slate-400 font-normal">Unified Platforms & Services</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span class="text-base mb-0.5">🧠</span>
-            <span class="font-bold text-white">Intelligent</span>
-            <span class="text-[10px] text-slate-400 font-normal">AI-Powered Operations</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- FOOTER -->
+      <!-- Enterprise Public Footer -->
       ${getEnterpriseFooterHtml()}
     </div>
   `;
