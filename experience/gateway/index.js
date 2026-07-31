@@ -87,22 +87,63 @@ export const publicTemplate = (state) => {
             </div>
             
             <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-blue-100">
-                <a href="#" class="hover:text-white transition">Platform</a>
-                <a href="#" class="hover:text-white transition">Solutions</a>
-                <a href="#" class="hover:text-white transition">Digital Services</a>
-                <a href="#" class="hover:text-white transition">Institutions</a>
-                <a href="#" class="hover:text-white transition">Resources</a>
-                <a href="#" class="hover:text-white transition">Security</a>
-                <a href="#" class="hover:text-white transition">Partners</a>
-                <a href="#" onclick="navigate('/contact')" class="hover:text-white transition">Contact</a>
+                <a href="/" class="hover:text-white transition">Home</a>
+                <!-- Platform Menu -->
+                <div class="relative group cursor-pointer">
+                    <span class="hover:text-white transition flex items-center gap-1">Platform ▾</span>
+                    <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">JUMO Enterprise Overview</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">JUMO UEOS Overview</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Architecture</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Security</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">AI Platform</a>
+                    </div>
+                </div>
+                <!-- Solutions Menu -->
+                <div class="relative group cursor-pointer">
+                    <span class="hover:text-white transition flex items-center gap-1">Solutions ▾</span>
+                    <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Education Platforms</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Government Platforms</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Healthcare Platforms</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Finance & Treasury</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Agriculture Platforms</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Enterprise Applications</a>
+                    </div>
+                </div>
+                <!-- Digital Services Menu -->
+                <div class="relative group cursor-pointer">
+                    <span class="hover:text-white transition flex items-center gap-1">Digital Services ▾</span>
+                    <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Digital Identity</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Document Verification</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Workflow Services</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Payment Services</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Analytics Services</a>
+                    </div>
+                </div>
+                <!-- Resources Menu -->
+                <div class="relative group cursor-pointer">
+                    <span class="hover:text-white transition flex items-center gap-1">Resources ▾</span>
+                    <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Documentation</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">News</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Notices</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">FAQs</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Contact</a>
+                    </div>
+                </div>
             </nav>
             
             <div class="flex items-center gap-3">
-                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Language">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Search">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </button>
-                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Help">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Notifications">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </button>
+                <button class="text-white hover:text-blue-200 transition cursor-pointer hidden md:block px-2" title="Refresh" onclick="window.location.reload()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
                 
                 <!-- User Profile Dropdown -->
@@ -142,14 +183,28 @@ export const publicTemplate = (state) => {
         </div>
     </header>
 
+    <!-- 1. Enterprise Information Hub -->
+    <section class="bg-white border-b border-slate-100 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-slate-900">Welcome to JUMO Digital Enterprise Platform</h2>
+            <div class="flex gap-6 text-sm font-medium text-slate-600">
+                <a href="#" class="hover:text-enterprise-blue">Latest News</a>
+                <a href="#" class="hover:text-enterprise-blue">Platform Updates</a>
+                <a href="#" class="hover:text-enterprise-blue">Notices</a>
+                <a href="#" class="hover:text-enterprise-blue">JUMO Showcase</a>
+                <a href="#" class="hover:text-enterprise-blue">Resources</a>
+            </div>
+        </div>
+    </section>
+
     <main class="flex-1">
         
-        <!-- 2. Enterprise Information Hub (Digital Reception Desk) -->
-        <section class="relative bg-slate-50 border-b border-slate-200 overflow-hidden">
+        <!-- Hero Section -->
+        <section class="relative bg-white overflow-hidden py-12">
             <!-- Background structural elements -->
-            <div class="absolute right-0 top-0 w-1/2 h-full bg-slate-100/50" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
+            <div class="absolute right-0 top-0 w-1/2 h-full bg-slate-50" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
             
-            <div class="max-w-7xl mx-auto px-6 py-12 lg:py-16 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+            <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
                 
                 <!-- Reception Desk Intro -->
                 <div class="w-full lg:w-5/12 space-y-6">
@@ -210,8 +265,6 @@ export const publicTemplate = (state) => {
                 
             </div>
         </section>
-
-        <!-- 3. Platform title and introduction -->
         <section class="py-24 px-6 bg-white text-center">
             <div class="max-w-4xl mx-auto space-y-6">
                 <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -1078,7 +1131,7 @@ function getEnterpriseFooterHtml() {
   
   return `
     <!-- Main Footer Body -->
-    <footer class="bg-slate-950 text-slate-300 py-16 px-6 border-t border-slate-800 text-xs font-sans">
+    <footer class="bg-[#0b3b9b] text-blue-50 py-16 px-6 border-t border-[#0f4ac1] text-xs font-sans">
       <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
         
         <!-- Column 1: Brand overview -->
@@ -1086,14 +1139,14 @@ function getEnterpriseFooterHtml() {
           <div class="-ml-2">
             ${logoHtmlLight}
           </div>
-          <p class="text-slate-400 text-[11px] leading-relaxed mt-4">
+          <p class="text-blue-100 text-[11px] leading-relaxed mt-4">
             ${BRAND_CONFIG.platformName}
           </p>
           <div class="space-y-1.5 mt-4">
-            <a href="#" class="block text-slate-400 hover:text-white transition">About ${BRAND_CONFIG.ownership.ownedBy}</a>
-            <a href="#" class="block text-slate-400 hover:text-white transition">JUMO UEOS</a>
-            <a href="#" class="block text-slate-400 hover:text-white transition">Architecture</a>
-            <a href="#" class="block text-slate-400 hover:text-white transition">Security</a>
+            <a href="#" class="block text-blue-100 hover:text-white transition">About ${BRAND_CONFIG.ownership.ownedBy}</a>
+            <a href="#" class="block text-blue-100 hover:text-white transition">JUMO UEOS</a>
+            <a href="#" class="block text-blue-100 hover:text-white transition">Architecture</a>
+            <a href="#" class="block text-blue-100 hover:text-white transition">Security</a>
           </div>
         </div>
 

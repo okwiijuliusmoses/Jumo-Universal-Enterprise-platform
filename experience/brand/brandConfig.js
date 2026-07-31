@@ -10,14 +10,11 @@ export const BRAND_CONFIG = {
     founder: "Julius Moses Okwii"
   },
   communication: {
-    general: "ueos@jumo.com",
-    information: "info@jumo.com",
+    general: "ueos@jumodigitalplatform.com",
+    information: "info@jumodigitalplatform.ug.com",
+    support: "support@jumodigitalplatform.ug.com",
     contact: "contact@jumodigitalplatform.ug.com",
     publicServices: "public@jumodigitalplatform.ug.com",
-    support: "support@jumo.com",
-    security: "security@jumo.com",
-    legal: "legal@jumo.com",
-    partnerships: "partners@jumo.com",
     mobile: "+256 786 981 892",
     whatsapp: "+256 752 964 856"
   },
@@ -82,14 +79,19 @@ export function getOfficialLogoHtml(options = {}) {
   const subtitleColorClass = textColor === "light" ? "text-blue-200" : "text-slate-500";
   const tagColorClass = textColor === "light" ? "text-blue-100" : "text-enterprise-blue";
 
-  // New clean geometric symbol: Digital transformation, enterprise connectivity, trust
+  // Professional Enterprise Identity Symbol
   const logoSvgIcon = `
     <svg class="${iconSize} shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="20" width="60" height="60" rx="16" fill="#0F62FE" opacity="0.1" />
-      <path d="M50 25 L75 40 V70 L50 85 L25 70 V40 L50 25Z" stroke="#0F62FE" stroke-width="6" stroke-linejoin="round"/>
-      <path d="M25 40 L50 55 L75 40" stroke="#0F62FE" stroke-width="6" stroke-linejoin="round"/>
-      <path d="M50 55 V85" stroke="#0F62FE" stroke-width="6" stroke-linejoin="round"/>
-      <circle cx="50" cy="55" r="8" fill="#F59E0B" />
+      <!-- Circular Ecosystem -->
+      <circle cx="50" cy="50" r="45" stroke="#0F62FE" stroke-width="2" stroke-dasharray="10 5" opacity="0.3"/>
+      <!-- Interconnected Nodes -->
+      <circle cx="50" cy="20" r="6" fill="#0F62FE"/>
+      <circle cx="80" cy="50" r="6" fill="#0F62FE"/>
+      <circle cx="50" cy="80" r="6" fill="#0F62FE"/>
+      <circle cx="20" cy="50" r="6" fill="#0F62FE"/>
+      <!-- J Identity Path -->
+      <path d="M40 35 C40 30 50 25 60 30 C70 35 60 50 50 60 C40 70 30 75 30 70" stroke="#0F62FE" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="65" cy="65" r="8" fill="#F59E0B" />
     </svg>
   `;
 
