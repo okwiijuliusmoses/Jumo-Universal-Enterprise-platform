@@ -1145,7 +1145,7 @@ function renderViewContent(view) {
         ${serviceCard('Notification Platform', 'Multi-channel event alerts and SMS/Email', '🔔')}
         ${serviceCard('Search & Indexing', 'Global multi-tenant search indexing', '🔍')}
         ${serviceCard('Document Platform', 'Digital signatures and secure vault storage', '📄')}
-        {serviceCard('Licensing & Tiers', 'Tenant provisioning and enterprise billing', '📜')}
+        ${serviceCard('Licensing & Tiers', 'Tenant provisioning and enterprise billing', '📜')}
       </div>
     `;
   }
@@ -1216,9 +1216,9 @@ function renderViewContent(view) {
         ${serviceCard('JUMO AI Models', 'Fine-tuned LLM inference routing and weights', '🤖')}
         ${serviceCard('Autonomous Agents', 'Specialized enterprise reasoning bots', '⚡')}
         ${serviceCard('Prompt Management', 'Version-controlled prompt templates', '✍️')}
-        {serviceCard('Knowledge Base', 'RAG vector embeddings and document indexing', '📚')}
-        {serviceCard('AI Workflows', 'Automated agentic multi-step task execution', '🔄')}
-        {serviceCard('Usage & Telemetry', 'Token consumption and latency monitoring', '📊')}
+        ${serviceCard('Knowledge Base', 'RAG vector embeddings and document indexing', '📚')}
+        ${serviceCard('AI Workflows', 'Automated agentic multi-step task execution', '🔄')}
+        ${serviceCard('Usage & Telemetry', 'Token consumption and latency monitoring', '📊')}
       </div>
     `;
   }
@@ -1229,9 +1229,9 @@ function renderViewContent(view) {
         ${serviceCard('Global Treasury', 'Multi-currency liquidity and cash management', '💰')}
         ${serviceCard('General Ledger', 'Double-entry sovereign accounting engine', '📖')}
         ${serviceCard('Budget & Assets', 'Capital allocation and fixed asset tracking', '📈')}
-        {serviceCard('Procurement', 'Purchase orders, vendor vetting and invoicing', '🛒')}
-        {serviceCard('Payroll Engine', 'Automated multi-jurisdiction salary disbursement', '💵')}
-        {serviceCard('Tax & Settlement', 'Automated tax withholding and clearinghouse', '🧾')}
+        ${serviceCard('Procurement', 'Purchase orders, vendor vetting and invoicing', '🛒')}
+        ${serviceCard('Payroll Engine', 'Automated multi-jurisdiction salary disbursement', '💵')}
+        ${serviceCard('Tax & Settlement', 'Automated tax withholding and clearinghouse', '🧾')}
       </div>
     `;
   }
@@ -1240,9 +1240,9 @@ function renderViewContent(view) {
     return `
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         ${serviceCard('Payment Gateways', 'Integration with SWIFT, VISA, Mastercard', '💳')}
-        {serviceCard('Mobile Money', 'MTN, Airtel and regional mobile wallets', '📱')}
-        {serviceCard('Collections & Invoices', 'Automated billing and payment reconciliation', '📥')}
-        {serviceCard('CBDC & Crypto', 'Central bank digital currency settlement rails', '🪙')}
+        ${serviceCard('Mobile Money', 'MTN, Airtel and regional mobile wallets', '📱')}
+        ${serviceCard('Collections & Invoices', 'Automated billing and payment reconciliation', '📥')}
+        ${serviceCard('CBDC & Crypto', 'Central bank digital currency settlement rails', '🪙')}
       </div>
     `;
   }
@@ -1251,9 +1251,9 @@ function renderViewContent(view) {
     return `
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         ${serviceCard('Immutable Audit Logs', 'Cryptographically sealed system event stream', '🛡️')}
-        {serviceCard('Compliance Checker', 'Automated GDPR, SOC2 and ISO compliance', '✅')}
-        {serviceCard('Encryption Rings', 'AES-256 tenant data isolation keys', '🔑')}
-        {serviceCard('Forensics & Alerts', 'Threat detection and security incident response', '🚨')}
+        ${serviceCard('Compliance Checker', 'Automated GDPR, SOC2 and ISO compliance', '✅')}
+        ${serviceCard('Encryption Rings', 'AES-256 tenant data isolation keys', '🔑')}
+        ${serviceCard('Forensics & Alerts', 'Threat detection and security incident response', '🚨')}
       </div>
     `;
   }
@@ -1262,9 +1262,9 @@ function renderViewContent(view) {
     return `
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         ${serviceCard('Platform Identity', 'Global naming, domains and SSL certificates', '🌐')}
-        {serviceCard('Localization', 'Languages, regional date formats and currencies', '🌍')}
-        {serviceCard('Cloud Storage', 'Multi-region S3, bucket policies and backups', '☁️')}
-        {serviceCard('Messaging Gateways', 'SMTP, Twilio SMS and webhook endpoints', '📨')}
+        ${serviceCard('Localization', 'Languages, regional date formats and currencies', '🌍')}
+        ${serviceCard('Cloud Storage', 'Multi-region S3, bucket policies and backups', '☁️')}
+        ${serviceCard('Messaging Gateways', 'SMTP, Twilio SMS and webhook endpoints', '📨')}
       </div>
     `;
   }
@@ -1273,9 +1273,9 @@ function renderViewContent(view) {
     return `
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         ${serviceCard('General Policies', 'Global operational limits and timeouts', '⚙️')}
-        {serviceCard('Authentication Policies', 'MFA enforcement and session lifetimes', '🔐')}
-        {serviceCard('Updates & Deployment', 'Zero-downtime rolling update configuration', '🚀')}
-        {serviceCard('Plugins & Extensions', 'Third-party module marketplace permissions', '🧩')}
+        ${serviceCard('Authentication Policies', 'MFA enforcement and session lifetimes', '🔐')}
+        ${serviceCard('Updates & Deployment', 'Zero-downtime rolling update configuration', '🚀')}
+        ${serviceCard('Plugins & Extensions', 'Third-party module marketplace permissions', '🧩')}
       </div>
     `;
   }
@@ -1288,8 +1288,8 @@ function renderViewContent(view) {
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
             ${registryBox('ERP Registry', '4 Active Families')}
             ${registryBox('Service Registry', '57 Bound Services')}
-            {registryBox('Tenant Registry', '142 Active Tenants')}
-            {registryBox('Deployment Registry', 'v1.0-genesis')}
+            ${registryBox('Tenant Registry', '142 Active Tenants')}
+            ${registryBox('Deployment Registry', 'v1.0-genesis')}
           </div>
         </div>
       </div>
