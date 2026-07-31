@@ -10,7 +10,7 @@ export const ControlCenterWorkspace = ({ children }) => {
       <Sidebar isExpanded={isSidebarExpanded} toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-0">{children}</main>
       </div>
     </div>
   );

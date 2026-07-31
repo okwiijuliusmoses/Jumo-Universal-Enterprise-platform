@@ -505,92 +505,43 @@ export const publicTemplate = (state) => {
     <!-- 6. Public AI Assistant (Concierge) -->
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         
-        <!-- Welcome Card (Initially Visible) -->
-        <div id="public-ai-welcome" class="bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 overflow-hidden w-80 transform transition-all duration-300 origin-bottom-right">
-            <!-- Header -->
-            <div class="bg-slate-900 p-5 flex items-center gap-4 text-white">
-                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl border border-white/20">
-                    🤖
-                </div>
-                <div>
-                    <h4 class="font-bold text-white text-base">JUMO AI Assistant</h4>
-                    <p class="text-xs text-slate-400">Enterprise Concierge</p>
-                </div>
-                <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <!-- Body -->
-            <div class="p-5">
-                <p class="text-sm text-slate-700 font-medium mb-4">How may I assist you today?</p>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="navigate('/register')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
-                        <span class="text-lg mb-1">🏛️</span>
-                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Register Institution</span>
-                    </button>
-                    <button onclick="navigate('/login')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
-                        <span class="text-lg mb-1">🔑</span>
-                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Sign In</span>
-                    </button>
-                    <button onclick="navigate('/register')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
-                        <span class="text-lg mb-1">👤</span>
-                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Create Account</span>
-                    </button>
-                    <button onclick="alert('Exploring Services')" class="p-3 text-left border border-slate-200 rounded-xl hover:border-enterprise-blue hover:bg-blue-50 transition cursor-pointer group flex flex-col items-start">
-                        <span class="text-lg mb-1">🌐</span>
-                        <span class="text-xs font-semibold text-slate-700 group-hover:text-enterprise-blue">Explore Services</span>
-                    </button>
-                </div>
-                
-                <div class="mt-4 pt-4 border-t border-slate-100 flex gap-2">
-                    <button onclick="document.getElementById('public-ai-welcome').classList.add('hidden'); document.getElementById('public-ai-chat').classList.remove('hidden');" class="flex-1 py-2.5 bg-enterprise-blue text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition shadow-sm cursor-pointer flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                        Chat with Assistant
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- Chat Window -->
-        <div id="public-ai-chat" class="hidden w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 flex-col overflow-hidden transition-all duration-300">
-            <div class="bg-slate-900 p-4 flex items-center justify-between text-white shadow-xs">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                        🤖
+        <div id="public-ai-chat" class="hidden fixed inset-0 z-[101] bg-slate-900/40 flex items-center justify-center p-4">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+                <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xl">
+                            🤖
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">JUMO AI Assistant</h4>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-sm">JUMO AI Assistant</h4>
+                    <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-white/80 hover:text-white transition p-1 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div class="p-6 h-[400px] overflow-y-auto bg-slate-50 text-sm space-y-4">
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm shadow-sm">
+                            🤖
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-slate-700 leading-relaxed">
+                            Hello! I am your JUMO AI Assistant. How can I assist you with JUMO Digital Enterprise Platform today?
+                        </div>
                     </div>
                 </div>
-                <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-slate-400 hover:text-white transition p-1 cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="p-4 h-[320px] overflow-y-auto bg-slate-50 text-xs space-y-4">
-                <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 text-sm shadow-sm">
-                        🤖
-                    </div>
-                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 rounded-tl-none shadow-sm text-slate-700 leading-relaxed">
-                        Welcome to the <strong>${BRAND_CONFIG.platformName}</strong>. I represent the JUMO AI Assistant. How can I assist you today?
-                    </div>
+                <div class="p-4 bg-white border-t border-slate-100 flex items-center gap-2">
+                    <input type="text" placeholder="Type your inquiry here..." class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 bg-slate-50">
+                    <button class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center hover:bg-emerald-700 transition cursor-pointer shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
                 </div>
-            </div>
-            <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
-                <input type="text" placeholder="Type your inquiry here..." class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-enterprise-blue focus:ring-1 focus:ring-enterprise-blue bg-slate-50">
-                <button class="w-10 h-10 rounded-xl bg-enterprise-blue text-white flex items-center justify-center hover:bg-blue-700 transition cursor-pointer shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
             </div>
         </div>
         
         <!-- Floating Button -->
-        <button onclick="
-            document.getElementById('public-ai-welcome').classList.toggle('hidden');
-            document.getElementById('public-ai-chat').classList.add('hidden');
-        " class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-2xl hover:bg-slate-800 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
+        <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
             🤖
         </button>
     </div>
