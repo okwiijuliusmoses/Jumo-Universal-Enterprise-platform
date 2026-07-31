@@ -3,6 +3,7 @@ import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, conta
 import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
+import { erpPlatformTemplate } from "../erp/index.js";
 
 // Global Application State
 window.state = {
@@ -62,6 +63,8 @@ window.render = function() {
     controlCenterTemplate(window.state);
   } else if (path === "/shell" || path.startsWith("/shell/")) {
     shellTemplate(window.state);
+  } else if (path === "/erp" || path.startsWith("/erp/")) {
+    erpPlatformTemplate(window.state);
   } else {
     // Default fallback to Gateway or Public depending on session
     if (window.state.session) {

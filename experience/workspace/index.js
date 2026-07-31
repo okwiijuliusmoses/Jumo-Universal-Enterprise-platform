@@ -58,28 +58,59 @@ export const workspaceTemplate = (state) => {
           ${state.activeWorkspaceTab === 'org' ? `
             <div class="space-y-6 font-semibold">
               <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-xs">
-                <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Organization Identity Mapped</p>
-                <h3 class="text-xl font-bold text-slate-900 mt-1 font-sans">${state.session?.organization || "University of Kampala"}</h3>
-                <p class="text-xs text-slate-600 mt-2 leading-relaxed">This workspace represents the sovereign central directory mapping all active administrative domains, communication frameworks, and ledger transaction nodes assigned to this institutional tenant.</p>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-3 py-1 bg-emerald-50 text-emerald-800 font-mono text-[10px] font-bold rounded-full">${state.session?.activeErpTemplate?.ecosystem || 'Enterprise'} Ecosystem</span>
+                  <span class="text-xs font-mono text-slate-400">Tenant: ${state.session?.tenantId || 'tenant-default-001'}</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 font-sans">${state.session?.organization || "University of Kampala"}</h3>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">${state.session?.activeErpTemplate?.description || 'Active institutional ERP runtime environment.'}</p>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
-                  <span class="text-lg">💰</span>
-                  <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Treasury Settlement Mappings</h4>
-                  <p class="text-slate-500 mt-1 leading-relaxed">Treasury & Currency systems mapped under security Ring 1. Authorized via Zero-Trust.</p>
+              <!-- ERP Governance Portals -->
+              ${state.session?.activeErpTemplate ? `
+                <div class="space-y-4">
+                  <h4 class="font-bold text-sm text-slate-900">Institutional Governance Portals</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    ${(state.session.activeErpTemplate.governancePortals || []).map(p => `
+                      <div class="bg-white border border-slate-200 p-5 rounded-xl hover:border-enterprise-blue transition space-y-2">
+                        <h5 class="font-extrabold text-slate-900 text-xs">${p.name}</h5>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">${p.desc}</p>
+                        <button onclick="alert('Accessing ${p.name} portal...');" class="px-3 py-1.5 bg-enterprise-blue hover:bg-blue-700 text-white text-[10px] font-bold rounded-lg transition cursor-pointer">Open Portal</button>
+                      </div>
+                    `).join('')}
+                  </div>
                 </div>
-                <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
-                  <span class="text-lg">🛡️</span>
-                  <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Sovereign Compliance Ledger</h4>
-                  <p class="text-slate-500 mt-1 leading-relaxed">Sovereign State regulatory audits and compliance checkpoints verification.</p>
+
+                <div class="space-y-4 pt-4">
+                  <h4 class="font-bold text-sm text-slate-900">Active Operational Modules & Staff SACCO (FAAP Integrated)</h4>
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    ${(state.session.activeErpTemplate.defaultModules || []).map(m => `
+                      <div class="p-4 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-800">${m}</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      </div>
+                    `).join('')}
+                  </div>
                 </div>
-                <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
-                  <span class="text-lg">🤖</span>
-                  <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Intelligent Agent Core</h4>
-                  <p class="text-slate-500 mt-1 leading-relaxed">Active AI router agents mapping workflows, process logs, and synthetic audits.</p>
+              ` : `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
+                    <span class="text-lg">💰</span>
+                    <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Treasury Settlement Mappings</h4>
+                    <p class="text-slate-500 mt-1 leading-relaxed">Treasury & Currency systems mapped under security Ring 1. Authorized via Zero-Trust.</p>
+                  </div>
+                  <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
+                    <span class="text-lg">🛡️</span>
+                    <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Sovereign Compliance Ledger</h4>
+                    <p class="text-slate-500 mt-1 leading-relaxed">Sovereign State regulatory audits and compliance checkpoints verification.</p>
+                  </div>
+                  <div class="bg-white border border-slate-200 p-6 rounded-xl text-xs">
+                    <span class="text-lg">🤖</span>
+                    <h4 class="font-extrabold text-slate-900 mt-3 uppercase tracking-wider font-sans">Intelligent Agent Core</h4>
+                    <p class="text-slate-500 mt-1 leading-relaxed">Active AI router agents mapping workflows, process logs, and synthetic audits.</p>
+                  </div>
                 </div>
-              </div>
+              `}
             </div>
           ` : ''}
 

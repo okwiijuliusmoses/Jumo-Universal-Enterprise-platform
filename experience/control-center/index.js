@@ -476,10 +476,14 @@ function renderViewContent(view) {
             <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Good morning, Platform Owner</h2>
             <p class="text-xs text-emerald-200 max-w-xl">JUMO UEOS operating headquarters is running at peak multi-tenant efficiency. All platform services, AEGIS audit rings, and FAAP ledgers are fully synchronized.</p>
           </div>
-          <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 text-center min-w-[180px]">
-            <p class="text-[10px] uppercase font-mono text-emerald-300">System Health</p>
-            <p class="text-lg font-bold text-white mt-0.5">Healthy & Secure</p>
-            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse mt-1"></span>
+          <div class="flex flex-col items-center gap-3 shrink-0">
+            <button onclick="navigate('/erp')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
+              <span>🚀 Launch Dynamic ERP Platform</span>
+            </button>
+            <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-center">
+              <span class="text-[10px] uppercase font-mono text-emerald-300">System Health: </span>
+              <span class="text-xs font-bold text-white">Healthy & Secure</span>
+            </div>
           </div>
         </div>
 
