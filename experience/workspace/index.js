@@ -55,9 +55,24 @@ const initializeWorkspaceState = (state) => {
 export const workspaceTemplate = (state) => {
   initializeWorkspaceState(state);
   const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
-  const activeTemplate = state.session?.activeErpTemplate || null;
-  const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
-  const portals = activeTemplate?.governancePortals || institution.portals || [];
+
+  const activeErp = state.session?.activeErpInstance;
+
+  const erpStructure = activeErp?.structure || {
+    portals: [],
+    departments: [],
+    modules: [],
+    components: [],
+    workflows: []
+  };
+
+  const institution = state.deployedInstitution || {
+    name: activeErp?.name || "Enterprise Platform",
+    portals: erpStructure.portals
+  };
+
+  const portals = erpStructure.portals || [];
+
   institution.portals = portals;
   
   if (!state.activePortalId) {
@@ -103,7 +118,6 @@ export const workspaceTemplate = (state) => {
   const user = state.session?.user || { name: "Authorized User", role: "Portal Administrator", email: "user@enterprise.com" };
   const forms = DIGITAL_FORMS_CATALOGUE[state.activePortalId] || [];
   
-  const activeErp = state.session?.activeErpInstance;
   const activePortal = activeErp?.structure?.portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, departments: [], modules: [] };
   
   const currentView = state.activePortalTab || 'modules';
