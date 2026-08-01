@@ -118,7 +118,16 @@ export const workspaceTemplate = (state) => {
   const user = state.session?.user || { name: "Authorized User", role: "Portal Administrator", email: "user@enterprise.com" };
   const forms = DIGITAL_FORMS_CATALOGUE[state.activePortalId] || [];
   
-  const activePortal = activeErp?.structure?.portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, departments: [], modules: [] };
+  const activePortal = erpStructure.portals.find(
+    p => p.id === state.activePortalId
+) || erpStructure.portals[0] || {
+    id: "portal-not-configured",
+    name: "Portal Configuration Required",
+    departments: [],
+    modules: [],
+    components: [],
+    workflows: []
+};
   
   const currentView = state.activePortalTab || 'modules';
   
