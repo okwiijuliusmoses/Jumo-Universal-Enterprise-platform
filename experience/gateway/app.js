@@ -4,6 +4,7 @@ import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
 import { erpPlatformTemplate } from "../erp/index.js";
+import "../erp/runtimeEngine.js";
 
 // Global Application State
 window.state = {

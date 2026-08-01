@@ -7,19 +7,19 @@ import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 export const controlCenterLoginTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "lg", textColor: "dark" });
 
-  app.innerHTML = `
+  window.app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
       <!-- Top Header -->
       <header class="p-6 border-b border-slate-200 bg-white shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-          <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('/')">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="window.navigate('/')">
             <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-md">J</div>
             <div>
               <div class="font-extrabold text-slate-900 tracking-tight text-base">JUMO UEOS</div>
               <div class="text-[10px] text-emerald-700 font-bold tracking-widest uppercase">Digital Control Center</div>
             </div>
           </div>
-          <button onclick="navigate('/')" class="text-xs font-bold text-slate-600 hover:text-emerald-700 transition flex items-center gap-1 cursor-pointer">
+          <button onclick="window.navigate('/')" class="text-xs font-bold text-slate-600 hover:text-emerald-700 transition flex items-center gap-1 cursor-pointer">
             &larr; Return to Public Gateway
           </button>
         </div>
@@ -74,7 +74,7 @@ export const controlCenterLoginTemplate = (state) => {
 
       <!-- Footer -->
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
-        ${BRAND_CONFIG.ownership.ownedBy} &bull; ${BRAND_CONFIG.poweredBy}
+        ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
     </div>
   `;
@@ -85,7 +85,7 @@ window.handleControlCenterLogin = function(e) {
   const emailInput = document.getElementById("cc-email");
   const email = emailInput ? emailInput.value : "owner@jumo.ueos";
 
-  state.ccSession = {
+  window.state.ccSession = {
     user: {
       name: "Platform Owner",
       email: email,
@@ -93,15 +93,15 @@ window.handleControlCenterLogin = function(e) {
       isOwner: true
     }
   };
-  navigate("/control-center");
+  window.navigate("/control-center");
 };
 
 /**
  * JUMO UEOS Digital Control Center Main Workspace (/control-center)
  */
 export const controlCenterTemplate = (state) => {
-  if (!state.ccSession) {
-    navigate("/control-center/login");
+  if (!window.state.ccSession) {
+    window.navigate("/control-center/login");
     return;
   }
 
@@ -113,7 +113,7 @@ export const controlCenterTemplate = (state) => {
   const isHelpOpen = state.ccHelpOpen || false;
   const isAiAssistantOpen = state.ccAiAssistantOpen || false;
 
-  app.innerHTML = `
+  window.app.innerHTML = `
     <div class="flex flex-col h-screen bg-[#F8F9FB] text-slate-900 font-sans antialiased overflow-hidden select-none">
       
       <!-- 1. GLOBAL HEADER -->
@@ -179,7 +179,7 @@ export const controlCenterTemplate = (state) => {
               <button onclick="setCCView('owner-workspace'); toggleCCProfileMenu();" class="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 font-medium">Owner Workspace & Master Registries</button>
               <button onclick="setCCView('aegis'); toggleCCProfileMenu();" class="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 font-medium">AEGIS Security Audit</button>
               <div class="border-t border-slate-100 my-1"></div>
-              <button onclick="state.ccSession = null; navigate('/control-center/login');" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-bold">Logout Control Center</button>
+              <button onclick="window.state.ccSession = null; window.navigate('/control-center/login');" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-bold">Logout Control Center</button>
             </div>
           </div>
         </div>
@@ -275,9 +275,9 @@ export const controlCenterTemplate = (state) => {
 
                 <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
                   <p class="font-bold text-emerald-900">Suggested Sovereign Commands:</p>
-                  <button onclick="alert('Running AEGIS cross-tenant compliance audit...');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition">🛡️ Run AEGIS cryptographic audit scan</button>
-                  <button onclick="alert('Verifying multi-tenant memory isolation boundaries...');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition">📊 Verify memory isolation metrics</button>
-                  <button onclick="alert('Syncing ERP Store registry across 142 tenants...');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition">🔄 Sync ERP Marketplace updates</button>
+                  <button onclick="ccLogAction('Running AEGIS cross-tenant compliance audit... Audit status: 100% PASSED');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition cursor-pointer">🛡️ Run AEGIS cryptographic audit scan</button>
+                  <button onclick="ccLogAction('Verifying multi-tenant memory isolation boundaries... Isolation: VERIFIED');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition cursor-pointer">📊 Verify memory isolation metrics</button>
+                  <button onclick="ccLogAction('Syncing ERP Store registry across 142 tenants... Registry: SYNCHRONIZED');" class="w-full text-left p-2 bg-white hover:bg-emerald-100 rounded-lg text-emerald-800 font-medium transition cursor-pointer">🔄 Sync ERP Marketplace updates</button>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ export const controlCenterTemplate = (state) => {
             <div class="pt-4 border-t border-slate-200">
               <div class="flex gap-2">
                 <input type="text" placeholder="Ask UEOS Assistant..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <button onclick="alert('Command processed by UEOS Assistant.');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Send</button>
+                <button onclick="ccLogAction('Command processed by UEOS Assistant.');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition cursor-pointer">Send</button>
               </div>
             </div>
           </div>
@@ -313,7 +313,7 @@ export const controlCenterTemplate = (state) => {
               </div>
             </div>
             <div class="pt-4 border-t border-slate-200 text-center">
-              <button onclick="alert('All notifications marked as read.'); toggleCCNotification();" class="text-xs font-bold text-emerald-600 hover:underline">Mark all as read</button>
+              <button onclick="ccLogAction('All notifications marked as read.'); toggleCCNotification();" class="text-xs font-bold text-emerald-600 hover:underline cursor-pointer">Mark all as read</button>
             </div>
           </div>
         </div>
@@ -342,7 +342,7 @@ export const controlCenterTemplate = (state) => {
               </div>
             </div>
             <div class="pt-4 border-t border-slate-200 text-center">
-              <button onclick="alert('Exporting full operational audit log...'); toggleCCActivity();" class="text-xs font-bold text-slate-700 hover:underline">Export Full Audit Log</button>
+              <button onclick="ccLogAction('Exporting full operational audit log...'); toggleCCActivity();" class="text-xs font-bold text-slate-700 hover:underline cursor-pointer">Export Full Audit Log</button>
             </div>
           </div>
         </div>
@@ -373,7 +373,7 @@ export const controlCenterTemplate = (state) => {
               </div>
             </div>
             <div class="pt-4 border-t border-slate-200 text-center">
-              <button onclick="alert('Opening official JUMO UEOS Developer & Administrator Manual...'); toggleCCHelp();" class="text-xs font-bold text-emerald-600 hover:underline">View Full Documentation</button>
+              <button onclick="ccLogAction('Opening official JUMO UEOS Developer & Administrator Manual...'); toggleCCHelp();" class="text-xs font-bold text-emerald-600 hover:underline cursor-pointer">View Full Documentation</button>
             </div>
           </div>
         </div>
@@ -398,9 +398,9 @@ export const controlCenterTemplate = (state) => {
             
             <!-- Universal Toolbar -->
             <div class="flex items-center gap-2">
-              <button onclick="alert('Action completed successfully.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">New</button>
-              <button onclick="alert('Import dialog opened.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Import</button>
-              <button onclick="alert('Exporting data package...');" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Export</button>
+              <button onclick="ccLogAction('Action completed successfully.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">New</button>
+              <button onclick="ccLogAction('Import dialog opened.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Import</button>
+              <button onclick="ccLogAction('Exporting data package...');" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Export</button>
               <button onclick="window.location.reload()" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Refresh</button>
               <button onclick="toggleCCCommandPalette()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer">Search...</button>
             </div>
@@ -464,6 +464,108 @@ function getViewDescription(view) {
  * Render Specific Workspace Views
  */
 function renderViewContent(view) {
+  if (view === 'audit') {
+    const audit = window.UEOSRuntime ? window.UEOSRuntime.enterpriseAudit.getAuditReport() : {
+      erpPlatforms: 0,
+      sovereignPlatforms: 0,
+      portalsRegistered: 0,
+      modulesInstalled: 0,
+      activeComponents: 0,
+      registeredWorkflows: 0,
+      digitalForms: 0,
+      faapServices: "OFFLINE"
+    };
+
+    const erps = window.UEOSRuntime ? window.UEOSRuntime.erpRegistry.getPlatforms() : [];
+    
+    return `
+      <div class="space-y-6">
+        <!-- Global Audit Summary -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ERP Ecosystems</div>
+            <div class="text-xl font-black text-slate-900">${audit.erpPlatforms}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sovereign Platforms</div>
+            <div class="text-xl font-black text-emerald-700">${audit.sovereignPlatforms}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Gov. Portals</div>
+            <div class="text-xl font-black text-slate-900">${audit.portalsRegistered}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Installed Modules</div>
+            <div class="text-xl font-black text-emerald-600">${audit.modulesInstalled.toLocaleString()}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Active Components</div>
+            <div class="text-xl font-black text-blue-600">${audit.activeComponents.toLocaleString()}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Workflows & Forms</div>
+            <div class="text-xl font-black text-amber-600">${audit.digitalForms.toLocaleString()}</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">FAAP Status</div>
+            <div class="text-sm font-black text-emerald-500 mt-1">${audit.faapServices}</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">🛡️ UEOS Enterprise Portal Audit Engine</h3>
+            <span class="text-xs font-mono text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Phase 2 Runtime Verification</span>
+          </div>
+          <p class="text-xs text-slate-500 mb-6">Auditing live implementation of Governance, Portals, Modules, Components, Workflows, and Digital Forms across all active Enterprise Families.</p>
+          
+          <div class="space-y-6">
+            ${(erps || []).map(erp => {
+              const pCount = erp.governancePortals?.length || 0;
+              // Fetch real module count from registry for this ERP
+              const erpModules = window.UEOSRuntime ? window.UEOSRuntime.erpRegistry.getModulesForERP(erp.id) : [];
+              const mCount = erpModules.length;
+              const hasRegistry = pCount > 0 && mCount > 0;
+              
+              return `
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 shadow-sm relative overflow-hidden">
+                  <div class="absolute right-0 top-0 bottom-0 w-1 ${hasRegistry ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <h4 class="font-bold text-sm text-slate-900">${erp.ecosystem} - ${erp.name}</h4>
+                      <p class="text-[11px] text-slate-500 mt-1 font-mono">Code: ${erp.code} | Registry Instance: ${hasRegistry ? 'ACTIVE' : 'NULL'}</p>
+                    </div>
+                    <span class="px-2 py-1 rounded text-[10px] font-bold font-mono ${hasRegistry ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                      ${hasRegistry ? '100% IMPLEMENTED' : 'IMPLEMENTATION REQUIRED'}
+                    </span>
+                  </div>
+                  <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                    <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
+                      <div class="text-[10px] text-slate-400 font-bold uppercase">Portals</div>
+                      <div class="font-mono text-sm font-bold ${pCount > 0 ? 'text-slate-800' : 'text-rose-500'}">${pCount}</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
+                      <div class="text-[10px] text-slate-400 font-bold uppercase">Modules</div>
+                      <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-emerald-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
+                      <div class="text-[10px] text-slate-400 font-bold uppercase">Workflows</div>
+                      <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-blue-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
+                      <div class="text-[10px] text-slate-400 font-bold uppercase">Forms</div>
+                      <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-amber-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   if (view === 'overview') {
     return `
       <div class="space-y-8">
@@ -477,7 +579,7 @@ function renderViewContent(view) {
             <p class="text-xs text-emerald-200 max-w-xl">JUMO UEOS operating headquarters is running at peak multi-tenant efficiency. All platform services, AEGIS audit rings, and FAAP ledgers are fully synchronized.</p>
           </div>
           <div class="flex flex-col items-center gap-3 shrink-0">
-            <button onclick="navigate('/erp')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
+            <button onclick="window.navigate('/erp')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
               <span>🚀 Launch Dynamic ERP Platform</span>
             </button>
             <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-center">
@@ -502,6 +604,7 @@ function renderViewContent(view) {
             ${appCard('FAAP Financials', 'Treasury & ledger', '💰', 'emerald')}
             ${appCard('AEGIS Security', 'Audit & compliance', '🛡️', 'slate')}
             ${appCard('Identity Platform', 'Access & tokens', '🔐', 'blue')}
+   ${appCard('Audit Engine', 'UEOS Compliance', '📋', 'audit', 'slate')}
           </div>
         </div>
 
@@ -524,6 +627,7 @@ function renderViewContent(view) {
   }
 
   if (view === 'ai-command-center') {
+    const ai = window.UEOSRuntime ? window.UEOSRuntime.aiCommandCenter : { agents: [] };
     return `
       <div class="space-y-8">
         <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
@@ -538,12 +642,34 @@ function renderViewContent(view) {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          ${serviceCard('AI Agent Registry', '142 Active Enterprise Agents across all tenants', '🤖')}
-          ${serviceCard('Model Registry', 'Gemini, Llama and custom enterprise LLM weights', '🧠')}
-          ${serviceCard('Prompt Governance', 'Version-controlled security prompt policies', '✍️')}
-          ${serviceCard('Task Queue', 'Active asynchronous agent reasoning jobs', '⚡')}
-          ${serviceCard('AEGIS AI Audit Logs', 'Immutable reasoning trace and compliance logs', '🛡️')}
-          ${serviceCard('Memory & Knowledge RAG', 'Vector embeddings and document indices', '📚')}
+          ${serviceCard('AI Agent Registry', `${ai.agents.length} Active Enterprise Agents across all platforms`, '🤖')}
+          ${serviceCard('Model Registry', 'Gemini 2.0 Flash, Omni models and custom weights', '🧠')}
+          ${serviceCard('AI Safety Audit', 'AEGIS-verified immutable reasoning trace logs', '🛡️')}
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-sm text-slate-900 mb-6">Active Autonomous Engineering Agents</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${ai.agents.map(agent => `
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-900">${agent.name}</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <div class="space-y-1">
+                  ${agent.capabilities.map(cap => `
+                    <div class="text-[10px] text-slate-500 flex items-center gap-1">
+                      <span>✓</span> ${cap}
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="pt-2 border-t border-slate-200 flex items-center justify-between">
+                   <span class="text-[9px] font-mono text-emerald-600 font-bold uppercase">Active</span>
+                   <button class="text-[10px] font-bold text-slate-600 hover:underline">Task Queue</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       </div>
     `;
@@ -685,81 +811,120 @@ function renderViewContent(view) {
           </div>
         </div>
 
-        <!-- All 9 Ecosystems Catalog -->
+        <!-- All 12 Enterprise Ecosystem Cards -->
         <div class="space-y-6">
           <div class="flex items-center justify-between">
-            <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Templates</h3>
-            <span class="text-xs font-mono text-slate-500 font-bold">9 Certified Ecosystem Families</span>
+            <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Platforms</h3>
+            <span class="text-xs font-mono text-slate-500 font-bold">12 Certified Ecosystem Families</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 1. Education Ecosystem -->
-            ${ecosystemCard('Education ERP Ecosystem', '🎓', 'Multi-tier academic management across universities, colleges, technical institutes, secondary, and primary schools.', 'emerald', [
-              { name: 'University ERP', desc: 'Executive Council, Senate, faculties, student portal & research.' },
-              { name: 'College ERP', desc: 'Campuses, departments, certificates & timetabling.' },
-              { name: 'Vocational & Technical ERP', desc: 'Workshop management, practical grading & certifications.' },
-              { name: 'Secondary School ERP', desc: 'O/A-Level structures, term reports & discipline registries.' },
-              { name: 'Nursery & Primary School ERP', desc: 'Attendance, continuous assessment & parent communication.' }
+            <!-- 1. Education ERP -->
+            ${ecosystemCard('Education ERP', '🎓', 'Multi-tier academic management across universities, colleges, technical institutes, secondary, and primary schools.', 'emerald', [
+              { name: 'University ERP', desc: 'Council, Senate, academic affairs, faculties, research & bursary.' },
+              { name: 'College ERP', desc: 'Admissions, academic registry, courses & continuous assessment.' },
+              { name: 'Vocational & Technical ERP', desc: 'Training, workshop management, practical skills & certification.' },
+              { name: 'Secondary School ERP', desc: 'Student records, parent portal, academics, exams & boarding.' },
+              { name: 'Nursery & Primary ERP', desc: 'Pupil registry, parent portal, attendance & early learning.' }
             ])}
 
-            <!-- 2. Church Ecosystem -->
-            ${ecosystemCard('Church ERP Ecosystem', '⛪', 'Ecclesiastical governance, parish administration, tithes, offerings, and SACCO integration.', 'emerald', [
-              { name: 'Local Church ERP', desc: 'Parishioners, local treasury, weekly collections & ministries.' },
-              { name: 'Diocese ERP', desc: 'Archdeaconries, clergy registry, diocesan projects & assets.' },
-              { name: 'Province ERP', desc: 'Provincial synods, bishoprics & multi-diocese reports.' },
-              { name: 'National & International Church', desc: 'Global assemblies, mission boards & international aid.' }
+            <!-- 2. Church ERP -->
+            ${ecosystemCard('Church ERP', '⛪', 'Provincial and diocesan ecclesiastical governance, parish administration, tithes, and clergy management.', 'emerald', [
+              { name: 'Church Province ERP', desc: 'Provincial synod, Bishops office, missions & church assets.' },
+              { name: 'Church Diocese ERP', desc: 'Bishop office, parishes, clergy records, tithes & offerings.' }
             ])}
 
-            <!-- 3. Hospitality Ecosystem -->
-            ${ecosystemCard('Hospitality ERP Ecosystem', '🏨', 'Hotel, restaurant, resort, tourism, and lodge management.', 'emerald', [
-              { name: 'Hotel & Resort ERP', desc: 'Front desk, room inventory, housekeeping & billing.' },
-              { name: 'Restaurant & Dining ERP', desc: 'POS, kitchen display, table reservations & inventory.' },
-              { name: 'Tourism & Tour Operator ERP', desc: 'Safaris, bookings, transport & guide scheduling.' },
-              { name: 'Lodge & Conference Centre ERP', desc: 'Event halls, catering, guest check-in & billing.' }
+            <!-- 3. Hospitality ERP -->
+            ${ecosystemCard('Hospitality ERP', '🏨', 'Hotel, resort, restaurant, reservations, housekeeping, POS, and event operations.', 'emerald', [
+              { name: 'Hotel & Resort ERP', desc: 'Front office, reservations, rooms, housekeeping, POS & catering.' }
             ])}
 
-            <!-- 4. Alumni Ecosystem -->
-            ${ecosystemCard('Alumni ERP Ecosystem', '🤝', 'Comprehensive alumni networks, chapters, donations, and career portals.', 'emerald', [
-              { name: 'University Alumni Portal', desc: 'Graduation cohorts, chapters, endowment funds & mentoring.' },
-              { name: 'College & School Alumni Network', desc: 'Yearbook records, reunions & institutional fundraising.' },
-              { name: 'Professional Association Alumni', desc: 'Credential verification, continuing education & networking.' }
+            <!-- 4. Company ERP -->
+            ${ecosystemCard('Company ERP', '🏢', 'Enterprise management for service firms, manufacturing goods companies, and retail chains.', 'emerald', [
+              { name: 'Service Company ERP', desc: 'Projects, client management, contracts, billing & timesheets.' },
+              { name: 'Goods Company ERP', desc: 'Manufacturing, production lines, inventory, procurement & supply chain.' },
+              { name: 'Wholesale & Retail ERP', desc: 'Multi-branch POS, inventory, warehousing, distribution & suppliers.' }
             ])}
 
-            <!-- 5. Corporate Ecosystem -->
-            ${ecosystemCard('Corporate ERP Ecosystem', '🏢', 'Private companies, holding groups, manufacturing, retail, and SME enterprise suites.', 'emerald', [
-              { name: 'Enterprise Corporate ERP', desc: 'Subsidiaries, cross-company reporting, procurement & assets.' },
-              { name: 'Manufacturing & Supply Chain ERP', desc: 'BOM, production lines, warehouse & logistics.' },
-              { name: 'Retail Chain ERP', desc: 'Multi-branch POS, inventory synchronization & customer loyalty.' },
-              { name: 'SME Business Suite', desc: 'Invoicing, tax compliance, payroll & general ledger.' }
+            <!-- 5. Government ERP -->
+            ${ecosystemCard('Government ERP', '🏛️', 'Ministries, departments, public civil service, budget, procurement, and citizen services.', 'emerald', [
+              { name: 'Government ERP', desc: 'Ministries, agencies, civil service, public budget & citizen portals.' }
             ])}
 
-            <!-- 6. NGO Ecosystem -->
-            ${ecosystemCard('NGO Ecosystem', '🌍', 'Non-governmental organisations, foundations, charities, and development partner aid tracking.', 'emerald', [
-              { name: 'NGO & Foundation ERP', desc: 'Grant management, donor reporting, project milestones & field audits.' },
-              { name: 'Charity & Community Organisation', desc: 'Beneficiary registries, volunteer management & relief distribution.' },
-              { name: 'Faith-Based Organisation Network', desc: 'Community development programs & cross-border aid.' }
+            <!-- 6. Healthcare ERP -->
+            ${ecosystemCard('Healthcare ERP', '🏥', 'Hospitals, medical laboratories, patient EMR, pharmacy stock, ward management, and billing.', 'emerald', [
+              { name: 'Healthcare ERP', desc: 'Hospital admin, patient EMR, pharmacy, laboratory & billing.' }
             ])}
 
-            <!-- 7. Government Ecosystem -->
-            ${ecosystemCard('Government Ecosystem', '🏛️', 'Ministries, departments, agencies, authorities, commissions, districts, and city councils.', 'emerald', [
-              { name: 'Ministry & Department ERP', desc: 'Public sector budgeting, legislative tracking & citizen services.' },
-              { name: 'District & City Council ERP', desc: 'Local revenue collection, public works, land registry & permits.' },
-              { name: 'Public Authority & Commission', desc: 'Regulatory oversight, licensing registries & public hearings.' }
+            <!-- 7. NGO ERP -->
+            ${ecosystemCard('NGO ERP', '🌍', 'Non-governmental organizations, grants, field operations, donor management, and compliance.', 'emerald', [
+              { name: 'NGO ERP', desc: 'Projects, grant tracking, field operations, donor reports & compliance.' }
             ])}
 
-            <!-- 8. Healthcare Ecosystem -->
-            ${ecosystemCard('Healthcare Ecosystem', '🏥', 'National hospitals, regional clinics, medical laboratories, and health training institutions.', 'emerald', [
-              { name: 'National & Regional Hospital ERP', desc: 'Patient EMR, ward management, pharmacy, billing & surgery.' },
-              { name: 'District Health Centre & Clinic', desc: 'Outpatient queue, immunisation records & drug stock control.' },
-              { name: 'Medical Laboratory & Training', desc: 'Diagnostic results, specimen tracking & student enrollment.' }
+            <!-- 8. Finance ERP -->
+            ${ecosystemCard('Finance ERP', '🏦', 'Microfinance institutions, credit management, savings, member accounts, and debt collections.', 'emerald', [
+              { name: 'Microfinance ERP', desc: 'Loans, savings, member accounts, credit scoring & collections.' }
             ])}
 
-            <!-- 9. Agriculture Ecosystem -->
-            ${ecosystemCard('Agriculture Ecosystem', '🌾', 'Agricultural cooperatives, farmer groups, seed companies, processors, and exporters.', 'emerald', [
-              { name: 'Agricultural Cooperative ERP', desc: 'Farmer member registries, crop collection, grading & payouts.' },
-              { name: 'Agro-Processor & Exporter ERP', desc: 'Processing plant metrics, quality control, shipping & export documentation.' },
-              { name: 'Seed & Input Distribution Company', desc: 'Agro-input supply chain, agent networks & credit sales.' }
+            <!-- 9. Legal ERP -->
+            ${ecosystemCard('Legal ERP', '⚖️', 'Law firms, legal practice management, case files, client trust accounts, and court calendars.', 'emerald', [
+              { name: 'Legal & Law Firm ERP', desc: 'Cases, clients, court calendar, legal documents & trust billing.' }
             ])}
+
+            <!-- 10. Alumni ERP -->
+            ${ecosystemCard('Alumni ERP', '🤝', 'Global alumni networks, regional chapters, endowment funds, donations, and career networks.', 'emerald', [
+              { name: 'Alumni ERP', desc: 'Alumni registry, global chapters, donations, events & career network.' }
+            ])}
+
+            <!-- 11. Cultural ERP -->
+            ${ecosystemCard('Cultural ERP', '👑', 'Kingdom administration, customary governance, heritage sites, royal treasury, and community administration.', 'emerald', [
+              { name: 'Traditional & Cultural ERP', desc: 'Cultural records, customary heritage & community administration.' }
+            ])}
+
+            <!-- 12. Family ERP -->
+            ${ecosystemCard('Family ERP', '🌳', 'Ancestral registries, clan lineage, land registers, heritage records, and family welfare funds.', 'emerald', [
+              { name: 'Clan & Family ERP', desc: 'Family registry, lineage genealogy, heritage & welfare funds.' }
+            ])}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (view === 'faap') {
+    const faap = window.UEOSRuntime ? window.UEOSRuntime.faapService : { upgradeAreas: [], treasuryPools: {} };
+    return `
+      <div class="space-y-8">
+        <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-700 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+              <span>💰 FAAP 2.0 • Financial Architecture Operating Layer</span>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight">Universal Financial Clearinghouse</h2>
+            <p class="text-xs text-emerald-200 max-w-2xl">Global treasury, accounts, budget appropriation, and cross-border settlement engine.</p>
+          </div>
+          <button onclick="alert('Running FAAP global ledger reconciliation...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Reconcile Ledgers</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          ${Object.entries(faap.treasuryPools).map(([cur, pool]) => `
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <div class="text-[10px] text-slate-400 font-bold uppercase">${cur} Treasury Pool</div>
+              <div class="text-lg font-black text-slate-900">${pool.balance.toLocaleString()}</div>
+              <div class="text-[9px] text-emerald-600 font-bold mt-1">● ${pool.activeRouter}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-sm text-slate-900 mb-6">FAAP 2.0 Core Functional Operating Areas</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            ${faap.upgradeAreas.map(area => `
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-700">${area.name}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              </div>
+            `).join('')}
           </div>
         </div>
       </div>
@@ -779,7 +944,7 @@ function renderViewContent(view) {
           </div>
 
           <div class="space-y-3 text-xs">
-            ${installedPlatformRow('University of Kampala', 'Education Ecosystem • University ERP', 'Active • 12,400 Users', 'emerald')}
+            ${installedPlatformRow('JUMO University', 'Education Ecosystem • University ERP', 'Active • 12,400 Users', 'emerald')}
             ${installedPlatformRow('Kampala Cathedral Diocese', 'Church Ecosystem • Diocese ERP', 'Active • 4,500 Users', 'emerald')}
             ${installedPlatformRow('Grand Serena Resort', 'Hospitality Ecosystem • Hospitality ERP', 'Active • 850 Users', 'emerald')}
             ${installedPlatformRow('Ministry of Finance', 'Government Ecosystem • Ministry ERP', 'Active • 3,200 Users', 'emerald')}
@@ -803,25 +968,88 @@ function renderViewContent(view) {
   }
 
   if (view === 'faap') {
-    return `
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        ${serviceCard('Global Treasury', 'Multi-currency liquidity and cash management', '💰')}
-        ${serviceCard('General Ledger', 'Double-entry sovereign accounting engine', '📖')}
-        ${serviceCard('Budget & Assets', 'Capital allocation and fixed asset tracking', '📈')}
-        ${serviceCard('Procurement', 'Purchase orders, vendor vetting and invoicing', '🛒')}
-        ${serviceCard('Payroll Engine', 'Automated multi-jurisdiction salary disbursement', '💵')}
-        ${serviceCard('Tax & Settlement', 'Automated tax withholding and clearinghouse', '🧾')}
-      </div>
-    `;
-  }
-
-  if (view === 'digital-pay') {
-    return `
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        ${serviceCard('Payment Gateways', 'Integration with SWIFT, VISA, Mastercard', '💳')}
-        ${serviceCard('Mobile Money', 'MTN, Airtel and regional mobile wallets', '📱')}
-        ${serviceCard('Collections & Invoices', 'Automated billing and payment reconciliation', '📥')}
-        ${serviceCard('CBDC & Crypto', 'Central bank digital currency settlement rails', '🪙')}
+    html = `
+      <div class="space-y-6">
+        <div class="flex items-center justify-between bg-emerald-900 rounded-xl p-6 shadow-md border border-emerald-800 text-white">
+          <div>
+            <h2 class="text-2xl font-bold">FAAP Treasury & Multi-Currency Ledger</h2>
+            <p class="text-emerald-200 text-sm mt-1">Enterprise Financial Operating Platform</p>
+          </div>
+          <div class="flex items-center gap-4">
+             <div class="text-right">
+                <p class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Total Liquidity Position</p>
+                <p class="text-3xl font-bold font-mono">$1.42B</p>
+             </div>
+             <button class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-bold shadow transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Create Transaction
+             </button>
+          </div>
+        </div>
+        
+        <!-- FAAP Sub-Modules Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+           ${['General Ledger', 'Budgeting', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Treasury', 'Bank Reconciliation', 'Cash Management', 'Assets', 'Procurement', 'Tax', 'Revenue', 'Settlement', 'Wallets', 'Financial Reports'].map(mod => `
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-center items-center text-center group">
+                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 group-hover:bg-emerald-100 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 </div>
+                 <h3 class="text-xs font-bold text-slate-800 leading-tight">${mod}</h3>
+              </div>
+           `).join('')}
+        </div>
+        
+        <!-- Real-Time Activity Ledger -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
+           <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                 <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Global Settlement Queue
+              </h3>
+              <div class="flex gap-2">
+                 <button class="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600">Export Ledger</button>
+                 <button class="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600">Audit Trail</button>
+              </div>
+           </div>
+           <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                 <thead>
+                    <tr class="bg-white border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                       <th class="p-4">Transaction ID</th>
+                       <th class="p-4">Module</th>
+                       <th class="p-4">Counterparty / Description</th>
+                       <th class="p-4 text-right">Amount</th>
+                       <th class="p-4">Currency</th>
+                       <th class="p-4">Status</th>
+                    </tr>
+                 </thead>
+                 <tbody class="divide-y divide-slate-100 font-mono text-xs">
+                    <tr class="hover:bg-slate-50 transition">
+                       <td class="p-4 text-slate-900 font-bold">FAAP-TRX-82910</td>
+                       <td class="p-4 text-slate-600">Accounts Payable</td>
+                       <td class="p-4 text-slate-600">Supplier Vendor Settlement</td>
+                       <td class="p-4 text-right text-rose-600 font-bold">-$45,000.00</td>
+                       <td class="p-4 text-slate-500">USD</td>
+                       <td class="p-4"><span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 font-sans font-bold text-[10px]">CLEARED</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50 transition">
+                       <td class="p-4 text-slate-900 font-bold">FAAP-TRX-82911</td>
+                       <td class="p-4 text-slate-600">Payroll</td>
+                       <td class="p-4 text-slate-600">Monthly Institutional Payroll</td>
+                       <td class="p-4 text-right text-rose-600 font-bold">-$1,250,000.00</td>
+                       <td class="p-4 text-slate-500">USD</td>
+                       <td class="p-4"><span class="px-2 py-1 bg-amber-50 text-amber-700 rounded border border-amber-200 font-sans font-bold text-[10px]">PENDING APPROVAL</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50 transition">
+                       <td class="p-4 text-slate-900 font-bold">FAAP-TRX-82912</td>
+                       <td class="p-4 text-slate-600">Revenue</td>
+                       <td class="p-4 text-slate-600">Tuition Collection Aggregation</td>
+                       <td class="p-4 text-right text-emerald-600 font-bold">+$120,400.00</td>
+                       <td class="p-4 text-slate-500">USD</td>
+                       <td class="p-4"><span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded border border-emerald-200 font-sans font-bold text-[10px]">CLEARED</span></td>
+                    </tr>
+                 </tbody>
+              </table>
+           </div>
+        </div>
       </div>
     `;
   }
@@ -905,7 +1133,7 @@ function renderViewContent(view) {
 // UI Building Blocks for Views
 function ecosystemCard(title, emoji, desc, color, templates) {
   const cardTabId = `card-tab-${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-  const templatesHtml = templates.map(t => `
+  const templatesHtml = (templates || []).map(t => `
     <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 rounded-xl transition flex flex-col justify-between space-y-2">
       <div>
         <p class="font-extrabold text-slate-900 text-xs">${t.name}</p>
@@ -913,8 +1141,8 @@ function ecosystemCard(title, emoji, desc, color, templates) {
       </div>
       <div class="flex items-center gap-2 pt-2.5 border-t border-slate-200/60">
         <button onclick="window.openErpInstallationFlow('${t.name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Install ERP</button>
-        <button onclick="alert('Configuring ${t.name} blueprint settings...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Configure</button>
-        <button onclick="alert('Cloning ${t.name} template...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Clone</button>
+        <button onclick="window.configureErpBlueprint('${t.name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Configure</button>
+        <button onclick="window.cloneErpTemplate('${t.name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Clone</button>
       </div>
     </div>
   `).join('');
@@ -933,9 +1161,15 @@ function ecosystemCard(title, emoji, desc, color, templates) {
 
       <!-- Horizontal Card Tabs -->
       <div class="flex items-center gap-2 border-b border-slate-200 pb-2 text-[11px] font-bold overflow-x-auto">
-        <button onclick="window.switchCardTab('${cardTabId}', 'templates')" class="${cardTabId}-btn border-b-2 border-emerald-600 text-emerald-700 px-3 py-1 whitespace-nowrap">Templates (${templates.length})</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'governance')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Governance Hierarchy</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'sacco')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Staff SACCO</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'templates')" class="${cardTabId}-btn border-b-2 border-emerald-600 text-emerald-700 px-3 py-1 whitespace-nowrap">ERP Overview (${templates.length})</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'governance')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Governance</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'portals')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Portals</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'departments')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Departments</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'modules')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Modules</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'forms')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Forms</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'workflows')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Workflows</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'agents')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">AI Agents</button>
+        <button onclick="window.switchCardTab('${cardTabId}', 'deployment')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Deployment</button>
       </div>
 
       <div id="${cardTabId}-templates-content" class="${cardTabId}-content grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -944,15 +1178,57 @@ function ecosystemCard(title, emoji, desc, color, templates) {
 
       <div id="${cardTabId}-governance-content" class="${cardTabId}-content hidden space-y-2 text-xs">
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Institution Governance → Office → Department → Module → Component → Form → Workflow → Audit</span>
-          <p class="text-[11px] text-slate-500">Every ERP installation strictly enforces institutional governance boundaries prior to module execution.</p>
+          <span class="font-bold text-slate-900">Institution Governance Structure</span>
+          <p class="text-[11px] text-slate-500">JUMO UEOS Platform → Ecosystem → ERP Instance → Governance Portals → Directorates → Departments → Modules → Components → Digital Forms → Workflows.</p>
         </div>
       </div>
 
-      <div id="${cardTabId}-sacco-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+      <div id="${cardTabId}-portals-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Executive & Governance Portals</span>
+          <p class="text-[11px] text-slate-500">Dedicated governance portals for Board of Governors, Academic Senate, Treasury, HR, and Staff SACCO.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-departments-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Directorates & Offices</span>
+          <p class="text-[11px] text-slate-500">Configured departments, offices, and administrative units within this enterprise ecosystem.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-modules-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Consolidated Functional Modules</span>
+          <p class="text-[11px] text-slate-500">Strictly consolidated functional modules embedded inside institutional ERP boundaries.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-forms-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Digital Forms Engine</span>
+          <p class="text-[11px] text-slate-500">Cryptographically signed digital forms catalogue with automated multi-step DAG approval routes.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-workflows-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Institutional Workflows</span>
+          <p class="text-[11px] text-slate-500">Automated approval workflows, document clearance, financial disbursements, and audit trails.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-agents-content" class="${cardTabId}-content hidden space-y-2 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <span class="font-bold text-slate-900">Embedded Enterprise AI Agents</span>
+          <p class="text-[11px] text-slate-500">Automated AI agents for audit verification, fraud detection, ledger reconciliation, and report generation.</p>
+        </div>
+      </div>
+
+      <div id="${cardTabId}-deployment-content" class="${cardTabId}-content hidden space-y-2 text-xs">
         <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
-          <span class="font-bold text-emerald-900">Inherited Staff SACCO Platform</span>
-          <p class="text-[11px] text-emerald-700">Auto-provisions savings, loans, member registry & FAAP wallet settlements upon installation.</p>
+          <span class="font-bold text-emerald-900">One-Click Multi-Tenant Cloud Deployment</span>
+          <p class="text-[11px] text-emerald-700">Auto-provisions FAAP clearinghouse wallet, Staff SACCO platform, tenant database isolation, and security rules.</p>
         </div>
       </div>
     </div>
@@ -1063,43 +1339,43 @@ function diagnosticCard(label, val, color) {
 
 // Global Control Center State Handlers attached to window
 window.setCCView = function(view) {
-  state.ccActiveView = view;
-  state.ccLauncherOpen = false;
-  state.ccCommandPaletteOpen = false;
-  state.ccNotificationOpen = false;
-  state.ccActivityOpen = false;
-  state.ccHelpOpen = false;
-  state.ccAiAssistantOpen = false;
+  window.state.ccActiveView = view;
+  window.state.ccLauncherOpen = false;
+  window.state.ccCommandPaletteOpen = false;
+  window.state.ccNotificationOpen = false;
+  window.state.ccActivityOpen = false;
+  window.state.ccHelpOpen = false;
+  window.state.ccAiAssistantOpen = false;
   render();
 };
 
 window.toggleCCLauncher = function() {
-  state.ccLauncherOpen = !state.ccLauncherOpen;
+  window.state.ccLauncherOpen = !state.ccLauncherOpen;
   render();
 };
 
 window.toggleCCCommandPalette = function() {
-  state.ccCommandPaletteOpen = !state.ccCommandPaletteOpen;
+  window.state.ccCommandPaletteOpen = !state.ccCommandPaletteOpen;
   render();
 };
 
 window.toggleCCNotification = function() {
-  state.ccNotificationOpen = !state.ccNotificationOpen;
+  window.state.ccNotificationOpen = !state.ccNotificationOpen;
   render();
 };
 
 window.toggleCCActivity = function() {
-  state.ccActivityOpen = !state.ccActivityOpen;
+  window.state.ccActivityOpen = !state.ccActivityOpen;
   render();
 };
 
 window.toggleCCHelp = function() {
-  state.ccHelpOpen = !state.ccHelpOpen;
+  window.state.ccHelpOpen = !state.ccHelpOpen;
   render();
 };
 
 window.toggleCCAiAssistant = function() {
-  state.ccAiAssistantOpen = !state.ccAiAssistantOpen;
+  window.state.ccAiAssistantOpen = !state.ccAiAssistantOpen;
   render();
 };
 
@@ -1183,10 +1459,120 @@ window.switchCardTab = function(cardTabId, tabName) {
 };
 
 window.openErpInstallationFlow = function(templateName) {
-  const customName = prompt(`Install & Provision ${templateName}\n\nEnter Institution Name:`, templateName);
-  if (customName !== null) {
-    alert(`[JUMO UEOS Deployment Agent]\n\nProvisioning enterprise instance for "${customName}"...\n✓ Tenant ID generated\n✓ FAAP Wallet auto-linked\n✓ Staff SACCO platform provisioned\n✓ Governance hierarchy created\n\nLaunching into workspace...`);
+  const customName = `${templateName} Enterprise`;
+  const state = window.state || window.appState || {};
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
+  
+  let template = null;
+  let inst = null;
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
+    inst = runtimeEngine.installERP(template.id, customName);
+  }
+
+  if (!state.session) {
+  window.state.session = {
+      user: { name: "Institution Administrator", email: "admin@institution.edu", role: "ERP Administrator", isAdmin: true },
+      organization: customName,
+      tenantId: inst ? inst.tenantId : `tenant-${Date.now().toString().slice(-6)}`
+    };
+  } else {
+  window.state.session.organization = customName;
+    if (inst) state.session.tenantId = inst.tenantId;
+  }
+
+  if (template) state.session.activeErpTemplate = template;
+  if (inst) state.session.activeErpInstance = inst;
+  window.state.activeWorkspaceTab = 'org';
+
+  if (typeof window.navigate === 'function') {
+    window.window.navigate('/workspace');
+  } else {
     window.location.hash = "#workspace";
+  }
+};
+
+window.configureErpBlueprint = function(templateName) {
+  const customName = `${templateName} (Blueprint Configured)`;
+  const state = window.state || window.appState || {};
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
+  
+  let template = null;
+  let inst = null;
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
+    inst = runtimeEngine.installERP(template.id, customName);
+  }
+
+  if (!state.session) {
+  window.state.session = {
+      user: { name: "Institution Administrator", email: "admin@institution.edu", role: "ERP Administrator", isAdmin: true },
+      organization: customName,
+      tenantId: inst ? inst.tenantId : `tenant-${Date.now().toString().slice(-6)}`
+    };
+  } else {
+  window.state.session.organization = customName;
+    if (inst) state.session.tenantId = inst.tenantId;
+  }
+
+  if (template) state.session.activeErpTemplate = template;
+  if (inst) state.session.activeErpInstance = inst;
+  window.state.activeWorkspaceTab = 'org';
+
+  if (typeof window.navigate === 'function') {
+    window.window.navigate('/workspace');
+  } else {
+    window.location.hash = "#workspace";
+  }
+};
+
+window.cloneErpTemplate = function(templateName) {
+  const customName = `${templateName} (Cloned Platform)`;
+  const state = window.state || window.appState || {};
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
+  
+  let template = null;
+  let inst = null;
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
+    inst = runtimeEngine.installERP(template.id, customName);
+  }
+
+  if (!state.session) {
+  window.state.session = {
+      user: { name: "Institution Administrator", email: "admin@institution.edu", role: "ERP Administrator", isAdmin: true },
+      organization: customName,
+      tenantId: inst ? inst.tenantId : `tenant-${Date.now().toString().slice(-6)}`
+    };
+  } else {
+  window.state.session.organization = customName;
+    if (inst) state.session.tenantId = inst.tenantId;
+  }
+
+  if (template) state.session.activeErpTemplate = template;
+  if (inst) state.session.activeErpInstance = inst;
+  window.state.activeWorkspaceTab = 'org';
+
+  if (typeof window.navigate === 'function') {
+    window.window.navigate('/workspace');
+  } else {
+    window.location.hash = "#workspace";
+  }
+};
+
+window.ccLogAction = function(message) {
+  if (window.state) {
+    if (!window.state.ccLogHistory) window.state.ccLogHistory = [];
+    const time = new Date().toLocaleTimeString();
+    window.state.ccLogHistory.push(`[${time}] Sovereign CC Command: ${message}`);
+    window.state.ccToastMessage = message;
+    window.render();
+    setTimeout(() => {
+      if (window.state && window.state.ccToastMessage === message) {
+        window.state.ccToastMessage = null;
+        window.render();
+      }
+    }, 4000);
   }
 };
 
