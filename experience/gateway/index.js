@@ -9,10 +9,10 @@ export const publicTemplate = (state) => {
   
   app.innerHTML = `
 <div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
-    // <!-- Public Sidebar Overlay -->
+    <!-- Public Sidebar Overlay -->
     <div id="public-sidebar-overlay" onclick="togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
     
-    // <!-- Public Sidebar -->
+    <!-- Public Sidebar -->
     <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-900 z-[70] -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-slate-900">
             ${logoHtml}
@@ -74,7 +74,7 @@ export const publicTemplate = (state) => {
         </div>
     </div>
 
-    // <!-- 1. Blue Enterprise Header -->
+    <!-- 1. Blue Enterprise Header -->
     <header class="bg-[#0b3b9b] border-b border-[#0f4ac1] sticky top-0 z-50 shadow-md text-white">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
@@ -88,7 +88,7 @@ export const publicTemplate = (state) => {
             
             <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-blue-100">
                 <a href="/" class="hover:text-white transition">Home</a>
-                // <!-- Platform Menu -->
+                <!-- Platform Menu -->
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Platform ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -99,7 +99,7 @@ export const publicTemplate = (state) => {
                         <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">AI Platform</a>
                     </div>
                 </div>
-                // <!-- Solutions Menu -->
+                <!-- Solutions Menu -->
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Solutions ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -111,7 +111,7 @@ export const publicTemplate = (state) => {
                         <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Enterprise Applications</a>
                     </div>
                 </div>
-                // <!-- Digital Services Menu -->
+                <!-- Digital Services Menu -->
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Digital Services ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -122,7 +122,7 @@ export const publicTemplate = (state) => {
                         <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-enterprise-blue">Analytics Services</a>
                     </div>
                 </div>
-                // <!-- Resources Menu -->
+                <!-- Resources Menu -->
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Resources ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -146,7 +146,7 @@ export const publicTemplate = (state) => {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
                 
-                // <!-- User Profile Dropdown -->
+                <!-- User Profile Dropdown -->
                 <div class="relative group">
                     <button class="flex items-center gap-2 pl-3 ml-2 border-l border-white/20 cursor-pointer">
                         <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition">
@@ -187,7 +187,7 @@ export const publicTemplate = (state) => {
         </div>
     </header>
 
-    // <!-- 1. Enterprise Information Hub -->
+    <!-- 1. Enterprise Information Hub -->
     <section class="bg-white border-b border-slate-100 py-6">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between mb-4">
@@ -201,7 +201,7 @@ export const publicTemplate = (state) => {
                     <a href="#" class="hover:text-enterprise-blue">Resources</a>
                 </div>
             </div>
-            // <!-- Digital Notice Board Grid -->
+            <!-- Digital Notice Board Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                     <h3 class="font-bold text-sm text-slate-900 mb-2">Platform Announcements</h3>
@@ -221,14 +221,14 @@ export const publicTemplate = (state) => {
 
     <main class="flex-1">
         
-        // <!-- Hero Section -->
+        <!-- Hero Section -->
         <section class="relative bg-white overflow-hidden py-12">
-            // <!-- Background structural elements -->
+            <!-- Background structural elements -->
             <div class="absolute right-0 top-0 w-1/2 h-full bg-slate-50" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
             
             <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
                 
-                // <!-- Welcome Section -->
+                <!-- Welcome Section -->
                 <div class="w-full lg:w-5/12 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -253,10 +253,10 @@ export const publicTemplate = (state) => {
                     </div>
                 </div>
 
-                // <!-- Showcase / Reception Screen -->
+                <!-- Showcase / Reception Screen -->
                 <div class="w-full lg:w-7/12">
                     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[400px]">
-                        // <!-- Top status bar -->
+                        <!-- Top status bar -->
                         <div class="bg-slate-900 px-4 py-3 flex items-center justify-between text-xs font-medium text-slate-400 border-b border-slate-800">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
@@ -265,17 +265,17 @@ export const publicTemplate = (state) => {
                             <div class="font-mono">JUMO TV</div>
                         </div>
                         
-                        // <!-- Media area -->
+                        <!-- Media area -->
                         <div class="flex-1 bg-slate-100 relative group cursor-pointer overflow-hidden flex items-center justify-center">
-                            // <!-- Abstract placeholder for video/image -->
+                            <!-- Abstract placeholder for video/image -->
                             <div class="absolute inset-0 bg-gradient-to-tr from-blue-900 to-slate-800 opacity-90 transition-transform duration-700 group-hover:scale-105"></div>
                             
-                            // <!-- Play button -->
+                            <!-- Play button -->
                             <div class="relative z-10 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:bg-white/30 transition shadow-2xl">
                                 <div class="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-white border-b-[10px] border-b-transparent ml-2"></div>
                             </div>
 
-                            // <!-- Overlay Content -->
+                            <!-- Overlay Content -->
                             <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900 to-transparent z-10">
                                 <span class="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase rounded mb-3 inline-block">Platform Showcase</span>
                                 <h3 class="text-2xl font-bold text-white mb-1">Accelerating Digital Transformation</h3>
@@ -298,11 +298,11 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        // <!-- 4. Authentication Options (Access Cards) -->
+        <!-- 4. Authentication Options (Access Cards) -->
         <section class="py-12 px-6 bg-slate-50 border-y border-slate-200">
             <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                // <!-- Individual Users -->
+                <!-- Individual Users -->
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
                     <div class="flex items-start justify-between mb-8">
                         <div>
@@ -323,7 +323,7 @@ export const publicTemplate = (state) => {
                     </div>
                 </div>
 
-                // <!-- Institutions -->
+                <!-- Institutions -->
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
                     <div class="flex items-start justify-between mb-8">
                         <div>
@@ -355,7 +355,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        // <!-- Core Features / Trust Strip -->
+        <!-- Core Features / Trust Strip -->
         <div class="bg-white border-b border-slate-200 py-10 px-6">
             <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16 text-sm font-semibold text-slate-700">
                 <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center">🛡️</span> Enterprise Security & Compliance</div>
@@ -365,7 +365,7 @@ export const publicTemplate = (state) => {
             </div>
         </div>
 
-        // <!-- 5. Enterprise Solutions -->
+        <!-- 5. Enterprise Solutions -->
         <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
@@ -400,7 +400,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        // <!-- 6. Success Stories -->
+        <!-- 6. Success Stories -->
         <section class="py-24 px-6 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -412,7 +412,7 @@ export const publicTemplate = (state) => {
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    // <!-- Featured Story -->
+                    <!-- Featured Story -->
                     <div class="bg-slate-900 rounded-2xl p-10 text-white relative overflow-hidden group cursor-pointer flex flex-col justify-end min-h-[400px]">
                         <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/80 to-transparent z-0"></div>
                         <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
@@ -453,7 +453,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        // <!-- 7. FAQ -->
+        <!-- 7. FAQ -->
         <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
             <div class="max-w-3xl mx-auto">
                 <h2 class="text-3xl font-extrabold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
@@ -475,7 +475,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
         
-        // <!-- 8. Contact (Simplified CTA) -->
+        <!-- 8. Contact (Simplified CTA) -->
         <section class="py-24 px-6 bg-enterprise-blue text-white text-center">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Ready to transform your organization?</h2>
@@ -487,7 +487,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        // <!-- 9. Trusted Partners -->
+        <!-- 9. Trusted Partners -->
         <section class="py-16 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-6">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-10">Trusted by institutions across sectors</h3>
@@ -503,13 +503,13 @@ export const publicTemplate = (state) => {
 
     </main>
 
-    // <!-- Footer -->
+    <!-- Footer -->
     ${getEnterpriseFooterHtml()}
     
-    // <!-- 6. Public AI Assistant (Concierge) -->
+    <!-- 6. Public AI Assistant (Concierge) -->
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         
-        // <!-- Chat Window -->
+        <!-- Chat Window -->
         <div id="public-ai-chat" class="hidden fixed inset-0 z-[101] bg-slate-900/40 flex items-center justify-center p-4">
             <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
                 <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-sm">
@@ -544,7 +544,7 @@ export const publicTemplate = (state) => {
             </div>
         </div>
         
-        // <!-- Floating Button -->
+        <!-- Floating Button -->
         <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
             <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
@@ -558,7 +558,7 @@ export const loginTemplate = (state) => {
 
   app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans">
-      // <!-- Top header link -->
+      <!-- Top header link -->
       <header class="p-6 border-b border-slate-200 bg-white">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="cursor-pointer" onclick="navigate('/')">
@@ -570,7 +570,7 @@ export const loginTemplate = (state) => {
         </div>
       </header>
 
-      // <!-- Center Auth Box -->
+      <!-- Center Auth Box -->
       <div class="flex-1 flex items-center justify-center p-6">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-10 space-y-6">
           <div class="text-center space-y-2">
@@ -621,7 +621,7 @@ export const loginTemplate = (state) => {
         </div>
       </div>
 
-      // <!-- Footer branding -->
+      <!-- Footer branding -->
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
         ${BRAND_CONFIG.ownership.ownedBy} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
@@ -721,7 +721,7 @@ export const gatewayTemplate = (state) => {
 
   app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col text-slate-800 antialiased font-sans">
-      // <!-- SIDEBAR OVERLAY & COLLAPSIBLE DRAWER -->
+      <!-- SIDEBAR OVERLAY & COLLAPSIBLE DRAWER -->
       <div id="sidebar-overlay" onclick="toggleGatewaySidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-[90] hidden"></div>
       
       <div id="gateway-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white shadow-2xl z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col">
@@ -753,7 +753,7 @@ export const gatewayTemplate = (state) => {
         </div>
       </div>
 
-      // <!-- GLOBAL HEADER -->
+      <!-- GLOBAL HEADER -->
       <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
           <div class="flex items-center space-x-4">
@@ -775,13 +775,13 @@ export const gatewayTemplate = (state) => {
           </nav>
 
           <div class="flex items-center space-x-4">
-            // <!-- Search Bar -->
+            <!-- Search Bar -->
             <div class="hidden sm:flex items-center bg-slate-100 border border-slate-200 rounded-full px-3 py-1.5 text-xs">
               <span class="text-slate-400 mr-2">🔍</span>
               <input type="text" placeholder="Global search..." class="bg-transparent border-none outline-none text-xs w-32 focus:w-48 transition-all font-semibold text-slate-800">
             </div>
 
-            // <!-- Notification Bell -->
+            <!-- Notification Bell -->
             <div class="relative">
               <button onclick="toggleNotificationsMenu()" class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-700 transition relative">
                 🔔
@@ -805,7 +805,7 @@ export const gatewayTemplate = (state) => {
               </div>
             </div>
 
-            // <!-- User Profile Dropdown -->
+            <!-- User Profile Dropdown -->
             <div class="relative">
               <button onclick="toggleProfileDropdown()" class="flex items-center space-x-2 p-1.5 border border-slate-200 rounded-full hover:bg-slate-50 transition cursor-pointer">
                 <div class="w-8 h-8 rounded-full bg-enterprise-blue text-white font-bold flex items-center justify-center text-xs shadow-xs">
@@ -844,9 +844,9 @@ export const gatewayTemplate = (state) => {
         </div>
       </header>
 
-      // <!-- MAIN GATEWAY CONTAINER -->
+      <!-- MAIN GATEWAY CONTAINER -->
       <main class="flex-1 max-w-[1440px] w-full mx-auto px-6 py-8 space-y-8">
-        // <!-- WELCOME AREA WITH ENTERPRISE IMAGE BANNER -->
+        <!-- WELCOME AREA WITH ENTERPRISE IMAGE BANNER -->
         <section class="bg-white border border-slate-200 rounded-2xl p-8 shadow-xs relative overflow-hidden">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div class="lg:col-span-8 space-y-3 z-10">
@@ -878,9 +878,9 @@ export const gatewayTemplate = (state) => {
           </div>
         </section>
 
-        // <!-- PRIMARY WORKSPACE ACTIONS (3 EQUAL CARDS) -->
+        <!-- PRIMARY WORKSPACE ACTIONS (3 EQUAL CARDS) -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          // <!-- Card 1: Register Institution -->
+          <!-- Card 1: Register Institution -->
           <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs hover:border-enterprise-blue transition flex flex-col justify-between space-y-4">
             <div class="space-y-3">
               <div class="w-12 h-12 rounded-xl bg-blue-50 text-enterprise-blue flex items-center justify-center text-xl font-bold">
@@ -897,7 +897,7 @@ export const gatewayTemplate = (state) => {
             </button>
           </div>
 
-          // <!-- Card 2: Join Organization -->
+          <!-- Card 2: Join Organization -->
           <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs hover:border-emerald-500 transition flex flex-col justify-between space-y-4">
             <div class="space-y-3">
               <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
@@ -914,7 +914,7 @@ export const gatewayTemplate = (state) => {
             </button>
           </div>
 
-          // <!-- Card 3: Explore Solutions -->
+          <!-- Card 3: Explore Solutions -->
           <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs hover:border-indigo-500 transition flex flex-col justify-between space-y-4">
             <div class="space-y-3">
               <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
@@ -932,9 +932,9 @@ export const gatewayTemplate = (state) => {
           </div>
         </section>
 
-        // <!-- MY ORGANIZATIONS & NOTIFICATIONS SPLIT SECTION -->
+        <!-- MY ORGANIZATIONS & NOTIFICATIONS SPLIT SECTION -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          // <!-- Left: My Organizations -->
+          <!-- Left: My Organizations -->
           <div class="lg:col-span-8 space-y-4">
             <div class="flex items-center justify-between">
               <div>
@@ -968,7 +968,7 @@ export const gatewayTemplate = (state) => {
             </div>
           </div>
 
-          // <!-- Right: Notifications Panel -->
+          <!-- Right: Notifications Panel -->
           <div class="lg:col-span-4 space-y-4">
             <div class="flex items-center justify-between">
               <h2 class="text-xl font-bold text-slate-900">Notifications</h2>
@@ -989,7 +989,7 @@ export const gatewayTemplate = (state) => {
           </div>
         </section>
 
-        // <!-- QUICK SERVICES GRID -->
+        <!-- QUICK SERVICES GRID -->
         <section class="space-y-4">
           <h2 class="text-xl font-bold text-slate-900">Quick Access & Services</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs font-semibold">
@@ -1027,7 +1027,7 @@ export const gatewayTemplate = (state) => {
         </section>
       </main>
 
-      // <!-- FLOATING JUMO ASSISTANT -->
+      <!-- FLOATING JUMO ASSISTANT -->
       <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         <div id="jumo-assistant-chat" class="hidden w-80 h-96 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 flex flex-col overflow-hidden animate-fade-in">
           <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-xs">
@@ -1062,7 +1062,7 @@ export const gatewayTemplate = (state) => {
         </button>
       </div>
 
-      // <!-- MODALS FOR REGISTER & JOIN -->
+      <!-- MODALS FOR REGISTER & JOIN -->
       <div id="join-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -1079,7 +1079,7 @@ export const gatewayTemplate = (state) => {
         </div>
       </div>
 
-      // <!-- ENTERPRISE FOOTER -->
+      <!-- ENTERPRISE FOOTER -->
       ${getEnterpriseFooterHtml()}
     </div>
   `;
@@ -1092,11 +1092,11 @@ function getEnterpriseFooterHtml() {
   const logoHtmlLight = getOfficialLogoHtml({ size: "md", textColor: "light" });
   
   return `
-    // <!-- Main Footer Body -->
+    <!-- Main Footer Body -->
     <footer class="bg-[#0b3b9b] text-blue-50 py-16 px-6 border-t border-[#0f4ac1] text-xs font-sans">
       <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
         
-        // <!-- Column 1: Brand overview -->
+        <!-- Column 1: Brand overview -->
         <div class="lg:col-span-1 space-y-4">
           <div class="-ml-2">
             ${logoHtmlLight}
@@ -1112,7 +1112,7 @@ function getEnterpriseFooterHtml() {
           </div>
         </div>
 
-        // <!-- Column 2: PLATFORMS -->
+        <!-- Column 2: PLATFORMS -->
         <div class="space-y-4">
           <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Platforms</h4>
           <div class="space-y-2">
@@ -1125,7 +1125,7 @@ function getEnterpriseFooterHtml() {
           </div>
         </div>
 
-        // <!-- Column 3: SERVICES -->
+        <!-- Column 3: SERVICES -->
         <div class="space-y-4">
           <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Services</h4>
           <div class="space-y-2">
@@ -1137,7 +1137,7 @@ function getEnterpriseFooterHtml() {
           </div>
         </div>
 
-        // <!-- Column 4: ACCOUNT -->
+        <!-- Column 4: ACCOUNT -->
         <div class="space-y-4">
           <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Account</h4>
           <div class="space-y-2">
@@ -1149,7 +1149,7 @@ function getEnterpriseFooterHtml() {
           </div>
         </div>
 
-        // <!-- Column 5: CONTACT -->
+        <!-- Column 5: CONTACT -->
         <div class="space-y-4">
           <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Contact</h4>
           <div class="space-y-2 text-slate-400 text-[11px]">
@@ -1164,7 +1164,7 @@ function getEnterpriseFooterHtml() {
           </div>
         </div>
 
-        // <!-- Column 6: CONNECT -->
+        <!-- Column 6: CONNECT -->
         <div class="space-y-4">
           <h4 class="font-bold text-white text-[10px] uppercase tracking-widest font-mono">Connect</h4>
           <div class="grid grid-cols-2 gap-2 text-[11px]">
@@ -1178,7 +1178,7 @@ function getEnterpriseFooterHtml() {
         </div>
       </div>
       
-      // <!-- Bottom Copyright Bar -->
+      <!-- Bottom Copyright Bar -->
       <div class="max-w-[1440px] mx-auto pt-6 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between text-slate-500 font-mono text-[10px] gap-4">
         <div>
           - ${BRAND_CONFIG.ownership.ownedBy}
@@ -1226,7 +1226,7 @@ export const contactTemplate = (state) => {
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1 space-y-6">
-                // <!-- Contact Information -->
+                <!-- Contact Information -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100">Digital Channels</h3>
                     <div class="space-y-5 text-sm">
@@ -1249,7 +1249,7 @@ export const contactTemplate = (state) => {
                     </div>
                 </div>
 
-                // <!-- Direct Lines -->
+                <!-- Direct Lines -->
                 <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
                     <h3 class="font-bold text-white text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-800">Direct Lines</h3>
                     <div class="space-y-4 text-sm">
@@ -1276,7 +1276,7 @@ export const contactTemplate = (state) => {
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                // <!-- Location Directory -->
+                <!-- Location Directory -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-full">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
                         <span>Office Directory</span>
@@ -1316,7 +1316,7 @@ export const contactTemplate = (state) => {
         </div>
     </main>
 
-    // <!-- Footer -->
+    <!-- Footer -->
     ${getEnterpriseFooterHtml()}
 </div>
   `;

@@ -47,7 +47,7 @@ const initializeWorkspaceState = (state) => {
   if (!state.jumoChatOpen) state.jumoChatOpen = false;
   if (!state.jumoChatMessages) {
     state.jumoChatMessages = [
-      { sender: 'ai', text: `Welcome! I am the Public Front Desk Assistant. I can help you discover available public services, locate the correct institutional portal, and assist with general enquiries like admissions and registration. I cannot access or disclose internal institutional records. How can I help you today?` }
+      { sender: 'ai', text: `Welcome! I am the JUMO Front Desk Assistant. I can help you discover available public services, locate the correct institutional portal, and assist with general enquiries like admissions and registration. I cannot access or disclose internal institutional records. How can I help you today?` }
     ];
   }
 };
@@ -55,7 +55,7 @@ const initializeWorkspaceState = (state) => {
 export const workspaceTemplate = (state) => {
   initializeWorkspaceState(state);
   const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
-  const activeTemplate = state.session?.activeErpTemplate || (runtimeEngine ? runtimeEngine.getTemplate("edu-uni") : null);
+  const activeTemplate = state.session?.activeErpTemplate || null;
   const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
   const portals = activeTemplate?.governancePortals || institution.portals || [];
   institution.portals = portals;
@@ -122,7 +122,7 @@ export const workspaceTemplate = (state) => {
 
   app.innerHTML = `
     <div class="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
-      // <!-- Horizontal Enterprise Navigation -->
+      <!-- Horizontal Enterprise Navigation -->
       <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16">
@@ -158,12 +158,12 @@ export const workspaceTemplate = (state) => {
         </div>
       </header>
       
-      // <!-- Main Content Area -->
+      <!-- Main Content Area -->
       <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         
         ${currentView === 'modules' ? `
           ${!selectedModule ? `
-            // <!-- High-Density Registry-Driven Modules Catalog -->
+            <!-- High-Density Registry-Driven Modules Catalog -->
             <div class="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <h2 class="text-2xl font-bold text-slate-900 mb-1">Operational Module Directory</h2>
@@ -175,7 +175,7 @@ export const workspaceTemplate = (state) => {
               </div>
             </div>
 
-            // <!-- Categories Grid -->
+            <!-- Categories Grid -->
             <div class="space-y-8">
               ${Object.entries(modulesByCategory).map(([catName, modsList]) => `
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -207,9 +207,9 @@ export const workspaceTemplate = (state) => {
               `).join('')}
             </div>
           ` : `
-            // <!-- MODULE WORKSPACE EXPLORER PANEL -->
+            <!-- MODULE WORKSPACE EXPLORER PANEL -->
             <div class="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
-              // <!-- Header Block -->
+              <!-- Header Block -->
               <div class="bg-slate-900 text-white p-8 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="space-y-2">
                   <button onclick="window.state.activeModuleId = null; window.render();" class="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">
@@ -230,7 +230,7 @@ export const workspaceTemplate = (state) => {
                 </div>
               </div>
 
-              // <!-- Workspace Sub-navigation (18 Components unified into 6 primary operational controllers) -->
+              <!-- Workspace Sub-navigation (18 Components unified into 6 primary operational controllers) -->
               <div class="bg-slate-50 border-b border-slate-200 px-8 py-3 flex flex-wrap gap-2">
                 <button onclick="window.state.activeComponentId='dashboard'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='dashboard'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-dashboard">📊 Dashboard Metrics</button>
                 <button onclick="window.state.activeComponentId='registry'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='registry'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-registry">🗃️ Master Registry</button>
@@ -240,7 +240,7 @@ export const workspaceTemplate = (state) => {
                 <button onclick="window.state.activeComponentId='ai'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='ai'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-ai">🤖 Cognitive AI Auditor</button>
               </div>
 
-              // <!-- Operational Controller Canvas -->
+              <!-- Operational Controller Canvas -->
               <div class="p-8">
                 ${state.activeComponentId === 'dashboard' ? `
                   <div class="space-y-6">
@@ -346,7 +346,7 @@ export const workspaceTemplate = (state) => {
                         </div>
                       </div>
 
-                      // <!-- Contextual Registry Fields -->
+                      <!-- Contextual Registry Fields -->
                       <div class="space-y-4">
                         <div>
                           <label class="block text-slate-700 font-bold mb-1.5">Cost Center Allocation</label>
@@ -372,7 +372,7 @@ export const workspaceTemplate = (state) => {
                         </div>
                       </div>
 
-                      // <!-- Document Dropzone -->
+                      <!-- Document Dropzone -->
                       <div class="space-y-2">
                         <label class="block text-slate-700 font-bold">Supporting Document Attachments</label>
                         <div id="file-dropzone" ondragover="window.handleDragOver(event)" ondrop="window.handleFileDrop(event)" class="border-2 border-dashed border-slate-200 p-6 rounded-xl text-center bg-white hover:border-emerald-500 transition duration-150 cursor-pointer">
@@ -393,7 +393,7 @@ export const workspaceTemplate = (state) => {
                         ` : ''}
                       </div>
 
-                      // <!-- Signature Pad -->
+                      <!-- Signature Pad -->
                       <div class="space-y-2">
                         <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-200 pb-1">Cryptographic Signature Signoff</p>
                         <div class="bg-white border border-slate-200 p-4 rounded-xl">
@@ -493,7 +493,7 @@ export const workspaceTemplate = (state) => {
                       <button onclick="window.triggerAegisSystemBackup()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm transition">Generate Immutable Snapshot</button>
                     </div>
 
-                    // <!-- Ledger Log block list -->
+                    <!-- Ledger Log block list -->
                     <div class="space-y-4">
                       <div class="p-5 bg-slate-900 text-slate-300 font-mono text-xs rounded-2xl border border-slate-800 space-y-3 shadow-inner">
                         <div class="flex items-center justify-between text-emerald-400 border-b border-slate-800 pb-2">
@@ -556,9 +556,9 @@ export const workspaceTemplate = (state) => {
                         </div>
                       </div>
 
-                      // <!-- AI Response Output -->
+                      <!-- AI Response Output -->
                       <div id="ai-response-container" class="hidden p-6 bg-indigo-50 border border-indigo-100 rounded-2xl text-xs text-slate-700 shadow-xs">
-                        // <!-- Filled Dynamically -->
+                        <!-- Filled Dynamically -->
                       </div>
                     </div>
                   </div>
@@ -665,7 +665,7 @@ export const workspaceTemplate = (state) => {
         ` : ''}
       </main>
 
-      // <!-- Floating JUMO Front Desk Assistant Chat Window -->
+      <!-- Floating JUMO Front Desk Assistant Chat Window -->
       <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         ${state.jumoChatOpen ? `
           <div id="public-ai-chat" class="mb-4 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden h-[450px]">
@@ -675,7 +675,7 @@ export const workspaceTemplate = (state) => {
                   🤖
                 </div>
                 <div>
-                  <h4 class="font-bold text-sm">Public Front Desk Assistant</h4>
+                  <h4 class="font-bold text-sm">JUMO Front Desk Assistant</h4>
                   <p class="text-[10px] text-emerald-100">JUMO Core Interop Active</p>
                 </div>
               </div>
@@ -706,14 +706,14 @@ export const workspaceTemplate = (state) => {
           </div>
         ` : ''}
         
-        // <!-- Floating Chat Button -->
+        <!-- Floating Chat Button -->
         <button onclick="window.toggleJumoChat()" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
           <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
       </div>
     </div>
  
-      // <!-- Modals (e.g. Form Fill Modal) -->
+      <!-- Modals (e.g. Form Fill Modal) -->
       ${state.activeFormId ? `
         <div class="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
           <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
@@ -915,7 +915,7 @@ window.openFormModal = function(formId) {
     
     <form onsubmit="window.submitDigitalForm(event, '${form.id}')" class="space-y-4 text-xs font-semibold">
       
-      // <!-- Multi-section layout: Part 1 - Info -->
+      <!-- Multi-section layout: Part 1 - Info -->
       <div class="space-y-4">
         <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">1. Requisition & Clearance Details</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -931,7 +931,7 @@ window.openFormModal = function(formId) {
         ${fieldsHtml}
       </div>
 
-      // <!-- Multi-section: Part 2 - Attachments -->
+      <!-- Multi-section: Part 2 - Attachments -->
       <div class="space-y-2">
         <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">2. Supporting Attachments</p>
         <div class="border-2 border-dashed border-slate-200 p-4 rounded-xl text-center bg-slate-50">
@@ -941,7 +941,7 @@ window.openFormModal = function(formId) {
         </div>
       </div>
 
-      // <!-- Multi-section: Part 3 - Digital Signature Pad -->
+      <!-- Multi-section: Part 3 - Digital Signature Pad -->
       <div class="space-y-2">
         <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">3. Cryptographic Signature Stamp</p>
         <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl">
@@ -1212,7 +1212,7 @@ window.sendJumoChatMessage = function(e) {
     if (!window.state.jumoChatMessages) window.state.jumoChatMessages = [];
     window.state.jumoChatMessages.push({ sender: 'user', text: val });
 
-    let reply = `I understand you're asking about "${val}". As the Public Front Desk Assistant, I can guide you to our public services or direct you to the correct login gateway for authorized access. Please note I do not have access to internal staff, financial, or student records.`;
+    let reply = `I understand you're asking about "${val}". As the JUMO Front Desk Assistant, I can guide you to our public services or direct you to the correct login gateway for authorized access. Please note I do not have access to internal staff, financial, or student records.`;
     const lower = val.toLowerCase();
     if (lower.includes('login') || lower.includes('portal') || lower.includes('access')) {
       reply = `To access secure institutional services, please navigate to the Portal Directory and select your designated portal. You will need your authorized credentials to proceed.`;
