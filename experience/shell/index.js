@@ -5,13 +5,13 @@ export const shellTemplate = (state) => {
 
   app.innerHTML = `
           <div class="min-h-screen flex bg-slate-50 font-sans">
-            <!-- Left Navigation Panel -->
+            // <!-- Left Navigation Panel -->
             <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
               <div class="p-5 border-b border-slate-800 cursor-pointer" onclick="navigate('/gateway')">
                 ${logoHtml}
               </div>
               
-              <!-- Tenant Swapper dropdown directly on sidebar -->
+              // <!-- Tenant Swapper dropdown directly on sidebar -->
               <div class="p-4 border-b border-slate-800 bg-slate-950/40">
                 <p class="text-[9px] font-mono uppercase tracking-wider text-slate-500 mb-1.5 font-bold">Active Tenant Mapping</p>
                 <select onchange="switchTenant(this.value, this.options[this.selectedIndex].text)" class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-indigo-600 font-bold">
@@ -21,7 +21,7 @@ export const shellTemplate = (state) => {
                 </select>
               </div>
 
-              <!-- Navigation Menu -->
+              // <!-- Navigation Menu -->
               <nav class="flex-1 p-3 space-y-1 text-xs">
                 <button onclick="state.activeTab='launcher'; render();" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg font-bold uppercase tracking-wider text-left transition cursor-pointer ${state.activeTab==='launcher'?'bg-indigo-600 text-white':'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}">
                   <span>🛍️ Application Marketplace</span>
@@ -40,7 +40,7 @@ export const shellTemplate = (state) => {
                 </button>
               </nav>
 
-              <!-- Footer navigation quick-switches -->
+              // <!-- Footer navigation quick-switches -->
               <div class="p-3 border-t border-slate-800 space-y-1.5 text-xs">
                 <button onclick="navigate('/gateway')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-md text-center transition cursor-pointer">&larr; Personal Gateway</button>
                 <button onclick="navigate('/workspace')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-md text-center transition cursor-pointer">Workspace Resolver</button>
@@ -53,9 +53,9 @@ export const shellTemplate = (state) => {
               </div>
             </aside>
 
-            <!-- Main Content Container -->
+            // <!-- Main Content Container -->
             <div class="flex-1 flex flex-col min-w-0">
-              <!-- Header utility -->
+              // <!-- Header utility -->
               <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0">
                 <div class="flex items-center space-x-4 w-1/3">
                   <input type="text" placeholder="Search applications, logs, audit transactions..." oninput="performSearch(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600 font-semibold">
@@ -81,7 +81,7 @@ export const shellTemplate = (state) => {
                 </div>
               </header>
 
-              <!-- Shell Dynamic Tab Panel -->
+              // <!-- Shell Dynamic Tab Panel -->
               <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
                 ${state.searchResults.length > 0 ? `
                   <div class="mb-8 p-6 bg-white rounded-xl border border-slate-200 shadow-xs">
@@ -97,7 +97,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Sub-application simulation manager if running -->
+                // <!-- Sub-application simulation manager if running -->
                 ${state.simulatedAppRunning ? `
                   <div class="mb-8 p-6 bg-white rounded-xl border border-slate-200 shadow-sm relative">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
@@ -162,7 +162,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Tab 1: Marketplace / Applications -->
+                // <!-- Tab 1: Marketplace / Applications -->
                 ${state.activeTab === 'launcher' ? `
                   <div class="space-y-6">
                     <div class="flex items-center justify-between">
@@ -249,7 +249,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Tab 2: Sovereign Domain Registry mapping details -->
+                // <!-- Tab 2: Sovereign Domain Registry mapping details -->
                 ${state.activeTab === 'domains' ? `
                   <div class="space-y-6">
                     <div>
@@ -275,7 +275,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Tab 3: Workflows approval logs -->
+                // <!-- Tab 3: Workflows approval logs -->
                 ${state.activeTab === 'workflows' ? `
                   <div class="space-y-6 font-semibold">
                     <div class="flex items-center justify-between">
@@ -310,7 +310,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Tab 4: AEGIS Cryptographic auditing ledger -->
+                // <!-- Tab 4: AEGIS Cryptographic auditing ledger -->
                 ${state.activeTab === 'aegis' ? `
                   <div class="space-y-6">
                     <div class="flex items-center justify-between border-b border-slate-200 pb-4">
@@ -349,7 +349,7 @@ export const shellTemplate = (state) => {
                   </div>
                 ` : ''}
 
-                <!-- Tab 5: Intelligent AI Operator inside Shell tab -->
+                // <!-- Tab 5: Intelligent AI Operator inside Shell tab -->
                 ${state.activeTab === 'ai' ? `
                   <div class="max-w-3xl mx-auto space-y-6">
                     <div>

@@ -15,7 +15,7 @@ export const erpPlatformTemplate = (state) => {
 
   app.innerHTML = `
     <div class="min-h-screen flex bg-slate-50 font-sans">
-      <!-- Enterprise Sidebar -->
+      // <!-- Enterprise Sidebar -->
       <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
         <div class="p-5 border-b border-slate-800 cursor-pointer" onclick="navigate('/gateway')">
           ${logoHtml}
@@ -41,7 +41,7 @@ export const erpPlatformTemplate = (state) => {
         </div>
       </aside>
 
-      <!-- Main Workspace -->
+      // <!-- Main Workspace -->
       <div class="flex-1 flex flex-col min-w-0">
         <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0">
           <div class="flex items-center space-x-3">
@@ -55,7 +55,7 @@ export const erpPlatformTemplate = (state) => {
 
         <main class="flex-1 p-6 lg:p-10 overflow-y-auto space-y-8">
           ${(!state.activeErpTab || state.activeErpTab === 'store') ? `
-            <!-- ERP Template Store & Factory -->
+            // <!-- ERP Template Store & Factory -->
             <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div class="space-y-2">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -87,7 +87,7 @@ export const erpPlatformTemplate = (state) => {
               `).join('')}
             </div>
           ` : `
-            <!-- Installed ERP Instances -->
+            // Installed ERP Instances
             <div class="space-y-6">
               <div class="flex items-center justify-between">
                 <div>
