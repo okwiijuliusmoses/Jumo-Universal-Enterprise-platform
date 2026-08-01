@@ -60,12 +60,12 @@ export const workspaceTemplate = (state) => {
   const activeErp = state.session?.activeErpInstance;
 
   const erpStructure = activeErp?.structure || {
-    portals: [],
-    departments: [],
-    modules: [],
-    components: [],
-    workflows: []
-  };
+    portals: activeErp?.governancePortals || [],
+    departments: activeErp?.departments || [],
+    modules: activeErp?.modules || activeErp?.defaultModules || [],
+    components: activeErp?.components || [],
+    workflows: activeErp?.workflows || []
+};
 
   const institution = state.deployedInstitution || {
     name: activeErp?.name || "Enterprise Platform",
