@@ -76,10 +76,30 @@ export const workspaceTemplate = (state) => {
   institution.portals = portals;
   
   if (!state.activePortalId) {
-    // Redirect to gateway to pick a portal
-    setTimeout(() => window.navigate('/gateway'), 0);
-    return;
-  }
+    const firstPortal = erpStructure.portals?.[0];
+
+    if (firstPortal) {
+        state.activePortalId = firstPortal.id;
+    } else {
+        app.innerHTML = `
+        <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-lg p-8 text-center max-w-md">
+            ${getOfficialLogoHtml({size:"lg"})}
+            <h2 class="text-xl font-bold text-slate-900 mt-5">
+              ERP Workspace Ready
+            </h2>
+            <p class="text-sm text-slate-500 mt-3">
+              No ERP instance has been launched. Please select an ERP application from the JUMO ERP Registry.
+            </p>
+            <button onclick="window.navigate('/erp')"
+              class="mt-6 px-5 py-3 bg-emerald-600 text-white rounded-lg font-bold">
+              Open ERP Registry
+            </button>
+          </div>
+        </div>`;
+        return;
+    }
+}
   
   const authPortal = portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, desc: "Sovereign Enterprise Portal" };
   const isAuth = state.portalAuths[authPortal.id];
