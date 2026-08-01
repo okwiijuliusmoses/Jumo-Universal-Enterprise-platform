@@ -53,6 +53,7 @@ const initializeWorkspaceState = (state) => {
 };
 
 export const workspaceTemplate = (state) => {
+  console.log("[JUMO WORKSPACE] Rendering workspace", state);
   initializeWorkspaceState(state);
   const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
 
