@@ -623,7 +623,7 @@ export const loginTemplate = (state) => {
 
       <!-- Footer branding -->
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
-        ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
+        ${BRAND_CONFIG.ownership.ownedBy} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
     </div>
   `;
@@ -659,7 +659,7 @@ export const registerTemplate = (state) => {
           <form onsubmit="handleRegisterSubmit(event)" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Institution / Organization Name</label>
-              <input type="text" id="reg-name" required placeholder="e.g. University of Kampala, Sovereign Treasury, Health Network" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
+              <input type="text" id="reg-name" required placeholder="e.g. Enterprise Institution, Government Agency, Healthcare Network" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
 
             <div>
@@ -687,7 +687,7 @@ export const registerTemplate = (state) => {
       </div>
 
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
-        ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
+        ${BRAND_CONFIG.ownership.ownedBy} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
     </div>
   `;
@@ -708,13 +708,12 @@ export const gatewayTemplate = (state) => {
   };
 
   const orgs = state.organizations || [
-    { id: "org-1", name: "University of Kampala", role: "Administrator", status: "Active", badge: "Education ERP", color: "blue" },
-    { id: "org-2", name: "JUMO Health Network", role: "Staff", status: "Active", badge: "Healthcare ERP", color: "emerald" },
+    // Tenant organizations loaded from Enterprise Registry
     { id: "org-3", name: "Africa's Business Solutions Ltd", role: "Manager", status: "Pending", badge: "Corporate", color: "amber" }
   ];
 
   const notifications = state.notifications || [
-    { title: "Invitation to Join", desc: "University of Kampala has invited you as Administrator.", time: "10 mins ago" },
+    { title: "Enterprise Notification", desc: "Notifications are loaded from the secure workspace service.", time: "Recently" },
     { title: "System Maintenance", desc: "Scheduled maintenance for East Africa node on 20 May 2026.", time: "1 hr ago" },
     { title: "New Platform Update", desc: "JUMO HRM v2.2 released with automated attendance logging.", time: "3 hrs ago" },
     { title: "Marketplace Update", desc: "New FAAP Treasury reconciliation apps added.", time: "1 day ago" }

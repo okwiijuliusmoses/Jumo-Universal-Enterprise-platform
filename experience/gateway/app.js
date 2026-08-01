@@ -17,8 +17,7 @@ window.state = {
     { id: "TX-99082", type: "Global Vendor Settle", amount: "$42,500", status: "CONFIRMED", timestamp: "2026-05-18 11:02:18" }
   ],
   organizations: [
-    { id: "org-1", name: "University of Kampala", role: "Administrator", status: "Active", badge: "Education ERP", color: "blue" },
-    { id: "org-2", name: "JUMO Health Network", role: "Staff", status: "Active", badge: "Healthcare ERP", color: "emerald" },
+    // Organizations resolved dynamically through Tenant Registry
     { id: "org-3", name: "Africa's Business Solutions Ltd", role: "Manager", status: "Pending", badge: "Corporate", color: "amber" }
   ],
   authError: null
@@ -89,7 +88,7 @@ window.handleLoginSubmit = function(e) {
       isAdmin: true,
       status: "Verified Enterprise Account"
     },
-    organization: "University of Kampala",
+    organization: null,
     tenantId: "tenant-default-001"
   };
 

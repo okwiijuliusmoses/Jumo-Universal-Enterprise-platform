@@ -74,7 +74,7 @@ export const controlCenterLoginTemplate = (state) => {
 
       <!-- Footer -->
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
-        ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
+        ${BRAND_CONFIG.ownership.ownedBy} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
     </div>
   `;

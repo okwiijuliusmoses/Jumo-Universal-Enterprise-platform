@@ -23,7 +23,7 @@ export const workspaceTemplate = (state) => {
               <span>⚙️ Department Scope</span>
             </button>
             <button onclick="state.activeWorkspaceTab='sacco'; render();" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition cursor-pointer ${state.activeWorkspaceTab==='sacco'?'bg-emerald-600 text-white':'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}">
-              <span>🏦 Staff SACCO Portal</span>
+              <span>ERP Services Portal</span>
             </button>
             <button onclick="state.activeWorkspaceTab='forms'; render();" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition cursor-pointer ${state.activeWorkspaceTab==='forms'?'bg-enterprise-blue text-white':'hover:bg-slate-800 text-slate-400 hover:text-slate-200'}">
               <span>📝 Digital Forms Engine</span>
@@ -69,16 +69,16 @@ export const workspaceTemplate = (state) => {
                   <span class="px-3 py-1 bg-emerald-50 text-emerald-800 font-mono text-[10px] font-bold rounded-full">${state.session?.activeErpTemplate?.ecosystem || 'Enterprise'} Ecosystem</span>
                   <span class="text-xs font-mono text-slate-400">Tenant: ${state.session?.tenantId || 'tenant-default-001'}</span>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 font-sans">${state.session?.organization || "University of Kampala"}</h3>
+                <h3 class="text-xl font-bold text-slate-900 font-sans">${state.session?.organization || "Resolved Enterprise Workspace"}</h3>
                 <p class="text-xs text-slate-600 mt-2 leading-relaxed">${state.session?.activeErpTemplate?.description || 'Active institutional ERP runtime environment.'}</p>
               </div>
 
               <!-- ERP Governance Portals -->
               ${state.session?.activeErpTemplate ? `
                 <div class="space-y-4">
-                  <h4 class="font-bold text-sm text-slate-900">Institutional Governance Portals</h4>
+                  <h4 class="font-bold text-sm text-slate-900">Enterprise Application Registry</h4>
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    ${(state.session.activeErpTemplate.governancePortals || []).map(p => `
+                    ${(state.session.activeErpTemplate.applications || []).map(p => `
                       <div class="bg-white border border-slate-200 p-5 rounded-xl hover:border-enterprise-blue transition space-y-2">
                         <h5 class="font-extrabold text-slate-900 text-xs">${p.name}</h5>
                         <p class="text-[11px] text-slate-500 leading-relaxed">${p.desc}</p>
@@ -89,9 +89,9 @@ export const workspaceTemplate = (state) => {
                 </div>
 
                 <div class="space-y-4 pt-4">
-                  <h4 class="font-bold text-sm text-slate-900">Active Operational Modules & Staff SACCO (FAAP Integrated)</h4>
+                  <h4 class="font-bold text-sm text-slate-900">Installed Enterprise Modules</h4>
                   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    ${(state.session.activeErpTemplate.defaultModules || []).map(m => `
+                    ${(state.session.activeErpTemplate.modules || []).map(m => `
                       <div class="p-4 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-800">${m}</span>
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -185,15 +185,15 @@ export const workspaceTemplate = (state) => {
             </div>
           ` : ''}
 
-          <!-- Staff SACCO Portal View (FAAP & Digital Pay Integrated) -->
+          <!-- Workspace Portal View (FAAP & Digital Pay Integrated) -->
           ${state.activeWorkspaceTab === 'sacco' ? `
             <div class="space-y-6 font-semibold">
               <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div class="space-y-1">
                   <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[10px] font-mono uppercase font-bold tracking-wider">
-                    <span>🏦 FAAP Integrated Staff SACCO Platform</span>
+                    <span>🏦 Enterprise Financial Services</span>
                   </div>
-                  <h3 class="text-xl font-extrabold font-sans">${state.session?.organization || "University of Kampala"} Staff SACCO</h3>
+                  <h3 class="text-xl font-extrabold font-sans">${state.session?.organization || "Resolved Enterprise Workspace"} Workspace</h3>
                   <p class="text-xs text-slate-300">Savings, shares, dividend clearing, and instant FAAP-backed loan disbursements for institutional staff.</p>
                 </div>
                 <button onclick="document.getElementById('sacco-loan-modal').classList.remove('hidden');" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl transition cursor-pointer shadow-md">
@@ -228,7 +228,7 @@ export const workspaceTemplate = (state) => {
               <div id="sacco-loan-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
                 <div class="bg-white max-w-lg w-full rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
                   <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <h4 class="font-extrabold text-slate-900 text-sm">Submit Staff SACCO Loan Application</h4>
+                    <h4 class="font-extrabold text-slate-900 text-sm">Submit Workspace Loan Application</h4>
                     <button onclick="document.getElementById('sacco-loan-modal').classList.add('hidden');" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
                   </div>
                   <form onsubmit="handleSaccoLoanSubmit(event)" class="space-y-4 text-xs font-semibold">
@@ -268,7 +268,7 @@ export const workspaceTemplate = (state) => {
               <!-- Active SACCO Loans Ledger -->
               <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider">Staff SACCO Active Applications & Loans Register</h4>
+                  <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider">Active Workflow Applications</h4>
                   <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold rounded">Approval DAG: Active</span>
                 </div>
                 <div class="space-y-2 text-xs font-mono">
