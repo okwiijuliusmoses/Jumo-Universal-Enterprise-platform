@@ -440,6 +440,15 @@ function getViewDescription(view) {
   }
 }
 
+function recentTile(id, label, icon) {
+  return `
+    <button onclick="setCCView('${id}')" class="flex flex-col items-center justify-center p-4 bg-slate-50 hover:bg-emerald-50 border border-slate-100 hover:border-emerald-200 rounded-xl transition cursor-pointer">
+      <span class="text-2xl mb-2">${icon}</span>
+      <span class="text-slate-700 text-center">${label}</span>
+    </button>
+  `;
+}
+
 /**
  * Render Specific Workspace Views
  */
