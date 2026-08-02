@@ -1,18 +1,16 @@
 import { BRAND_CONFIG, getOfficialLogoHtml, getEnterpriseFooterHtml } from "../brand/brandConfig.js";
 
-/**
- * Public Homepage Template
-  */ 
+ 
 export const publicTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "light" });
   const darkLogoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   
   window.app.innerHTML = `
 <div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
-    /*   Public Sidebar Overlay   */  
+      
     <div id="public-sidebar-overlay" onclick="togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
     
-    /*   Public Sidebar   */  
+      
     <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-900 z-[70] -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-slate-900">
             ${logoHtml}
@@ -53,7 +51,7 @@ export const publicTemplate = (state) => {
         </div>
     </div>
 
-    /*   1. Blue Enterprise Header   */  
+      
     <header class="bg-[#0b3b9b] border-b border-[#0f4ac1] sticky top-0 z-50 shadow-md text-white">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
@@ -67,7 +65,7 @@ export const publicTemplate = (state) => {
             
             <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-blue-100">
                 <a href="/" class="hover:text-white transition">Home</a>
-                /*   Portals Menu   */  
+                  
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Portals ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -76,7 +74,7 @@ export const publicTemplate = (state) => {
                         `).join('')}
                     </div>
                 </div>
-                /*   Resources Menu   */  
+                  
                 <div class="relative group cursor-pointer">
                     <span class="hover:text-white transition flex items-center gap-1">Resources ▾</span>
                     <div class="absolute top-full left-0 w-60 bg-white text-slate-800 shadow-xl rounded-lg py-2 mt-2 hidden group-hover:block z-[60]">
@@ -100,7 +98,7 @@ export const publicTemplate = (state) => {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
                 
-                /*   User Profile Dropdown   */  
+                  
                 <div class="relative group">
                     <button class="flex items-center gap-2 pl-3 ml-2 border-l border-white/20 cursor-pointer">
                         <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition">
@@ -141,7 +139,7 @@ export const publicTemplate = (state) => {
         </div>
     </header>
 
-    /*   1. Enterprise Information Hub   */  
+      
     <section class="bg-white border-b border-slate-100 py-6">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between mb-4">
@@ -155,7 +153,7 @@ export const publicTemplate = (state) => {
                     <a href="#" class="hover:text-enterprise-blue">Resources</a>
                 </div>
             </div>
-            /*   Digital Notice Board Grid   */  
+              
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                     <h3 class="font-bold text-sm text-slate-900 mb-2">Platform Announcements</h3>
@@ -175,14 +173,14 @@ export const publicTemplate = (state) => {
 
     <main class="flex-1">
         
-        /*   Hero Section   */  
+          
         <section class="relative bg-white overflow-hidden py-12">
-            /*   Background structural elements   */  
+              
             <div class="absolute right-0 top-0 w-1/2 h-full bg-slate-50" style="clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);"></div>
             
             <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
                 
-                /*   Welcome Section   */  
+                  
                 <div class="w-full lg:w-5/12 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -207,10 +205,10 @@ export const publicTemplate = (state) => {
                     </div>
                 </div>
 
-                /*   Showcase / Reception Screen   */  
+                  
                 <div class="w-full lg:w-7/12">
                     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[400px]">
-                        /*   Top status bar   */  
+                          
                         <div class="bg-slate-900 px-4 py-3 flex items-center justify-between text-xs font-medium text-slate-400 border-b border-slate-800">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
@@ -219,17 +217,17 @@ export const publicTemplate = (state) => {
                             <div class="font-mono">JUMO TV</div>
                         </div>
                         
-                        /*   Media area   */  
+                          
                         <div class="flex-1 bg-slate-100 relative group cursor-pointer overflow-hidden flex items-center justify-center">
-                            /*   Abstract placeholder for video/image   */  
+                              
                             <div class="absolute inset-0 bg-gradient-to-tr from-blue-900 to-slate-800 opacity-90 transition-transform duration-700 group-hover:scale-105"></div>
                             
-                            /*   Play button   */  
+                              
                             <div class="relative z-10 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:bg-white/30 transition shadow-2xl">
                                 <div class="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-white border-b-[10px] border-b-transparent ml-2"></div>
                             </div>
 
-                            /*   Overlay Content   */  
+                              
                             <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900 to-transparent z-10">
                                 <span class="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase rounded mb-3 inline-block">Platform Showcase</span>
                                 <h3 class="text-2xl font-bold text-white mb-1">Accelerating Digital Transformation</h3>
@@ -252,11 +250,11 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        /*   4. Authentication Options (Access Cards)   */  
+          
         <section class="py-12 px-6 bg-slate-50 border-y border-slate-200">
             <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                /*   Individual Users   */  
+                  
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
                     <div class="flex items-start justify-between mb-8">
                         <div>
@@ -277,7 +275,7 @@ export const publicTemplate = (state) => {
                     </div>
                 </div>
 
-                /*   Institutions   */  
+                  
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-lg transition group">
                     <div class="flex items-start justify-between mb-8">
                         <div>
@@ -309,7 +307,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        /*   Core Features / Trust Strip   */  
+          
         <div class="bg-white border-b border-slate-200 py-10 px-6">
             <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16 text-sm font-semibold text-slate-700">
                 <div class="flex items-center gap-3"><span class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center">🛡️</span> Enterprise Security & Compliance</div>
@@ -319,7 +317,7 @@ export const publicTemplate = (state) => {
             </div>
         </div>
 
-        /*   5. Enterprise Solutions   */  
+          
         <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
@@ -354,7 +352,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        /*   6. Success Stories   */  
+          
         <section class="py-24 px-6 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -366,7 +364,7 @@ export const publicTemplate = (state) => {
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    /*   Featured Story   */  
+                      
                     <div class="bg-slate-900 rounded-2xl p-10 text-white relative overflow-hidden group cursor-pointer flex flex-col justify-end min-h-[400px]">
                         <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/80 to-transparent z-0"></div>
                         <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
@@ -407,7 +405,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        /*   7. FAQ   */  
+          
         <section class="py-24 px-6 bg-slate-50 border-b border-slate-200">
             <div class="max-w-3xl mx-auto">
                 <h2 class="text-3xl font-extrabold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
@@ -429,7 +427,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
         
-        /*   8. Contact (Simplified CTA)   */  
+          
         <section class="py-24 px-6 bg-enterprise-blue text-white text-center">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Ready to transform your organization?</h2>
@@ -441,7 +439,7 @@ export const publicTemplate = (state) => {
             </div>
         </section>
 
-        /*   9. Trusted Partners   */  
+          
         <section class="py-16 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-6">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-10">Trusted by institutions across sectors</h3>
@@ -457,13 +455,13 @@ export const publicTemplate = (state) => {
 
     </main>
 
-    /*   Footer   */  
+      
     ${getEnterpriseFooterHtml()}
     
-    /*   6. Public AI Assistant (Concierge)   */  
+      
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         
-        /*   Chat Window   */  
+          
         <div id="public-ai-chat" class="hidden fixed inset-0 z-[101] bg-slate-900/40 flex items-center justify-center p-4">
             <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
                 <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-sm">
@@ -498,7 +496,7 @@ export const publicTemplate = (state) => {
             </div>
         </div>
         
-        /*   Floating Button   */  
+          
         <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
             <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
@@ -513,7 +511,7 @@ export const loginTemplate = (state) => {
   
   window.app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans">
-      /*   Top header link   */  
+        
       <header class="p-6 border-b border-slate-200 bg-white">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="cursor-pointer" onclick="window.navigate('/')">
@@ -525,7 +523,7 @@ export const loginTemplate = (state) => {
         </div>
       </header>
 
-      /*   Center Auth Box   */  
+        
       <div class="flex-1 flex items-center justify-center p-6">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-10 space-y-6">
           <div class="text-center space-y-2">
@@ -575,7 +573,7 @@ export const loginTemplate = (state) => {
         </div>
       </div>
 
-      /*   Footer branding   */  
+        
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
         ${BRAND_CONFIG.poweredBy} &bull; ${BRAND_CONFIG.legalName}
       </footer>
@@ -656,13 +654,13 @@ export const gatewayTemplate = (state) => {
 
   window.app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col text-slate-800 antialiased font-sans">
-      /*   HEADER   */  
+        
       <header class="bg-white border-b border-slate-200 sticky top-0 z-50 h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm">
         <div class="flex items-center gap-4 cursor-pointer" onclick="window.navigate('/')">
           ${logoHtml}
         </div>
         <div class="flex items-center gap-4">
-          /*   Profile Menu   */  
+            
           <div class="relative">
             <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 cursor-pointer">
               <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
@@ -690,7 +688,7 @@ export const gatewayTemplate = (state) => {
         </div>
       </header>
 
-      /*   PORTAL DIRECTORY MAIN CONTENT   */  
+        
       <main class="flex-1 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <div class="text-center mb-12">
           <div class="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm mb-6">
@@ -704,7 +702,7 @@ export const gatewayTemplate = (state) => {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           ${(institution.portals || []).map(portal => `
             <div onclick="window.navigate('/workspace?portal=${portal.id}')" class="group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full">
-              /*   Background Accent   */  
+                
               <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
               
               <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6 relative z-10">
@@ -760,7 +758,7 @@ export const contactTemplate = (state) => {
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1 space-y-6">
-                /*   Contact Information   */  
+                  
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100">Digital Channels</h3>
                     <div class="space-y-5 text-sm">
@@ -783,7 +781,7 @@ export const contactTemplate = (state) => {
                     </div>
                 </div>
 
-                /*   Direct Lines   */  
+                  
                 <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
                     <h3 class="font-bold text-white text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-800">Direct Lines</h3>
                     <div class="space-y-4 text-sm">
@@ -810,7 +808,7 @@ export const contactTemplate = (state) => {
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                /*   Location Directory   */  
+                  
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-full">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
                         <span>Office Directory</span>
@@ -850,7 +848,7 @@ export const contactTemplate = (state) => {
         </div>
     </main>
 
-    /*   Footer   */  
+      
     ${getEnterpriseFooterHtml()}
 </div>
   `;

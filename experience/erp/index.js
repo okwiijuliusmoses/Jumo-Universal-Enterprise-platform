@@ -1,8 +1,4 @@
-/**
- * JUMO UEOS ERP Application Platform & Runtime Views
- * Renders installable ERP templates, dynamic governance portals, department expansion,
- * modular applications, digital forms, and workflows.
-  */ 
+ 
 
 import { ERP_CATALOGUE, ERPRuntimeEngine } from "./runtimeEngine.js";
 import { getOfficialLogoHtml } from "../brand/brandConfig.js";
@@ -17,7 +13,7 @@ export const erpPlatformTemplate = (state) => {
 
   window.app.innerHTML = `
     <div class="min-h-screen bg-slate-50 font-sans flex flex-col">
-      /*   Top Command Header   */  
+        
       <header class="bg-slate-900 text-white border-b border-slate-800 px-6 py-3 shrink-0 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div class="flex items-center space-x-4 cursor-pointer" onclick="window.navigate('/gateway')">
@@ -46,10 +42,10 @@ export const erpPlatformTemplate = (state) => {
         </div>
       </header>
 
-      /*   Main Workspace   */  
+        
       <main class="flex-1 max-w-7xl w-full mx-auto p-6 lg:p-8 overflow-y-auto space-y-8">
           ${(!state.activeErpTab || state.activeErpTab === 'store') ? `
-            /*   ERP Template Store & Factory   */  
+              
             <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div class="space-y-2">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -81,7 +77,7 @@ export const erpPlatformTemplate = (state) => {
               `).join('')}
             </div>
           ` : `
-            /*   Installed ERP Instances   */  
+              
             <div class="space-y-6">
               <div class="flex items-center justify-between">
                 <div>

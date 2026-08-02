@@ -1,15 +1,12 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 
-/**
- * JUMO UEOS Digital Control Center Login (/control-center/login)
- * Dedicated Platform Owner Authentication (Strictly sovereign platform headquarters - updated 2026)
-  */ 
+ 
 export const controlCenterLoginTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "lg", textColor: "dark" });
 
   window.app.innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
-      /*   Top Header   */  
+        
       <header class="p-6 border-b border-slate-200 bg-white shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.navigate('/')">
@@ -25,7 +22,7 @@ export const controlCenterLoginTemplate = (state) => {
         </div>
       </header>
 
-      /*   Center Owner Authentication Box   */  
+        
       <div class="flex-1 flex items-center justify-center p-6">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 md:p-10 space-y-6">
           <div class="text-center space-y-2">
@@ -72,7 +69,7 @@ export const controlCenterLoginTemplate = (state) => {
         </div>
       </div>
 
-      /*   Footer   */  
+        
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
         ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
@@ -96,9 +93,7 @@ window.handleSovereignLogin = function(e) {
   window.navigate("/control-center");
 };
 
-/**
- * JUMO UEOS Digital Control Center Main Workspace (/control-center)
-  */ 
+ 
 export const controlCenterTemplate = (state) => {
   console.log("UEOS AUTH STATE:", window.state.session);
   if (!window.state.session) {
@@ -145,7 +140,7 @@ export const controlCenterTemplate = (state) => {
           </div>
         </div>
 
-        /*   Right Header Actions   */  
+          
         <div class="flex items-center gap-2">
           <button onclick="toggleCCAiAssistant()" class="p-2 rounded-xl text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-1.5 px-3 text-xs font-bold" title="UEOS Operations Assistant">
             <span>🤖</span>
@@ -165,7 +160,7 @@ export const controlCenterTemplate = (state) => {
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </button>
 
-          /*   Profile Dropdown Menu   */  
+            
           <div class="relative ml-2">
             <button onclick="toggleCCProfileMenu()" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer">
               <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">SO</div>
@@ -186,7 +181,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       </header>
 
-      /*   2. WORKSPACE LAUNCHER   */  
+        
       ${isLauncherOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex animate-fadeIn" onclick="toggleCCLauncher()">
           <div class="bg-white w-full max-w-2xl h-full p-8 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideRight" onclick="event.stopPropagation()">
@@ -227,7 +222,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   3. UNIVERSAL COMMAND PALETTE (Ctrl+K)   */  
+        
       ${isCommandPaletteOpen ? `
         <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-start justify-center pt-24 p-4 animate-fadeIn" onclick="toggleCCCommandPalette()">
           <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp" onclick="event.stopPropagation()">
@@ -252,7 +247,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   4. UEOS OPERATIONS ASSISTANT MODAL (Owner AI)   */  
+        
       ${isAiAssistantOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCAiAssistant()">
           <div class="bg-white w-full max-w-lg h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -293,7 +288,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   5. NOTIFICATION CENTER MODAL   */  
+        
       ${isNotificationCenterOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCNotification()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -320,7 +315,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   6. GLOBAL ACTIVITY CENTER MODAL   */  
+        
       ${isActivityCenterOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCActivity()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -349,7 +344,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   7. CONTEXT HELP PANEL   */  
+        
       ${isHelpOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCHelp()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -380,11 +375,11 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-      /*   MAIN WORKSPACE CONTAINER   */  
+        
       <main class="flex-1 overflow-y-auto bg-[#F8F9FB]">
         <div class="max-w-7xl mx-auto p-8">
           
-          /*   Breadcrumb & Page Header   */  
+            
           <nav class="text-xs text-slate-500 mb-3 font-medium flex items-center gap-2">
             <span>Home</span>
             <span>&gt;</span>
@@ -397,7 +392,7 @@ export const controlCenterTemplate = (state) => {
               <p class="text-xs text-slate-500 mt-1">${getViewDescription(activeView)}</p>
             </div>
             
-            /*   Universal Toolbar   */  
+              
             <div class="flex items-center gap-2">
               <button onclick="ccLogAction('Action completed successfully.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">New</button>
               <button onclick="ccLogAction('Import dialog opened.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Import</button>
@@ -407,7 +402,7 @@ export const controlCenterTemplate = (state) => {
             </div>
           </div>
 
-          /*   DYNAMIC VIEW RENDERER   */  
+            
           ${renderViewContent(activeView)}
 
         </div>
@@ -461,9 +456,7 @@ function getViewDescription(view) {
   }
 }
 
-/**
- * Render Specific Workspace Views
-  */ 
+ 
 function renderViewContent(view) {
   if (view === 'audit') {
     const audit = window.UEOSRuntime ? window.UEOSRuntime.enterpriseAudit.getAuditReport() : {
@@ -481,7 +474,7 @@ function renderViewContent(view) {
     
     return `
       <div class="space-y-6">
-        /*   Global Audit Summary   */  
+          
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
             <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ERP Ecosystems</div>
@@ -570,7 +563,7 @@ function renderViewContent(view) {
   if (view === 'overview') {
     return `
       <div class="space-y-8">
-        /*   Executive Greeting & Status   */  
+          
         <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-800/80 text-emerald-200 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -590,7 +583,7 @@ function renderViewContent(view) {
           </div>
         </div>
 
-        /*   Core Applications Grid (Strictly as requested)   */  
+          
         <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
           <div class="flex items-center justify-between">
             <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">📂 Platform Applications & Ecosystems</h3>
@@ -609,7 +602,7 @@ function renderViewContent(view) {
           </div>
         </div>
 
-        /*   Recently Used Workspaces   */  
+          
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold text-sm text-slate-900">Recently Used Workspaces</h3>
@@ -782,7 +775,7 @@ function renderViewContent(view) {
   if (view === 'erp-factory' || view === 'erp-store') {
     return `
       <div class="space-y-8">
-        /*   Enterprise Ecosystem Banner   */  
+          
         <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -796,7 +789,7 @@ function renderViewContent(view) {
           </button>
         </div>
 
-        /*   Inherited Platform Services Banner   */  
+          
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">⚡ Inherited Platform Services (Auto-Bound to Every ERP)</h3>
@@ -812,7 +805,7 @@ function renderViewContent(view) {
           </div>
         </div>
 
-        /*   All 12 Enterprise Ecosystem Cards   */  
+          
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Platforms</h3>
@@ -820,7 +813,7 @@ function renderViewContent(view) {
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            /*   1. Education ERP   */  
+              
             ${ecosystemCard('Education ERP', '🎓', 'Multi-tier academic management across universities, colleges, technical institutes, secondary, and primary schools.', 'emerald', [
               { name: 'University ERP', desc: 'Council, Senate, academic affairs, faculties, research & bursary.' },
               { name: 'College ERP', desc: 'Admissions, academic registry, courses & continuous assessment.' },
@@ -829,60 +822,60 @@ function renderViewContent(view) {
               { name: 'Nursery & Primary ERP', desc: 'Pupil registry, parent portal, attendance & early learning.' }
             ])}
 
-            /*   2. Church ERP   */  
+              
             ${ecosystemCard('Church ERP', '⛪', 'Provincial and diocesan ecclesiastical governance, parish administration, tithes, and clergy management.', 'emerald', [
               { name: 'Church Province ERP', desc: 'Provincial synod, Bishops office, missions & church assets.' },
               { name: 'Church Diocese ERP', desc: 'Bishop office, parishes, clergy records, tithes & offerings.' }
             ])}
 
-            /*   3. Hospitality ERP   */  
+              
             ${ecosystemCard('Hospitality ERP', '🏨', 'Hotel, resort, restaurant, reservations, housekeeping, POS, and event operations.', 'emerald', [
               { name: 'Hotel & Resort ERP', desc: 'Front office, reservations, rooms, housekeeping, POS & catering.' }
             ])}
 
-            /*   4. Company ERP   */  
+              
             ${ecosystemCard('Company ERP', '🏢', 'Enterprise management for service firms, manufacturing goods companies, and retail chains.', 'emerald', [
               { name: 'Service Company ERP', desc: 'Projects, client management, contracts, billing & timesheets.' },
               { name: 'Goods Company ERP', desc: 'Manufacturing, production lines, inventory, procurement & supply chain.' },
               { name: 'Wholesale & Retail ERP', desc: 'Multi-branch POS, inventory, warehousing, distribution & suppliers.' }
             ])}
 
-            /*   5. Government ERP   */  
+              
             ${ecosystemCard('Government ERP', '🏛️', 'Ministries, departments, public civil service, budget, procurement, and citizen services.', 'emerald', [
               { name: 'Government ERP', desc: 'Ministries, agencies, civil service, public budget & citizen portals.' }
             ])}
 
-            /*   6. Healthcare ERP   */  
+              
             ${ecosystemCard('Healthcare ERP', '🏥', 'Hospitals, medical laboratories, patient EMR, pharmacy stock, ward management, and billing.', 'emerald', [
               { name: 'Healthcare ERP', desc: 'Hospital admin, patient EMR, pharmacy, laboratory & billing.' }
             ])}
 
-            /*   7. NGO ERP   */  
+              
             ${ecosystemCard('NGO ERP', '🌍', 'Non-governmental organizations, grants, field operations, donor management, and compliance.', 'emerald', [
               { name: 'NGO ERP', desc: 'Projects, grant tracking, field operations, donor reports & compliance.' }
             ])}
 
-            /*   8. Finance ERP   */  
+              
             ${ecosystemCard('Finance ERP', '🏦', 'Microfinance institutions, credit management, savings, member accounts, and debt collections.', 'emerald', [
               { name: 'Microfinance ERP', desc: 'Loans, savings, member accounts, credit scoring & collections.' }
             ])}
 
-            /*   9. Legal ERP   */  
+              
             ${ecosystemCard('Legal ERP', '⚖️', 'Law firms, legal practice management, case files, client trust accounts, and court calendars.', 'emerald', [
               { name: 'Legal & Law Firm ERP', desc: 'Cases, clients, court calendar, legal documents & trust billing.' }
             ])}
 
-            /*   10. Alumni ERP   */  
+              
             ${ecosystemCard('Alumni ERP', '🤝', 'Global alumni networks, regional chapters, endowment funds, donations, and career networks.', 'emerald', [
               { name: 'Alumni ERP', desc: 'Alumni registry, global chapters, donations, events & career network.' }
             ])}
 
-            /*   11. Cultural ERP   */  
+              
             ${ecosystemCard('Cultural ERP', '👑', 'Kingdom administration, customary governance, heritage sites, royal treasury, and community administration.', 'emerald', [
               { name: 'Traditional & Cultural ERP', desc: 'Cultural records, customary heritage & community administration.' }
             ])}
 
-            /*   12. Family ERP   */  
+              
             ${ecosystemCard('Family ERP', '🌳', 'Ancestral registries, clan lineage, land registers, heritage records, and family welfare funds.', 'emerald', [
               { name: 'Clan & Family ERP', desc: 'Family registry, lineage genealogy, heritage & welfare funds.' }
             ])}
@@ -987,7 +980,7 @@ function renderViewContent(view) {
           </div>
         </div>
         
-        /*   FAAP Sub-Modules Grid   */  
+          
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
            ${['General Ledger', 'Budgeting', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Treasury', 'Bank Reconciliation', 'Cash Management', 'Assets', 'Procurement', 'Tax', 'Revenue', 'Settlement', 'Wallets', 'Financial Reports'].map(mod => `
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-center items-center text-center group">
@@ -999,7 +992,7 @@ function renderViewContent(view) {
            `).join('')}
         </div>
         
-        /*   Real-Time Activity Ledger   */  
+          
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 class="font-bold text-slate-900 flex items-center gap-2">
@@ -1160,7 +1153,7 @@ function ecosystemCard(title, emoji, desc, color, templates) {
         </div>
       </div>
 
-      /*   Horizontal Card Tabs   */  
+        
       <div class="flex items-center gap-2 border-b border-slate-200 pb-2 text-[11px] font-bold overflow-x-auto">
         <button onclick="window.switchCardTab('${cardTabId}', 'templates')" class="${cardTabId}-btn border-b-2 border-emerald-600 text-emerald-700 px-3 py-1 whitespace-nowrap">ERP Overview (${templates.length})</button>
         <button onclick="window.switchCardTab('${cardTabId}', 'governance')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Governance</button>

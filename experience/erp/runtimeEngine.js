@@ -1,8 +1,4 @@
-/**
- * JUMO UEOS ERP Catalog & Runtime Core Engine
- * Stores fully resolved, domain-isolated enterprise blueprints, 
- * digital forms metadata, and client-side transaction state machines.
-  */ 
+ 
 
 // 1. Dynamic Forms Generator
 export function generateFormsForPortal(portalId, portalName) {
