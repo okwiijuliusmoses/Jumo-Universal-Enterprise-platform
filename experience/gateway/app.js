@@ -75,6 +75,8 @@ window.state = {
   activeWorkspaceTab: "org",
   activeTab: "diagnostics",
   activeTenantId: "tenant-default-001",
+  activeErpId: "edu-uni",
+  activeErpInstanceId: "inst-univ-01",
   deployedInstitution: {
     id: "tenant-default-001",
     name: "JUMO University",
@@ -109,6 +111,52 @@ window.state = {
 };
 window.appState = window.state;
 
+// Dynamic ERP Context Resolver to prevent University structures leakage across templates
+export function resolveActiveERPContext(state) {
+  const runtimeEngine = window.erpRuntimeEngine || (state && state.runtimeEngine);
+  
+  // Find currently active template ID & active instance ID
+  let activeErpId = (state && state.activeErpId) || (state && state.session?.activeErpTemplate?.id) || null;
+  let activeInstanceId = (state && state.activeErpInstanceId) || (state && state.session?.activeErpInstance?.instanceId) || null;
+  
+  let activeInstance = null;
+  let activeTemplate = null;
+  
+  if (runtimeEngine) {
+    if (typeof runtimeEngine.getInstalled === 'function') {
+      const installed = runtimeEngine.getInstalled();
+      if (activeInstanceId) {
+        activeInstance = installed.find(i => i.instanceId === activeInstanceId);
+      }
+      if (!activeInstance && activeErpId) {
+        activeInstance = installed.find(i => i.templateId === activeErpId);
+      }
+      if (!activeInstance && installed.length > 0) {
+        activeInstance = installed[0];
+      }
+    }
+    const resolvedTemplateId = activeInstance ? activeInstance.templateId : (activeErpId || (state && state.session?.activeErpTemplate?.id));
+    if (resolvedTemplateId && typeof runtimeEngine.getTemplate === 'function') {
+      activeTemplate = runtimeEngine.getTemplate(resolvedTemplateId);
+    }
+  }
+  
+  const name = activeInstance ? activeInstance.name : (activeTemplate ? activeTemplate.name : "Unconfigured Enterprise Platform");
+  const portals = activeInstance ? (activeInstance.structure?.portals || []) : (activeTemplate ? (activeTemplate.governancePortals || []) : []);
+  
+  return {
+    template: activeTemplate,
+    instance: activeInstance,
+    portals: portals,
+    name: name,
+    id: activeInstance ? activeInstance.tenantId : "tenant-default-001"
+  };
+}
+
+if (typeof window !== 'undefined') {
+  window.resolveActiveERPContext = resolveActiveERPContext;
+}
+
 function validateUEOSState() {
   if (!window.state) window.state = {};
   window.state.history = window.state.history || [];
@@ -122,12 +170,24 @@ function validateUEOSState() {
   window.state.portalActionLogs = window.state.portalActionLogs || [];
   window.state.portalAuths = window.state.portalAuths || {};
   window.state.bootStatus = window.state.bootStatus || ["Public Gateway Loaded"];
-  window.state.deployedInstitution = window.state.deployedInstitution || {
-    id: "tenant-default-001",
-    name: "JUMO University",
-    portals: []
+  
+  // Synchronize state with runtime context dynamically without forcing edu-uni
+  const ctx = resolveActiveERPContext(window.state);
+  if (ctx.instance) {
+    window.state.activeErpId = ctx.instance.templateId;
+    window.state.activeErpInstanceId = ctx.instance.instanceId;
+  } else if (ctx.template) {
+    window.state.activeErpId = ctx.template.id;
+  }
+
+  window.state.deployedInstitution = {
+    id: ctx.id,
+    name: ctx.name,
+    type: ctx.template ? `${ctx.template.ecosystem} ERP` : "Enterprise ERP",
+    domain: ctx.instance ? `${ctx.instance.templateId}.jumo.ueos` : "portal.jumo.ueos",
+    themeColor: ctx.template?.ecosystem === "Faith-Based" ? "emerald" : "blue",
+    portals: ctx.portals.map(p => ({ id: p.id, name: p.name, desc: p.desc || p.name }))
   };
-  window.state.deployedInstitution.portals = window.state.deployedInstitution.portals || [];
 }
 
 // Router Handler
@@ -263,6 +323,8 @@ window.handleLoginSubmit = function(e) {
   const emailInput = document.getElementById("login-email");
   const email = emailInput ? emailInput.value : "admin@enterprise.com";
 
+  const ctx = resolveActiveERPContext(window.state);
+
   window.state.session = {
     user: {
       name: email.split("@")[0].replace(".", " "),
@@ -271,8 +333,10 @@ window.handleLoginSubmit = function(e) {
       isAdmin: true,
       status: "Verified Enterprise Account"
     },
-    organization: "JUMO University",
-    tenantId: "tenant-default-001"
+    organization: ctx.name,
+    tenantId: ctx.id,
+    activeErpInstance: ctx.instance,
+    activeErpTemplate: ctx.template
   };
 
   window.navigate("/gateway");

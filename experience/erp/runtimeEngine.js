@@ -1432,7 +1432,8 @@ if (typeof window !== 'undefined') {
       }
     },
     moduleRegistry: {
-      getModulesForPortal: (portalId, erpId = "edu-uni") => {
+      getModulesForPortal: (portalId, erpId = null) => {
+        const activeErp = erpId || (typeof window !== 'undefined' && window.state?.activeErpId) || (typeof window !== 'undefined' && window.state?.session?.activeErpTemplate?.id);
         return UEOSModuleRegistry.getModulesByPortal(portalId);
       },
       registry: UEOSModuleRegistry
@@ -1458,7 +1459,13 @@ if (typeof window !== 'undefined') {
       getAEGISStatus: () => "ONLINE"
     },
     tenantRegistry: {
-      getCurrentTenant: () => window.state?.deployedInstitution || { id: "tenant-default-001", name: "JUMO University" }
+      getCurrentTenant: () => {
+        const ctx = typeof window !== 'undefined' && window.resolveActiveERPContext ? window.resolveActiveERPContext(window.state) : null;
+        if (ctx && ctx.id) {
+          return { id: ctx.id, name: ctx.name };
+        }
+        return (typeof window !== 'undefined' && window.state?.deployedInstitution) || { id: "tenant-default-001", name: "Unconfigured Platform Tenant" };
+      }
     },
     workflowEngine: {
       executeWorkflow: (wfId) => ({ status: "SUCCESS", workflowId: wfId, executedAt: new Date().toISOString() })

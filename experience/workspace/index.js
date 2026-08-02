@@ -56,9 +56,10 @@ const initializeWorkspaceState = (state) => {
 export const workspaceTemplate = (state) => {
   initializeWorkspaceState(state);
   const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
-  const activeTemplate = state.session?.activeErpTemplate || (runtimeEngine ? runtimeEngine.getTemplate("edu-uni") : null);
-  const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
-  const portals = activeTemplate?.governancePortals || institution.portals || [];
+  const ctx = window.resolveActiveERPContext ? window.resolveActiveERPContext(state) : null;
+  const activeTemplate = state.session?.activeErpTemplate || ctx?.template || (runtimeEngine && state.activeErpId ? runtimeEngine.getTemplate(state.activeErpId) : null);
+  const institution = state.deployedInstitution || { name: ctx?.name || "Enterprise Platform", portals: ctx?.portals || [] };
+  const portals = ctx?.portals || activeTemplate?.governancePortals || institution.portals || [];
   institution.portals = portals;
   
   if (!state.activePortalId) {

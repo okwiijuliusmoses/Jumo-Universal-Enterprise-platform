@@ -37,6 +37,25 @@ if (typeof window !== 'undefined') {
   };
 
   window.installERPInstance = function(erpId, erpName) {
+    const state = window.state || window.appState || {};
+    const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
+    if (runtimeEngine) {
+      const tmpl = runtimeEngine.getTemplate(erpId) || (runtimeEngine.getTemplateByNameOrId && runtimeEngine.getTemplateByNameOrId(erpId));
+      const inst = runtimeEngine.installERP(tmpl ? tmpl.id : erpId, erpName || (tmpl ? tmpl.name : erpId));
+      state.activeErpId = tmpl ? tmpl.id : erpId;
+      state.activeErpInstanceId = inst ? inst.instanceId : null;
+      state.session = state.session || {};
+      if (tmpl) state.session.activeErpTemplate = tmpl;
+      if (inst) state.session.activeErpInstance = inst;
+      if (window.resolveActiveERPContext) {
+        const ctx = window.resolveActiveERPContext(state);
+        state.deployedInstitution = {
+          id: ctx.id,
+          name: ctx.name,
+          portals: ctx.portals.map(p => ({ id: p.id, name: p.name, desc: p.desc || p.name }))
+        };
+      }
+    }
     alert(`Successfully provisioned tenant instance for [${erpName}] (${erpId}). Initialized UEOS Kernel, FAAP Ledger, AEGIS Security, and Portal Workspaces.`);
     if (typeof window.render === 'function') window.render();
   };
@@ -46,8 +65,30 @@ if (typeof window !== 'undefined') {
   };
 
   window.launchERPWorkspace = function(erpId, erpName) {
-    alert(`Launching sovereign workspace for [${erpName}] (${erpId}) through UEOS Identity Gateway.`);
-    window.navigate('/erp');
+    const state = window.state || window.appState || {};
+    const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
+    if (runtimeEngine) {
+      let tmpl = runtimeEngine.getTemplate(erpId) || (runtimeEngine.getTemplateByNameOrId && runtimeEngine.getTemplateByNameOrId(erpId));
+      let inst = runtimeEngine.getInstalled().find(i => i.templateId === erpId || i.instanceId === erpId);
+      if (!inst && tmpl) {
+        inst = runtimeEngine.installERP(tmpl.id, erpName || tmpl.name);
+      }
+      state.activeErpId = tmpl ? tmpl.id : erpId;
+      state.activeErpInstanceId = inst ? inst.instanceId : null;
+      state.session = state.session || {};
+      if (tmpl) state.session.activeErpTemplate = tmpl;
+      if (inst) state.session.activeErpInstance = inst;
+      if (window.resolveActiveERPContext) {
+        const ctx = window.resolveActiveERPContext(state);
+        state.deployedInstitution = {
+          id: ctx.id,
+          name: ctx.name,
+          portals: ctx.portals.map(p => ({ id: p.id, name: p.name, desc: p.desc || p.name }))
+        };
+      }
+    }
+    if (typeof window.navigate === 'function') window.navigate('/workspace');
+    else window.location.hash = '#workspace';
   };
 
   window.installCommercialPlatform = function(platformId, platformName) {
@@ -1008,10 +1049,14 @@ function renderViewContent(view) {
           </div>
 
           <div class="space-y-3 text-xs">
-            ${installedPlatformRow('JUMO University', 'Education Ecosystem • University ERP', 'Active • 12,400 Users', 'emerald')}
-            ${installedPlatformRow('Kampala Cathedral Diocese', 'Church Ecosystem • Diocese ERP', 'Active • 4,500 Users', 'emerald')}
-            ${installedPlatformRow('Grand Serena Resort', 'Hospitality Ecosystem • Hospitality ERP', 'Active • 850 Users', 'emerald')}
-            ${installedPlatformRow('Ministry of Finance', 'Government Ecosystem • Ministry ERP', 'Active • 3,200 Users', 'emerald')}
+            ${(() => {
+              const runtimeEngine = window.erpRuntimeEngine || (window.state && window.state.runtimeEngine);
+              const installed = runtimeEngine ? runtimeEngine.getInstalled() : [];
+              if (installed.length === 0) {
+                return `<p class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">No ERP instances currently deployed. Install an ERP from the catalogue above.</p>`;
+              }
+              return installed.map(inst => installedPlatformRow(inst.name, `${inst.templateId} • Tenant ${inst.tenantId}`, inst.status, 'emerald', inst.templateId, inst.instanceId)).join('');
+            })()}
           </div>
         </div>
       </div>
@@ -1231,7 +1276,8 @@ function storeAppCard(title, meta, status, color) {
   `;
 }
 
-function installedPlatformRow(name, family, status, color) {
+function installedPlatformRow(name, family, status, color, erpId, instanceId) {
+  const launchId = erpId || instanceId || name;
   return `
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl gap-4">
       <div>
@@ -1241,12 +1287,10 @@ function installedPlatformRow(name, family, status, color) {
       <div class="flex items-center gap-3">
         <span class="text-[10px] font-bold bg-${color}-100 text-${color}-800 px-2.5 py-1 rounded-full">${status}</span>
         <div class="flex gap-1.5 text-xs font-bold">
-          <button onclick="alert('Opening ${name} instance...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs">Open</button>
-          <button onclick="alert('Configuring ${name}...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs">Configure</button>
-          <button onclick="alert('Updating ${name}...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs">Update</button>
-          <button onclick="alert('Monitoring ${name} telemetry...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs">Monitor</button>
-          <button onclick="alert('Backing up ${name}...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs">Backup</button>
-          <button onclick="alert('Suspending ${name}...');" class="px-2.5 py-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-lg text-rose-700 shadow-xs">Suspend</button>
+          <button onclick="launchERPWorkspace('${launchId}', '${name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-xs cursor-pointer">Open Workspace</button>
+          <button onclick="configureERPInstance('${launchId}', '${name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Configure</button>
+          <button onclick="alert('Updating ${name}...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Update</button>
+          <button onclick="alert('Monitoring ${name} telemetry...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Monitor</button>
         </div>
       </div>
     </div>
@@ -1390,22 +1434,36 @@ if (typeof window !== 'undefined') window.openErpInstallationFlow = function(tem
   let inst = null;
   if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
     template = runtimeEngine.getTemplateByNameOrId(templateName);
-    inst = runtimeEngine.installERP(template.id, customName);
+    if (template) {
+      inst = runtimeEngine.installERP(template.id, customName);
+      state.activeErpId = template.id;
+      if (inst) state.activeErpInstanceId = inst.instanceId;
+    }
   }
 
   if (!state.session) {
-  window.state.session = {
+    window.state.session = {
       user: { name: "Institution Administrator", email: "admin@institution.edu", role: "ERP Administrator", isAdmin: true },
       organization: customName,
       tenantId: inst ? inst.tenantId : `tenant-${Date.now().toString().slice(-6)}`
     };
   } else {
-  window.state.session.organization = customName;
+    window.state.session.organization = customName;
     if (inst) state.session.tenantId = inst.tenantId;
   }
 
   if (template) state.session.activeErpTemplate = template;
   if (inst) state.session.activeErpInstance = inst;
+  
+  if (window.resolveActiveERPContext) {
+    const ctx = window.resolveActiveERPContext(state);
+    state.deployedInstitution = {
+      id: ctx.id,
+      name: ctx.name,
+      portals: ctx.portals.map(p => ({ id: p.id, name: p.name, desc: p.desc || p.name }))
+    };
+  }
+
   window.state.activeWorkspaceTab = 'org';
 
   if (typeof window.navigate === 'function') {
