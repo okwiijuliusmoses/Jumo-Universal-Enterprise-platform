@@ -1,7 +1,9 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { EcosystemRegistry } from "../../kernel/erp/ecosystemRegistry.js";
+import { CommercialPlatformRegistry } from "../../kernel/registry/commercialRegistry.js";
 
 const ecosystemRegistry = new EcosystemRegistry();
+const commercialRegistry = new CommercialPlatformRegistry();
 
 if (typeof window !== 'undefined') {
   window.handleSovereignLogin = function(e, redirectRoute = '/control-center') {
@@ -33,6 +35,25 @@ if (typeof window !== 'undefined') {
       window.location.hash = redirectRoute;
     }
   };
+
+  window.installERPInstance = function(erpId, erpName) {
+    alert(`Successfully provisioned tenant instance for [${erpName}] (${erpId}). Initialized UEOS Kernel, FAAP Ledger, AEGIS Security, and Portal Workspaces.`);
+    if (typeof window.render === 'function') window.render();
+  };
+
+  window.configureERPInstance = function(erpId, erpName) {
+    alert(`Opening Enterprise Configuration Wizard for [${erpName}] (${erpId}). Manage governance, departments, workflows, and digital forms.`);
+  };
+
+  window.launchERPWorkspace = function(erpId, erpName) {
+    alert(`Launching sovereign workspace for [${erpName}] (${erpId}) through UEOS Identity Gateway.`);
+    window.navigate('/erp');
+  };
+
+  window.installCommercialPlatform = function(platformId, platformName) {
+    alert(`Successfully deployed independent commercial platform [${platformName}] (${platformId}) with dedicated tenant workspace and API gateway.`);
+    if (typeof window.render === 'function') window.render();
+  };
 }
 
 function renderControlCenterNavigation() { return ""; }
@@ -42,33 +63,75 @@ function renderInstalledERPFamilies() {
   return ecosystems.map(ecoKey => {
     const eco = ecosystemRegistry.ecosystems[ecoKey];
     return `
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <div class="flex items-center justify-between">
+      <div class="bg-gradient-to-br from-emerald-900 to-slate-900 text-white p-6 rounded-2xl border border-emerald-700 shadow-xl space-y-4">
+        <div class="flex items-center justify-between border-b border-emerald-800 pb-3">
           <div>
-            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <h4 class="font-bold text-white text-base flex items-center gap-2">
               <span>🏢</span> ${eco.name}
             </h4>
-            <p class="text-[11px] text-slate-500">Certified Enterprise Ecosystem Family</p>
+            <p class="text-[11px] text-emerald-300">Certified Enterprise Ecosystem Factory</p>
           </div>
-          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-full">
+          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-800 text-emerald-200 font-bold rounded-full border border-emerald-600">
             ${eco.installedInstances} Tenants Active
           </span>
         </div>
 
-        <div class="space-y-2">
+        <div class="space-y-3">
           ${eco.templates.map(tmpl => `
-            <div class="p-3 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200 rounded-xl flex items-center justify-between transition cursor-pointer" onclick="setCCView('erp-factory')">
+            <div class="p-3 bg-slate-900/80 hover:bg-slate-900 border border-emerald-800/60 rounded-xl flex items-center justify-between transition">
               <div class="space-y-0.5">
-                <div class="font-bold text-xs text-slate-800">${tmpl.name}</div>
-                <div class="text-[10px] text-slate-500 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
+                <div class="font-bold text-xs text-white">${tmpl.name}</div>
+                <div class="text-[10px] text-emerald-400 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
               </div>
-              <span class="px-2.5 py-1 bg-emerald-600 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs">Active</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="installERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Install</button>
+                <button onclick="configureERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Config</button>
+                <button onclick="launchERPWorkspace('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Launch</button>
+              </div>
             </div>
           `).join('')}
         </div>
       </div>
     `;
   }).join('');
+}
+
+function renderCommercialPlatforms() {
+  const platforms = commercialRegistry.getAllPlatforms();
+  return `
+    <div class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900">JUMO Independent Commercial Platform Factory</h3>
+          <p class="text-xs text-slate-500">Standalone enterprise software products deployable on UEOS infrastructure.</p>
+        </div>
+        <span class="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">22 Independent Products Available</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${platforms.map(p => `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono px-2 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-full">${p.category}</span>
+              <span class="text-[10px] font-mono text-slate-400">v${p.version} &bull; ${p.tenantCount} Tenants</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">${p.name}</h4>
+              <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${p.description}</p>
+            </div>
+            <div class="text-[10px] text-slate-600 font-mono space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <div><strong>Portals:</strong> ${p.portals.slice(0, 3).join(', ')}...</div>
+              <div><strong>Modules:</strong> ${p.modules.slice(0, 2).join(', ')}...</div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+              <button onclick="installCommercialPlatform('${p.id}', '${p.name}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Deploy Product</button>
+              <button onclick="alert('Opening administrative console for ${p.name}');" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer">Configure</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
 }
 
 
@@ -878,8 +941,12 @@ function renderViewContent(view) {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- 1. Education ERP -->
-            ${renderInstalledERPFamilies()}</div>
+            ${renderInstalledERPFamilies()}
+          </div>
         </div>
+
+        <!-- Independent Commercial Platform Factory -->
+        ${renderCommercialPlatforms()}
       </div>
     `;
   }
