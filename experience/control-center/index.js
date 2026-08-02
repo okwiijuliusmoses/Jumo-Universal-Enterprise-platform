@@ -1,6 +1,76 @@
-function renderControlCenterNavigation() { return ""; }
-function renderInstalledERPFamilies() { return ""; }
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
+import { EcosystemRegistry } from "../../kernel/erp/ecosystemRegistry.js";
+
+const ecosystemRegistry = new EcosystemRegistry();
+
+if (typeof window !== 'undefined') {
+  window.handleSovereignLogin = function(e, redirectRoute = '/control-center') {
+    e.preventDefault();
+    const emailInput = document.getElementById("cc-email") || document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.ueos" };
+    const email = emailInput.value || "owner@jumo.ueos";
+    
+    if (!window.state) window.state = {};
+    window.state.session = {
+      user: {
+        name: email.split("@")[0].replace(".", " "),
+        email: email,
+        role: "Platform Owner",
+        isAdmin: true,
+        status: "Sovereign Administrator"
+      },
+      organization: "JUMO GLOBAL PLATFORM HQ",
+      tenantId: "tenant-sovereign-000"
+    };
+    
+    if (!window.state.bootStatus) window.state.bootStatus = [];
+    if (!window.state.bootStatus.includes("Sovereign Identity Validated")) {
+      window.state.bootStatus.push("Sovereign Identity Validated");
+    }
+    
+    if (typeof window.navigate === 'function') {
+      window.navigate(redirectRoute);
+    } else {
+      window.location.hash = redirectRoute;
+    }
+  };
+}
+
+function renderControlCenterNavigation() { return ""; }
+
+function renderInstalledERPFamilies() {
+  const ecosystems = ecosystemRegistry.getEcosystems();
+  return ecosystems.map(ecoKey => {
+    const eco = ecosystemRegistry.ecosystems[ecoKey];
+    return `
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <span>🏢</span> ${eco.name}
+            </h4>
+            <p class="text-[11px] text-slate-500">Certified Enterprise Ecosystem Family</p>
+          </div>
+          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-full">
+            ${eco.installedInstances} Tenants Active
+          </span>
+        </div>
+
+        <div class="space-y-2">
+          ${eco.templates.map(tmpl => `
+            <div class="p-3 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200 rounded-xl flex items-center justify-between transition cursor-pointer" onclick="setCCView('erp-factory')">
+              <div class="space-y-0.5">
+                <div class="font-bold text-xs text-slate-800">${tmpl.name}</div>
+                <div class="text-[10px] text-slate-500 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
+              </div>
+              <span class="px-2.5 py-1 bg-emerald-600 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs">Active</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 
 /**
  * JUMO UEOS Digital Control Center Login (/control-center/login)
