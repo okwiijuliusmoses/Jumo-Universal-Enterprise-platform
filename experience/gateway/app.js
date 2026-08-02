@@ -379,7 +379,5 @@ window.switchTenant = function(id, name) {
 
 // Initialize app on load
 document.addEventListener("DOMContentLoaded", () => {
-  const buildEl = document.getElementById('build-id');
-  if (buildEl) buildEl.textContent = `BUILD: 2026-08-01 | BRANCH: public-experience-refinement-v2`;
   window.render();
 });
