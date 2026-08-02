@@ -3,6 +3,7 @@ import { collegeConfig } from './education/collegeConfig.js';
 import { vocationalConfig } from './education/vocationalConfig.js';
 import { secondaryConfig } from './education/secondaryConfig.js';
 import { primaryConfig } from './education/primaryConfig.js';
+import { alumniConfig } from './education/alumniConfig.js';
 
 export class EcosystemRegistry {
   constructor() {
@@ -14,9 +15,10 @@ export class EcosystemRegistry {
           collegeConfig,
           vocationalConfig,
           secondaryConfig,
-          primaryConfig
+          primaryConfig,
+          alumniConfig
         ],
-        installedInstances: 5
+        installedInstances: 6
       },
       Government: {
         name: "Government Ecosystem",
