@@ -1,12 +1,17 @@
+import { renderControlCenterNavigation } from "../architecture/controlCenterNavigationRenderer.js";
+import { renderInstalledERPFamilies } from '../architecture/erpNavigationRenderer.js';
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 
- 
+/**
+ * JUMO UEOS Digital Control Center Login (/control-center/login)
+ * Dedicated Platform Owner Authentication (Strictly sovereign platform headquarters - updated 2026)
+ */
 export const controlCenterLoginTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "lg", textColor: "dark" });
 
-  window.app.innerHTML = `
+  window.document.getElementById("app").innerHTML = `
     <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
-        
+      <!-- Top Header -->
       <header class="p-6 border-b border-slate-200 bg-white shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.navigate('/')">
@@ -22,7 +27,7 @@ export const controlCenterLoginTemplate = (state) => {
         </div>
       </header>
 
-        
+      <!-- Center Owner Authentication Box -->
       <div class="flex-1 flex items-center justify-center p-6">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 md:p-10 space-y-6">
           <div class="text-center space-y-2">
@@ -39,7 +44,7 @@ export const controlCenterLoginTemplate = (state) => {
             </div>
           ` : ''}
 
-          <form onsubmit="handleSovereignLogin(event)" class="space-y-5 text-xs font-semibold">
+          <form onsubmit="handleSovereignLogin(event, '/control-center')" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Platform Owner Identity / Email</label>
               <input type="email" id="cc-email" value="owner@jumo.ueos" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 text-sm bg-slate-50 font-bold text-slate-900">
@@ -69,7 +74,7 @@ export const controlCenterLoginTemplate = (state) => {
         </div>
       </div>
 
-        
+      <!-- Footer -->
       <footer class="py-4 text-center text-xs text-slate-500 bg-white border-t border-slate-200 font-mono">
         ${BRAND_CONFIG.ownership} &bull; ${BRAND_CONFIG.poweredBy}
       </footer>
@@ -77,26 +82,20 @@ export const controlCenterLoginTemplate = (state) => {
   `;
 };
 
-window.handleSovereignLogin = function(e) {
-  e.preventDefault();
-  const emailInput = document.getElementById("cc-email");
-  const email = emailInput ? emailInput.value : "owner@jumo.ueos";
 
-  window.state.session = {
-    user: {
-      name: "Platform Owner",
-      email: email,
-      role: "Sovereign Owner",
-      isOwner: true
-    }
-  };
-  window.navigate("/control-center");
-};
-
- 
+/**
+ * JUMO UEOS Digital Control Center Main Workspace (/control-center)
+ */
 export const controlCenterTemplate = (state) => {
-  console.log("UEOS AUTH STATE:", window.state.session);
-  if (!window.state.session) {
+  console.log("CONTROL CENTER STATE CHECK:", window.state);
+
+  const authenticated =
+    window.state?.session;
+
+  console.log("CONTROL CENTER AUTH CHECK:", authenticated);
+
+  if (!authenticated) {
+    console.log("NO AUTH - RETURNING TO LOGIN");
     window.navigate("/control-center/login");
     return;
   }
@@ -109,13 +108,13 @@ export const controlCenterTemplate = (state) => {
   const isHelpOpen = state.ccHelpOpen || false;
   const isAiAssistantOpen = state.ccAiAssistantOpen || false;
 
-  window.app.innerHTML = `
+  window.document.getElementById("app").innerHTML = `
     <div class="flex flex-col h-screen bg-[#F8F9FB] text-slate-900 font-sans antialiased overflow-hidden select-none">
       
-      
+      <!-- 1. GLOBAL HEADER -->
       <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-40 shrink-0 shadow-xs">
         <div class="flex items-center gap-4">
-          
+          <!-- Workspace Launcher Button -->
           <button onclick="toggleCCLauncher()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 flex items-center justify-center transition cursor-pointer" title="Open Apps & Services Launcher">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
           </button>
@@ -129,7 +128,7 @@ export const controlCenterTemplate = (state) => {
           </div>
         </div>
 
-        
+        <!-- Global Search Bar (Triggers Command Palette / Ctrl+K) -->
         <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
           <div onclick="toggleCCCommandPalette()" class="w-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 rounded-xl px-4 py-2 text-xs text-slate-500 flex items-center justify-between cursor-pointer transition shadow-xs">
             <span class="flex items-center gap-2">
@@ -140,7 +139,7 @@ export const controlCenterTemplate = (state) => {
           </div>
         </div>
 
-          
+        <!-- Right Header Actions -->
         <div class="flex items-center gap-2">
           <button onclick="toggleCCAiAssistant()" class="p-2 rounded-xl text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-1.5 px-3 text-xs font-bold" title="UEOS Operations Assistant">
             <span>🤖</span>
@@ -160,7 +159,7 @@ export const controlCenterTemplate = (state) => {
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </button>
 
-            
+          <!-- Profile Dropdown Menu -->
           <div class="relative ml-2">
             <button onclick="toggleCCProfileMenu()" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer">
               <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">SO</div>
@@ -175,13 +174,13 @@ export const controlCenterTemplate = (state) => {
               <button onclick="setCCView('owner-workspace'); toggleCCProfileMenu();" class="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 font-medium">Owner Workspace & Master Registries</button>
               <button onclick="setCCView('aegis'); toggleCCProfileMenu();" class="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 font-medium">AEGIS Security Audit</button>
               <div class="border-t border-slate-100 my-1"></div>
-              <button onclick="window.state.session = null; window.navigate('/control-center/login');" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-bold">Logout Control Center</button>
+              <button onclick="window.state.session = null; window.navigate('/login');" class="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-bold">Logout Control Center</button>
             </div>
           </div>
         </div>
       </header>
 
-        
+      <!-- 2. WORKSPACE LAUNCHER -->
       ${isLauncherOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex animate-fadeIn" onclick="toggleCCLauncher()">
           <div class="bg-white w-full max-w-2xl h-full p-8 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideRight" onclick="event.stopPropagation()">
@@ -195,22 +194,7 @@ export const controlCenterTemplate = (state) => {
               </div>
 
               <div class="grid grid-cols-3 gap-4">
-                ${launcherTile('overview', '🏠', 'Platform Overview', 'Executive Dashboard')}
-                ${launcherTile('platform-services', '⚙️', 'Platform Services', 'Identity, Workflow, Messaging')}
-                ${launcherTile('ai-command-center', '🧠', 'AI Command Center', 'Master AI Authority & Agent Registry')}
-                ${launcherTile('engineering-workspace', '🛠️', 'Engineering Center', 'ERP Provisioning, Build & Deploy')}
-                ${launcherTile('release-center', '🚀', 'Release Center', 'Version Control & Rollbacks')}
-                ${launcherTile('erp-factory', '🏭', 'ERP Factory', 'Ecosystem Blueprints')}
-                ${launcherTile('erp-store', '🛒', 'ERP Store', 'Marketplace & Distribution')}
-                ${launcherTile('installed-apps', '📦', 'Installed Platforms', 'Active Enterprise Instances')}
-                ${launcherTile('ai-platform', '🤖', 'AI Platform', 'Models, Agents & Workflows')}
-                ${launcherTile('faap', '💰', 'FAAP Financials', 'Treasury, Ledger & Budget')}
-                ${launcherTile('digital-pay', '💳', 'Digital Pay', 'Payments, Wallets & CBDC')}
-                ${launcherTile('aegis', '🛡️', 'AEGIS Security', 'Audit, Compliance & Cryptography')}
-                ${launcherTile('config', '🔧', 'Configuration', 'Identity, Branding, Domains')}
-                ${launcherTile('settings', '⚙️', 'Platform Settings', 'Policies, Network & Plugins')}
-                ${launcherTile('owner-workspace', '🏛️', 'Owner Workspace', 'Master Governance Registries')}
-                ${launcherTile('system-services', '📊', 'System Services', 'Kernel & Runtime Monitoring')}
+                ${renderControlCenterNavigation()}
               </div>
             </div>
 
@@ -222,7 +206,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- 3. UNIVERSAL COMMAND PALETTE (Ctrl+K) -->
       ${isCommandPaletteOpen ? `
         <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-start justify-center pt-24 p-4 animate-fadeIn" onclick="toggleCCCommandPalette()">
           <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp" onclick="event.stopPropagation()">
@@ -247,7 +231,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- 4. UEOS OPERATIONS ASSISTANT MODAL (Owner AI) -->
       ${isAiAssistantOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCAiAssistant()">
           <div class="bg-white w-full max-w-lg h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -288,7 +272,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- 5. NOTIFICATION CENTER MODAL -->
       ${isNotificationCenterOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCNotification()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -315,7 +299,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- 6. GLOBAL ACTIVITY CENTER MODAL -->
       ${isActivityCenterOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCActivity()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -344,7 +328,7 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- 7. CONTEXT HELP PANEL -->
       ${isHelpOpen ? `
         <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end animate-fadeIn" onclick="toggleCCHelp()">
           <div class="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slideLeft" onclick="event.stopPropagation()">
@@ -375,11 +359,11 @@ export const controlCenterTemplate = (state) => {
         </div>
       ` : ''}
 
-        
+      <!-- MAIN WORKSPACE CONTAINER -->
       <main class="flex-1 overflow-y-auto bg-[#F8F9FB]">
         <div class="max-w-7xl mx-auto p-8">
           
-            
+          <!-- Breadcrumb & Page Header -->
           <nav class="text-xs text-slate-500 mb-3 font-medium flex items-center gap-2">
             <span>Home</span>
             <span>&gt;</span>
@@ -392,7 +376,7 @@ export const controlCenterTemplate = (state) => {
               <p class="text-xs text-slate-500 mt-1">${getViewDescription(activeView)}</p>
             </div>
             
-              
+            <!-- Universal Toolbar -->
             <div class="flex items-center gap-2">
               <button onclick="ccLogAction('Action completed successfully.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">New</button>
               <button onclick="ccLogAction('Import dialog opened.')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 shadow-xs transition cursor-pointer">Import</button>
@@ -402,7 +386,7 @@ export const controlCenterTemplate = (state) => {
             </div>
           </div>
 
-            
+          <!-- DYNAMIC VIEW RENDERER -->
           ${renderViewContent(activeView)}
 
         </div>
@@ -456,7 +440,9 @@ function getViewDescription(view) {
   }
 }
 
- 
+/**
+ * Render Specific Workspace Views
+ */
 function renderViewContent(view) {
   if (view === 'audit') {
     const audit = window.UEOSRuntime ? window.UEOSRuntime.enterpriseAudit.getAuditReport() : {
@@ -474,7 +460,7 @@ function renderViewContent(view) {
     
     return `
       <div class="space-y-6">
-          
+        <!-- Global Audit Summary -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
             <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ERP Ecosystems</div>
@@ -563,7 +549,7 @@ function renderViewContent(view) {
   if (view === 'overview') {
     return `
       <div class="space-y-8">
-          
+        <!-- Executive Greeting & Status -->
         <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-800/80 text-emerald-200 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -583,26 +569,25 @@ function renderViewContent(view) {
           </div>
         </div>
 
-          
+        
+        <!-- Dynamic Enterprise Architecture Navigation -->
         <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-          <div class="flex items-center justify-between">
-            <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">📂 Platform Applications & Ecosystems</h3>
-            <span class="text-xs font-mono text-slate-400 font-bold">Control Center Core</span>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            ${appCard('ERP Factory', 'Design blueprints', '🏭', 'erp-factory', 'emerald')}
-            ${appCard('ERP Store', 'Marketplace & updates', '🛒', 'erp-store', 'amber')}
-            ${appCard('Installed Platforms', 'Manage active instances', '📦', 'installed-apps', 'indigo')}
-            ${appCard('AI Platform', 'Models, agents & RAG', '🤖', 'purple')}
-            ${appCard('Digital Pay', 'Gateways & settlements', '💳', 'blue')}
-            ${appCard('FAAP Financials', 'Treasury & ledger', '💰', 'emerald')}
-            ${appCard('AEGIS Security', 'Audit & compliance', '🛡️', 'slate')}
-            ${appCard('Identity Platform', 'Access & tokens', '🔐', 'blue')}
-   ${appCard('Audit Engine', 'UEOS Compliance', '📋', 'audit', 'slate')}
-          </div>
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-base text-slate-900">
+                    📂 JUMO Enterprise Architecture
+                </h3>
+                <span class="text-xs font-mono text-slate-400 font-bold">
+                    Registry Controlled
+                </span>
+            </div>
+
+            <div id="ueos-dynamic-navigation"
+                 class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                ${renderEnterpriseNavigation()}
+            </div>
         </div>
 
-          
+<!-- Recently Used Workspaces -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold text-sm text-slate-900">Recently Used Workspaces</h3>
@@ -775,7 +760,7 @@ function renderViewContent(view) {
   if (view === 'erp-factory' || view === 'erp-store') {
     return `
       <div class="space-y-8">
-          
+        <!-- Enterprise Ecosystem Banner -->
         <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
@@ -789,7 +774,7 @@ function renderViewContent(view) {
           </button>
         </div>
 
-          
+        <!-- Inherited Platform Services Banner -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">⚡ Inherited Platform Services (Auto-Bound to Every ERP)</h3>
@@ -805,7 +790,7 @@ function renderViewContent(view) {
           </div>
         </div>
 
-          
+        <!-- All 12 Enterprise Ecosystem Cards -->
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Platforms</h3>
@@ -813,73 +798,8 @@ function renderViewContent(view) {
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-            ${ecosystemCard('Education ERP', '🎓', 'Multi-tier academic management across universities, colleges, technical institutes, secondary, and primary schools.', 'emerald', [
-              { name: 'University ERP', desc: 'Council, Senate, academic affairs, faculties, research & bursary.' },
-              { name: 'College ERP', desc: 'Admissions, academic registry, courses & continuous assessment.' },
-              { name: 'Vocational & Technical ERP', desc: 'Training, workshop management, practical skills & certification.' },
-              { name: 'Secondary School ERP', desc: 'Student records, parent portal, academics, exams & boarding.' },
-              { name: 'Nursery & Primary ERP', desc: 'Pupil registry, parent portal, attendance & early learning.' }
-            ])}
-
-              
-            ${ecosystemCard('Church ERP', '⛪', 'Provincial and diocesan ecclesiastical governance, parish administration, tithes, and clergy management.', 'emerald', [
-              { name: 'Church Province ERP', desc: 'Provincial synod, Bishops office, missions & church assets.' },
-              { name: 'Church Diocese ERP', desc: 'Bishop office, parishes, clergy records, tithes & offerings.' }
-            ])}
-
-              
-            ${ecosystemCard('Hospitality ERP', '🏨', 'Hotel, resort, restaurant, reservations, housekeeping, POS, and event operations.', 'emerald', [
-              { name: 'Hotel & Resort ERP', desc: 'Front office, reservations, rooms, housekeeping, POS & catering.' }
-            ])}
-
-              
-            ${ecosystemCard('Company ERP', '🏢', 'Enterprise management for service firms, manufacturing goods companies, and retail chains.', 'emerald', [
-              { name: 'Service Company ERP', desc: 'Projects, client management, contracts, billing & timesheets.' },
-              { name: 'Goods Company ERP', desc: 'Manufacturing, production lines, inventory, procurement & supply chain.' },
-              { name: 'Wholesale & Retail ERP', desc: 'Multi-branch POS, inventory, warehousing, distribution & suppliers.' }
-            ])}
-
-              
-            ${ecosystemCard('Government ERP', '🏛️', 'Ministries, departments, public civil service, budget, procurement, and citizen services.', 'emerald', [
-              { name: 'Government ERP', desc: 'Ministries, agencies, civil service, public budget & citizen portals.' }
-            ])}
-
-              
-            ${ecosystemCard('Healthcare ERP', '🏥', 'Hospitals, medical laboratories, patient EMR, pharmacy stock, ward management, and billing.', 'emerald', [
-              { name: 'Healthcare ERP', desc: 'Hospital admin, patient EMR, pharmacy, laboratory & billing.' }
-            ])}
-
-              
-            ${ecosystemCard('NGO ERP', '🌍', 'Non-governmental organizations, grants, field operations, donor management, and compliance.', 'emerald', [
-              { name: 'NGO ERP', desc: 'Projects, grant tracking, field operations, donor reports & compliance.' }
-            ])}
-
-              
-            ${ecosystemCard('Finance ERP', '🏦', 'Microfinance institutions, credit management, savings, member accounts, and debt collections.', 'emerald', [
-              { name: 'Microfinance ERP', desc: 'Loans, savings, member accounts, credit scoring & collections.' }
-            ])}
-
-              
-            ${ecosystemCard('Legal ERP', '⚖️', 'Law firms, legal practice management, case files, client trust accounts, and court calendars.', 'emerald', [
-              { name: 'Legal & Law Firm ERP', desc: 'Cases, clients, court calendar, legal documents & trust billing.' }
-            ])}
-
-              
-            ${ecosystemCard('Alumni ERP', '🤝', 'Global alumni networks, regional chapters, endowment funds, donations, and career networks.', 'emerald', [
-              { name: 'Alumni ERP', desc: 'Alumni registry, global chapters, donations, events & career network.' }
-            ])}
-
-              
-            ${ecosystemCard('Cultural ERP', '👑', 'Kingdom administration, customary governance, heritage sites, royal treasury, and community administration.', 'emerald', [
-              { name: 'Traditional & Cultural ERP', desc: 'Cultural records, customary heritage & community administration.' }
-            ])}
-
-              
-            ${ecosystemCard('Family ERP', '🌳', 'Ancestral registries, clan lineage, land registers, heritage records, and family welfare funds.', 'emerald', [
-              { name: 'Clan & Family ERP', desc: 'Family registry, lineage genealogy, heritage & welfare funds.' }
-            ])}
-          </div>
+            <!-- 1. Education ERP -->
+            ${renderInstalledERPFamilies()}</div>
         </div>
       </div>
     `;
@@ -980,7 +900,7 @@ function renderViewContent(view) {
           </div>
         </div>
         
-          
+        <!-- FAAP Sub-Modules Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
            ${['General Ledger', 'Budgeting', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Treasury', 'Bank Reconciliation', 'Cash Management', 'Assets', 'Procurement', 'Tax', 'Revenue', 'Settlement', 'Wallets', 'Financial Reports'].map(mod => `
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-center items-center text-center group">
@@ -992,7 +912,7 @@ function renderViewContent(view) {
            `).join('')}
         </div>
         
-          
+        <!-- Real-Time Activity Ledger -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 class="font-bold text-slate-900 flex items-center gap-2">
@@ -1125,139 +1045,9 @@ function renderViewContent(view) {
 }
 
 // UI Building Blocks for Views
-function ecosystemCard(title, emoji, desc, color, templates) {
-  const cardTabId = `card-tab-${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-  const templatesHtml = (templates || []).map(t => `
-    <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 rounded-xl transition flex flex-col justify-between space-y-2">
-      <div>
-        <p class="font-extrabold text-slate-900 text-xs">${t.name}</p>
-        <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">${t.desc}</p>
-      </div>
-      <div class="flex items-center gap-2 pt-2.5 border-t border-slate-200/60">
-        <button onclick="window.openErpInstallationFlow('${t.name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Install ERP</button>
-        <button onclick="window.configureErpBlueprint('${t.name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Configure</button>
-        <button onclick="window.cloneErpTemplate('${t.name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-lg text-[10px] transition cursor-pointer shadow-xs">Clone</button>
-      </div>
-    </div>
-  `).join('');
 
-  return `
-    <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-      <div class="flex items-start gap-4 pb-4 border-b border-slate-100">
-        <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
-          ${emoji}
-        </div>
-        <div class="space-y-1">
-          <h3 class="font-extrabold text-base text-slate-900">${title}</h3>
-          <p class="text-xs text-slate-500 leading-relaxed">${desc}</p>
-        </div>
-      </div>
 
-        
-      <div class="flex items-center gap-2 border-b border-slate-200 pb-2 text-[11px] font-bold overflow-x-auto">
-        <button onclick="window.switchCardTab('${cardTabId}', 'templates')" class="${cardTabId}-btn border-b-2 border-emerald-600 text-emerald-700 px-3 py-1 whitespace-nowrap">ERP Overview (${templates.length})</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'governance')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Governance</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'portals')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Portals</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'departments')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Departments</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'modules')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Modules</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'forms')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Forms</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'workflows')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Workflows</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'agents')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">AI Agents</button>
-        <button onclick="window.switchCardTab('${cardTabId}', 'deployment')" class="${cardTabId}-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 px-3 py-1 whitespace-nowrap">Deployment</button>
-      </div>
 
-      <div id="${cardTabId}-templates-content" class="${cardTabId}-content grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        ${templatesHtml}
-      </div>
-
-      <div id="${cardTabId}-governance-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Institution Governance Structure</span>
-          <p class="text-[11px] text-slate-500">JUMO UEOS Platform → Ecosystem → ERP Instance → Governance Portals → Directorates → Departments → Modules → Components → Digital Forms → Workflows.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-portals-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Executive & Governance Portals</span>
-          <p class="text-[11px] text-slate-500">Dedicated governance portals for Board of Governors, Academic Senate, Treasury, HR, and Staff SACCO.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-departments-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Directorates & Offices</span>
-          <p class="text-[11px] text-slate-500">Configured departments, offices, and administrative units within this enterprise ecosystem.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-modules-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Consolidated Functional Modules</span>
-          <p class="text-[11px] text-slate-500">Strictly consolidated functional modules embedded inside institutional ERP boundaries.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-forms-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Digital Forms Engine</span>
-          <p class="text-[11px] text-slate-500">Cryptographically signed digital forms catalogue with automated multi-step DAG approval routes.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-workflows-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Institutional Workflows</span>
-          <p class="text-[11px] text-slate-500">Automated approval workflows, document clearance, financial disbursements, and audit trails.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-agents-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-          <span class="font-bold text-slate-900">Embedded Enterprise AI Agents</span>
-          <p class="text-[11px] text-slate-500">Automated AI agents for audit verification, fraud detection, ledger reconciliation, and report generation.</p>
-        </div>
-      </div>
-
-      <div id="${cardTabId}-deployment-content" class="${cardTabId}-content hidden space-y-2 text-xs">
-        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
-          <span class="font-bold text-emerald-900">One-Click Multi-Tenant Cloud Deployment</span>
-          <p class="text-[11px] text-emerald-700">Auto-provisions FAAP clearinghouse wallet, Staff SACCO platform, tenant database isolation, and security rules.</p>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function appCard(title, desc, emoji, viewKey, color) {
-  return `
-    <div onclick="setCCView('${viewKey}')" class="p-6 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group shadow-xs">
-      <div class="w-12 h-12 rounded-xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition">
-        ${emoji}
-      </div>
-      <h3 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700">${title}</h3>
-      <p class="text-[10px] text-slate-500 mt-1">${desc}</p>
-    </div>
-  `;
-}
-
-function pinnedTile(viewKey, title, emoji, color) {
-  return `
-    <div onclick="setCCView('${viewKey}')" class="p-4 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-2xl cursor-pointer transition flex flex-col items-center text-center">
-      <span class="text-2xl mb-2">${emoji}</span>
-      <span class="font-bold text-xs text-slate-800">${title}</span>
-    </div>
-  `;
-}
-
-function recentTile(viewKey, title, emoji) {
-  return `
-    <div onclick="setCCView('${viewKey}')" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl cursor-pointer transition flex items-center gap-2">
-      <span class="text-lg">${emoji}</span>
-      <span class="text-slate-700 truncate">${title}</span>
-    </div>
-  `;
-}
 
 function healthMetric(service, status, color) {
   return `
@@ -1332,7 +1122,7 @@ function diagnosticCard(label, val, color) {
 }
 
 // Global Control Center State Handlers attached to window
-window.setCCView = function(view) {
+if (typeof window !== 'undefined') window.setCCView = function(view) {
   window.state.ccActiveView = view;
   window.state.ccLauncherOpen = false;
   window.state.ccCommandPaletteOpen = false;
@@ -1343,37 +1133,37 @@ window.setCCView = function(view) {
   render();
 };
 
-window.toggleCCLauncher = function() {
+if (typeof window !== 'undefined') window.toggleCCLauncher = function() {
   window.state.ccLauncherOpen = !state.ccLauncherOpen;
   render();
 };
 
-window.toggleCCCommandPalette = function() {
+if (typeof window !== 'undefined') window.toggleCCCommandPalette = function() {
   window.state.ccCommandPaletteOpen = !state.ccCommandPaletteOpen;
   render();
 };
 
-window.toggleCCNotification = function() {
+if (typeof window !== 'undefined') window.toggleCCNotification = function() {
   window.state.ccNotificationOpen = !state.ccNotificationOpen;
   render();
 };
 
-window.toggleCCActivity = function() {
+if (typeof window !== 'undefined') window.toggleCCActivity = function() {
   window.state.ccActivityOpen = !state.ccActivityOpen;
   render();
 };
 
-window.toggleCCHelp = function() {
+if (typeof window !== 'undefined') window.toggleCCHelp = function() {
   window.state.ccHelpOpen = !state.ccHelpOpen;
   render();
 };
 
-window.toggleCCAiAssistant = function() {
+if (typeof window !== 'undefined') window.toggleCCAiAssistant = function() {
   window.state.ccAiAssistantOpen = !state.ccAiAssistantOpen;
   render();
 };
 
-window.toggleCCProfileMenu = function() {
+if (typeof window !== 'undefined') window.toggleCCProfileMenu = function() {
   const menu = document.getElementById("cc-profile-dropdown");
   if (menu) {
     menu.classList.toggle("hidden");
@@ -1381,17 +1171,6 @@ window.toggleCCProfileMenu = function() {
 };
 
 // Helper components for launcher tiles
-function launcherTile(viewKey, iconSymbol, title, desc) {
-  return `
-    <div onclick="setCCView('${viewKey}'); toggleCCLauncher();" class="p-4 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group">
-      <div class="w-12 h-12 rounded-xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-xl mb-3 group-hover:scale-105 transition">
-        ${iconSymbol}
-      </div>
-      <h3 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700">${title}</h3>
-      <p class="text-[10px] text-slate-500 mt-1">${desc}</p>
-    </div>
-  `;
-}
 
 function paletteItem(viewKey, iconSymbol, title, desc) {
   return `
@@ -1433,7 +1212,7 @@ function activityItem(action, detail, time) {
   `;
 }
 
-window.switchCardTab = function(cardTabId, tabName) {
+if (typeof window !== 'undefined') window.switchCardTab = function(cardTabId, tabName) {
   const contents = document.querySelectorAll(`.${cardTabId}-content`);
   contents.forEach(c => c.classList.add('hidden'));
 
@@ -1452,7 +1231,7 @@ window.switchCardTab = function(cardTabId, tabName) {
   }
 };
 
-window.openErpInstallationFlow = function(templateName) {
+if (typeof window !== 'undefined') window.openErpInstallationFlow = function(templateName) {
   const customName = `${templateName} Enterprise`;
   const state = window.state || window.appState || {};
   const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
@@ -1480,13 +1259,13 @@ window.openErpInstallationFlow = function(templateName) {
   window.state.activeWorkspaceTab = 'org';
 
   if (typeof window.navigate === 'function') {
-    window.window.navigate('/workspace');
+    window.navigate('/workspace');
   } else {
     window.location.hash = "#workspace";
   }
 };
 
-window.configureErpBlueprint = function(templateName) {
+if (typeof window !== 'undefined') window.configureErpBlueprint = function(templateName) {
   const customName = `${templateName} (Blueprint Configured)`;
   const state = window.state || window.appState || {};
   const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
@@ -1514,13 +1293,13 @@ window.configureErpBlueprint = function(templateName) {
   window.state.activeWorkspaceTab = 'org';
 
   if (typeof window.navigate === 'function') {
-    window.window.navigate('/workspace');
+    window.navigate('/workspace');
   } else {
     window.location.hash = "#workspace";
   }
 };
 
-window.cloneErpTemplate = function(templateName) {
+if (typeof window !== 'undefined') window.cloneErpTemplate = function(templateName) {
   const customName = `${templateName} (Cloned Platform)`;
   const state = window.state || window.appState || {};
   const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
@@ -1548,13 +1327,13 @@ window.cloneErpTemplate = function(templateName) {
   window.state.activeWorkspaceTab = 'org';
 
   if (typeof window.navigate === 'function') {
-    window.window.navigate('/workspace');
+    window.navigate('/workspace');
   } else {
     window.location.hash = "#workspace";
   }
 };
 
-window.ccLogAction = function(message) {
+if (typeof window !== 'undefined') window.ccLogAction = function(message) {
   if (window.state) {
     if (!window.state.ccLogHistory) window.state.ccLogHistory = [];
     const time = new Date().toLocaleTimeString();
@@ -1569,4 +1348,44 @@ window.ccLogAction = function(message) {
     }, 4000);
   }
 };
+
+
+function renderEnterpriseNavigation(){
+
+    const registry =
+        window.UEOSArchitectureRegistry ||
+        {};
+
+    const platforms =
+        registry.platforms || [];
+
+    const portals =
+        registry.portals || [];
+
+    const items = [
+        ...platforms,
+        ...portals
+    ];
+
+    return items.map(item => `
+        <button
+        onclick="window.navigate('${item.id || item.portal}')"
+        class="p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition text-left">
+
+            <div class="text-2xl mb-3">
+                ${item.icon || '◈'}
+            </div>
+
+            <div class="font-bold text-sm text-slate-900">
+                ${item.name}
+            </div>
+
+            <div class="text-xs text-slate-500 mt-1">
+                ${item.type || item.category || 'Enterprise Service'}
+            </div>
+
+        </button>
+    `).join("");
+
+}
 
