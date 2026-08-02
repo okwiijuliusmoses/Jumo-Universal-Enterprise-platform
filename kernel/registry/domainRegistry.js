@@ -1,25 +1,47 @@
 export class DomainRegistry {
   constructor() {
-    this.domains = new Map([
-      ["education", { id: "education", name: "Education ERP", status: "Active", description: "Student Information, LMS, Faculty, and Campus Finance", version: "2.1.0" }],
-      ["government", { id: "government", name: "Government ERP", status: "Active", description: "Citizen Services, Public Records, Regulatory Compliance", version: "2.0.4" }],
-      ["enterprise", { id: "enterprise", name: "Enterprise Resource Planning", status: "Active", description: "Supply Chain, HR, CRM, and Global Ledger", version: "3.0.0" }],
-      ["finance", { id: "finance", name: "FAAP Financial Architecture", status: "Active", description: "Multi-Currency Banking, Treasury, and Settlement", version: "2.5.1" }],
-      ["agriculture", { id: "agriculture", name: "Agriculture & Commodity ERP", status: "Active", description: "Supply Tracking, Cooperative Management, Crop Analytics", version: "1.8.0" }],
-      ["healthcare", { id: "healthcare", name: "Healthcare & Hospital ERP", status: "Active", description: "Patient Records, Clinical Workflow, Medical Inventory", version: "2.2.0" }]
-    ]);
+    // Hierarchical Registry Engine
+    this.organizations = new Map();
   }
 
-  listDomains() {
-    return Array.from(this.domains.values());
+  // Register an Enterprise Organization
+  registerOrganization(org) {
+    this.organizations.set(org.id, { ...org, institutions: new Map() });
   }
 
-  getDomain(domainId) {
-    return this.domains.get(domainId) || null;
+  // Add Institution to Organization
+  addInstitution(orgId, institution) {
+    const org = this.organizations.get(orgId);
+    if (!org) throw new Error("Organization not found");
+    
+    org.institutions.set(institution.id, { 
+      ...institution, 
+      governance: "Executive Board",
+      portals: new Map() 
+    });
   }
 
-  registerDomain(domain) {
-    this.domains.set(domain.id, domain);
-    return domain;
+  // Define a Portal within an Institution
+  addPortal(orgId, instId, portal) {
+    const org = this.organizations.get(orgId);
+    const inst = org?.institutions.get(instId);
+    if (!inst) throw new Error("Institution not found");
+    
+    inst.portals.set(portal.id, {
+      ...portal,
+      modules: [],
+      permissions: ["view_dashboard"]
+    });
+  }
+
+  getHierarchy() {
+    // Return structured registry view
+    return Array.from(this.organizations.values()).map(org => ({
+      ...org,
+      institutions: Array.from(org.institutions.values()).map(inst => ({
+        ...inst,
+        portals: Array.from(inst.portals.values())
+      }))
+    }));
   }
 }
