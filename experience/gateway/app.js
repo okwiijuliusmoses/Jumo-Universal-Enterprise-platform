@@ -1,3 +1,4 @@
+import { startupDiagnostics } from "../../kernel/runtime/startupDiagnostics.js";
 import { bootOrchestrator } from "../../kernel/boot/BootOrchestrator.js";
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, contactTemplate } from "./index.js";
@@ -66,6 +67,7 @@ function displayError(error, component = "Unknown") {
 }
 
 // Global Application State
+startupDiagnostics.log("CONFIG LOADED");
 window.state = {
   currentPath: window.location.pathname || "/",
   history: [],
@@ -159,6 +161,7 @@ window.addEventListener("popstate", (event) => {
 // Render Dispatcher
 window.render = function() {
   validateUEOSState();
+  startupDiagnostics.log("WORKSPACE READY");
   try {
     const urlObj = new URL(window.state.currentPath, window.location.origin);
     const path = urlObj.pathname;
@@ -217,6 +220,44 @@ window.render = function() {
 };
 
 // UI Handlers
+
+window.handleSovereignLogin = async function(e, redirectRoute = '/control-center') {
+  e.preventDefault();
+  
+  const emailInput = document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.enterprise" };
+  const email = emailInput.value || "owner@jumo.enterprise";
+  
+  try {
+    // Phase 1 - Authentication Validation (Simulated for frontend)
+    // Send request through services/identity/identityGateway.js
+    
+    // Simulate successful authentication and set UEOS session
+    window.state.session = {
+      user: {
+        name: email.split("@")[0].replace(".", " "),
+        email: email,
+        role: "Platform Owner",
+        isAdmin: true,
+        status: "Sovereign Administrator"
+      },
+      organization: "JUMO GLOBAL PLATFORM HQ",
+      tenantId: "tenant-sovereign-000"
+    };
+    
+    if (!window.state.bootStatus) window.state.bootStatus = [];
+    if (!window.state.bootStatus.includes("Sovereign Identity Validated")) {
+      window.state.bootStatus.push("Sovereign Identity Validated");
+    }
+    
+    // Redirect to Control Center workspace
+    window.navigate(redirectRoute);
+    
+  } catch (error) {
+    console.error("[UEOS] Sovereign Authentication Failed", error);
+    alert("Authentication failed. Verify credentials and permissions.");
+  }
+};
+
 window.handleLoginSubmit = function(e) {
   e.preventDefault();
   const emailInput = document.getElementById("login-email");
@@ -340,6 +381,23 @@ window.closeJoinModal = function() {
   if (modal) modal.classList.add("hidden");
 };
 
+
+window.askAi = function(e, inputId, stateKey) {
+  e.preventDefault();
+  const input = document.getElementById(inputId);
+  if (input && input.value) {
+    const query = input.value;
+    input.value = '';
+    window.state[stateKey] = "AI Gateway Processing: Analysing your request...";
+    window.render();
+    
+    setTimeout(() => {
+      window.state[stateKey] = "UEOS AI Analysis Complete: " + query + ". (Simulated Enterprise Response)";
+      window.render();
+    }, 1500);
+  }
+};
+
 window.recordFaapTransaction = function(e) {
   e.preventDefault();
   const amount = document.getElementById("faap-tx-amount")?.value || "10000";
@@ -380,6 +438,8 @@ window.switchTenant = function(id, name) {
 
 // Initialize app on load
 document.addEventListener("DOMContentLoaded", async () => {
+  startupDiagnostics.log("HTML LOADED");
+
   if (window.state && window.state.bootComplete) {
     if (typeof window.render === 'function') window.render();
     return;
@@ -424,11 +484,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Start Boot Orchestration
+    startupDiagnostics.log("KERNEL LOADED");
     await bootOrchestrator.boot(window.state);
     
     // Small pause to let user see "complete"
-    await new Promise(res => setTimeout(res, 400));
+    // await new Promise(res => setTimeout(res, 400));
   }
   
+  startupDiagnostics.log("SHELL MOUNTED");
   window.render();
 });

@@ -54,7 +54,7 @@ export const shellTemplate = (state) => {
                   <button onclick="window.navigate('/control-center')" class="w-full py-2 bg-indigo-900/40 border border-indigo-700/50 hover:bg-indigo-800/40 text-indigo-200 font-bold text-[10px] uppercase tracking-wider rounded-md text-center transition font-mono cursor-pointer">Control Center</button>
                 ` : ''}
 
-                <button onclick="handleLogout()" class="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] uppercase tracking-wider rounded-md text-center transition cursor-pointer">Sign Out</button>
+                <button onclick="window.handleLogout()" class="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-[10px] uppercase tracking-wider rounded-md text-center transition cursor-pointer">Sign Out</button>
               </div>
             </aside>
 
@@ -117,7 +117,7 @@ export const shellTemplate = (state) => {
                       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-semibold">
                         <div class="lg:col-span-5 bg-slate-50 border border-slate-200 p-5 rounded-xl text-xs">
                           <h5 class="font-bold uppercase text-slate-400 mb-4">Record Financial Ledger Block (Ring-1)</h5>
-                          <form onsubmit="recordFaapTransaction(event)" class="space-y-4">
+                          <form onsubmit="window.recordFaapTransaction(event)" class="space-y-4">
                             <div>
                               <label class="block text-slate-500 mb-1.5">Disbursement Amount</label>
                               <input type="number" id="faap-tx-amount" placeholder="e.g. 50000" required class="w-full p-2.5 bg-white border border-slate-200 rounded focus:outline-none font-bold">
@@ -363,7 +363,7 @@ export const shellTemplate = (state) => {
                     </div>
 
                     <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-xs space-y-6 font-semibold">
-                      <form onsubmit="askAi(event, 'shell-ai-prompt', 'aiResponse')" class="space-y-4">
+                      <form onsubmit="window.askAi(event, 'shell-ai-prompt', 'aiResponse')" class="space-y-4">
                         <textarea id="shell-ai-prompt" rows="3" placeholder="e.g. Generate a compliance check log comparing the FAAP Treasury ledger against the AEGIS Zero-Trust security kernel." required class="w-full p-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-600 bg-slate-50 font-semibold"></textarea>
                         <div class="text-right">
                           <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition cursor-pointer font-sans">Process AI query</button>

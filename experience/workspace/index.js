@@ -72,7 +72,7 @@ export const workspaceTemplate = (state) => {
   
   if (!isAuth) {
     // Portal Login View (No sidebars, no forms, secure auth only)
-    app.innerHTML = `
+    window.app.innerHTML = `
       <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
           <div class="bg-slate-900 p-8 text-center border-b border-slate-800">
@@ -121,7 +121,7 @@ export const workspaceTemplate = (state) => {
   const selectedModule = (activePortal.modules || []).find(m => m.id === state.activeModuleId);
   if (!state.activeComponentId) state.activeComponentId = 'dashboard';
 
-  app.innerHTML = `
+  window.app.innerHTML = `
     <div class="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
        
       <!-- UEOS Global Platform OS Navigation Shell -->
@@ -1249,7 +1249,7 @@ if(typeof window !== 'undefined') window.showKeyboardShortcutsModal = function()
 };
 
 // Listen to keyboard shortcut triggers
-document.addEventListener('keydown', (e) => {
+if(typeof document !== 'undefined') document.addEventListener('keydown', (e) => {
   // Only trigger if focus is not on input/textarea
   if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
 

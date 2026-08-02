@@ -8,13 +8,13 @@ export const publicTemplate = (state) => {
   window.app.innerHTML = `
 <div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
       
-    <div id="public-sidebar-overlay" onclick="togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
+    <div id="public-sidebar-overlay" onclick="window.togglePublicSidebar()" class="fixed inset-0 bg-slate-900/60 z-[60] hidden backdrop-blur-sm transition-opacity"></div>
     
       
     <div id="public-sidebar" class="fixed top-0 left-0 bottom-0 w-80 bg-slate-900 z-[70] -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-slate-900">
             ${logoHtml}
-            <button onclick="togglePublicSidebar()" class="text-slate-400 hover:text-white cursor-pointer transition">
+            <button onclick="window.togglePublicSidebar()" class="text-slate-400 hover:text-white cursor-pointer transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
@@ -55,7 +55,7 @@ export const publicTemplate = (state) => {
     <header class="bg-[#0b3b9b] border-b border-[#0f4ac1] sticky top-0 z-50 shadow-md text-white">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <button onclick="togglePublicSidebar()" class="lg:hidden text-white hover:text-blue-200 transition cursor-pointer">
+                <button onclick="window.togglePublicSidebar()" class="lg:hidden text-white hover:text-blue-200 transition cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <div class="cursor-pointer" onclick="window.navigate('/')">
@@ -540,7 +540,7 @@ export const loginTemplate = (state) => {
             </div>
           ` : ''}
 
-          <form onsubmit="handleLoginSubmit(event)" class="space-y-5 text-xs font-semibold">
+          <form onsubmit="window.handleLoginSubmit(event)" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Institutional Email / ID</label>
               <input type="email" id="login-email" value="${state.loginEmail || 'user@kampala.edu.ug'}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
@@ -605,7 +605,7 @@ export const registerTemplate = (state) => {
             <p class="text-xs text-slate-500">Register for ${institutionName} access</p>
           </div>
 
-          <form onsubmit="handleRegisterSubmit(event)" class="space-y-5 text-xs font-semibold">
+          <form onsubmit="window.handleRegisterSubmit(event)" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Full Name</label>
               <input type="text" id="reg-name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
@@ -662,7 +662,7 @@ export const gatewayTemplate = (state) => {
         <div class="flex items-center gap-4">
             
           <div class="relative">
-            <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 cursor-pointer">
+            <button onclick="window.toggleProfileDropdown()" class="flex items-center gap-3 cursor-pointer">
               <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
                 <span class="text-sm font-bold text-slate-700">${user.name.charAt(0)}</span>
               </div>
@@ -678,7 +678,7 @@ export const gatewayTemplate = (state) => {
                 <p class="text-xs text-slate-500">${user.email}</p>
               </div>
               <div class="p-2">
-                <button onclick="handleLogout()" class="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer flex items-center gap-2">
+                <button onclick="window.handleLogout()" class="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                   Secure Sign Out
                 </button>

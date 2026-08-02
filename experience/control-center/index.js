@@ -44,7 +44,7 @@ export const controlCenterLoginTemplate = (state) => {
             </div>
           ` : ''}
 
-          <form onsubmit="handleSovereignLogin(event, '/control-center')" class="space-y-5 text-xs font-semibold">
+          <form onsubmit="window.handleSovereignLogin(event, '/control-center')" class="space-y-5 text-xs font-semibold">
             <div>
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Platform Owner Identity / Email</label>
               <input type="email" id="cc-email" value="owner@jumo.ueos" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 text-sm bg-slate-50 font-bold text-slate-900">

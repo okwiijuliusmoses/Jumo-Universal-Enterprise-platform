@@ -4,8 +4,8 @@ import { ERP_CATALOGUE, ERPRuntimeEngine } from "./runtimeEngine.js";
 import { getOfficialLogoHtml } from "../brand/brandConfig.js";
 
 export const erpRuntime = new ERPRuntimeEngine();
-if(typeof window !== 'undefined') window.erpRuntimeEngine = erpRuntime;
-if (window.state) window.state.runtimeEngine = erpRuntime;
+if(typeof window !== 'undefined') if(typeof window !== 'undefined') window.erpRuntimeEngine = erpRuntime;
+if (typeof window !== 'undefined' && window.state) window.state.runtimeEngine = erpRuntime;
 
 export const erpPlatformTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "sm", textColor: "light" });
