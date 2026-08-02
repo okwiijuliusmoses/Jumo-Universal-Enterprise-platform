@@ -1,5 +1,6 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { DIGITAL_FORMS_CATALOGUE } from "../erp/runtimeEngine.js";
+import { navigationEngine } from "../../kernel/navigation/navigationEngine.js";
 
 // Initialize missing state variables on load to ensure smooth execution
 const initializeWorkspaceState = (state) => {
@@ -123,36 +124,93 @@ export const workspaceTemplate = (state) => {
   app.innerHTML = `
     <div class="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
        
-      <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between h-16">
-            <div class="flex items-center gap-6">
-              <button onclick="window.navigate('/gateway')" class="text-slate-400 hover:text-white transition cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      <!-- UEOS Global Platform OS Navigation Shell -->
+      <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-[60] shadow-sm">
+        <div class="px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
+          <div class="flex items-center gap-4">
+            <!-- Universal App Launcher / Portal Switcher -->
+            <button onclick="window.navigate('/gateway')" class="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" title="Portal Switcher">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.navigate('/')">
+              <span class="text-white font-extrabold text-sm tracking-wide">JUMO</span>
+              <span class="text-slate-500 font-mono text-[10px] uppercase">UEOS</span>
+            </div>
+            
+            <nav class="hidden lg:flex items-center gap-1 ml-6 pl-6 border-l border-slate-800 h-8">
+              ${navigationEngine.getSystemNavigation(user).map(nav => `
+                 <button onclick="window.navigate('${nav.path}')" class="px-3 py-1.5 rounded text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition flex items-center gap-2 cursor-pointer">
+                    ${nav.label}
+                 </button>
+              `).join('')}
+            </nav>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <!-- Global Enterprise Search -->
+            <div class="relative hidden md:block">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+              <input type="text" placeholder="Search enterprise directories..." class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-md pl-9 pr-4 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 w-64 transition" onchange="window.handleGlobalSearch(event)">
+            </div>
+            
+            <!-- Global Utilities -->
+            <div class="flex items-center gap-1">
+              <button class="w-8 h-8 rounded flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer relative" title="Approvals & Tasks">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-slate-950"></span>
               </button>
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded bg-blue-600/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                </div>
-                <div>
-                  <h1 class="text-white font-bold text-sm tracking-wide">${activePortal.name}</h1>
-                  <p class="text-emerald-400 text-[10px] font-mono tracking-widest uppercase">Secure Enterprise Workspace</p>
-                </div>
+              <button class="w-8 h-8 rounded flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" title="Settings Center" onclick="window.navigate('/control-center')">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              </button>
+            </div>
+            
+            <!-- User Dropdown (Simplified) -->
+            <div class="relative group cursor-pointer ml-2">
+              <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-white font-bold text-xs">
+                ${user.name.charAt(0)}
+              </div>
+              <div class="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-slate-200 hidden group-hover:block z-[70] py-2">
+                 <div class="px-4 py-3 border-b border-slate-100">
+                    <p class="font-bold text-sm text-slate-900">${user.name}</p>
+                    <p class="text-xs text-slate-500">${user.role}</p>
+                 </div>
+                 <div class="py-2 space-y-1">
+                    <a href="#" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Profile & Identity</a>
+                    <a href="#" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Security & MFA</a>
+                    <a href="#" class="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Preferences</a>
+                 </div>
+                 <div class="py-2 border-t border-slate-100">
+                    <a href="#" onclick="window.handleLogout()" class="block px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50">Sign Out</a>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Office Portal Workspace Navigation -->
+      <header class="bg-white border-b border-slate-200 sticky top-14 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between h-14">
+            <div class="flex items-center gap-4">
+              <div class="w-8 h-8 rounded bg-blue-50 text-enterprise-blue flex items-center justify-center border border-blue-100">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+              </div>
+              <div>
+                <h1 class="text-slate-900 font-bold text-sm tracking-wide">${activePortal.name}</h1>
               </div>
             </div>
             
-            <nav class="hidden md:flex space-x-1">
-              <button onclick="state.activeModuleId = null; window.switchPortalTab('modules')" class="px-4 py-2 rounded-md text-sm font-medium ${currentView === 'modules' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'} transition cursor-pointer">Modules</button>
-              <button onclick="window.switchPortalTab('forms')" class="px-4 py-2 rounded-md text-sm font-medium ${currentView === 'forms' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'} transition cursor-pointer">Digital Forms</button>
-              <button onclick="window.switchPortalTab('workflows')" class="px-4 py-2 rounded-md text-sm font-medium ${currentView === 'workflows' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'} transition cursor-pointer">Workflows</button>
-              <button onclick="window.switchPortalTab('records')" class="px-4 py-2 rounded-md text-sm font-medium ${currentView === 'records' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'} transition cursor-pointer">Security Ledger</button>
+            <nav class="hidden md:flex space-x-1 overflow-x-auto pb-1 hide-scrollbar">
+              ${navigationEngine.getWorkspaceNavigation(activePortal.id, user).map(nav => `
+                <button onclick="window.state.activeModuleId = null; window.switchPortalTab('${nav.id}')" class="px-4 py-1.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${currentView === nav.id ? 'bg-slate-100 text-enterprise-blue' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'} transition cursor-pointer">${nav.label}</button>
+              `).join('')}
             </nav>
             
-            <div class="flex items-center gap-4">
-              <span class="text-xs text-slate-400 font-medium">Tenant ID: <strong class="text-emerald-400 font-mono">${activeErp?.tenantId || 'tenant-001'}</strong></span>
-              <div class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center border border-slate-600 text-white font-bold text-xs cursor-pointer">
-                ${user.name.charAt(0)}
-              </div>
+            <div class="flex items-center gap-4 text-xs">
+              <span class="text-slate-500 font-medium">Tenant: <strong class="text-slate-900 font-mono">${activeErp?.tenantId || 'tenant-001'}</strong></span>
             </div>
           </div>
         </div>
@@ -188,7 +246,7 @@ export const workspaceTemplate = (state) => {
                   </div>
                   <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     ${modsList.map(mod => `
-                      <div onclick="window.state.activeModuleId='${mod.id}'; window.state.activeComponentId='dashboard'; window.render();" class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-emerald-500 hover:bg-emerald-50/10 transition duration-150 cursor-pointer flex flex-col justify-between h-[130px] group">
+                      <div onclick="window.loadEnterpriseModule('${mod.id}')" class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-emerald-500 hover:bg-emerald-50/10 transition duration-150 cursor-pointer flex flex-col justify-between h-[130px] group relative">
                         <div>
                           <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wide bg-slate-200/50 px-1.5 py-0.5 rounded">${mod.categoryPrefix}</span>
@@ -198,7 +256,7 @@ export const workspaceTemplate = (state) => {
                         </div>
                         <div class="flex items-center justify-between border-t border-slate-200/60 pt-2 text-[10px] text-slate-400 font-medium">
                           <span>${mod.components?.length || 0} Components</span>
-                          <span class="text-emerald-600 font-bold group-hover:translate-x-0.5 transition duration-150">Open &rarr;</span>
+                          <span class="text-emerald-600 font-bold group-hover:translate-x-0.5 transition duration-150">Load &rarr;</span>
                         </div>
                       </div>
                     `).join('')}
@@ -663,8 +721,27 @@ export const workspaceTemplate = (state) => {
             </div>
           </div>
         ` : ''}
+
+        ${!['modules', 'forms', 'workflows', 'records'].includes(currentView) ? `
+          <div class="mb-8 flex flex-col items-start gap-2">
+            <h2 class="text-2xl font-bold text-slate-900 capitalize">${currentView} Workspace</h2>
+            <p class="text-sm text-slate-500">Enterprise operational workspace for ${currentView}.</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-16 text-center">
+             <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 text-2xl">⚙️</div>
+             <h3 class="text-xl font-bold text-slate-900 mb-2 capitalize">${currentView} Module Provisioning</h3>
+             <p class="text-slate-500 max-w-md mx-auto text-sm">The <strong class="capitalize font-bold text-slate-700">${currentView}</strong> domain module is currently being configured and provisioned by the UEOS kernel for this specific portal context.</p>
+          </div>
+        ` : ''}
         
-         
+        <div id="module-loading-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] hidden flex-col items-center justify-center font-mono">
+          <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 shadow-2xl flex flex-col items-center max-w-sm w-full">
+             <svg class="w-10 h-10 text-emerald-500 animate-spin mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+             <h3 class="text-white font-bold text-sm tracking-wide">Provisioning Module</h3>
+             <p class="text-slate-400 mt-2 text-[10px] uppercase text-center">Loading component registry and compiling views into virtual runtime...</p>
+          </div>
+        </div>
+
         <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         ${state.jumoChatOpen ? `
           <div id="public-ai-chat" class="mb-4 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden h-[450px]">
@@ -1243,4 +1320,13 @@ window.advanceWorkflow = function(wfId, currentStatus) {
     window.state.ccToastMessage = `Workflow ${wfId} successfully advanced to ${nextStatus}`;
     window.render();
   }
+};
+
+window.loadEnterpriseModule = async function(modId) {
+    if (window.bootOrchestrator) {
+       await window.bootOrchestrator.loadModuleLazy(modId, window.state.session?.user?.role);
+    }
+    window.state.activeModuleId = modId;
+    window.state.activeComponentId = 'dashboard';
+    window.render();
 };

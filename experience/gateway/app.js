@@ -1,3 +1,4 @@
+import { bootOrchestrator } from "../../kernel/boot/bootLoader.js";
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, contactTemplate } from "./index.js";
 import { workspaceTemplate } from "../workspace/index.js";
@@ -383,64 +384,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   const bootSteps = document.getElementById("boot-steps");
 
   if (bootProgress && bootSteps) {
-    // Show boot sequence
     bootProgress.classList.remove("hidden");
-    // Trigger fade in
     requestAnimationFrame(() => {
       bootProgress.classList.remove("opacity-0");
     });
     
-    const steps = [
-      { id: 'security', label: 'Security Kernel' },
-      { id: 'identity', label: 'Identity Gateway' },
-      { id: 'workspace', label: 'Workspace Runtime' },
-      { id: 'enterprise', label: 'Enterprise Services' },
-      { id: 'environment', label: 'User Environment' }
-    ];
-
-    for (let step of steps) {
-      const li = document.createElement("li");
-      li.id = `step-${step.id}`;
-      li.className = "flex items-center text-slate-400";
-      li.innerHTML = `
-        <svg class="w-4 h-4 mr-3 text-slate-300 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-        ${step.label}
-      `;
-      bootSteps.appendChild(li);
-    }
-
-    const completeStep = (id) => {
-      const li = document.getElementById(`step-${id}`);
-      if (li) {
-        li.classList.remove("text-slate-400");
-        li.classList.add("text-slate-700");
-        li.innerHTML = `
-          <svg class="w-4 h-4 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          ${steps.find(s => s.id === id).label}
-        `;
+    // Subscribe to real orchestrator
+    bootOrchestrator.onProgress((services, stage, serviceId) => {
+      if (stage === 'START_CRITICAL') {
+        bootSteps.innerHTML = '';
+        services.critical.forEach(step => {
+          const li = document.createElement("li");
+          li.id = `step-${step.id}`;
+          li.className = "flex items-center text-slate-400 transition-colors duration-300";
+          li.innerHTML = `
+            <svg class="w-4 h-4 mr-3 text-slate-300 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            ${step.name}
+          `;
+          bootSteps.appendChild(li);
+        });
+      } else if (stage === 'UPDATE' && serviceId) {
+        const step = services.critical.find(s => s.id === serviceId);
+        if (step && step.status === 'READY') {
+          const li = document.getElementById(`step-${serviceId}`);
+          if (li) {
+            li.classList.remove("text-slate-400");
+            li.classList.add("text-slate-700");
+            li.innerHTML = `
+              <svg class="w-4 h-4 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              ${step.name}
+            `;
+          }
+        }
       }
-    };
+    });
 
-    // Parallel service initialization simulator via async orchestration
-    const timer = ms => new Promise(res => setTimeout(res, ms));
+    // Start Boot Orchestration
+    await bootOrchestrator.boot();
     
-    await timer(150);
-    completeStep('security');
-    
-    await timer(200);
-    completeStep('identity');
-    
-    await timer(150);
-    completeStep('workspace');
-    
-    await timer(200);
-    completeStep('enterprise');
-    
-    await timer(100);
-    completeStep('environment');
-    
-    // Quick pause before switching to render to let users see completion
-    await timer(300);
+    // Small pause to let user see "complete"
+    await new Promise(res => setTimeout(res, 400));
   }
   
   window.render();
