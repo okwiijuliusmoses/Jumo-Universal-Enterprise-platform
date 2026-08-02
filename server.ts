@@ -4,7 +4,13 @@ const app = express();
 const PORT = 3000;
 
 app.get('/', (req, res) => {
-  res.send('JUMO UEOS Platform');
+  res.send(`
+    <h1>JUMO UEOS</h1>
+    <p>Universal Enterprise Operating System</p>
+    <br>
+    <p>Powered by:</p>
+    <p>JUMO DIGITAL ENTERPRISE PLATFORM</p>
+  `);
 });
 
 app.listen(PORT, () => {
