@@ -27,14 +27,23 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900 min-h-screen flex flex-col">
   <div id="app" class="flex flex-col min-h-screen">
-    <div class="flex items-center justify-center min-h-screen bg-slate-50 text-slate-600 font-mono text-xs">
-      <div class="text-center space-y-3">
-        <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <p class="font-bold text-slate-800 text-sm">JUMO UEOS</p>
-        <p class="text-slate-500">Universal Enterprise Operating System</p>
-        <div class="pt-4 text-[10px] text-slate-400">
-          <p>Powered by:</p>
-          <p class="font-semibold text-slate-500">JUMO DIGITAL ENTERPRISE PLATFORM</p>
+    <div class="flex items-center justify-center min-h-screen bg-slate-50 text-slate-800 font-mono">
+      <div class="text-center max-w-md w-full px-6 py-8 flex flex-col items-center">
+        
+        <h1 class="font-bold tracking-tight text-xl mb-16">JUMO ENTERPRISE PLATFORM</h1>
+        
+        <p class="text-[11px] text-slate-500 mb-8 uppercase tracking-wider">Powered by</p>
+        
+        <div class="mb-16 text-center">
+          <p class="font-bold text-2xl tracking-wide mb-1">JUMO</p>
+          <p class="text-slate-600 text-[13px] tracking-wide">Universal Enterprise Operating System</p>
+        </div>
+
+        <div id="boot-progress" class="w-full text-left bg-white border border-slate-200 shadow-sm rounded-lg p-6 text-sm text-slate-600 hidden opacity-0 transition-opacity duration-300">
+          <p class="font-semibold text-slate-800 mb-5 pb-3 border-b border-slate-100">Initializing secure enterprise environment...</p>
+          <ul id="boot-steps" class="space-y-3 font-medium text-[13px]">
+            <!-- Steps injected by app.js -->
+          </ul>
         </div>
       </div>
     </div>
