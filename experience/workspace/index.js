@@ -827,7 +827,7 @@ export const workspaceTemplate = (state) => {
     </div>
   `;
 };
-window.switchWorkspaceTab = function(tabName) {
+if(typeof window !== 'undefined') window.switchWorkspaceTab = function(tabName) {
   if (window.state) {
     window.state.activeWorkspaceTab = tabName;
     if (tabName !== 'org') {
@@ -837,7 +837,7 @@ window.switchWorkspaceTab = function(tabName) {
   }
 };
 
-window.openErpPortal = function(portalId) {
+if(typeof window !== 'undefined') window.openErpPortal = function(portalId) {
   if (window.state) {
     if (!window.state.portalAuths) window.state.portalAuths = {};
     if (!window.state.portalAuths[portalId] && window.state.activePersona !== 'admin') {
@@ -855,7 +855,7 @@ window.openErpPortal = function(portalId) {
 };
 
 
-window.submitPortalLogin = function(e, portalId, portalName) {
+if(typeof window !== 'undefined') window.submitPortalLogin = function(e, portalId, portalName) {
   e.preventDefault();
   if (window.state) {
     if (!window.state.portalAuths) window.state.portalAuths = {};
@@ -868,14 +868,14 @@ window.submitPortalLogin = function(e, portalId, portalName) {
     window.render();
   }
 };
-window.cancelPortalLogin = function() {
+if(typeof window !== 'undefined') window.cancelPortalLogin = function() {
   if (window.state) {
     window.state.pendingPortalAuth = null;
     window.render();
   }
 };
 
-window.closeErpPortal = function() {
+if(typeof window !== 'undefined') window.closeErpPortal = function() {
   if (window.state) {
     window.state.activePortalId = null;
     window.render();
@@ -883,13 +883,13 @@ window.closeErpPortal = function() {
 };
 
 
-window.switchPortalTab = function(tabName) {
+if(typeof window !== 'undefined') window.switchPortalTab = function(tabName) {
   if (window.state) {
     window.state.activePortalTab = tabName;
     window.render();
   }
 };
-window.switchActivePersona = function(personaCode) {
+if(typeof window !== 'undefined') window.switchActivePersona = function(personaCode) {
   if (window.state) {
     window.state.activePersona = personaCode;
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
@@ -899,7 +899,7 @@ window.switchActivePersona = function(personaCode) {
   }
 };
 
-window.togglePortalFavorite = function(portalId) {
+if(typeof window !== 'undefined') window.togglePortalFavorite = function(portalId) {
   if (window.state) {
     if (!window.state.favorites) window.state.favorites = [];
     const idx = window.state.favorites.indexOf(portalId);
@@ -913,7 +913,7 @@ window.togglePortalFavorite = function(portalId) {
 };
 
 // SVG Chart click logs with zero alert/popups
-window.logChartInteraction = function(sectorName, value) {
+if(typeof window !== 'undefined') window.logChartInteraction = function(sectorName, value) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -922,7 +922,7 @@ window.logChartInteraction = function(sectorName, value) {
   }
 };
 
-window.runPortalAction = function(actionName) {
+if(typeof window !== 'undefined') window.runPortalAction = function(actionName) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -931,7 +931,7 @@ window.runPortalAction = function(actionName) {
   }
 };
 
-window.executeDirectModuleAction = function(moduleName) {
+if(typeof window !== 'undefined') window.executeDirectModuleAction = function(moduleName) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -940,7 +940,7 @@ window.executeDirectModuleAction = function(moduleName) {
   }
 };
 
-window.runBatchDiagnostic = function(portalName) {
+if(typeof window !== 'undefined') window.runBatchDiagnostic = function(portalName) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -949,7 +949,7 @@ window.runBatchDiagnostic = function(portalName) {
   }
 };
 
-window.executeWorkflowAction = function(id, status) {
+if(typeof window !== 'undefined') window.executeWorkflowAction = function(id, status) {
   if (window.state) {
     const item = window.state.submittedForms.find(sf => sf.id === id);
     if (item) {
@@ -963,7 +963,7 @@ window.executeWorkflowAction = function(id, status) {
 };
 
 // Canvas-based Digital Signatures & Dynamic forms modal
-window.openFormModal = function(formId) {
+if(typeof window !== 'undefined') window.openFormModal = function(formId) {
   const allForms = Object.values(DIGITAL_FORMS_CATALOGUE).flat();
   const form = allForms.find(f => f.id === formId);
   if (!form) return;
@@ -1040,7 +1040,7 @@ window.openFormModal = function(formId) {
   modal.classList.remove("hidden");
 };
 
-window.submitDigitalForm = function(e, formId) {
+if(typeof window !== 'undefined') window.submitDigitalForm = function(e, formId) {
   e.preventDefault();
   const allForms = Object.values(DIGITAL_FORMS_CATALOGUE).flat();
   const form = allForms.find(f => f.id === formId);
@@ -1088,7 +1088,7 @@ window.submitDigitalForm = function(e, formId) {
 };
 
 // Drag & Drop / File Upload Utilities
-window.handleDragOver = function(e) {
+if(typeof window !== 'undefined') window.handleDragOver = function(e) {
   e.preventDefault();
   const el = document.getElementById('file-dropzone');
   if (el) {
@@ -1096,7 +1096,7 @@ window.handleDragOver = function(e) {
   }
 };
 
-window.handleFileDrop = function(e) {
+if(typeof window !== 'undefined') window.handleFileDrop = function(e) {
   e.preventDefault();
   const el = document.getElementById('file-dropzone');
   if (el) {
@@ -1109,14 +1109,14 @@ window.handleFileDrop = function(e) {
   }
 };
 
-window.handleManualFileUpload = function(e) {
+if(typeof window !== 'undefined') window.handleManualFileUpload = function(e) {
   const files = e.target.files;
   if (files.length > 0) {
     window.registerUploadedFile(files[0]);
   }
 };
 
-window.registerUploadedFile = function(fileObj) {
+if(typeof window !== 'undefined') window.registerUploadedFile = function(fileObj) {
   if (window.state) {
     if (!window.state.uploadedFiles) window.state.uploadedFiles = [];
     
@@ -1141,12 +1141,12 @@ window.registerUploadedFile = function(fileObj) {
 };
 
 // Simulated Gemini LLM Area with structured output dispatches
-window.insertAiQueryPlaceholder = function(queryText) {
+if(typeof window !== 'undefined') window.insertAiQueryPlaceholder = function(queryText) {
   const el = document.getElementById('portal-ai-query-area');
   if (el) el.value = queryText;
 };
 
-window.submitPortalAiQuery = function(portalName) {
+if(typeof window !== 'undefined') window.submitPortalAiQuery = function(portalName) {
   const textarea = document.getElementById('portal-ai-query-area');
   const container = document.getElementById('ai-response-container');
   if (!textarea || !container) return;
@@ -1175,7 +1175,7 @@ window.submitPortalAiQuery = function(portalName) {
 };
 
 // General Global Settings saving and Backups
-window.savePortalSettings = function(portalName) {
+if(typeof window !== 'undefined') window.savePortalSettings = function(portalName) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -1184,7 +1184,7 @@ window.savePortalSettings = function(portalName) {
   }
 };
 
-window.saveGeneralSettings = function() {
+if(typeof window !== 'undefined') window.saveGeneralSettings = function() {
   const instName = document.getElementById("setting-inst-name")?.value || "JUMO University";
   if (window.state) {
     window.state.session.organization = instName;
@@ -1195,7 +1195,7 @@ window.saveGeneralSettings = function() {
   }
 };
 
-window.triggerAegisSystemBackup = function() {
+if(typeof window !== 'undefined') window.triggerAegisSystemBackup = function() {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -1205,7 +1205,7 @@ window.triggerAegisSystemBackup = function() {
 };
 
 // Navigation History Managers
-window.navigateHistoryBack = function() {
+if(typeof window !== 'undefined') window.navigateHistoryBack = function() {
   if (window.state && window.state.navigationHistoryIndex > 0) {
     window.state.navigationHistoryIndex--;
     const snapshot = window.state.navigationHistory[window.state.navigationHistoryIndex];
@@ -1215,7 +1215,7 @@ window.navigateHistoryBack = function() {
   }
 };
 
-window.navigateHistoryForward = function() {
+if(typeof window !== 'undefined') window.navigateHistoryForward = function() {
   if (window.state && window.state.navigationHistoryIndex < window.state.navigationHistory.length - 1) {
     window.state.navigationHistoryIndex++;
     const snapshot = window.state.navigationHistory[window.state.navigationHistoryIndex];
@@ -1226,7 +1226,7 @@ window.navigateHistoryForward = function() {
 };
 
 // Global Search
-window.handleGlobalSearch = function(e) {
+if(typeof window !== 'undefined') window.handleGlobalSearch = function(e) {
   if (window.state) {
     window.state.searchQuery = e.target.value;
     window.render();
@@ -1243,7 +1243,7 @@ window.handleGlobalSearch = function(e) {
 };
 
 // Show keyboard helper modal
-window.showKeyboardShortcutsModal = function() {
+if(typeof window !== 'undefined') window.showKeyboardShortcutsModal = function() {
   const el = document.getElementById('shortcuts-modal');
   if (el) el.classList.remove('hidden');
 };
@@ -1269,14 +1269,14 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Floating JUMO AI Assistant Chat Handlers
-window.toggleJumoChat = function() {
+if(typeof window !== 'undefined') window.toggleJumoChat = function() {
   if (window.state) {
     window.state.jumoChatOpen = !window.state.jumoChatOpen;
     window.render();
   }
 };
 
-window.sendJumoChatMessage = function(e) {
+if(typeof window !== 'undefined') window.sendJumoChatMessage = function(e) {
   e.preventDefault();
   const input = document.getElementById('jumo-chat-input');
   if (!input) return;
@@ -1309,7 +1309,7 @@ window.sendJumoChatMessage = function(e) {
 };
 
 
-window.advanceWorkflow = function(wfId, currentStatus) {
+if(typeof window !== 'undefined') window.advanceWorkflow = function(wfId, currentStatus) {
   if (window.state) {
     if (!window.state.portalActionLogs) window.state.portalActionLogs = [];
     const time = new Date().toLocaleTimeString();
@@ -1322,7 +1322,7 @@ window.advanceWorkflow = function(wfId, currentStatus) {
   }
 };
 
-window.loadEnterpriseModule = async function(modId) {
+if(typeof window !== 'undefined') window.loadEnterpriseModule = async function(modId) {
     if (window.bootOrchestrator) {
        await window.bootOrchestrator.loadModuleLazy(modId, window.state.session?.user?.role);
     }

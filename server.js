@@ -86,6 +86,22 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  
+  if (pathname === "/api/system/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    const servicesDetail = registry.list().map(name => ({
+       name: name,
+       status: "READY"
+    }));
+    res.end(JSON.stringify({
+      status: "READY",
+      kernel: "ONLINE",
+      shell: "ONLINE",
+      services: servicesDetail
+    }, null, 2));
+    return;
+  }
+
   if (pathname === "/system/health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({

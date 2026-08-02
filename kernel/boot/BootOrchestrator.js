@@ -1,3 +1,6 @@
+import { shellActivationManager } from '../runtime/ShellActivationManager.js';
+import { runtimeRecoveryManager } from '../runtime/RuntimeRecoveryManager.js';
+
 export class BootOrchestrator {
   constructor() {
     this.bootTimestamp = Date.now();
@@ -7,14 +10,16 @@ export class BootOrchestrator {
         { id: 'identity', name: 'Identity Gateway', status: 'PENDING' },
         { id: 'session', name: 'Session Manager', status: 'PENDING' },
         { id: 'tenant', name: 'Tenant Resolver', status: 'PENDING' },
-        { id: 'workspace', name: 'Workspace Runtime', status: 'PENDING' }
+        { id: 'workspace', name: 'UEOS Shell Runtime', status: 'PENDING' }
       ],
       background: [
         { id: 'erp_registry', name: 'ERP Registry', status: 'PENDING' },
         { id: 'portal_registry', name: 'Portal Registry', status: 'PENDING' },
         { id: 'faap', name: 'FAAP Financial Engine', status: 'PENDING' },
         { id: 'workflow', name: 'Workflow Engine', status: 'PENDING' },
-        { id: 'ai_gateway', name: 'AI Gateway', status: 'PENDING' }
+        { id: 'ai_gateway', name: 'AI Gateway', status: 'PENDING' },
+        { id: 'aegis', name: 'AEGIS Audit Engine', status: 'PENDING' },
+        { id: 'treasury', name: 'Treasury Services', status: 'PENDING' }
       ]
     };
     this.subscribers = [];
@@ -35,7 +40,7 @@ export class BootOrchestrator {
     this._notify('UPDATE', service.id);
   }
 
-  async executeFastCoreBoot() {
+  async executeFastCoreBoot(state) {
     this._notify('START_CRITICAL');
     
     // Enterprise Error Recovery: Boot Timeout Protection
@@ -43,22 +48,30 @@ export class BootOrchestrator {
     
     try {
       const bootProcess = async () => {
-        for (const service of this.services.critical) {
-          service.status = 'INITIALIZING';
-          this._notify('UPDATE', service.id);
-          await this._simulateServiceLoad(service, 100, 250);
-        }
+        const promises = this.services.critical.map(async (service) => {
+           service.status = 'INITIALIZING';
+           this._notify('UPDATE', service.id);
+           await this._simulateServiceLoad(service, 100, 400);
+        });
+        await Promise.all(promises);
       };
       
       await Promise.race([bootProcess(), bootTimeout]);
       this._notify('CRITICAL_READY');
       
+      // Critical services READY -> immediately open platform shell
+      shellActivationManager.activateShell(state);
+      
     } catch (error) {
       console.warn('[UEOS] Entering Degraded Mode due to critical service failure:', error);
       this.services.critical.forEach(s => {
-         if (s.status === 'INITIALIZING' || s.status === 'PENDING') s.status = 'DEGRADED';
+         if (s.status === 'INITIALIZING' || s.status === 'PENDING') {
+             s.status = 'DEGRADED';
+             runtimeRecoveryManager.catchError(error, s.id);
+         }
       });
       this._notify('DEGRADED_MODE_ACTIVE', error.message);
+      runtimeRecoveryManager.displayRecoveryScreen();
     }
   }
 
@@ -67,14 +80,15 @@ export class BootOrchestrator {
     const promises = this.services.background.map(async (service) => {
       service.status = 'INITIALIZING';
       this._notify('UPDATE', service.id);
-      await this._simulateServiceLoad(service, 300, 800);
+      await this._simulateServiceLoad(service, 300, 1200);
     });
     await Promise.allSettled(promises);
     this._notify('BACKGROUND_READY');
   }
 
-  async boot() {
-    await this.executeFastCoreBoot();
+  async boot(state) {
+    await this.executeFastCoreBoot(state);
+    // Continue loading secondary services in background
     this.executeBackgroundServices().catch(console.error);
     return true; 
   }

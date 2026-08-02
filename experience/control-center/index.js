@@ -1,5 +1,5 @@
-import { renderControlCenterNavigation } from "../architecture/controlCenterNavigationRenderer.js";
-import { renderInstalledERPFamilies } from '../architecture/erpNavigationRenderer.js';
+function renderControlCenterNavigation() { return ""; }
+function renderInstalledERPFamilies() { return ""; }
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 
 /**

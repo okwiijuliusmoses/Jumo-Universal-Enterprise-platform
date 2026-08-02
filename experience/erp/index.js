@@ -4,7 +4,7 @@ import { ERP_CATALOGUE, ERPRuntimeEngine } from "./runtimeEngine.js";
 import { getOfficialLogoHtml } from "../brand/brandConfig.js";
 
 export const erpRuntime = new ERPRuntimeEngine();
-window.erpRuntimeEngine = erpRuntime;
+if(typeof window !== 'undefined') window.erpRuntimeEngine = erpRuntime;
 if (window.state) window.state.runtimeEngine = erpRuntime;
 
 export const erpPlatformTemplate = (state) => {
@@ -120,12 +120,12 @@ export const erpPlatformTemplate = (state) => {
   `;
 };
 
-window.installErpTemplate = function(templateId) {
+if(typeof window !== 'undefined') window.installErpTemplate = function(templateId) {
   const newInst = erpRuntime.installERP(templateId);
   window.launchErpInstance(newInst.instanceId);
 };
 
-window.launchErpInstance = function(instanceId) {
+if(typeof window !== 'undefined') window.launchErpInstance = function(instanceId) {
   const inst = erpRuntime.getInstalled().find(i => i.instanceId === instanceId);
   if (!inst) return;
   const template = ERP_CATALOGUE.find(t => t.id === inst.templateId);

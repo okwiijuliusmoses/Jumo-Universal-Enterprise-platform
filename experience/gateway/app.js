@@ -1,4 +1,4 @@
-import { bootOrchestrator } from "../../kernel/boot/bootLoader.js";
+import { bootOrchestrator } from "../../kernel/boot/BootOrchestrator.js";
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { publicTemplate, loginTemplate, registerTemplate, gatewayTemplate, contactTemplate } from "./index.js";
 import { workspaceTemplate } from "../workspace/index.js";
@@ -380,6 +380,10 @@ window.switchTenant = function(id, name) {
 
 // Initialize app on load
 document.addEventListener("DOMContentLoaded", async () => {
+  if (window.state && window.state.bootComplete) {
+    if (typeof window.render === 'function') window.render();
+    return;
+  }
   const bootProgress = document.getElementById("boot-progress");
   const bootSteps = document.getElementById("boot-steps");
 
@@ -420,7 +424,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Start Boot Orchestration
-    await bootOrchestrator.boot();
+    await bootOrchestrator.boot(window.state);
     
     // Small pause to let user see "complete"
     await new Promise(res => setTimeout(res, 400));
