@@ -63,30 +63,34 @@ function renderInstalledERPFamilies() {
   return ecosystems.map(ecoKey => {
     const eco = ecosystemRegistry.ecosystems[ecoKey];
     return `
-      <div class="bg-gradient-to-br from-emerald-900 to-slate-900 text-white p-6 rounded-2xl border border-emerald-700 shadow-xl space-y-4">
-        <div class="flex items-center justify-between border-b border-emerald-800 pb-3">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
-            <h4 class="font-bold text-white text-base flex items-center gap-2">
+            <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
               <span>🏢</span> ${eco.name}
             </h4>
-            <p class="text-[11px] text-emerald-300">Certified Enterprise Ecosystem Factory</p>
+            <p class="text-[11px] text-slate-500">Certified Enterprise Ecosystem Factory</p>
           </div>
-          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-800 text-emerald-200 font-bold rounded-full border border-emerald-600">
+          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-full border border-emerald-200">
             ${eco.installedInstances} Tenants Active
           </span>
         </div>
 
         <div class="space-y-3">
           ${eco.templates.map(tmpl => `
-            <div class="p-3 bg-slate-900/80 hover:bg-slate-900 border border-emerald-800/60 rounded-xl flex items-center justify-between transition">
-              <div class="space-y-0.5">
-                <div class="font-bold text-xs text-white">${tmpl.name}</div>
-                <div class="text-[10px] text-emerald-400 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
+            <div class="p-4 bg-gradient-to-br from-emerald-800 to-emerald-950 text-white border border-emerald-600 rounded-xl shadow-md flex items-center justify-between transition">
+              <div class="space-y-1 max-w-[60%]">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-xs text-white">🟩 ${tmpl.name}</span>
+                  <span class="text-[9px] font-mono px-2 py-0.5 bg-emerald-900 text-emerald-200 rounded-full border border-emerald-500">Installed & Running</span>
+                </div>
+                <div class="text-[10px] text-emerald-200 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
+                <div class="text-[10px] text-emerald-300 line-clamp-1">${tmpl.description || 'Enterprise Operating Platform'}</div>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button onclick="installERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Install</button>
-                <button onclick="configureERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Config</button>
-                <button onclick="launchERPWorkspace('${tmpl.id}', '${tmpl.name}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase rounded shadow-xs cursor-pointer">Launch</button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="installERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Install</button>
+                <button onclick="configureERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Config</button>
+                <button onclick="launchERPWorkspace('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Launch</button>
               </div>
             </div>
           `).join('')}

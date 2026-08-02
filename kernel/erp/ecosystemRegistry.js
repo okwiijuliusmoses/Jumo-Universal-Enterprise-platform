@@ -4,12 +4,20 @@ import { vocationalConfig } from './education/vocationalConfig.js';
 import { secondaryConfig } from './education/secondaryConfig.js';
 import { primaryConfig } from './education/primaryConfig.js';
 import { alumniConfig } from './education/alumniConfig.js';
+import { governmentConfig } from './governmentConfig.js';
+import { healthcareConfig } from './healthcareConfig.js';
+import { financeConfig } from './financeConfig.js';
+import { churchConfig } from './churchConfig.js';
+import { commercialConfig } from './commercialConfig.js';
+import { agriConfig } from './agriConfig.js';
+import { professionalConfig } from './professionalConfig.js';
+import { clanConfig } from './clanConfig.js';
 
 export class EcosystemRegistry {
   constructor() {
     this.ecosystems = {
       Education: {
-        name: "Education Ecosystem",
+        name: "Education ERP Ecosystem",
         templates: [
           universityConfig,
           collegeConfig,
@@ -21,98 +29,63 @@ export class EcosystemRegistry {
         installedInstances: 6
       },
       Government: {
-        name: "Government Ecosystem",
+        name: "Government & Public Service Ecosystem",
         templates: [
-          { id: "Ministry-ERP", name: "Ministry & Public Service ERP", family: "Government", governanceModel: "Permanent Secretary & Minister" },
-          { id: "LocalGov-ERP", name: "Local Government & District ERP", family: "Government", governanceModel: "District Chairperson & Chief Administrative Officer" }
+          governmentConfig,
+          { id: "LocalGov-ERP", name: "Local Government & District ERP", family: "Government", governanceModel: "District Chairperson & CAO", description: "District council administration and local service delivery platform." }
         ],
         installedInstances: 2
       },
       Healthcare: {
-        name: "Healthcare Ecosystem",
+        name: "Healthcare & Hospital Ecosystem",
         templates: [
-          { id: "Hospital-ERP", name: "General Hospital ERP", family: "Healthcare", governanceModel: "Medical Director & Hospital Board" },
-          { id: "Clinic-ERP", name: "Specialized Clinic ERP", family: "Healthcare", governanceModel: "Chief Medical Officer" }
+          healthcareConfig,
+          { id: "Clinic-ERP", name: "Specialized Clinic & Diagnostics ERP", family: "Healthcare", governanceModel: "Chief Medical Officer", description: "Outpatient and specialized clinic operating system." }
         ],
         installedInstances: 2
       },
       Finance: {
         name: "Financial & Banking Ecosystem",
         templates: [
-          { id: "FAAP-Financials", name: "FAAP General Ledger & Treasury ERP", family: "Finance", governanceModel: "Chief Financial Officer & Board Audit Committee" },
-          { id: "Banking-Core", name: "Digital Banking Core ERP", family: "Finance", governanceModel: "Managing Director & Risk Directorate" }
+          financeConfig,
+          { id: "Banking-Core", name: "Digital Banking Core ERP", family: "Finance", governanceModel: "Managing Director & Risk Directorate", description: "Core banking ledger, customer accounts, and lending engine." }
         ],
         installedInstances: 3
-      },
-      Hospitality: {
-        name: "Hospitality Ecosystem",
-        templates: [
-          { id: "Hotel-Resort-ERP", name: "Hotel & Resort Management ERP", family: "Hospitality", governanceModel: "General Manager & Executive Committee" }
-        ],
-        installedInstances: 1
       },
       Church: {
-        name: "Faith-Based Ecosystem",
+        name: "Faith & Church Ecosystem",
         templates: [
-          { id: "Diocese-Church-ERP", name: "Diocese & Church Administration ERP", family: "Church", governanceModel: "Bishop & Diocesan Council" }
+          churchConfig
         ],
         installedInstances: 1
-      },
-      BusinessAssociation: {
-        name: "Business Association & Chamber Ecosystem",
-        templates: [
-          { id: "Chamber-ERP", name: "Chamber of Commerce & Trade Association ERP", family: "BusinessAssociation", governanceModel: "President & Executive Secretariat" }
-        ],
-        installedInstances: 1
-      },
-      Company: {
-        name: "Universal Corporate Enterprise Ecosystem",
-        templates: [
-          { id: "Corporate-ERP", name: "Multi-Department Corporate Enterprise ERP", family: "Company", governanceModel: "CEO & Board of Directors" }
-        ],
-        installedInstances: 4
-      },
-      Microfinance: {
-        name: "Microfinance & SACCO Ecosystem",
-        templates: [
-          { id: "SACCO-ERP", name: "SACCO & Microfinance Lending ERP", family: "Microfinance", governanceModel: "SACCO Board & Credit Committee" }
-        ],
-        installedInstances: 2
-      },
-      Agribusiness: {
-        name: "Agribusiness & Cooperative Ecosystem",
-        templates: [
-          { id: "Agri-ERP", name: "Agribusiness & Farmers Cooperative ERP", family: "Agribusiness", governanceModel: "Cooperative Board & General Manager" }
-        ],
-        installedInstances: 2
       },
       GeneralMerchandise: {
-        name: "Wholesale & Retail Merchandise Ecosystem",
+        name: "Commercial & Retail Ecosystem",
         templates: [
-          { id: "Retail-ERP", name: "Wholesale & Retail Chain Merchandise ERP", family: "GeneralMerchandise", governanceModel: "Operations Director & Logistics Head" }
+          commercialConfig
         ],
         installedInstances: 3
       },
-      FamilyClan: {
-        name: "Family & Heritage Clan Ecosystem",
+      Agribusiness: {
+        name: "Agriculture & Cooperative Ecosystem",
         templates: [
-          { id: "Clan-ERP", name: "Family Heritage & Clan Council ERP", family: "FamilyClan", governanceModel: "Clan Elders & Executive Council" }
-        ],
-        installedInstances: 1
-      },
-      LegalServices: {
-        name: "Legal Practice & Law Firm Ecosystem",
-        templates: [
-          { id: "LawFirm-ERP", name: "Legal Practice & Case Management ERP", family: "LegalServices", governanceModel: "Managing Partner & Senior Counsel" }
-        ],
-        installedInstances: 1
-      },
-      ProfessionalServices: {
-        name: "Professional Consultancy & Agency Ecosystem",
-        templates: [
-          { id: "Agency-ERP", name: "Professional Consultancy & Project Agency ERP", family: "ProfessionalServices", governanceModel: "Principal Consultant & Managing Partners" }
+          agriConfig
         ],
         installedInstances: 2
+      },
+      LegalServices: {
+        name: "Professional & Legal Services Ecosystem",
+        templates: [
+          professionalConfig
+        ],
+        installedInstances: 1
+      },
+      FamilyClan: {
+        name: "Community & Clan Ecosystem",
+        templates: [
+          clanConfig
+        ],
+        installedInstances: 1
       }
     };
   }
