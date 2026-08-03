@@ -100,46 +100,63 @@ if (typeof window !== 'undefined') {
 
 function renderControlCenterNavigation() { return ""; }
 
-function renderInstalledERPFamilies() {
-  const ecosystems = ecosystemRegistry.getEcosystems();
-  return ecosystems.map(ecoKey => {
-    const eco = ecosystemRegistry.ecosystems[ecoKey];
-    return `
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div>
-            <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
-              <span>🏢</span> ${eco.name}
-            </h4>
-            <p class="text-[11px] text-slate-500">Certified Enterprise Ecosystem Factory</p>
-          </div>
-          <span class="text-[10px] font-mono px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-full border border-emerald-200">
-            ${eco.installedInstances} Tenants Active
-          </span>
-        </div>
 
-        <div class="space-y-3">
-          ${eco.templates.map(tmpl => `
-            <div class="p-4 bg-gradient-to-br from-emerald-800 to-emerald-950 text-white border border-emerald-600 rounded-xl shadow-md flex items-center justify-between transition">
-              <div class="space-y-1 max-w-[60%]">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-xs text-white">🟩 ${tmpl.name}</span>
-                  <span class="text-[9px] font-mono px-2 py-0.5 bg-emerald-900 text-emerald-200 rounded-full border border-emerald-500">Installed & Running</span>
-                </div>
-                <div class="text-[10px] text-emerald-200 font-mono">${tmpl.id} &bull; Governance: ${tmpl.governanceModel || 'Standard'}</div>
-                <div class="text-[10px] text-emerald-300 line-clamp-1">${tmpl.description || 'Enterprise Operating Platform'}</div>
-              </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="installERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Install</button>
-                <button onclick="configureERPInstance('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Config</button>
-                <button onclick="launchERPWorkspace('${tmpl.id}', '${tmpl.name}')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase rounded-lg shadow-xs cursor-pointer">Launch</button>
-              </div>
-            </div>
-          `).join('')}
+function renderInstalledERPFamilies() {
+  const controlPlane = window.ueosControlPlane;
+
+  if (!controlPlane) {
+    return `
+      <div class="p-6 text-rose-500">
+        UEOS AI Control Plane unavailable
+      </div>
+    `;
+  }
+
+  const health = controlPlane.health();
+
+  const erpRegistry =
+    health?.registries?.erp || {};
+
+  const platforms =
+    erpRegistry.platforms || [];
+
+  if (!platforms.length) {
+    return `
+      <div class="p-8 bg-white rounded-xl border border-slate-200">
+        <h2 class="text-xl font-bold text-slate-800">
+          UEOS AI ERP Factory
+        </h2>
+
+        <p class="mt-3 text-slate-500">
+          AI ERP Factory is online. No ERP instances deployed.
+        </p>
+
+        <div class="mt-4 text-sm text-emerald-600">
+          Factory Status: ONLINE
         </div>
       </div>
     `;
-  }).join('');
+  }
+
+  return `
+    <div class="grid gap-4">
+      ${platforms.map(erp => `
+        <div class="p-6 bg-white rounded-xl border border-slate-200">
+          <h3 class="font-bold text-slate-800">
+            ${erp.name || erp.id || "UEOS ERP Platform"}
+          </h3>
+
+          <p class="text-sm text-slate-500 mt-2">
+            ${erp.type || "Enterprise ERP"}
+          </p>
+
+          <span class="inline-block mt-3 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs">
+            AI Factory Ready
+          </span>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 function renderCommercialPlatforms() {
