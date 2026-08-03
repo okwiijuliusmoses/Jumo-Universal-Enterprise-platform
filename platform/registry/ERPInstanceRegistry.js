@@ -3,7 +3,7 @@
  * Enterprise ERP Instance Registry
  */
 
-import { EnterprisePlatformTemplateRegistry } from "../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
+import { enterprisePlatformTemplateRegistry } from "../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
 import { portalGenerator } from "../factory/erp/generators/PortalGenerator.js";
 import { moduleGenerator } from "../factory/erp/generators/ModuleGenerator.js";
 import { workflowGenerator } from "../factory/erp/generators/WorkflowGenerator.js";
@@ -26,7 +26,7 @@ export class ERPInstanceRegistry {
    // Restore UEOS ERP runtime hydration from existing blueprints
    const blueprintId = instance.blueprintId || instance.templateId;
    if (blueprintId) {
-     const blueprint = EnterprisePlatformTemplateRegistry.getBlueprint(blueprintId);
+     const blueprint = enterprisePlatformTemplateRegistry.getTemplate(blueprintId);
      if (blueprint) {
        // Hydrate Portals
        instance.portals = instance.portals?.length 

@@ -17,7 +17,7 @@ import { erpInstanceRegistry } from "../../registry/ERPInstanceRegistry.js";
 import { erpDiscoveryService } from "../../factory/erp/services/ERPDiscoveryService.js";
 import { erpWorkspaceResolver } from "../../workspace/ERPWorkspaceResolver.js";
 import { digitalAgentRegistry } from "../../ai/digitalAgentRegistry.js";
-import { EnterprisePlatformTemplateRegistry } from "../../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
+import { enterprisePlatformTemplateRegistry } from "../../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
 
 // Settings Registries
 import { universalSettingsRegistry } from "../settings/UniversalSettingsRegistry.js";

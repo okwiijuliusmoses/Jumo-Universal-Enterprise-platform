@@ -3,7 +3,7 @@
  * AI Autonomous Enterprise ERP Factory
  */
 
-import { EnterprisePlatformTemplateRegistry } from "./templates/EnterprisePlatformTemplateRegistry.js";
+import { enterprisePlatformTemplateRegistry } from "./templates/EnterprisePlatformTemplateRegistry.js";
 
 export class EnterpriseERPFactory {
 
@@ -41,11 +41,11 @@ domain:definition.domain,
 architecture:{
 
 layers:[
- ...EnterprisePlatformTemplateRegistry.layers
+ ...enterprisePlatformTemplateRegistry.layers
 ],
 
 registries:[
- ...EnterprisePlatformTemplateRegistry.registries
+ ...enterprisePlatformTemplateRegistry.registries
 ]
 
 },
@@ -62,7 +62,7 @@ components:[],
 workflows:[],
 
 digitalOffice:[
- ...EnterprisePlatformTemplateRegistry.digitalOffice
+ ...enterprisePlatformTemplateRegistry.digitalOffice
 ],
 
 
@@ -149,7 +149,7 @@ status:this.status,
 
 templates:this.factories.length,
 
-standards:EnterprisePlatformTemplateRegistry.minimumStandards,
+standards:enterprisePlatformTemplateRegistry.minimumStandards,
 
 ai:this.ai
 

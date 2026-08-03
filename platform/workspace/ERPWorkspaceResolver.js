@@ -4,7 +4,7 @@
  */
 
 import { erpInstanceRegistry } from "../registry/ERPInstanceRegistry.js";
-import { EnterprisePlatformTemplateRegistry } from "../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
+import { enterprisePlatformTemplateRegistry } from "../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
 import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { portalRegistry } from "../registry/PortalRegistry.js";
 import { workflowRegistry } from "../registry/workflowRegistry.js";
@@ -25,7 +25,7 @@ export class ERPWorkspaceResolver {
       throw new Error(`ERP Instance ${erpId} not found or not active.`);
     }
 
-    const blueprint = EnterprisePlatformTemplateRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
+    const blueprint = enterprisePlatformTemplateRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
     const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
     const sector = instance.domain || blueprint.domain || instance.name;
     

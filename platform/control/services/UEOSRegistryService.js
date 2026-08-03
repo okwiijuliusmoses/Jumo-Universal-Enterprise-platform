@@ -11,7 +11,7 @@ import { workflowRegistry } from "../../registry/workflowRegistry.js";
 import { componentRegistry } from "../../registry/componentRegistry.js";
 import { departmentRegistry } from "../../registry/departmentRegistry.js";
 import { aiERPRegistry } from "../../registry/ai/AIERPRegistry.js";
-import { EnterprisePlatformTemplateRegistry } from "../../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
+import { enterprisePlatformTemplateRegistry } from "../../factory/erp/templates/EnterprisePlatformTemplateRegistry.js";
 
 export class UEOSRegistryService {
 
@@ -25,8 +25,8 @@ export class UEOSRegistryService {
       },
 
       templates:{
-        total: EnterprisePlatformTemplateRegistry.list().length,
-        catalog: EnterprisePlatformTemplateRegistry.list()
+        total: enterprisePlatformTemplateRegistry.list().length,
+        catalog: enterprisePlatformTemplateRegistry.list()
       },
 
       portals:{
