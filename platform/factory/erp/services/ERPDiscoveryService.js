@@ -7,6 +7,7 @@ import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
 import { ERPBlueprintRegistry } from "../ERPBlueprintRegistry.js";
 import { erpFamilyRegistry } from "../ERPFamilyRegistry.js";
 import { erpEcosystemTemplateRegistry } from "../ERPEcosystemTemplateRegistry.js";
+import { ERPEnterpriseStandard } from "../ERPEnterpriseStandard.js";
 
 export class ERPDiscoveryService {
 
@@ -21,7 +22,8 @@ export class ERPDiscoveryService {
   listERPs() {
     const instances = erpInstanceRegistry.list();
     return instances.map(instance => {
-      const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId);
+      const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
+      const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
       const template = blueprint ? erpEcosystemTemplateRegistry.getTemplate(blueprint.templateId) : null;
       const family = template ? erpFamilyRegistry.getFamily(template.familyId) : null;
       
@@ -33,22 +35,25 @@ export class ERPDiscoveryService {
         familyId: family ? family.id : null,
         familyName: family ? family.name : "Institutional ERP Family",
         tenant: instance.tenant,
-        domain: instance.domain || "Institutional ERP",
+        domain: instance.domain || blueprint.domain || "Institutional ERP",
         status: instance.status || "ACTIVE",
         lifecycle: instance.lifecycle || "RUNNING",
         configurationStatus: instance.configurationStatus || "CONFIGURED",
         deploymentStatus: instance.deploymentStatus || "DEPLOYED",
         runtimeStatus: instance.runtimeStatus || "ONLINE",
-        modules: instance.modules || [],
-        portals: instance.portals || [],
-        workflows: instance.workflows || [],
-        agents: instance.agents || [],
+        modules: instance.modules || blueprint.modules || standard.modules,
+        portals: instance.portals || blueprint.portals || standard.portals,
+        workflows: instance.workflows || blueprint.workflows || standard.workflows,
+        components: instance.components || blueprint.components || standard.components,
+        forms: instance.forms || blueprint.forms || standard.forms,
+        departments: instance.departments || blueprint.departments || standard.departments,
+        agents: instance.agents || blueprint.agents || ["UEOS Enterprise AI Assistant"],
         configuration: {
-          settings: instance.settings || {},
-          configuration: instance.configuration || {},
-          features: instance.features || {},
-          permissions: instance.permissions || [],
-          policies: instance.policies || {}
+          settings: instance.settings || blueprint.settings || standard.settings,
+          configuration: instance.configuration || blueprint.configuration || {},
+          features: instance.features || blueprint.features || {},
+          permissions: instance.permissions || blueprint.permissions || standard.permissions,
+          policies: instance.policies || blueprint.policies || {}
         }
       };
     });
@@ -58,10 +63,18 @@ export class ERPDiscoveryService {
     const instance = erpInstanceRegistry.get(id);
     if (!instance) return null;
     
-    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId);
+    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId) || {};
+    const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
     return {
       ...instance,
-      blueprint: blueprint || null
+      blueprint: blueprint || null,
+      modules: instance.modules || blueprint.modules || standard.modules,
+      portals: instance.portals || blueprint.portals || standard.portals,
+      workflows: instance.workflows || blueprint.workflows || standard.workflows,
+      components: instance.components || blueprint.components || standard.components,
+      forms: instance.forms || blueprint.forms || standard.forms,
+      departments: instance.departments || blueprint.departments || standard.departments,
+      settings: instance.settings || blueprint.settings || standard.settings
     };
   }
 
