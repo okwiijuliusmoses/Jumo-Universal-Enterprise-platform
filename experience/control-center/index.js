@@ -39,7 +39,7 @@ if (typeof window !== 'undefined') {
 
   window.installERPInstance = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane;
+    const controlPlane = window.ueosControlPlane || null;
     if (controlPlane) {
       const tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
       const inst = controlPlane.deployERP(tmpl ? tmpl.id : erpId, erpName || (tmpl ? tmpl.name : erpId));
@@ -67,7 +67,7 @@ if (typeof window !== 'undefined') {
 
   window.launchERPWorkspace = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane;
+    const controlPlane = window.ueosControlPlane || null;
     if (controlPlane) {
       let tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
       let inst = controlPlane.getDeployedERPInstances().find(i => i.templateId === erpId || i.instanceId === erpId);
@@ -101,124 +101,174 @@ if (typeof window !== 'undefined') {
 function renderControlCenterNavigation() { return ""; }
 
 
-function renderInstalledERPFamilies() {
-  const controlPlane = window.ueosControlPlane;
 
-  if (!controlPlane) {
+function renderInstalledERPFamilies(){
+
+  const controlPlane = window.ueosControlPlane || null;
+
+
+  if(!controlPlane){
+
     return `
-      <div class="p-6 bg-rose-50 border border-rose-200 rounded-xl">
-        <h2 class="font-bold text-rose-700">
-          UEOS AI Control Plane Offline
-        </h2>
-      </div>
-    `;
+    <div class="p-6 text-rose-600">
+      UEOS AI Control Plane unavailable
+    </div>`;
+
   }
 
-  const health = controlPlane.health();
 
-  const factory =
-    health?.factories?.enterpriseERP || {};
+  const health =
+    controlPlane && typeof controlPlane.health === "function"
+    ? controlPlane.health()
+    : {
+        registries:{erp:{platforms:[]}},
+        factories:{enterpriseERP:{templates:0}}
+      };
+
 
   const registry =
     health?.registries?.erp || {};
 
-  const deployed =
-    typeof controlPlane.getDeployedERPInstances === "function"
-      ? controlPlane.getDeployedERPInstances()
-      : [];
 
-  const templates =
-    factory.templates || 0;
+  const generated =
+    typeof controlPlane.getGeneratedERPInstances === "function"
+    ? controlPlane.getGeneratedERPInstances()
+    : [];
 
-  const status =
-    factory.status || "ONLINE";
 
-  if (!deployed.length && templates === 0) {
-    return `
-      <div class="p-8 bg-white rounded-xl border border-slate-200 shadow-sm">
+  const registered =
+    registry.platforms || [];
 
-        <h2 class="text-2xl font-bold text-slate-800">
-          JUMO UEOS AI ERP Factory
-        </h2>
 
-        <p class="mt-3 text-slate-600">
-          AI ERP Factory is online. No ERP instances deployed.
-        </p>
+  const instances =
+    [
+      ...registered,
+      ...generated
+    ].filter(
+      (item,index,array)=>
+      array.findIndex(
+        x=>x.id===item.id
+      )===index
+    );
 
-        <div class="mt-6 grid md:grid-cols-3 gap-4">
 
-          <div class="p-5 bg-slate-50 rounded-xl">
-            <div class="text-sm text-slate-500">
-              Factory Status
-            </div>
-            <div class="font-bold text-emerald-600">
-              ${status}
-            </div>
-          </div>
 
-          <div class="p-5 bg-slate-50 rounded-xl">
-            <div class="text-sm text-slate-500">
-              ERP Templates
-            </div>
-            <div class="font-bold">
-              ${templates}
-            </div>
-          </div>
+  return `
 
-          <div class="p-5 bg-slate-50 rounded-xl">
-            <div class="text-sm text-slate-500">
-              Registry
-            </div>
-            <div class="font-bold">
-              ${registry.registry || "UEOS AI ERP Registry"}
-            </div>
-          </div>
+  <div class="space-y-6">
+
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+
+      <h2 class="text-xl font-bold text-slate-800">
+        JUMO UEOS AI ERP Factory
+      </h2>
+
+      <p class="text-slate-500 mt-2">
+        Configurable enterprise ERP generation platform
+      </p>
+
+
+      <div class="grid grid-cols-3 gap-4 mt-5">
+
+        <div class="p-4 bg-slate-50 rounded-lg">
+          <b>${registry.platforms?.length || 0}</b>
+          <span class="block text-xs">
+          Registered ERP Systems
+          </span>
+        </div>
+
+
+        <div class="p-4 bg-slate-50 rounded-lg">
+          <b>${generated.length}</b>
+          <span class="block text-xs">
+          AI Generated Instances
+          </span>
+        </div>
+
+
+        <div class="p-4 bg-slate-50 rounded-lg">
+          <b>${health?.factories?.enterpriseERP?.templates || 0}</b>
+          <span class="block text-xs">
+          Blueprint Templates
+          </span>
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+
+
+      <h3 class="font-bold text-slate-800 mb-4">
+        Deployed ERP Ecosystems
+      </h3>
+
+
+
+      ${
+      instances.length === 0
+
+      ?
+
+      `
+      <p class="text-slate-500">
+      No ERP instances generated yet.
+      </p>
+      `
+
+      :
+
+      instances.map(erp=>`
+
+      <div class="border rounded-lg p-4 mb-3">
+
+        <div class="font-bold">
+          ${erp.name}
+        </div>
+
+        <div class="text-sm text-slate-500">
+          ${erp.category || "Enterprise ERP"}
+        </div>
+
+
+        <div class="grid grid-cols-3 gap-3 mt-3 text-xs">
+
+          <span>
+          Portals:
+          ${erp.portals?.length || 0}
+          </span>
+
+          <span>
+          Modules:
+          ${erp.modules?.length || 0}
+          </span>
+
+          <span>
+          Status:
+          ${erp.status}
+          </span>
 
         </div>
 
-        <button
-          onclick="window.openERPFactory && window.openERPFactory()"
-          class="mt-8 px-6 py-3 bg-slate-900 text-white rounded-lg font-bold">
-          Open AI ERP Factory
-        </button>
-
       </div>
-    `;
-  }
 
-  return `
-    <div class="p-8 bg-white rounded-xl border border-slate-200">
+      `).join("")
 
-      <h2 class="text-2xl font-bold text-slate-800">
-        Deployed Enterprise Platforms
-      </h2>
+      }
 
-      <div class="mt-6 space-y-4">
-
-        ${
-          deployed.map(instance => `
-            <div class="p-5 border rounded-xl">
-
-              <div class="font-bold text-lg">
-                ${instance.name || instance.id}
-              </div>
-
-              <div class="text-sm text-slate-500">
-                Tenant: ${instance.tenantId || "Enterprise Tenant"}
-              </div>
-
-              <div class="mt-2 text-emerald-600 font-bold">
-                ACTIVE
-              </div>
-
-            </div>
-          `).join("")
-        }
-
-      </div>
 
     </div>
+
+
+  </div>
+
   `;
+
 }
 
 function renderCommercialPlatforms() {
@@ -1130,7 +1180,7 @@ function renderViewContent(view) {
 
           <div class="space-y-3 text-xs">
             ${(() => {
-              const controlPlane = window.ueosControlPlane;
+              const controlPlane = window.ueosControlPlane || null;
               const installed = controlPlane ? controlPlane.getDeployedERPInstances() : [];
               if (installed.length === 0) {
                 return `<p class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">No ERP instances currently deployed. Install an ERP from the catalogue above.</p>`;
@@ -1508,7 +1558,7 @@ if (typeof window !== 'undefined') window.switchCardTab = function(cardTabId, ta
 if (typeof window !== 'undefined') window.openErpInstallationFlow = function(templateName) {
   const customName = `${templateName} Enterprise`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.ueosControlPlane || null;
   
   let template = null;
   let inst = null;
@@ -1556,7 +1606,7 @@ if (typeof window !== 'undefined') window.openErpInstallationFlow = function(tem
 if (typeof window !== 'undefined') window.configureErpBlueprint = function(templateName) {
   const customName = `${templateName} (Blueprint Configured)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.ueosControlPlane || null;
   
   let template = null;
   let inst = null;
@@ -1590,7 +1640,7 @@ if (typeof window !== 'undefined') window.configureErpBlueprint = function(templ
 if (typeof window !== 'undefined') window.cloneErpTemplate = function(templateName) {
   const customName = `${templateName} (Cloned Platform)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.ueosControlPlane || null;
   
   let template = null;
   let inst = null;
