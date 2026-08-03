@@ -1,0 +1,101 @@
+[
+  {
+    "id": "education-erp-1785779326846",
+    "blueprintId": "education-erp",
+    "tenant": "education-erp-tenant",
+    "domain": "Institutional ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.867Z"
+  },
+  {
+    "id": "government-erp-1785779326879",
+    "blueprintId": "government-erp",
+    "tenant": "government-erp-tenant",
+    "domain": "Public Administration ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.881Z"
+  },
+  {
+    "id": "finance-microfinance-erp-1785779326889",
+    "blueprintId": "finance-microfinance-erp",
+    "tenant": "finance-microfinance-erp-tenant",
+    "domain": "Financial Institution ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.891Z"
+  },
+  {
+    "id": "healthcare-erp-1785779326894",
+    "blueprintId": "healthcare-erp",
+    "tenant": "healthcare-erp-tenant",
+    "domain": "Healthcare Operations ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.896Z"
+  },
+  {
+    "id": "agriculture-erp-1785779326898",
+    "blueprintId": "agriculture-erp",
+    "tenant": "agriculture-erp-tenant",
+    "domain": "Agribusiness ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.900Z"
+  },
+  {
+    "id": "commerce-erp-1785779326902",
+    "blueprintId": "commerce-erp",
+    "tenant": "commerce-erp-tenant",
+    "domain": "Commerce ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.908Z"
+  },
+  {
+    "id": "enterprise-company-erp-1785779326910",
+    "blueprintId": "enterprise-company-erp",
+    "tenant": "enterprise-company-erp-tenant",
+    "domain": "Corporate ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.911Z"
+  },
+  {
+    "id": "community-cultural-erp-1785779326912",
+    "blueprintId": "community-cultural-erp",
+    "tenant": "community-cultural-erp-tenant",
+    "domain": "Social Institution ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.913Z"
+  },
+  {
+    "id": "alumni-endowment-erp-1785779326915",
+    "blueprintId": "alumni-endowment-erp",
+    "tenant": "alumni-endowment-erp-tenant",
+    "domain": "Institutional Network ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.916Z"
+  },
+  {
+    "id": "hospitality-erp-1785779326918",
+    "blueprintId": "hospitality-erp",
+    "tenant": "hospitality-erp-tenant",
+    "domain": "Hospitality Operations ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.920Z"
+  },
+  {
+    "id": "legal-case-management-erp-1785779326922",
+    "blueprintId": "legal-case-management-erp",
+    "tenant": "legal-case-management-erp-tenant",
+    "domain": "Justice ERP",
+    "status": "ACTIVE",
+    "lifecycle": "INSTALLED",
+    "deployedAt": "2026-08-03T17:48:46.923Z"
+  }
+]
