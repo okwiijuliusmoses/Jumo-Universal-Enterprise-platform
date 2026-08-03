@@ -547,7 +547,7 @@ export class ERPModuleFactory {
 export function generatePortalModules(portalId, portalName, ecosystem, erpId) {
   const factory = new ERPModuleFactory();
 
-  let erpId = "edu-uni";
+  const resolvedErpId = erpId || null;
 
   // Match standard prefixes
   if (portalId.startsWith("uni-")) erpId = "edu-uni";
@@ -576,7 +576,7 @@ export function generatePortalModules(portalId, portalName, ecosystem, erpId) {
   }
 
 
-  return factory.installRealModulesForPortal(portalId, portalName, ecosystem, erpId);
+  return factory.installRealModulesForPortal(portalId, portalName, ecosystem, resolvedErpId);
 }
 
 // 3. Central Governance Portals Maps for all 19 Platforms
