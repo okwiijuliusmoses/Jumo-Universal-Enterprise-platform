@@ -8,6 +8,7 @@ import { erpGenerationEngine } from "./ERPGenerationEngine.js";
 import { erpRegistry } from "../../registry/ERPRegistry.js";
 import { portalRegistry } from "../../registry/PortalRegistry.js";
 import { moduleRegistry } from "../../registry/ModuleRegistry.js";
+import { erpDeploymentService } from "./services/ERPDeploymentService.js";
 import { formRegistry } from "../../registry/formRegistry.js";
 import { workflowRegistry } from "../../registry/workflowRegistry.js";
 import { componentRegistry } from "../../registry/componentRegistry.js";
@@ -77,6 +78,8 @@ generateERP(definition){
 
     const instance =
       erpGenerationEngine.generateERP(definition);
+
+    erpDeploymentService.deploy(instance);
 
     erpRegistry.register({
       ...instance,
