@@ -9,6 +9,10 @@ import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { portalRegistry } from "../registry/PortalRegistry.js";
 import { workflowRegistry } from "../registry/workflowRegistry.js";
 import { ERPEnterpriseStandard } from "../factory/erp/ERPEnterpriseStandard.js";
+import { enterpriseLayerRegistry } from "../factory/enterprise/EnterpriseLayerRegistry.js";
+import { enterpriseModuleFactory } from "../factory/modules/EnterpriseModuleFactory.js";
+import { enterprisePortalFactory } from "../factory/portal/EnterprisePortalFactory.js";
+import { enterpriseComponentRegistry } from "../factory/component/EnterpriseComponentRegistry.js";
 
 export class ERPWorkspaceResolver {
   constructor() {
@@ -23,13 +27,19 @@ export class ERPWorkspaceResolver {
 
     const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
     const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
+    const sector = instance.domain || blueprint.domain || instance.name;
     
-    // Merge baseline capabilities with deployed capabilities
-    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || standard.modules;
-    const enabledPortals = instance.portals || blueprint.portals || standard.portals;
+    // Merge baseline capabilities with deployed capabilities & factories
+    const factoryModules = enterpriseModuleFactory.getModulesForSector(sector);
+    const factoryPortals = enterprisePortalFactory.getPortalsForSector(sector);
+    const allComponents = enterpriseComponentRegistry.listComponents();
+    const enterpriseLayers = enterpriseLayerRegistry.listLayers();
+
+    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || factoryModules;
+    const enabledPortals = instance.portals || blueprint.portals || factoryPortals;
     const enabledWorkflows = instance.workflows || blueprint.workflows || standard.workflows;
-    const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || [];
-    const enabledComponents = instance.components || blueprint.components || standard.components;
+    const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || ["UEOS Enterprise AI Assistant"];
+    const enabledComponents = instance.components || blueprint.components || allComponents;
     const enabledForms = instance.forms || blueprint.forms || standard.forms;
     const enabledDepartments = instance.departments || blueprint.departments || standard.departments;
     const enabledRoles = instance.roles || blueprint.roles || standard.roles;
@@ -39,17 +49,17 @@ export class ERPWorkspaceResolver {
 
     const loadedModules = enabledModules.map(m => {
       const modId = typeof m === 'string' ? m : m.id;
-      return moduleRegistry.get(modId) || { name: typeof m === 'string' ? m : m.name, type: "Unknown", id: modId };
+      return moduleRegistry.get(modId) || { name: typeof m === 'string' ? m : m.name, type: "Enterprise Module", id: modId };
     });
 
     const loadedPortals = enabledPortals.map(p => {
       const portalId = typeof p === 'string' ? p : p.id;
-      return portalRegistry.get(portalId) || { name: typeof p === 'string' ? p : p.name, type: "Portal", id: portalId };
+      return portalRegistry.get(portalId) || { name: typeof p === 'string' ? p : p.name, type: "Enterprise Portal", id: portalId };
     });
 
     const loadedWorkflows = enabledWorkflows.map(w => {
       const wfId = typeof w === 'string' ? w : w.id;
-      return workflowRegistry.get(wfId) || { name: typeof w === 'string' ? w : w.name, type: "Workflow", id: wfId };
+      return workflowRegistry.get(wfId) || { name: typeof w === 'string' ? w : w.name, type: "Enterprise Workflow", id: wfId };
     });
 
     // Resolve settings from various registries if available
@@ -67,10 +77,12 @@ export class ERPWorkspaceResolver {
       domain: instance.domain,
       lifecycle: instance.lifecycle || "RUNNING",
       status: instance.status || "ACTIVE",
+      platformType: "DIGITAL_ENTERPRISE_PLATFORM",
       configurationStatus: instance.configurationStatus || "CONFIGURED",
       deploymentStatus: instance.deploymentStatus || "DEPLOYED",
       runtimeStatus: instance.runtimeStatus || "ONLINE",
       workspace: {
+        layers: enterpriseLayers,
         modules: loadedModules,
         portals: loadedPortals,
         workflows: loadedWorkflows,
@@ -85,6 +97,16 @@ export class ERPWorkspaceResolver {
         settings: settings,
         navigation: blueprint.navigation || standard.navigation
       },
+      configuration: {
+        settings: settings,
+        configuration: instance.configuration || blueprint.configuration || {},
+        features: instance.features || blueprint.features || {},
+        permissions: enabledPermissions,
+        policies: instance.policies || blueprint.policies || {}
+      },
+      resolvedAt: new Date().toISOString()
+    };
+  }
       configuration: {
         settings: settings,
         configuration: instance.configuration || blueprint.configuration || {},
