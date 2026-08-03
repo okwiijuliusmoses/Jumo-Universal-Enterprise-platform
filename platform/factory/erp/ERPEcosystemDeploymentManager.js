@@ -6,6 +6,7 @@
 import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
 import { erpFactoryManager } from "./ERPFactoryManager.js";
 import { erpDeploymentService } from "./services/ERPDeploymentService.js";
+import { erpInstallationManager } from "./ERPInstallationManager.js";
 
 export class ERPEcosystemDeploymentManager {
 
@@ -42,11 +43,16 @@ export class ERPEcosystemDeploymentManager {
       const deployed =
         erpDeploymentService.deploy(generated);
 
+      const installed =
+        erpInstallationManager.install(generated);
+
       results.push({
         blueprint: blueprint.id,
         erp: generated.id,
         status:
-          deployed.status || "DEPLOYED"
+          installed.status || "INSTALLED",
+          deployment: deployed,
+          installation: installed
       });
 
     });
