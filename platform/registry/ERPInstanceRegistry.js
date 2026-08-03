@@ -60,7 +60,7 @@ export class ERPInstanceRegistry {
    this.instances.push({
      ...instance,
      status: instance.status || "ACTIVE",
-     lifecycle: "RUNNING",
+     lifecycle: instance.lifecycle || "READY",
      configurationStatus: "CONFIGURED",
      deploymentStatus: "DEPLOYED",
      runtimeStatus: "ONLINE",
@@ -79,6 +79,15 @@ export class ERPInstanceRegistry {
  list(){
    return this.instances;
  }
+
+ updateLifecycle(id, state) {
+    const validStates = ["REGISTERED", "DEPLOYED", "CONFIGURED", "PROVISIONED", "READY", "RUNNING", "SUSPENDED", "RESTORED"];
+    const item = this.get(id);
+    if (item && validStates.includes(state)) {
+      item.lifecycle = state;
+    }
+    return item;
+  }
 
  activate(id){
    const item=this.get(id);

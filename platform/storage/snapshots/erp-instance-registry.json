@@ -8,7 +8,7 @@
     "tenant": "system",
     "domain": "Institutional ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -20,7 +20,7 @@
     "tenant": "system",
     "domain": "Public Administration ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -32,7 +32,7 @@
     "tenant": "system",
     "domain": "Financial Institution ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -44,7 +44,7 @@
     "tenant": "system",
     "domain": "Healthcare Operations ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -56,7 +56,7 @@
     "tenant": "system",
     "domain": "Agribusiness ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -68,7 +68,7 @@
     "tenant": "system",
     "domain": "Commerce ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -80,7 +80,7 @@
     "tenant": "system",
     "domain": "Corporate ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -92,7 +92,7 @@
     "tenant": "system",
     "domain": "Social Institution ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -104,7 +104,7 @@
     "tenant": "system",
     "domain": "Institutional Network ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -116,7 +116,7 @@
     "tenant": "system",
     "domain": "Hospitality Operations ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   },
   {
@@ -128,7 +128,7 @@
     "tenant": "system",
     "domain": "Justice ERP",
     "status": "ACTIVE",
-    "lifecycle": "INSTALLED",
+    "lifecycle": "READY",
     "deployedAt": "2026-08-03T18:40:01.546Z"
   }
 ]

@@ -349,6 +349,14 @@ window.handleLoginSubmit = function(e) {
 
 window.launchERPInstance = async function(instanceId) {
     try {
+        // Phase 1: Provision and Launch via API
+        const launchResponse = await fetch(`/api/ueos/erp/${instanceId}/launch`, { method: "POST" });
+        if (!launchResponse.ok) throw new Error("Failed to launch ERP platform");
+        
+        const launchData = await launchResponse.json();
+        console.log("[UEOS] ERP Launch Context:", launchData);
+
+        // Phase 2: Resolve Workspace
         const response = await fetch(`/api/ueos/erp/${instanceId}/workspace`);
         if (!response.ok) throw new Error("Failed to resolve ERP workspace");
         

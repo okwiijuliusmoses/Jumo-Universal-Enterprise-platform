@@ -53,7 +53,7 @@ registry.list().forEach(serviceName => {
 const runtimeState = runtime.start();
 const PORT = 3000;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -204,6 +204,22 @@ const server = http.createServer((req, res) => {
             console.error("Workspace Resolution Error:", err);
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: "Internal Server Error during workspace resolution", details: err.message }, null, 2));
+        }
+        return;
+    }
+
+    if (lastSegment === "launch" && req.method === "POST") {
+        try {
+            const actualId = segments[segments.length - 2];
+            const { erpProvisioningService } = await import("./platform/factory/erp/services/ERPProvisioningService.js");
+            const launchContext = await erpProvisioningService.launchERP(actualId);
+            
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(launchContext, null, 2));
+        } catch (err) {
+            console.error("ERP Launch Error:", err);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Failed to launch ERP platform", details: err.message }, null, 2));
         }
         return;
     }

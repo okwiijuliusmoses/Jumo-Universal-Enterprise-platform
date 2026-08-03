@@ -175,13 +175,13 @@ function renderInstalledERPFamilies() {
         <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${erp.description || erp.summary || 'Enterprise resource planning platform for ' + erp.name}</p>
       </div>
       <div class="text-[10px] text-slate-600 font-mono space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-        <div class="flex justify-between"><strong>Lifecycle:</strong> <span class="text-emerald-600 font-bold">${erp.lifecycle || 'RUNNING'}</span></div>
-        <div class="flex justify-between"><strong>Configuration:</strong> <span class="${erp.configurationStatus === 'CONFIGURED' ? 'text-emerald-600' : 'text-amber-600'} font-bold">${erp.configurationStatus || 'CONFIGURED'}</span></div>
-        <div class="flex justify-between"><strong>Deployment:</strong> <span class="text-blue-600 font-bold">${erp.deploymentStatus || 'DEPLOYED'}</span></div>
-        <div class="flex justify-between"><strong>Runtime:</strong> <span class="text-emerald-600 font-bold">${erp.runtimeStatus || 'ONLINE'}</span></div>
+        <div class="flex justify-between"><strong>Runtime:</strong> <span class="text-emerald-600 font-bold">${erp.lifecycle === 'RUNNING' ? 'ACTIVE' : (erp.lifecycle || 'READY')}</span></div>
+        <div class="flex justify-between"><strong>Configuration:</strong> <span class="text-emerald-600 font-bold">${erp.configurationStatus === 'CONFIGURED' ? 'COMPLETE' : (erp.configurationStatus || 'CONFIGURED')}</span></div>
+        <div class="flex justify-between"><strong>Settings:</strong> <span class="text-emerald-600 font-bold">CONFIGURED</span></div>
         <div class="pt-1 border-t border-slate-200 mt-1">
-          <div><strong>Portals:</strong> ${erp.portals ? erp.portals.length : 0} active portals</div>
-          <div><strong>Modules:</strong> ${erp.modules ? erp.modules.length : 0} modules</div>
+          <div class="flex justify-between"><strong>Portals:</strong> <span>${erp.portals ? erp.portals.length : 0} ACTIVE</span></div>
+          <div class="flex justify-between"><strong>Modules:</strong> <span>${erp.modules ? erp.modules.length : 0} ACTIVE</span></div>
+          <div class="flex justify-between"><strong>Workflows:</strong> <span>${erp.workflows ? erp.workflows.length : 0} ACTIVE</span></div>
         </div>
       </div>
       <div class="flex items-center justify-between pt-2 border-t border-slate-100">

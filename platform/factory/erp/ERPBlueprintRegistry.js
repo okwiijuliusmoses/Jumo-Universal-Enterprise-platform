@@ -46,6 +46,14 @@ export const ERPBlueprintRegistry = {
         "Research Administration",
         "Alumni Integration"
       ],
+
+      portals: [
+        "Student Portal",
+        "Academic Portal",
+        "Registrar Portal",
+        "Staff Portal",
+        "Finance Portal"
+      ],
       
       settings: {
         theme: "Enterprise Light",
@@ -100,6 +108,12 @@ export const ERPBlueprintRegistry = {
         "Procurement",
         "Compliance",
         "Records"
+      ],
+
+      portals: [
+        "Citizen Portal",
+        "Ministry Portal",
+        "Administration Portal"
       ],
       
       settings: {

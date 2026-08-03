@@ -28,9 +28,26 @@ export class ERPWorkspaceResolver {
     const enabledWorkflows = instance.workflows || blueprint.workflows || [];
     const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || [];
 
-    const loadedModules = enabledModules.map(m => moduleRegistry.get(m) || { name: m, type: "Unknown" });
-    const loadedPortals = enabledPortals.map(p => portalRegistry.get(p) || { name: p, type: "Unknown" });
-    const loadedWorkflows = enabledWorkflows.map(w => workflowRegistry.get(w) || { name: w, type: "Unknown" });
+    const loadedModules = enabledModules.map(m => {
+      const modId = typeof m === 'string' ? m : m.id;
+      return moduleRegistry.get(modId) || { name: typeof m === 'string' ? m : m.name, type: "Unknown", id: modId };
+    });
+
+    const loadedPortals = enabledPortals.map(p => {
+      const portalId = typeof p === 'string' ? p : p.id;
+      return portalRegistry.get(portalId) || { name: typeof p === 'string' ? p : p.name, type: "Portal", id: portalId };
+    });
+
+    const loadedWorkflows = enabledWorkflows.map(w => {
+      const wfId = typeof w === 'string' ? w : w.id;
+      return workflowRegistry.get(wfId) || { name: typeof w === 'string' ? w : w.name, type: "Workflow", id: wfId };
+    });
+
+    // Resolve settings from various registries if available
+    const settings = {
+       ...(blueprint.settings || {}),
+       ...(instance.settings || {})
+    };
 
     return {
       tenantId: instance.tenant || tenantId,
@@ -38,8 +55,8 @@ export class ERPWorkspaceResolver {
       blueprintId: instance.blueprintId,
       erpName: instance.name,
       domain: instance.domain,
-      lifecycle: instance.lifecycle,
-      status: instance.status,
+      lifecycle: instance.lifecycle || "READY",
+      status: instance.status || "ACTIVE",
       configurationStatus: instance.configurationStatus || "CONFIGURED",
       deploymentStatus: instance.deploymentStatus || "DEPLOYED",
       runtimeStatus: instance.runtimeStatus || "ONLINE",
@@ -47,10 +64,12 @@ export class ERPWorkspaceResolver {
         modules: loadedModules,
         portals: loadedPortals,
         workflows: loadedWorkflows,
-        agents: activeAgents
+        agents: activeAgents,
+        settings: settings,
+        navigation: blueprint.navigation || {}
       },
       configuration: {
-        settings: instance.settings || blueprint.settings || {},
+        settings: settings,
         configuration: instance.configuration || blueprint.configuration || {},
         features: instance.features || blueprint.features || {},
         permissions: instance.permissions || blueprint.permissions || [],
