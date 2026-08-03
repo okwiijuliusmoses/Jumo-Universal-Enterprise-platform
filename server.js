@@ -16,6 +16,7 @@ import { baseHospitalityConfig } from "./kernel/erp/industry/baseHospitalityConf
 import { baseClanConfig } from "./kernel/erp/industry/baseClanConfig.js";
 import { baseChurchConfig } from "./kernel/erp/industry/baseChurchConfig.js";
 import { ueosRegistrySnapshotManager } from "./platform/storage/UEOSRegistrySnapshotManager.js";
+import { restoreAllRegistries } from "./platform/control/registry/RegistryBootstrap.js";
 
 import { erpDiscoveryService } from "./platform/factory/erp/services/ERPDiscoveryService.js";
 import { ueosControlPlane } from "./platform/control/UEOSControlPlane.js";
@@ -248,6 +249,7 @@ const server = http.createServer((req, res) => {
 });
 
 ueosRegistrySnapshotManager.loadAll();
+restoreAllRegistries();
 server.listen(PORT, () => {
   console.log(`JUMO UEOS Complete Enterprise Architecture running on port ${PORT}`);
 });

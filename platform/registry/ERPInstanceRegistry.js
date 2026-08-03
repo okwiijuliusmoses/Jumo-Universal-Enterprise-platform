@@ -90,3 +90,11 @@ export class ERPInstanceRegistry {
 
 export const erpInstanceRegistry =
  new ERPInstanceRegistry();
+
+// Hydrate registry on startup
+import { restoreAllRegistries } from "../control/registry/RegistryBootstrap.js";
+try {
+  restoreAllRegistries();
+} catch (e) {
+  console.warn("Hydration deferred: ", e.message);
+}

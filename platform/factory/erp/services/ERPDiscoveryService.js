@@ -12,7 +12,7 @@ export class ERPDiscoveryService {
     const instances = erpInstanceRegistry.list();
     return instances.map(instance => ({
       id: instance.id,
-      name: instance.blueprintId,
+      name: instance.name || instance.blueprintId,
       blueprintId: instance.blueprintId,
       tenant: instance.tenant,
       domain: instance.domain || "Institutional ERP",
