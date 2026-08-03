@@ -14,6 +14,10 @@ import { workflowGenerator } from "./generators/WorkflowGenerator.js";
 import { componentGenerator } from "./generators/ComponentGenerator.js";
 import { departmentGenerator } from "./generators/DepartmentGenerator.js";
 import { aiAgentGenerator } from "./generators/AIAgentGenerator.js";
+import { applicationGenerator } from "./generators/ApplicationGenerator.js";
+import { informationManagementGenerator } from "./generators/InformationManagementGenerator.js";
+import { requisitionGenerator } from "./generators/RequisitionGenerator.js";
+import { navigationGenerator } from "./generators/NavigationGenerator.js";
 
 
 export class ERPGenerationEngine {
@@ -103,6 +107,18 @@ departmentGenerator.generate(blueprint),
 
 aiAgents:
 aiAgentGenerator.generate(blueprint),
+
+applications:
+applicationGenerator.generate(blueprint),
+
+informationSystems:
+informationManagementGenerator.generate(blueprint),
+
+requisitions:
+requisitionGenerator.generate(blueprint),
+
+navigation:
+navigationGenerator.generate(blueprint),
 
 
 
