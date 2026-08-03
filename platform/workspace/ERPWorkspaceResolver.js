@@ -107,16 +107,6 @@ export class ERPWorkspaceResolver {
       resolvedAt: new Date().toISOString()
     };
   }
-      configuration: {
-        settings: settings,
-        configuration: instance.configuration || blueprint.configuration || {},
-        features: instance.features || blueprint.features || {},
-        permissions: enabledPermissions,
-        policies: instance.policies || blueprint.policies || {}
-      },
-      resolvedAt: new Date().toISOString()
-    };
-  }
 
   health() {
     return {
