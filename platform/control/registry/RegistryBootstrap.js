@@ -42,6 +42,6 @@ export function restoreAllRegistries() {
     status: "RESTORED",
     erpDiscoveryStatus: erpDiscoveryService.health(),
     workspaceResolverStatus: erpWorkspaceResolver.health(),
-    restoredInstances: erpInstanceRegistry.count()
+    restoredInstances: erpInstanceRegistry.list().length
   };
 }
