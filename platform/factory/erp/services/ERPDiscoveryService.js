@@ -6,7 +6,6 @@
 import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
 import { EnterprisePlatformTemplateRegistry } from "../templates/EnterprisePlatformTemplateRegistry.js";
 import { erpFamilyRegistry } from "../ERPFamilyRegistry.js";
-import { erpEcosystemTemplateRegistry } from "../ERPEcosystemTemplateRegistry.js";
 import { ERPEnterpriseStandard } from "../ERPEnterpriseStandard.js";
 
 export class ERPDiscoveryService {
@@ -16,7 +15,7 @@ export class ERPDiscoveryService {
   }
 
   listTemplates() {
-    return erpEcosystemTemplateRegistry.listTemplates();
+    return EnterprisePlatformTemplateRegistry.listTemplates();
   }
 
   listERPs() {
@@ -24,7 +23,7 @@ export class ERPDiscoveryService {
     return instances.map(instance => {
       const blueprint = EnterprisePlatformTemplateRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
       const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
-      const template = blueprint ? erpEcosystemTemplateRegistry.getTemplate(blueprint.templateId) : null;
+      const template = blueprint ? EnterprisePlatformTemplateRegistry.getTemplate(blueprint.templateId) : null;
       const family = template ? erpFamilyRegistry.getFamily(template.familyId) : null;
       
       return {
@@ -80,7 +79,7 @@ export class ERPDiscoveryService {
 
   getEcosystemTree() {
     const families = erpFamilyRegistry.listFamilies();
-    const templates = erpEcosystemTemplateRegistry.listTemplates();
+    const templates = EnterprisePlatformTemplateRegistry.listTemplates();
     const blueprints = EnterprisePlatformTemplateRegistry.list();
     const instances = this.listERPs();
 
@@ -132,7 +131,7 @@ export class ERPDiscoveryService {
       instances: erpInstanceRegistry.count ? erpInstanceRegistry.count() : erpInstanceRegistry.list().length,
       blueprints: EnterprisePlatformTemplateRegistry.list().length,
       families: erpFamilyRegistry.listFamilies().length,
-      templates: erpEcosystemTemplateRegistry.listTemplates().length
+      templates: EnterprisePlatformTemplateRegistry.listTemplates().length
     };
   }
 }
