@@ -7,6 +7,13 @@
  */
 
 import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
+import { portalGenerator } from "./generators/PortalGenerator.js";
+import { moduleGenerator } from "./generators/ModuleGenerator.js";
+import { formGenerator } from "./generators/FormGenerator.js";
+import { workflowGenerator } from "./generators/WorkflowGenerator.js";
+import { componentGenerator } from "./generators/ComponentGenerator.js";
+import { departmentGenerator } from "./generators/DepartmentGenerator.js";
+import { aiAgentGenerator } from "./generators/AIAgentGenerator.js";
 
 
 export class ERPGenerationEngine {
@@ -71,28 +78,31 @@ directive.configuration || {},
 
 
 portals:
-this.generatePortals(blueprint),
+portalGenerator.generate(blueprint),
 
 
 modules:
-this.generateModules(blueprint),
+moduleGenerator.generate(blueprint),
 
 
 forms:
-this.generateForms(blueprint),
+formGenerator.generate(blueprint),
 
 
 workflows:
-this.generateWorkflows(blueprint),
+workflowGenerator.generate(blueprint),
 
 
 components:
-this.generateComponents(blueprint),
+componentGenerator.generate(blueprint),
 
 
+
+departments:
+departmentGenerator.generate(blueprint),
 
 aiAgents:
-this.generateAIAgents(),
+aiAgentGenerator.generate(blueprint),
 
 
 

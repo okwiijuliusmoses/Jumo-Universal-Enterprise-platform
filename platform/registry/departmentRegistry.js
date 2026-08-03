@@ -6,44 +6,27 @@
 export class DepartmentRegistry {
 
  constructor(){
-  this.departments=[];
+   this.status="ONLINE";
+   this.departments=[];
  }
-
 
  register(department){
-
-  this.departments.push({
-
-   id:department.id || `dept-${Date.now()}`,
-
-   name:department.name,
-
-   organizationId:department.organizationId,
-
-   parentDepartment:
-    department.parentDepartment || null,
-
-   services:[],
-
-   portals:[],
-
-   workflows:[],
-
-   status:"ACTIVE"
-
-  });
-
+   this.departments.push(department);
+   return department;
  }
 
-
  list(){
+   return this.departments;
+ }
 
-  return this.departments;
-
+ health(){
+   return {
+    registry:"JUMO Department Registry",
+    status:this.status,
+    departments:this.departments.length
+   };
  }
 
 }
 
-
-export const departmentRegistry =
-new DepartmentRegistry();
+export const departmentRegistry = new DepartmentRegistry();
