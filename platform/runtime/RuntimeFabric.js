@@ -15,6 +15,9 @@ import { FinancialRuntime } from "./FinancialRuntime.js";
 import { WorkflowRuntime } from "./WorkflowRuntime.js";
 import { AIIntelligenceRuntime } from "./AIIntelligenceRuntime.js";
 import { ExperienceRuntime } from "./ExperienceRuntime.js";
+import { portalFactory } from "../factory/PortalFactory.js";
+import { domainRegistry } from "../registry/DomainRegistry.js";
+import { tenantRegistry } from "../registry/TenantRegistry.js";
 
 export class RuntimeFabric {
 
@@ -36,6 +39,9 @@ export class RuntimeFabric {
     this.register("workflow", new WorkflowRuntime());
     this.register("ai", new AIIntelligenceRuntime());
     this.register("experience", new ExperienceRuntime());
+this.register("portalFactory", portalFactory);
+this.register("domainRegistry", domainRegistry);
+this.register("tenantRegistry", tenantRegistry);
 
   }
 
