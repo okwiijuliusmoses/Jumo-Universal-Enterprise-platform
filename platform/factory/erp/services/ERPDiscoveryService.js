@@ -17,7 +17,11 @@ export class ERPDiscoveryService {
       tenant: instance.tenant,
       domain: instance.domain || "Institutional ERP",
       status: instance.status || "ACTIVE",
-      lifecycle: instance.lifecycle || "INSTALLED"
+      lifecycle: instance.lifecycle || "INSTALLED",
+      modules: instance.modules || [],
+      portals: instance.portals || [],
+      workflows: instance.workflows || [],
+      agents: instance.agents || []
     }));
   }
 

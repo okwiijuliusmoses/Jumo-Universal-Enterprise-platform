@@ -3,6 +3,12 @@
  * Enterprise ERP Instance Registry
  */
 
+import { ERPBlueprintRegistry } from "../factory/erp/ERPBlueprintRegistry.js";
+import { portalGenerator } from "../factory/erp/generators/PortalGenerator.js";
+import { moduleGenerator } from "../factory/erp/generators/ModuleGenerator.js";
+import { workflowGenerator } from "../factory/erp/generators/WorkflowGenerator.js";
+import { aiAgentGenerator } from "../factory/erp/generators/AIAgentGenerator.js";
+
 export class ERPInstanceRegistry {
  constructor(){
    this.status="ONLINE";
@@ -16,12 +22,39 @@ export class ERPInstanceRegistry {
    if(exists){
      return exists;
    }
+
+   // Restore UEOS ERP runtime hydration from existing blueprints
+   const blueprintId = instance.blueprintId || instance.templateId;
+   if (blueprintId) {
+     const blueprint = ERPBlueprintRegistry.getBlueprint(blueprintId);
+     if (blueprint) {
+       // Hydrate Portals
+       instance.portals = instance.portals?.length 
+         ? instance.portals 
+         : (blueprint.portals || portalGenerator.generate(blueprint) || []);
+
+       // Hydrate Modules
+       instance.modules = instance.modules?.length 
+         ? instance.modules 
+         : (blueprint.modules || blueprint.capabilities || moduleGenerator.generate(blueprint) || []);
+
+       // Hydrate Workflows
+       instance.workflows = instance.workflows?.length 
+         ? instance.workflows 
+         : (blueprint.workflows || workflowGenerator.generate(blueprint) || []);
+
+       // Hydrate AI Agents
+       instance.agents = instance.agents?.length 
+         ? instance.agents 
+         : (blueprint.aiAgents || blueprint.agents || aiAgentGenerator.generate(blueprint) || []);
+     }
+   }
    
    this.instances.push({
      ...instance,
      status: instance.status || "ACTIVE",
      lifecycle:"INSTALLED",
-     deployedAt:new Date().toISOString()
+     deployedAt: instance.deployedAt || new Date().toISOString()
    });
    
    return instance;

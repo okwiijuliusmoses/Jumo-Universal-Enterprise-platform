@@ -100,23 +100,25 @@ export class UEOSRegistrySnapshotManager {
  }
 
  loadAll(){
-    const erp = registryPersistenceEngine.load("erp-registry");
-    erp.forEach(i => erpRegistry.register(i));
-    
-    const erpInstances = registryPersistenceEngine.load("erp-instance-registry");
-    erpInstances.forEach(i => erpInstanceRegistry.register(i));
+    // Dependencies first
+    const modules = registryPersistenceEngine.load("module-registry");
+    modules.forEach(i => moduleRegistry.register(i));
 
     const portals = registryPersistenceEngine.load("portal-registry");
     portals.forEach(i => portalRegistry.register(i));
 
-    const modules = registryPersistenceEngine.load("module-registry");
-    modules.forEach(i => moduleRegistry.register(i));
+    const workflows = registryPersistenceEngine.load("workflow-registry");
+    workflows.forEach(i => workflowRegistry.register(i));
+
+    // Instances later
+    const erpInstances = registryPersistenceEngine.load("erp-instance-registry");
+    erpInstances.forEach(i => erpInstanceRegistry.register(i));
+
+    const erp = registryPersistenceEngine.load("erp-registry");
+    erp.forEach(i => erpRegistry.register(i));
 
     const forms = registryPersistenceEngine.load("form-registry");
     forms.forEach(i => formRegistry.register(i));
-
-    const workflows = registryPersistenceEngine.load("workflow-registry");
-    workflows.forEach(i => workflowRegistry.register(i));
 
     const components = registryPersistenceEngine.load("component-registry");
     components.forEach(i => componentRegistry.register(i));

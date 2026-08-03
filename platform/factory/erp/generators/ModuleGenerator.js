@@ -3,7 +3,7 @@
  * AI ERP Module Generator
  */
 
-import { moduleRegistry } from "../../../registry/moduleRegistry.js";
+import { moduleRegistry } from "../../../registry/ModuleRegistry.js";
 
 export class ModuleGenerator {
 

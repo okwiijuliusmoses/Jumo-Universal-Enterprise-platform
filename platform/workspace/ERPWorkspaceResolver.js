@@ -23,10 +23,10 @@ export class ERPWorkspaceResolver {
     const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
     
     // Merge baseline capabilities with deployed capabilities
-    const enabledModules = instance.modules || blueprint.modules || [];
+    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || [];
     const enabledPortals = instance.portals || blueprint.portals || [];
     const enabledWorkflows = instance.workflows || blueprint.workflows || [];
-    const activeAgents = instance.agents || blueprint.agents || [];
+    const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || [];
 
     const loadedModules = enabledModules.map(m => moduleRegistry.get(m) || { name: m, type: "Unknown" });
     const loadedPortals = enabledPortals.map(p => portalRegistry.get(p) || { name: p, type: "Unknown" });
