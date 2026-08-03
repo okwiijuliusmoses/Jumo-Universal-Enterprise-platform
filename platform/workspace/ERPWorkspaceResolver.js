@@ -8,6 +8,7 @@ import { ERPBlueprintRegistry } from "../factory/erp/ERPBlueprintRegistry.js";
 import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { portalRegistry } from "../registry/PortalRegistry.js";
 import { workflowRegistry } from "../registry/workflowRegistry.js";
+import { ERPEnterpriseStandard } from "../factory/erp/ERPEnterpriseStandard.js";
 
 export class ERPWorkspaceResolver {
   constructor() {
@@ -21,12 +22,20 @@ export class ERPWorkspaceResolver {
     }
 
     const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
+    const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
     
     // Merge baseline capabilities with deployed capabilities
-    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || [];
-    const enabledPortals = instance.portals || blueprint.portals || [];
-    const enabledWorkflows = instance.workflows || blueprint.workflows || [];
+    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || standard.modules;
+    const enabledPortals = instance.portals || blueprint.portals || standard.portals;
+    const enabledWorkflows = instance.workflows || blueprint.workflows || standard.workflows;
     const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || [];
+    const enabledComponents = instance.components || blueprint.components || standard.components;
+    const enabledForms = instance.forms || blueprint.forms || standard.forms;
+    const enabledDepartments = instance.departments || blueprint.departments || standard.departments;
+    const enabledRoles = instance.roles || blueprint.roles || standard.roles;
+    const enabledPermissions = instance.permissions || blueprint.permissions || standard.permissions;
+    const enabledReports = instance.reports || blueprint.reports || standard.reports;
+    const enabledDashboards = instance.dashboards || blueprint.dashboards || standard.dashboards;
 
     const loadedModules = enabledModules.map(m => {
       const modId = typeof m === 'string' ? m : m.id;
@@ -45,6 +54,7 @@ export class ERPWorkspaceResolver {
 
     // Resolve settings from various registries if available
     const settings = {
+       ...(standard.settings || {}),
        ...(blueprint.settings || {}),
        ...(instance.settings || {})
     };
@@ -55,7 +65,7 @@ export class ERPWorkspaceResolver {
       blueprintId: instance.blueprintId,
       erpName: instance.name,
       domain: instance.domain,
-      lifecycle: instance.lifecycle || "READY",
+      lifecycle: instance.lifecycle || "RUNNING",
       status: instance.status || "ACTIVE",
       configurationStatus: instance.configurationStatus || "CONFIGURED",
       deploymentStatus: instance.deploymentStatus || "DEPLOYED",
@@ -64,15 +74,22 @@ export class ERPWorkspaceResolver {
         modules: loadedModules,
         portals: loadedPortals,
         workflows: loadedWorkflows,
+        components: enabledComponents,
+        forms: enabledForms,
+        departments: enabledDepartments,
+        roles: enabledRoles,
+        permissions: enabledPermissions,
+        reports: enabledReports,
+        dashboards: enabledDashboards,
         agents: activeAgents,
         settings: settings,
-        navigation: blueprint.navigation || {}
+        navigation: blueprint.navigation || standard.navigation
       },
       configuration: {
         settings: settings,
         configuration: instance.configuration || blueprint.configuration || {},
         features: instance.features || blueprint.features || {},
-        permissions: instance.permissions || blueprint.permissions || [],
+        permissions: enabledPermissions,
         policies: instance.policies || blueprint.policies || {}
       },
       resolvedAt: new Date().toISOString()
