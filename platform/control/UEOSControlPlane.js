@@ -13,6 +13,7 @@ import { enterpriseERPFactory } from "../factory/erp/EnterpriseERPFactory.js";
 import { erpFactoryManager } from "../factory/erp/ERPFactoryManager.js";
 import { erpGenerationEngine } from "../factory/erp/ERPGenerationEngine.js";
 import { ueosRegistryService } from "./services/UEOSRegistryService.js";
+import { ueosSettingsService } from "./services/UEOSSettingsService.js";
 import { masterRegistryRegistry } from "./registry/MasterRegistryRegistry.js";
 import { registerGovernanceRegistries } from "./registry/registerGovernanceRegistries.js";
 
@@ -97,7 +98,10 @@ export class UEOSControlPlane {
    runtime:
     runtimeFabric.health(),
 
-   registries:{
+   settings:
+ueosSettingsService.health(),
+
+registries:{
     erp:erpRegistry.health(),
     portals:portalRegistry.health(),
     modules:moduleRegistry.health(),
