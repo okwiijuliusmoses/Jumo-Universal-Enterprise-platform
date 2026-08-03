@@ -18,6 +18,7 @@ import { ExperienceRuntime } from "./ExperienceRuntime.js";
 import { portalFactory } from "../factory/PortalFactory.js";
 import { domainRegistry } from "../registry/DomainRegistry.js";
 import { tenantRegistry } from "../registry/TenantRegistry.js";
+import { loadAllRegistries } from "../control/registry/RegistryBootstrap.js";
 
 export class RuntimeFabric {
 
