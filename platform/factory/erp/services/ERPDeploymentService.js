@@ -12,6 +12,7 @@ import { componentRegistry } from "../../../registry/componentRegistry.js";
 import { departmentRegistry } from "../../../registry/departmentRegistry.js";
 import { aiERPRegistry } from "../../../registry/ai/AIERPRegistry.js";
 import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
+import { erpDeploymentRegistry } from "../../../registry/ERPDeploymentRegistry.js";
 import { saveAllRegistries } from "../../../control/registry/RegistryBootstrap.js";
 
 export class ERPDeploymentService {
@@ -83,6 +84,10 @@ erpInstanceRegistry.register(erp);
  });
 
  aiERPRegistry.register(erp);
+
+    erpDeploymentRegistry.register(erp);
+
+    erpDeploymentRegistry.register(erp);
 
 
  saveAllRegistries();
