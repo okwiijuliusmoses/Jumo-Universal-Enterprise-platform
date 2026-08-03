@@ -9,7 +9,7 @@ export const registryFederationMap = {
         ERP:[
             "ERPRegistry",
             "ERPInstanceRegistry",
-            "ERPBlueprintRegistry"
+            "EnterprisePlatformTemplateRegistry"
         ],
 
         Applications:[

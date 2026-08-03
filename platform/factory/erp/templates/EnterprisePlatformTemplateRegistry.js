@@ -3,125 +3,156 @@
  * Enterprise Platform Template Registry
  *
  * Single source of truth for ERP generation.
+ * Replaces:
  */
 
-export const EnterprisePlatformTemplateRegistry = {
+export class EnterprisePlatformTemplateRegistry {
 
-version:"2.0",
+  constructor() {
 
-templates:[
+    this.registry = "JUMO Enterprise Platform Template Registry";
 
-{
-id:"education-platform",
+    this.templates = [
 
-family:"education-family",
+      {
+        id: "education-platform",
+        familyId: "education-family",
+        name: "Education Enterprise Platform",
 
-name:"Education Digital Enterprise Platform",
+        category: "Institutional Enterprise Platform",
 
-blueprintId:"education-erp",
+        scope: [
+          "University",
+          "College",
+          "Vocational",
+          "Secondary",
+          "Primary",
+          "Distance Learning"
+        ],
 
-portals:[],
+        portals: [
+          "Student Portal",
+          "Faculty Portal",
+          "Staff Portal",
+          "Registrar Portal",
+          "Finance Portal",
+          "Research Portal",
+          "Executive Portal"
+        ],
 
-modules:[],
+        modules: [
+          "Admissions",
+          "Student Lifecycle",
+          "Academic Management",
+          "Examinations",
+          "Learning Management",
+          "Library",
+          "Research",
+          "Accommodation",
+          "Alumni",
+          "Finance"
+        ],
 
-departments:[],
+        departments: [
+          "Academic Affairs",
+          "Registrar Office",
+          "Finance Directorate",
+          "Human Resources",
+          "ICT",
+          "Research Office",
+          "Library",
+          "Student Affairs"
+        ],
 
-roles:[],
+        workflows: [
+          "Admission Workflow",
+          "Registration Workflow",
+          "Approval Workflow",
+          "Examination Workflow",
+          "Graduation Workflow"
+        ],
 
-permissions:[],
-
-components:[],
-
-forms:[],
-
-workflows:[],
-
-navigation:[],
-
-dashboards:[],
-
-analytics:[],
-
-aiAgents:[],
-
-documentLibraries:[],
-
-settings:{},
-
-notifications:[],
-
-integrations:[],
-
-apis:[],
-
-runtimeContext:{}
-
-},
+        configuration: {
+          configurable: true,
+          multiTenant: true
+        }
+      },
 
 
-{
-id:"government-platform",
+      {
+        id: "government-platform",
+        familyId: "government-family",
+        name: "Government Enterprise Platform",
 
-family:"government-family",
+        category: "Public Administration Platform",
 
-name:"Government Digital Enterprise Platform",
+        scope:[
+          "Ministry",
+          "Agency",
+          "Local Government",
+          "Public Institution"
+        ],
 
-blueprintId:"government-erp",
+        portals:[
+          "Citizen Portal",
+          "Ministry Portal",
+          "Administration Portal"
+        ],
 
-portals:[],
+        modules:[
+          "Citizen Services",
+          "Procurement",
+          "Public Finance",
+          "Records Management",
+          "HR Management",
+          "Compliance"
+        ],
 
-modules:[],
+        departments:[
+          "Executive Office",
+          "Finance",
+          "Planning",
+          "Procurement",
+          "Audit"
+        ],
 
-departments:[],
+        workflows:[
+          "Service Workflow",
+          "Approval Workflow",
+          "Compliance Workflow"
+        ],
 
-roles:[],
+        configuration:{
+          configurable:true,
+          dataSovereignty:true
+        }
+      }
 
-permissions:[],
+    ];
 
-components:[],
+  }
 
-forms:[],
 
-workflows:[],
+  list(){
+    return this.templates;
+  }
 
-navigation:[],
 
-dashboards:[],
+  getTemplate(id){
+    return this.templates.find(
+      template => template.id === id
+    );
+  }
 
-analytics:[],
 
-aiAgents:[],
-
-documentLibraries:[],
-
-settings:{},
-
-notifications:[],
-
-integrations:[],
-
-apis:[],
-
-runtimeContext:{}
+  getTemplatesByFamily(familyId){
+    return this.templates.filter(
+      template => template.familyId === familyId
+    );
+  }
 
 }
 
-],
 
-
-getTemplate(id){
-
-return this.templates.find(
-t=>t.id===id
-);
-
-},
-
-
-list(){
-
-return this.templates;
-
-}
-
-};
+export const enterprisePlatformTemplateRegistry =
+new EnterprisePlatformTemplateRegistry();
