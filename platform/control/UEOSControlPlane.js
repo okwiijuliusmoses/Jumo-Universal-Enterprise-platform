@@ -33,6 +33,50 @@ export class UEOSControlPlane {
 
  }
 
+
+  getERPTemplates(){
+    return enterpriseERPFactory.templates || [];
+  }
+
+  getERPTemplate(id){
+    return this.getERPTemplates()
+      .find(t => t.id === id);
+  }
+
+  deployERP(id,name){
+
+    const template =
+      this.getERPTemplate(id) ||
+      {
+        id,
+        name,
+        type:"Enterprise ERP",
+        generatedBy:"UEOS AI ERP Factory",
+        portals:[],
+        modules:[],
+        workflows:[]
+      };
+
+    this.deployments =
+      this.deployments || [];
+
+    const instance = {
+      instanceId:`erp-${Date.now()}`,
+      templateId:template.id,
+      name:template.name,
+      status:"DEPLOYED",
+      tenantIsolation:true
+    };
+
+    this.deployments.push(instance);
+
+    return instance;
+  }
+
+  getDeployedERPInstances(){
+    return this.deployments || [];
+  }
+
  health(){
 
   return {
