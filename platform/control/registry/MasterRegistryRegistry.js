@@ -1,67 +1,114 @@
 /**
  * JUMO UEOS
- * Master Registry of Registries
+ * Master Governance Registry
  */
+
+import { registryFederationMap } from "./RegistryFederationMap.js";
+
 
 export class MasterRegistryRegistry {
 
-constructor(){
+    constructor(){
 
- this.status="ONLINE";
- this.registries=[];
+        this.registry = {};
 
-}
-
-
-register(registry){
-
- const exists=this.registries.find(
-  r=>r.id===registry.id
- );
-
- if(exists){
-  return exists;
- }
-
- this.registries.push({
-  ...registry,
-  active:true,
-  registeredAt:new Date().toISOString()
- });
-
- return registry;
-
-}
+    }
 
 
-get(id){
+    register(type, item){
 
- return this.registries.find(
-  r=>r.id===id
- );
+        // Support register(object) bootstrap style
+        if(typeof type === "object"){
 
-}
+            const registry = type;
+
+            const key =
+                registry.id ||
+                registry.name ||
+                registry.registry ||
+                `registry_${Object.keys(this.registry).length + 1}`;
+
+            this.registry[key] = registry;
+
+            return registry;
+
+        }
 
 
-list(){
+        // Support register(type,item) style
 
- return this.registries;
+        if(!this.registry[type]){
+            this.registry[type] = [];
+        }
 
-}
+        this.registry[type].push(item);
+
+        return item;
+
+    }
 
 
-health(){
+    list(){
 
- return {
-  registry:"UEOS Master Registry of Registries",
-  status:this.status,
-  registries:this.registries.length
- };
+        return this.registry;
 
-}
+    }
+
+
+    syncRegistry(name, registry){
+
+        const key =
+            name ||
+            registry?.id ||
+            registry?.name ||
+            `registry_${Object.keys(this.registry).length + 1}`;
+
+        this.registry[key] = registry || {};
+
+        return this.registry[key];
+
+    }
+
+
+    health(){
+
+        return {
+
+            federation:
+                registryFederationMap,
+
+            registry:
+                "JUMO UEOS Master Governance Registry",
+
+            status:
+                "ONLINE",
+
+            governanceRegistries:
+                Object.keys(this.registry).length,
+
+            domains:
+                Object.keys(this.registry),
+
+            counts:
+                Object.fromEntries(
+                    Object.entries(this.registry)
+                    .map(
+                        ([key,value])=>[
+                            key,
+                            Array.isArray(value)
+                            ? value.length
+                            : 1
+                        ]
+                    )
+                )
+
+        };
+
+    }
+
 
 }
 
 
 export const masterRegistryRegistry =
-new MasterRegistryRegistry();
+    new MasterRegistryRegistry();

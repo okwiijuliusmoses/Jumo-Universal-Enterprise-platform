@@ -17,6 +17,7 @@ import { erpActivationService } from "../factory/erp/services/ERPActivationServi
 import { ueosRegistryService } from "./services/UEOSRegistryService.js";
 import { ueosSettingsService } from "./services/UEOSSettingsService.js";
 import { masterRegistryRegistry } from "./registry/MasterRegistryRegistry.js";
+import { masterRegistrySyncService } from "./services/MasterRegistrySyncService.js";
 import { registerGovernanceRegistries } from "./registry/registerGovernanceRegistries.js";
 
 registerGovernanceRegistries();
@@ -86,7 +87,31 @@ export class UEOSControlPlane {
     return this.deployments || [];
   }
 
- health(){
+ 
+syncMasterRegistries(){
+
+ masterRegistryRegistry.syncRegistry(
+ "erp",
+ erpRegistry
+ );
+
+ masterRegistryRegistry.syncRegistry(
+ "erpInstances",
+ erpInstanceRegistry
+ );
+
+ masterRegistryRegistry.syncRegistry(
+ "tenants",
+ tenantRegistry
+ );
+
+}
+
+health(){
+
+this.syncMasterRegistries();
+
+
 
   return {
 
@@ -102,6 +127,9 @@ export class UEOSControlPlane {
 
    settings:
 ueosSettingsService.health(),
+
+masterRegistry:
+masterRegistryRegistry.health(),
 
 registries:{
     erp:erpRegistry.health(),
