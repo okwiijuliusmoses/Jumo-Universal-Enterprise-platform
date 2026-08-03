@@ -98,7 +98,7 @@ export const erpPlatformTemplate = async (state) => {
             </div>
             
             <div class="mt-auto pt-4 border-t border-slate-800">
-                <button onclick="window.navigate('/erp-workspace?id=${erp.id}')" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-2.5 px-4 rounded-xl text-sm transition cursor-pointer flex items-center justify-center gap-2">
+                <button onclick="window.launchERPInstance('${erp.id}')" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-2.5 px-4 rounded-xl text-sm transition cursor-pointer flex items-center justify-center gap-2">
                     Launch Platform
                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>

@@ -40,23 +40,24 @@ export class ERPProvisioningService {
     const instance = erpInstanceRegistry.get(instanceId);
     if (!instance) throw new Error("ERP Instance not found");
 
-    // Ensure it's ready
+    // Ensure it's ready & running
     erpInstanceRegistry.updateLifecycle(instanceId, "READY");
-    
-    // Final Launch
     erpInstanceRegistry.activate(instanceId);
     erpInstanceRegistry.updateLifecycle(instanceId, "RUNNING");
 
-    const workspace = erpWorkspaceResolver.resolveWorkspace("system", instanceId);
+    const workspaceResult = erpWorkspaceResolver.resolveWorkspace("system", instanceId);
 
     return {
-      erp: instance.name,
+      erpId: instance.id,
+      name: instance.name,
       status: "RUNNING",
-      workspace: "READY",
-      portals: workspace.workspace.portals.length,
-      modules: workspace.workspace.modules.length,
-      workflows: workspace.workspace.workflows.length,
-      settings: "CONFIGURED"
+      lifecycle: "RUNNING",
+      workspace: workspaceResult.workspace,
+      portals: workspaceResult.workspace.portals,
+      modules: workspaceResult.workspace.modules,
+      workflows: workspaceResult.workspace.workflows,
+      settings: workspaceResult.workspace.settings,
+      configuration: workspaceResult.configuration
     };
   }
 
