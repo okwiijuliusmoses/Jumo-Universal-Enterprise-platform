@@ -78,3 +78,23 @@ aiERPRegistry.list()
 };
 
 }
+
+
+export function loadAllRegistries(){
+
+  const data =
+    registryPersistenceEngine.load(
+      "erp-instance-registry"
+    );
+
+  if(data && Array.isArray(data)){
+    data.forEach(instance=>{
+      erpInstanceRegistry.register(instance);
+    });
+  }
+
+  return {
+    erpInstances:
+      erpInstanceRegistry.list().length
+  };
+}
