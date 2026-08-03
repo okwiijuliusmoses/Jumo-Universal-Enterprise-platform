@@ -1,19 +1,11 @@
 export class RequisitionGenerator {
 
-generate(){
+generate(template){
 
-return [
-"Purchase Request",
-"Leave Request",
-"Payment Request",
-"Maintenance Request",
-"Service Request",
-"Approval Request"
-];
+return template.requisitions || [];
 
 }
 
 }
 
-export const requisitionGenerator =
-new RequisitionGenerator();
+export const requisitionGenerator = new RequisitionGenerator();

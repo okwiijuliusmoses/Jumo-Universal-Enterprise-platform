@@ -1,20 +1,11 @@
 export class ApplicationGenerator {
 
-generate(){
+generate(template){
 
-return [
-"Admission Application",
-"Employment Application",
-"Membership Application",
-"Service Application",
-"Registration Application",
-"Grant Application",
-"Vendor Application"
-];
+return template.applications || [];
 
 }
 
 }
 
-export const applicationGenerator =
-new ApplicationGenerator();
+export const applicationGenerator = new ApplicationGenerator();

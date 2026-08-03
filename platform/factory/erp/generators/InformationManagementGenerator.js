@@ -1,23 +1,11 @@
 export class InformationManagementGenerator {
 
-generate(){
+generate(template){
 
-return [
-"Institution Information System",
-"Person Information System",
-"Employee Information System",
-"Student Information System",
-"Member Information System",
-"Alumni Information System",
-"Citizen Information System",
-"Asset Information System",
-"Document Information System",
-"Financial Information System"
-];
+return template.informationSystems || [];
 
 }
 
 }
 
-export const informationManagementGenerator =
-new InformationManagementGenerator();
+export const informationManagementGenerator = new InformationManagementGenerator();

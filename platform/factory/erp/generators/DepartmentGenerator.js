@@ -1,24 +1,10 @@
-/**
- * JUMO UEOS
- * AI ERP Department Generator
- */
-
 export class DepartmentGenerator {
 
- generate(blueprint){
+generate(template){
 
-   return [
-    "Administration",
-    "Finance",
-    "Operations",
-    "Human Resources",
-    "Technology",
-    "Compliance",
-    "Research & Innovation",
-    `${blueprint.category} Department`
-   ];
+return template.departments || [];
 
- }
+}
 
 }
 
