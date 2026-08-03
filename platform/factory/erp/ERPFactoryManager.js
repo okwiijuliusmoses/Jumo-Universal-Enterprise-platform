@@ -4,6 +4,7 @@
  */
 
 import { enterpriseERPFactory } from "./EnterpriseERPFactory.js";
+import { erpGenerationEngine } from "./ERPGenerationEngine.js";
 
 
 export class ERPFactoryManager {
@@ -63,7 +64,28 @@ export class ERPFactoryManager {
  }
 
 
- listFactories(){
+ 
+generateERP(definition){
+
+    const instance =
+      erpGenerationEngine.generateERP(definition);
+
+    return {
+      ...instance,
+      factory:"JUMO UEOS AI ERP Factory",
+      managed:true,
+      lifecycle:"GENERATED"
+    };
+
+}
+
+getGeneratedInstances(){
+
+    return erpGenerationEngine.listGenerated();
+
+}
+
+listFactories(){
 
    return Object.keys(this.factories);
 
