@@ -12,6 +12,11 @@ import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { enterpriseERPFactory } from "../factory/erp/EnterpriseERPFactory.js";
 import { erpFactoryManager } from "../factory/erp/ERPFactoryManager.js";
 import { erpGenerationEngine } from "../factory/erp/ERPGenerationEngine.js";
+import { ueosRegistryService } from "./services/UEOSRegistryService.js";
+import { masterRegistryRegistry } from "./registry/MasterRegistryRegistry.js";
+import { registerGovernanceRegistries } from "./registry/registerGovernanceRegistries.js";
+
+registerGovernanceRegistries();
 
 export class UEOSControlPlane {
 
