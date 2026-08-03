@@ -106,55 +106,117 @@ function renderInstalledERPFamilies() {
 
   if (!controlPlane) {
     return `
-      <div class="p-6 text-rose-500">
-        UEOS AI Control Plane unavailable
+      <div class="p-6 bg-rose-50 border border-rose-200 rounded-xl">
+        <h2 class="font-bold text-rose-700">
+          UEOS AI Control Plane Offline
+        </h2>
       </div>
     `;
   }
 
   const health = controlPlane.health();
 
-  const erpRegistry =
+  const factory =
+    health?.factories?.enterpriseERP || {};
+
+  const registry =
     health?.registries?.erp || {};
 
-  const platforms =
-    erpRegistry.platforms || [];
+  const deployed =
+    typeof controlPlane.getDeployedERPInstances === "function"
+      ? controlPlane.getDeployedERPInstances()
+      : [];
 
-  if (!platforms.length) {
+  const templates =
+    factory.templates || 0;
+
+  const status =
+    factory.status || "ONLINE";
+
+  if (!deployed.length && templates === 0) {
     return `
-      <div class="p-8 bg-white rounded-xl border border-slate-200">
-        <h2 class="text-xl font-bold text-slate-800">
-          UEOS AI ERP Factory
+      <div class="p-8 bg-white rounded-xl border border-slate-200 shadow-sm">
+
+        <h2 class="text-2xl font-bold text-slate-800">
+          JUMO UEOS AI ERP Factory
         </h2>
 
-        <p class="mt-3 text-slate-500">
+        <p class="mt-3 text-slate-600">
           AI ERP Factory is online. No ERP instances deployed.
         </p>
 
-        <div class="mt-4 text-sm text-emerald-600">
-          Factory Status: ONLINE
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+
+          <div class="p-5 bg-slate-50 rounded-xl">
+            <div class="text-sm text-slate-500">
+              Factory Status
+            </div>
+            <div class="font-bold text-emerald-600">
+              ${status}
+            </div>
+          </div>
+
+          <div class="p-5 bg-slate-50 rounded-xl">
+            <div class="text-sm text-slate-500">
+              ERP Templates
+            </div>
+            <div class="font-bold">
+              ${templates}
+            </div>
+          </div>
+
+          <div class="p-5 bg-slate-50 rounded-xl">
+            <div class="text-sm text-slate-500">
+              Registry
+            </div>
+            <div class="font-bold">
+              ${registry.registry || "UEOS AI ERP Registry"}
+            </div>
+          </div>
+
         </div>
+
+        <button
+          onclick="window.openERPFactory && window.openERPFactory()"
+          class="mt-8 px-6 py-3 bg-slate-900 text-white rounded-lg font-bold">
+          Open AI ERP Factory
+        </button>
+
       </div>
     `;
   }
 
   return `
-    <div class="grid gap-4">
-      ${platforms.map(erp => `
-        <div class="p-6 bg-white rounded-xl border border-slate-200">
-          <h3 class="font-bold text-slate-800">
-            ${erp.name || erp.id || "UEOS ERP Platform"}
-          </h3>
+    <div class="p-8 bg-white rounded-xl border border-slate-200">
 
-          <p class="text-sm text-slate-500 mt-2">
-            ${erp.type || "Enterprise ERP"}
-          </p>
+      <h2 class="text-2xl font-bold text-slate-800">
+        Deployed Enterprise Platforms
+      </h2>
 
-          <span class="inline-block mt-3 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs">
-            AI Factory Ready
-          </span>
-        </div>
-      `).join("")}
+      <div class="mt-6 space-y-4">
+
+        ${
+          deployed.map(instance => `
+            <div class="p-5 border rounded-xl">
+
+              <div class="font-bold text-lg">
+                ${instance.name || instance.id}
+              </div>
+
+              <div class="text-sm text-slate-500">
+                Tenant: ${instance.tenantId || "Enterprise Tenant"}
+              </div>
+
+              <div class="mt-2 text-emerald-600 font-bold">
+                ACTIVE
+              </div>
+
+            </div>
+          `).join("")
+        }
+
+      </div>
+
     </div>
   `;
 }
