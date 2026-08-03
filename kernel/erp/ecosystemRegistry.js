@@ -54,3 +54,6 @@ export class ERPSystemRegistry {
 
 export const ecosystemRegistry =
 new ERPSystemRegistry();
+
+
+export { ERPSystemRegistry as EcosystemRegistry };

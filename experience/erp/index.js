@@ -62,3 +62,11 @@ export const erpRuntime = {
 
 
 export default erpRuntime;
+
+export const erpPlatformTemplate = {
+  id: "ueos-ai-enterprise-platform",
+  name: "UEOS AI Enterprise Platform",
+  type: "AI ERP Ecosystem",
+  runtime: "UEOS National AI ERP Factory Manager",
+  status: "ONLINE"
+};
