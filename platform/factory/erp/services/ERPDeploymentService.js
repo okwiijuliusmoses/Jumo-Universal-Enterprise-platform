@@ -11,6 +11,7 @@ import { workflowRegistry } from "../../../registry/workflowRegistry.js";
 import { componentRegistry } from "../../../registry/componentRegistry.js";
 import { departmentRegistry } from "../../../registry/departmentRegistry.js";
 import { aiERPRegistry } from "../../../registry/ai/AIERPRegistry.js";
+import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
 import { saveAllRegistries } from "../../../control/registry/RegistryBootstrap.js";
 
 export class ERPDeploymentService {
@@ -28,6 +29,7 @@ deploy(erp){
  }
 
  erpRegistry.register(erp);
+erpInstanceRegistry.register(erp);
 
  erp.portals.forEach((item,index)=>{
   portalRegistry.register({
@@ -78,6 +80,8 @@ deploy(erp){
  });
 
  aiERPRegistry.register(erp);
+
+return erp;
 
  saveAllRegistries();
 
