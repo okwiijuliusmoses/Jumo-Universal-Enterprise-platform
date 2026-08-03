@@ -173,7 +173,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (pathname === "/api/erp/ecosystem") {
+  if (pathname === "/api/erp/ecosystem" || pathname === "/api/ueos/erp/ecosystem") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(erpDiscoveryService.getEcosystem(), null, 2));
     return;
@@ -191,7 +191,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (pathname.startsWith("/api/ueos/erp/") && pathname !== "/api/ueos/erp/health") {
+  if (pathname.startsWith("/api/ueos/erp/") && pathname !== "/api/ueos/erp/health" && pathname !== "/api/ueos/erp/catalogue" && pathname !== "/api/ueos/erp/ecosystem") {
     const segments = pathname.split("/").filter(Boolean);
     const lastSegment = segments[segments.length - 1];
     
@@ -228,7 +228,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (lastSegment === "workspace") {
+    if (lastSegment === "workspace" || lastSegment === "runtime") {
         try {
             const actualId = segments[segments.length - 2];
             const workspace = ueosControlPlane.resolveERPWorkspace("tenant-default-001", actualId);
