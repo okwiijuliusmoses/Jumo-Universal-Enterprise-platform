@@ -14,6 +14,7 @@ import { aiERPRegistry } from "../../../registry/ai/AIERPRegistry.js";
 import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
 import { erpDeploymentRegistry } from "../../../registry/ERPDeploymentRegistry.js";
 import { saveAllRegistries } from "../../../control/registry/RegistryBootstrap.js";
+import { ueosERPRegistryFabric } from "../../../registry/UEOSERPRegistryFabric.js";
 
 export class ERPDeploymentService {
 
@@ -84,6 +85,8 @@ erpInstanceRegistry.register(erp);
  });
 
  aiERPRegistry.register(erp);
+
+      ueosERPRegistryFabric.registerERP(erp);
 
     erpDeploymentRegistry.register(erp);
 
