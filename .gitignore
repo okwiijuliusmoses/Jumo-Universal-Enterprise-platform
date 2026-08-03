@@ -4,3 +4,10 @@ dist/
 .DS_Store
 build/
 *.log
+
+# UEOS runtime generated snapshots
+platform/storage/snapshots/
+platform/storage/snapshots-backup/
+
+# Temporary backup files
+*.backup

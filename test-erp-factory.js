@@ -3,7 +3,7 @@ import { erpActivationService } from "./platform/factory/erp/services/ERPActivat
 
 const blueprint = {
   blueprintId:"education-erp",
-  instanceId:"education-demo-001",
+  instanceId:"education-demo-002",
   name:"JUMO Education ERP Test Instance",
   tenant:"demo-university",
 
