@@ -3,7 +3,12 @@
  * National Enterprise Command View
  */
 
-import { ueosControlPlane } from "../../../platform/control/UEOSControlPlane.js";
+const UEOS_API = "/api/ueos";
+
+async function getUEOSHealth(){
+ const response = await fetch(`${UEOS_API}/health`);
+ return await response.json();
+}
 
 export function renderNationalCommandView(){
 

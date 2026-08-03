@@ -6,7 +6,7 @@ import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
 import { erpPlatformTemplate } from "../erp/index.js";
-import "../../platform/control/UEOSControlPlane.js";
+const UEOS_API = "/api/ueos";
 
 // Global Error Protection
 window.onerror = function(message, source, lineno, colno, error) {

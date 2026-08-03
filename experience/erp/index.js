@@ -5,7 +5,7 @@
  * Replaces legacy ERPRuntimeEngine
  */
 
-import { erpFactoryManager } from "../../platform/factory/erp/ERPFactoryManager.js";
+const UEOS_API = "/api/ueos";
 import { erpRegistry } from "../../platform/registry/ERPRegistry.js";
 
 
