@@ -6,7 +6,7 @@
  * from ERP templates.
  */
 
-import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
+import { EnterprisePlatformTemplateRegistry } from "./templates/EnterprisePlatformTemplateRegistry.js";
 
 import { portalGenerator } from "./generators/PortalGenerator.js";
 import { moduleGenerator } from "./generators/ModuleGenerator.js";
@@ -40,7 +40,7 @@ export class ERPGenerationEngine {
   generateERP(directive){
 
     const blueprint =
-      ERPBlueprintRegistry.getBlueprint(
+      EnterprisePlatformTemplateRegistry.getTemplate(
         directive.blueprintId
       );
 
