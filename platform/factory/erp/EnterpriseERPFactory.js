@@ -1,3 +1,5 @@
+import { erpRegistry } from "../../registry/ERPRegistry.js";
+
 /**
  * JUMO UEOS
  * AI Autonomous ERP Factory
@@ -15,6 +17,10 @@ export class EnterpriseERPFactory {
    };
 
    this.factories=[];
+
+erpRegistry.list().forEach(definition=>{
+  this.createTemplate(definition);
+});
 
  }
 
