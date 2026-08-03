@@ -31,7 +31,24 @@ import { aiERPRegistry }
 from "../registry/ai/AIERPRegistry.js";
 
 
+
 export class UEOSRegistrySnapshotManager {
+
+  loadAll(){
+
+    return {
+      erp: registryPersistenceEngine.load("erp-registry"),
+      portals: registryPersistenceEngine.load("portal-registry"),
+      modules: registryPersistenceEngine.load("module-registry"),
+      forms: registryPersistenceEngine.load("form-registry"),
+      workflows: registryPersistenceEngine.load("workflow-registry"),
+      components: registryPersistenceEngine.load("component-registry"),
+      departments: registryPersistenceEngine.load("department-registry"),
+      ai: registryPersistenceEngine.load("ai-erp-registry")
+    };
+
+  }
+
 
 
  saveAll(){
