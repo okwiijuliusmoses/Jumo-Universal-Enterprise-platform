@@ -34,7 +34,11 @@ deploy(erp){
  }
 
  erpRegistry.register(erp);
-erpInstanceRegistry.register(erp);
+erpInstanceRegistry.register({
+      ...erp,
+      status:"ACTIVE",
+      lifecycle:"RUNNING"
+    });
 
  erp.portals.forEach((item,index)=>{
   portalRegistry.register({
