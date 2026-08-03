@@ -177,6 +177,7 @@ function renderInstalledERPFamilies() {
       <div class="text-[10px] text-slate-600 font-mono space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
         <div><strong>Portals:</strong> ${erp.portals ? erp.portals.length : 0} active governance portals</div>
         <div><strong>Modules:</strong> ${erp.modules ? erp.modules.length : 0} enterprise modules</div>
+        ${erp.configuration ? `<div class="text-emerald-600 font-bold">✓ Configuration Hydrated</div>` : `<div class="text-rose-500 font-bold">⚠ Configuration Missing</div>`}
       </div>
       <div class="flex items-center justify-between pt-2 border-t border-slate-100">
         <button onclick="window.navigate('/erp-ecosystem/${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>

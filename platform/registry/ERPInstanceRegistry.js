@@ -47,6 +47,13 @@ export class ERPInstanceRegistry {
        instance.agents = instance.agents?.length 
          ? instance.agents 
          : (blueprint.aiAgents || blueprint.agents || aiAgentGenerator.generate(blueprint) || []);
+
+       // Hydrate configuration layer
+       instance.settings = instance.settings || blueprint.settings || {};
+       instance.configuration = instance.configuration || blueprint.configuration || {};
+       instance.features = instance.features || blueprint.features || {};
+       instance.permissions = instance.permissions || blueprint.permissions || [];
+       instance.policies = instance.policies || blueprint.policies || {};
      }
    }
    

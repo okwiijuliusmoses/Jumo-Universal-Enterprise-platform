@@ -21,7 +21,12 @@ export class ERPDiscoveryService {
       modules: instance.modules || [],
       portals: instance.portals || [],
       workflows: instance.workflows || [],
-      agents: instance.agents || []
+      agents: instance.agents || [],
+      configuration: {
+        settings: instance.settings || {},
+        configuration: instance.configuration || {},
+        features: instance.features || {}
+      }
     }));
   }
 

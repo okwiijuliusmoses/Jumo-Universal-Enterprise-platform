@@ -46,6 +46,35 @@ export const ERPBlueprintRegistry = {
         "Research Administration",
         "Alumni Integration"
       ],
+      
+      settings: {
+        theme: "Enterprise Light",
+        language: "en-US",
+        timezone: "UTC"
+      },
+      
+      configuration: {
+        academicYear: "2026/2027",
+        admissionStatus: "OPEN",
+        gradingSystem: "GPA"
+      },
+      
+      features: {
+        onlineLearning: true,
+        studentPortal: true,
+        librarySystem: true
+      },
+      
+      permissions: [
+        "ACADEMIC_ADMIN",
+        "STUDENT_VIEW",
+        "FACULTY_ACCESS"
+      ],
+      
+      policies: {
+        dataRetention: "7 Years",
+        privacyLevel: "HIGH"
+      },
 
       generationRules:{
         configurable:true
@@ -72,6 +101,35 @@ export const ERPBlueprintRegistry = {
         "Compliance",
         "Records"
       ],
+      
+      settings: {
+        theme: "Government Standard",
+        language: "en-US",
+        timezone: "UTC"
+      },
+      
+      configuration: {
+        fiscalYear: "2026/2027",
+        procurementThreshold: 5000,
+        complianceLevel: "STRICT"
+      },
+      
+      features: {
+        citizenPortal: true,
+        digitalSignatures: true,
+        auditLogging: true
+      },
+      
+      permissions: [
+        "GOV_ADMIN",
+        "CITIZEN_VIEW",
+        "COMPLIANCE_OFFICER"
+      ],
+      
+      policies: {
+        publicTransparency: "FULL",
+        dataSovereignty: "NATIONAL"
+      },
 
       generationRules:{
         configurable:true

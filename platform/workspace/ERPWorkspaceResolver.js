@@ -46,6 +46,13 @@ export class ERPWorkspaceResolver {
         workflows: loadedWorkflows,
         agents: activeAgents
       },
+      configuration: {
+        settings: instance.settings || blueprint.settings || {},
+        configuration: instance.configuration || blueprint.configuration || {},
+        features: instance.features || blueprint.features || {},
+        permissions: instance.permissions || blueprint.permissions || [],
+        policies: instance.policies || blueprint.policies || {}
+      },
       resolvedAt: new Date().toISOString()
     };
   }
