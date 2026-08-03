@@ -544,8 +544,9 @@ export class ERPModuleFactory {
   }
 }
 
-export function generatePortalModules(portalId, portalName, ecosystem) {
+export function generatePortalModules(portalId, portalName, ecosystem, erpId) {
   const factory = new ERPModuleFactory();
+
   let erpId = "edu-uni";
 
   // Match standard prefixes
@@ -573,6 +574,7 @@ export function generatePortalModules(portalId, portalName, ecosystem) {
     else if (basePart === "gov") erpId = "standalone-gov";
     else if (basePart === "prov" || basePart === "chur") erpId = "church-prov";
   }
+
 
   return factory.installRealModulesForPortal(portalId, portalName, ecosystem, erpId);
 }
@@ -1054,7 +1056,7 @@ export class ERPPlatformFactory {
     if (!template) throw new Error(`ERP Template ${erpId} not found.`);
 
     const portals = (template.governancePortals || []).map(portal => {
-      const pModules = generatePortalModules(portal.id, portal.name, template.ecosystem);
+      const pModules = generatePortalModules(portal.id, portal.name, template.ecosystem, template.id);
       return {
         ...portal,
         modules: pModules,
@@ -1082,15 +1084,22 @@ export class ERPPlatformFactory {
 export class ERPRuntimeEngine {
   constructor() {
     this.factory = new ERPPlatformFactory(ERP_CATALOGUE);
+
+    const defaultTemplate = this.getDefaultTemplate();
+
     this.installedERPs = [
       {
-        instanceId: "inst-univ-01",
-        templateId: "edu-uni",
-        name: "JUMO University ERP",
+        instanceId: `inst-${Date.now()}`,
+        templateId: defaultTemplate?.id || null,
+        name: defaultTemplate?.name || "Default ERP Instance",
         status: "Active Production",
-        installedAt: "2026-05-10",
+        installedAt: new Date().toISOString(),
         tenantId: "tenant-default-001",
-        structure: this.factory.instantiateERP("edu-uni", { tenantId: "tenant-default-001" }).structure,
+        structure: defaultTemplate
+          ? this.factory.instantiateERP(defaultTemplate.id, {
+              tenantId: "tenant-default-001"
+            }).structure
+          : null,
         saccoBalance: 450000,
         saccoMembers: 1240,
         activeLoans: []
@@ -1130,7 +1139,7 @@ export class ERPRuntimeEngine {
     const t = ERP_CATALOGUE.find(t => t.id === templateId) || ERP_CATALOGUE[0];
     t.governancePortals.forEach(p => {
       if (!p.modules || p.modules.length === 0) {
-        p.modules = generatePortalModules(p.id, p.name, t.ecosystem);
+        p.modules = generatePortalModules(p.id, p.name, t.ecosystem, t.id);
       }
     });
     return t;
@@ -1142,10 +1151,19 @@ export class ERPRuntimeEngine {
     const t = ERP_CATALOGUE.find(t => t.id.toLowerCase() === q || t.name.toLowerCase() === q || t.name.toLowerCase().includes(q) || t.ecosystem.toLowerCase() === q) || ERP_CATALOGUE[0];
     t.governancePortals.forEach(p => {
       if (!p.modules || p.modules.length === 0) {
-        p.modules = generatePortalModules(p.id, p.name, t.ecosystem);
+        p.modules = generatePortalModules(p.id, p.name, t.ecosystem, t.id);
       }
     });
     return t;
+  }
+
+  getDefaultTemplate() {
+    const templates = this.getAllTemplates();
+
+    return templates.find(template => template.default === true)
+        || templates.find(template => template.enabled === true)
+        || templates[0]
+        || null;
   }
 
   getAllTemplates() {
@@ -1432,9 +1450,10 @@ if (typeof window !== 'undefined') {
       }
     },
     moduleRegistry: {
-      getModulesForPortal: (portalId, erpId = null) => {
-        const activeErp = erpId || (typeof window !== 'undefined' && window.state?.activeErpId) || (typeof window !== 'undefined' && window.state?.session?.activeErpTemplate?.id);
-        return UEOSModuleRegistry.getModulesByPortal(portalId);
+
+      getModulesForPortal: (portalId, erpId) => {
+        return UEOSModuleRegistry.getModulesByPortal(portalId, erpId);
+
       },
       registry: UEOSModuleRegistry
     },
