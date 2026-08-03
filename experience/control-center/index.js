@@ -1,5 +1,6 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { EcosystemRegistry } from "../../kernel/erp/ecosystemRegistry.js";
+import { ueosControlPlane } from "../../platform/control/UEOSControlPlane.js";
 import { CommercialPlatformRegistry } from "../../kernel/registry/commercialRegistry.js";
 
 const ecosystemRegistry = new EcosystemRegistry();
