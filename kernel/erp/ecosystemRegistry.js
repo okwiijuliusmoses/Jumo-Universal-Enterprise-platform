@@ -57,3 +57,42 @@ new ERPSystemRegistry();
 
 
 export { ERPSystemRegistry as EcosystemRegistry };
+
+/**
+ * UEOS AI Ecosystem Registry Compatibility Contract
+ * Replaces legacy runtime ecosystem access.
+ */
+
+ERPSystemRegistry.prototype.getEcosystems = function () {
+  return [
+    {
+      id: "education",
+      name: "Education ERP Ecosystem",
+      type: "domain",
+      status: "ONLINE",
+      factory: "UEOS AI ERP Factory"
+    },
+    {
+      id: "government",
+      name: "Government ERP Ecosystem",
+      type: "domain",
+      status: "ONLINE",
+      factory: "UEOS AI ERP Factory"
+    },
+    {
+      id: "finance",
+      name: "Finance & Treasury Ecosystem",
+      type: "domain",
+      status: "ONLINE",
+      factory: "UEOS AI ERP Factory"
+    },
+    {
+      id: "healthcare",
+      name: "Healthcare ERP Ecosystem",
+      type: "domain",
+      status: "ONLINE",
+      factory: "UEOS AI ERP Factory"
+    }
+  ];
+};
+
