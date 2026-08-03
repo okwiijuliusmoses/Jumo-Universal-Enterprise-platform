@@ -7,11 +7,13 @@ import { runtimeFabric } from "../runtime/RuntimeFabric.js";
 import { domainRegistry } from "../registry/DomainRegistry.js";
 import { tenantRegistry } from "../registry/TenantRegistry.js";
 import { erpRegistry } from "../registry/ERPRegistry.js";
+import { erpInstanceRegistry } from "../registry/ERPInstanceRegistry.js";
 import { portalRegistry } from "../registry/PortalRegistry.js";
 import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { enterpriseERPFactory } from "../factory/erp/EnterpriseERPFactory.js";
 import { erpFactoryManager } from "../factory/erp/ERPFactoryManager.js";
 import { erpGenerationEngine } from "../factory/erp/ERPGenerationEngine.js";
+import { erpActivationService } from "../factory/erp/services/ERPActivationService.js";
 import { ueosRegistryService } from "./services/UEOSRegistryService.js";
 import { ueosSettingsService } from "./services/UEOSSettingsService.js";
 import { masterRegistryRegistry } from "./registry/MasterRegistryRegistry.js";
@@ -103,6 +105,7 @@ ueosSettingsService.health(),
 
 registries:{
     erp:erpRegistry.health(),
+erpInstances:erpInstanceRegistry.health(),
     portals:portalRegistry.health(),
     modules:moduleRegistry.health(),
     domains:domainRegistry.health(),
@@ -129,6 +132,11 @@ registries:{
     return erpGenerationEngine.generateERP(directive);
 
   }
+
+  activateERP(erp){
+    return erpActivationService.activate(erp);
+  }
+
 
 
   getGeneratedERPInstances(){
