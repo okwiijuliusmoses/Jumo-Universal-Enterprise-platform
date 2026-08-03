@@ -648,7 +648,7 @@ export const gatewayTemplate = (state) => {
   
 
   const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.UEOSRuntime;
   const activeTemplate = state.session?.activeErpTemplate || (controlPlane ? controlPlane.getDefaultERPTemplate() : null);
   const portals = activeTemplate?.governancePortals || institution.portals || [];
 

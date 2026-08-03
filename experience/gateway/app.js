@@ -113,7 +113,7 @@ window.appState = window.state;
 
 // Dynamic ERP Context Resolver to prevent University structures leakage across templates
 export function resolveActiveERPContext(state) {
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.UEOSRuntime;
   
   // Find currently active template ID & active instance ID
   let activeErpId = (state && state.activeErpId) || (state && state.session?.activeErpTemplate?.id) || null;

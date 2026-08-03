@@ -1,3 +1,40 @@
+
+// UEOS Control Plane API Bridge
+const UEOSControlAPIService = {
+  async getHealth() {
+    const response = await fetch("/api/ueos/control/health");
+    if (!response.ok) {
+      throw new Error("UEOS Control Plane unavailable");
+    }
+    return await response.json();
+  }
+};
+
+window.UEOSControlAPIService = UEOSControlAPIService;
+
+UEOSControlAPIService.getHealth()
+  .then(status => {
+    window.UEOSRuntime = window.UEOSRuntime || {};
+
+    window.UEOSRuntime.controlPlane = status.controlPlane;
+    window.UEOSRuntime.aiRuntime = status.aiRuntime;
+    window.UEOSRuntime.registryFederation = status.registryFederation;
+    window.UEOSRuntime.erpFactory = status.erpFactory;
+    window.UEOSRuntime.tenantStatus = status.tenantStatus;
+    window.UEOSRuntime.runtimeStatus = status.runtimeStatus;
+
+    console.log("UEOS CONTROL PLANE ONLINE", status);
+
+    window.dispatchEvent(
+      new CustomEvent("UEOS_RUNTIME_READY", {
+        detail: status
+      })
+    );
+  })
+  .catch(err => {
+    console.error("UEOS CONTROL PLANE FAILED", err);
+  });
+
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
 import { EcosystemRegistry } from "../../kernel/erp/ecosystemRegistry.js";
 const UEOS_API = "/api/ueos";
@@ -6,89 +43,7 @@ import { CommercialPlatformRegistry } from "../../kernel/registry/commercialRegi
 const ecosystemRegistry = new EcosystemRegistry();
 const commercialRegistry = new CommercialPlatformRegistry();
 
-export class UEOSControlAPIService {
-  static async getStatus() {
-    try {
-      const res = await fetch("/api/ueos/control/health");
-      if (!res.ok) throw new Error("Network response failed");
-      return await res.json();
-    } catch (e) {
-      console.warn("UEOSControlAPIService offline fallback:", e);
-      return {
-        controlPlane: { status: "ONLINE", version: "1.0.0-sovereign", mode: "SOVEREIGN_ADMIN" },
-        aiRuntime: {
-          status: "ONLINE",
-          gateway: "ACTIVE",
-          agentsCount: 4,
-          agents: [
-            { name: "Sovereign Control Assistant", capabilities: ["Platform Governance", "Tenant Provisioning"] },
-            { name: "AEGIS Security Auditor", capabilities: ["Immutable Audit", "Policy Verification"] },
-            { name: "FAAP Financial Router", capabilities: ["Ledger Balance", "Multi-Currency Settlement"] },
-            { name: "ERP Factory Compiler", capabilities: ["Blueprint Generation", "Registry Assembly"] }
-          ],
-          models: ["Gemini 2.0 Flash", "Omni Flash", "Custom Weights"]
-        },
-        registryFederation: { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: 22 },
-        erpFactory: { status: "ONLINE", blueprints: 22, activeInstances: 6 },
-        tenantStatus: { status: "ONLINE", activeTenants: 3 },
-        runtimeStatus: { status: "ONLINE", kernel: "ONLINE", shell: "ONLINE" }
-      };
-    }
-  }
-}
-
 if (typeof window !== 'undefined') {
-  window.UEOSControlAPIService = UEOSControlAPIService;
-  
-  window.UEOSRuntime = window.UEOSRuntime || {};
-  
-  // Contract check & initial state
-  window.UEOSRuntime.controlPlaneStatus = window.UEOSRuntime.controlPlaneStatus || { status: "ONLINE", version: "1.0.0-sovereign", mode: "SOVEREIGN_ADMIN" };
-  window.UEOSRuntime.aiRuntime = window.UEOSRuntime.aiRuntime || {
-    status: "ONLINE",
-    gateway: "ACTIVE",
-    agentsCount: 4,
-    agents: [
-      { name: "Sovereign Control Assistant", capabilities: ["Platform Governance", "Tenant Provisioning"] },
-      { name: "AEGIS Security Auditor", capabilities: ["Immutable Audit", "Policy Verification"] },
-      { name: "FAAP Financial Router", capabilities: ["Ledger Balance", "Multi-Currency Settlement"] },
-      { name: "ERP Factory Compiler", capabilities: ["Blueprint Generation", "Registry Assembly"] }
-    ],
-    models: ["Gemini 2.0 Flash", "Omni Flash", "Custom Weights"]
-  };
-  window.UEOSRuntime.registryFederation = window.UEOSRuntime.registryFederation || { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: 22 };
-  window.UEOSRuntime.erpFactory = window.UEOSRuntime.erpFactory || { status: "ONLINE", blueprints: 22, activeInstances: 6 };
-  window.UEOSRuntime.runtimeStatus = window.UEOSRuntime.runtimeStatus || { status: "ONLINE", kernel: "ONLINE", shell: "ONLINE" };
-  
-  // Safe adapters
-  window.UEOSRuntime.enterpriseAudit ||= {
-    getAuditReport(){ return {}; }
-  };
-  window.UEOSRuntime.erpRegistry ||= {
-    getPlatforms(){ return []; },
-    getModulesForERP(){ return []; }
-  };
-  window.UEOSRuntime.aiCommandCenter ||= {
-    agents: window.UEOSRuntime.aiRuntime?.agents || []
-  };
-  window.UEOSRuntime.faapService ||= {
-    upgradeAreas: [],
-    treasuryPools: {}
-  };
-  
-  console.log("[UEOS CONTROL PLANE ONLINE]", window.UEOSRuntime);
-
-
-  UEOSControlAPIService.getStatus().then(data => {
-    if (data) {
-      window.UEOSRuntime.controlPlaneStatus = data.controlPlane;
-      window.UEOSRuntime.aiRuntime = data.aiRuntime;
-      window.UEOSRuntime.registryFederation = data.masterRegistry || data.registryFederation;
-      window.UEOSRuntime.erpFactory = data.erpFactory;
-      window.UEOSRuntime.runtimeStatus = data.runtime;
-      if (typeof window.render === 'function') window.render();
-    }
-  });
   window.handleSovereignLogin = function(e, redirectRoute = '/control-center') {
     e.preventDefault();
     const emailInput = document.getElementById("cc-email") || document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.ueos" };
@@ -121,7 +76,7 @@ if (typeof window !== 'undefined') {
 
   window.installERPInstance = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane || null;
+    const controlPlane = window.UEOSRuntime || null;
     if (controlPlane) {
       const tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
       const inst = controlPlane.deployERP(tmpl ? tmpl.id : erpId, erpName || (tmpl ? tmpl.name : erpId));
@@ -149,7 +104,7 @@ if (typeof window !== 'undefined') {
 
   window.launchERPWorkspace = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane || null;
+    const controlPlane = window.UEOSRuntime || null;
     if (controlPlane) {
       let tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
       let inst = controlPlane.getDeployedERPInstances().find(i => i.templateId === erpId || i.instanceId === erpId);
@@ -186,7 +141,7 @@ function renderControlCenterNavigation() { return ""; }
 
 function renderInstalledERPFamilies(){
 
-  const controlPlane = window.ueosControlPlane || null;
+  const controlPlane = window.UEOSRuntime || null;
 
 
   if(!controlPlane){
@@ -1224,7 +1179,7 @@ function renderViewContent(view) {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          ${Object.entries(faap.treasuryPools || {}).map(([cur, pool]) => `
+          ${Object.entries(faap.treasuryPools).map(([cur, pool]) => `
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
               <div class="text-[10px] text-slate-400 font-bold uppercase">${cur} Treasury Pool</div>
               <div class="text-lg font-black text-slate-900">${pool.balance.toLocaleString()}</div>
@@ -1236,7 +1191,7 @@ function renderViewContent(view) {
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <h3 class="font-bold text-sm text-slate-900 mb-6">FAAP 2.0 Core Functional Operating Areas</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            ${(faap.upgradeAreas || []).map(area => `
+            ${faap.upgradeAreas.map(area => `
               <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
                 <span class="text-xs font-medium text-slate-700">${area.name}</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -1244,11 +1199,85 @@ function renderViewContent(view) {
             `).join('')}
           </div>
         </div>
+      </div>
+    `;
+  }
 
+  if (view === 'installed-apps') {
+    return `
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-bold text-sm text-slate-900">Installed Enterprise Platforms</h2>
+              <p class="text-xs text-slate-500">Manage, configure, update, or suspend every deployed ERP installation across the platform.</p>
+            </div>
+            <button onclick="alert('Deploying new ERP instance...');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Deploy New Instance</button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            ${(() => {
+              const controlPlane = window.UEOSRuntime || null;
+              const installed = controlPlane ? controlPlane.getDeployedERPInstances() : [];
+              if (installed.length === 0) {
+                return `<p class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">No ERP instances currently deployed. Install an ERP from the catalogue above.</p>`;
+              }
+              return installed.map(inst => installedPlatformRow(inst.name, `${inst.templateId} • Tenant ${inst.tenantId}`, inst.status, 'emerald', inst.templateId, inst.instanceId)).join('');
+            })()}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (view === 'ai-platform') {
+    return `
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        ${serviceCard('JUMO AI Models', 'Fine-tuned LLM inference routing and weights', '🤖')}
+        ${serviceCard('Autonomous Agents', 'Specialized enterprise reasoning bots', '⚡')}
+        ${serviceCard('Prompt Management', 'Version-controlled prompt templates', '✍️')}
+        ${serviceCard('Knowledge Base', 'RAG vector embeddings and document indexing', '📚')}
+        ${serviceCard('AI Workflows', 'Automated agentic multi-step task execution', '🔄')}
+        ${serviceCard('Usage & Telemetry', 'Token consumption and latency monitoring', '📊')}
+      </div>
+    `;
+  }
+
+  if (view === 'faap') {
+    html = `
+      <div class="space-y-6">
+        <div class="flex items-center justify-between bg-emerald-900 rounded-xl p-6 shadow-md border border-emerald-800 text-white">
+          <div>
+            <h2 class="text-2xl font-bold">FAAP Treasury & Multi-Currency Ledger</h2>
+            <p class="text-emerald-200 text-sm mt-1">Enterprise Financial Operating Platform</p>
+          </div>
+          <div class="flex items-center gap-4">
+             <div class="text-right">
+                <p class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Total Liquidity Position</p>
+                <p class="text-3xl font-bold font-mono">$1.42B</p>
+             </div>
+             <button class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-bold shadow transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Create Transaction
+             </button>
+          </div>
+        </div>
+        
+        <!-- FAAP Sub-Modules Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+           ${['General Ledger', 'Budgeting', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Treasury', 'Bank Reconciliation', 'Cash Management', 'Assets', 'Procurement', 'Tax', 'Revenue', 'Settlement', 'Wallets', 'Financial Reports'].map(mod => `
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-center items-center text-center group">
+                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 group-hover:bg-emerald-100 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 </div>
+                 <h3 class="text-xs font-bold text-slate-800 leading-tight">${mod}</h3>
+              </div>
+           `).join('')}
+        </div>
+        
         <!-- Real-Time Activity Ledger -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 class="font-bold text-slate-900 flex items-center gap-2 text-xs">
+              <h3 class="font-bold text-slate-900 flex items-center gap-2">
                  <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Global Settlement Queue
               </h3>
               <div class="flex gap-2">
@@ -1297,46 +1326,6 @@ function renderViewContent(view) {
               </table>
            </div>
         </div>
-      </div>
-    `;
-  }
-
-  if (view === 'installed-apps') {
-    return `
-      <div class="space-y-6">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="font-bold text-sm text-slate-900">Installed Enterprise Platforms</h2>
-              <p class="text-xs text-slate-500">Manage, configure, update, or suspend every deployed ERP installation across the platform.</p>
-            </div>
-            <button onclick="alert('Deploying new ERP instance...');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Deploy New Instance</button>
-          </div>
-
-          <div class="space-y-3 text-xs">
-            ${(() => {
-              const controlPlane = window.ueosControlPlane || null;
-              const installed = controlPlane ? controlPlane.getDeployedERPInstances() : [];
-              if (installed.length === 0) {
-                return `<p class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">No ERP instances currently deployed. Install an ERP from the catalogue above.</p>`;
-              }
-              return installed.map(inst => installedPlatformRow(inst.name, `${inst.templateId} • Tenant ${inst.tenantId}`, inst.status, 'emerald', inst.templateId, inst.instanceId)).join('');
-            })()}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  if (view === 'ai-platform') {
-    return `
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        ${serviceCard('JUMO AI Models', 'Fine-tuned LLM inference routing and weights', '🤖')}
-        ${serviceCard('Autonomous Agents', 'Specialized enterprise reasoning bots', '⚡')}
-        ${serviceCard('Prompt Management', 'Version-controlled prompt templates', '✍️')}
-        ${serviceCard('Knowledge Base', 'RAG vector embeddings and document indexing', '📚')}
-        ${serviceCard('AI Workflows', 'Automated agentic multi-step task execution', '🔄')}
-        ${serviceCard('Usage & Telemetry', 'Token consumption and latency monitoring', '📊')}
       </div>
     `;
   }
@@ -1606,7 +1595,7 @@ if (typeof window !== 'undefined') window.switchCardTab = function(cardTabId, ta
 if (typeof window !== 'undefined') window.openErpInstallationFlow = function(templateName) {
   const customName = `${templateName} Enterprise`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane || null;
+  const controlPlane = window.UEOSRuntime || null;
   
   let template = null;
   let inst = null;
@@ -1654,7 +1643,7 @@ if (typeof window !== 'undefined') window.openErpInstallationFlow = function(tem
 if (typeof window !== 'undefined') window.configureErpBlueprint = function(templateName) {
   const customName = `${templateName} (Blueprint Configured)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane || null;
+  const controlPlane = window.UEOSRuntime || null;
   
   let template = null;
   let inst = null;
@@ -1688,7 +1677,7 @@ if (typeof window !== 'undefined') window.configureErpBlueprint = function(templ
 if (typeof window !== 'undefined') window.cloneErpTemplate = function(templateName) {
   const customName = `${templateName} (Cloned Platform)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane || null;
+  const controlPlane = window.UEOSRuntime || null;
   
   let template = null;
   let inst = null;

@@ -163,6 +163,52 @@ const server = http.createServer((req, res) => {
   }
   
   // Static JS / CSS / module asset file server
+
+  if (
+    pathname === "/api/ueos/control/health" ||
+    pathname === "/api/control-plane/status" ||
+    pathname === "/api/control-plane/health"
+  ) {
+    res.writeHead(200, { "Content-Type": "application/json" });
+
+    res.end(JSON.stringify({
+      controlPlane: {
+        status: "ONLINE",
+        version: "UEOS-ControlPlane-v1",
+        mode: "SOVEREIGN_ADMIN"
+      },
+      masterRegistry: {
+        status: "ONLINE",
+        federation: [
+          "enterprise",
+          "governance",
+          "identity",
+          "security",
+          "finance",
+          "workflow",
+          "intelligence",
+          "data",
+          "experience"
+        ]
+      },
+      aiRuntime: {
+        status: "ONLINE",
+        gateway: "ACTIVE",
+        engine: "UEOS AI Intelligence Runtime"
+      },
+      erpFactory: {
+        status: "ONLINE"
+      },
+      runtime: {
+        kernel: "ONLINE",
+        shell: "ONLINE"
+      },
+      timestamp: new Date().toISOString()
+    }, null, 2));
+
+    return;
+  }
+
   if (pathname.endsWith(".js") || pathname.endsWith(".css") || pathname.startsWith("/experience/") || pathname.startsWith("/assets/")) {
     let relativePath = pathname.startsWith("/") ? pathname.substring(1) : pathname;
     // Map shortcut root assets

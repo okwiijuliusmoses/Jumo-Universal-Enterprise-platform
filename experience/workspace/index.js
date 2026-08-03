@@ -55,7 +55,7 @@ const initializeWorkspaceState = (state) => {
 
 export const workspaceTemplate = (state) => {
   initializeWorkspaceState(state);
-  const controlPlane = window.ueosControlPlane;
+  const controlPlane = window.UEOSRuntime;
 
   const activeTemplate = state.session?.activeErpTemplate || (controlPlane ? controlPlane.getDefaultERPTemplate() : null);
   const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
