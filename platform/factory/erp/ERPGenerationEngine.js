@@ -89,7 +89,7 @@ export class ERPGenerationEngine {
 
 
       portals:
-        portalGenerator.generate(blueprint),
+        portalGenerator.generate(blueprint.id),
 
 
       departments:
@@ -97,7 +97,7 @@ export class ERPGenerationEngine {
 
 
       modules:
-        moduleGenerator.generate(blueprint),
+        moduleGenerator.generate(blueprint.id),
 
 
       components:
