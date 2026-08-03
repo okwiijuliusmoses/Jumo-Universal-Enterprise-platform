@@ -104,6 +104,24 @@ window.state = {
   bootStatus: ["Public Gateway Loaded"],
   authError: null
 };
+
+const savedRuntime = localStorage.getItem("UEOS_ACTIVE_ERP");
+if (savedRuntime) {
+  try {
+    const runtime = JSON.parse(savedRuntime);
+    window.state.erpRuntime = runtime;
+    window.state.workspaceReady = true;
+    window.state.activeERP = runtime.erpId;
+    window.state.activeErpId = runtime.erpId;
+    window.state.portals = runtime.workspace.portals;
+    window.state.modules = runtime.workspace.modules;
+    window.state.workflows = runtime.workspace.workflows;
+    window.state.settings = runtime.workspace.settings;
+  } catch (e) {
+    console.error("Failed to restore saved UEOS runtime", e);
+  }
+}
+
 window.appState = window.state;
 
 // Dynamic ERP Context Resolver to prevent University structures leakage across templates
@@ -353,15 +371,20 @@ window.launchERPInstance = async function(instanceId) {
         const launchResponse = await fetch(`/api/ueos/erp/${instanceId}/launch`, { method: "POST" });
         if (!launchResponse.ok) throw new Error("Failed to launch ERP platform");
         
-        const launchData = await launchResponse.json();
-        console.log("[UEOS] ERP Launch Context:", launchData);
+        const runtime = await launchResponse.json();
+        console.log("[UEOS] ERP Launch Context:", runtime);
 
-        // Phase 2: Resolve Workspace
-        const response = await fetch(`/api/ueos/erp/${instanceId}/workspace`);
-        if (!response.ok) throw new Error("Failed to resolve ERP workspace");
-        
-        const workspaceData = await response.json();
-        
+        window.state = window.state || {};
+        window.state.activeERP = runtime.erpId;
+        window.state.erpRuntime = runtime;
+        window.state.workspaceReady = true;
+        window.state.activeErpId = runtime.erpId;
+        window.state.activeErpInstanceId = instanceId;
+        window.state.portals = runtime.workspace ? runtime.workspace.portals : runtime.portals;
+        window.state.modules = runtime.workspace ? runtime.workspace.modules : runtime.modules;
+        window.state.workflows = runtime.workspace ? runtime.workspace.workflows : runtime.workflows;
+        window.state.settings = runtime.workspace ? runtime.workspace.settings : runtime.settings;
+
         // Activate session for this ERP
         window.state.session = {
             user: {
@@ -371,23 +394,28 @@ window.launchERPInstance = async function(instanceId) {
                 isAdmin: true,
                 status: "Sovereign Administrator"
             },
-            organization: workspaceData.erpName,
-            tenantId: workspaceData.tenantId,
+            organization: runtime.name,
+            tenantId: "system",
             activeErpInstance: {
                 instanceId: instanceId,
-                name: workspaceData.erpName,
-                templateId: workspaceData.erpId,
+                name: runtime.name,
+                templateId: runtime.erpId,
                 structure: {
-                    portals: workspaceData.workspace.portals,
-                    modules: workspaceData.workspace.modules
+                    portals: window.state.portals,
+                    modules: window.state.modules,
+                    workflows: window.state.workflows
                 }
+            },
+            activeErpTemplate: {
+                id: runtime.erpId,
+                name: runtime.name,
+                governancePortals: window.state.portals
             }
         };
-        
-        window.state.activeErpId = workspaceData.erpId;
-        window.state.activeErpInstanceId = instanceId;
-        
-        // Navigate to gateway to select a portal within this ERP
+
+        localStorage.setItem("UEOS_ACTIVE_ERP", JSON.stringify(runtime));
+
+        // Navigate to gateway or workspace
         window.navigate("/gateway");
         
     } catch (err) {
