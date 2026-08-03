@@ -77,9 +77,25 @@ directive.tenant || null,
 
 
 configuration:
-directive.configuration || {},
+directive.configuration || blueprint.configuration || {},
 
+settings:
+directive.settings || blueprint.settings || {},
 
+features:
+directive.features || blueprint.features || {},
+
+permissions:
+directive.permissions || blueprint.permissions || [],
+
+policies:
+directive.policies || blueprint.policies || {},
+
+sector:
+directive.sector || blueprint.sector || "General",
+
+institution:
+directive.institution || {},
 
 portals:
 portalGenerator.generate(blueprint),
@@ -122,7 +138,11 @@ navigationGenerator.generate(blueprint),
 
 
 
-status:"GENERATED"
+status: "ACTIVE",
+lifecycle: "RUNNING",
+configurationStatus: "CONFIGURED",
+deploymentStatus: "DEPLOYED",
+runtimeStatus: "ONLINE"
 
 };
 

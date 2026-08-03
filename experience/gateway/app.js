@@ -250,6 +250,14 @@ window.render = function() {
       controlCenterTemplate(window.state);
     } else if (path.startsWith("/erp-ecosystem")) {
       erpPlatformTemplate(window.state);
+    } else if (path === "/erp-workspace") {
+      // Resolve instance and navigate to gateway
+      const id = urlObj.searchParams.get("id");
+      if (id) {
+          window.launchERPInstance(id);
+      } else {
+          window.navigate("/erp-ecosystem");
+      }
     } else if (window.state.session) {
       // Authenticated Portal/Office Workspace hierarchy
       if (window.state.activePortalId) {
@@ -337,6 +345,47 @@ window.handleLoginSubmit = function(e) {
   };
 
   window.navigate("/gateway");
+};
+
+window.launchERPInstance = async function(instanceId) {
+    try {
+        const response = await fetch(`/api/ueos/erp/${instanceId}/workspace`);
+        if (!response.ok) throw new Error("Failed to resolve ERP workspace");
+        
+        const workspaceData = await response.json();
+        
+        // Activate session for this ERP
+        window.state.session = {
+            user: {
+                name: "Platform Owner",
+                email: "owner@jumo.enterprise",
+                role: "Platform Owner",
+                isAdmin: true,
+                status: "Sovereign Administrator"
+            },
+            organization: workspaceData.erpName,
+            tenantId: workspaceData.tenantId,
+            activeErpInstance: {
+                instanceId: instanceId,
+                name: workspaceData.erpName,
+                templateId: workspaceData.erpId,
+                structure: {
+                    portals: workspaceData.workspace.portals,
+                    modules: workspaceData.workspace.modules
+                }
+            }
+        };
+        
+        window.state.activeErpId = workspaceData.erpId;
+        window.state.activeErpInstanceId = instanceId;
+        
+        // Navigate to gateway to select a portal within this ERP
+        window.navigate("/gateway");
+        
+    } catch (err) {
+        console.error("Launch ERP Instance failed:", err);
+        alert("Failed to launch ERP platform. Registry resolution error.");
+    }
 };
 
 window.handleRegisterSubmit = function(e) {

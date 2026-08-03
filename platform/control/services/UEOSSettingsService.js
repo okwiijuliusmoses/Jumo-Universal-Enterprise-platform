@@ -22,6 +22,39 @@ import { upgradeConfigurationRegistry } from "../settings/UpgradeConfigurationRe
 
 export class UEOSSettingsService {
 
+  getAllSettings() {
+    return {
+      universal: universalSettingsRegistry.list(),
+      platforms: platformSettingsRegistry.list(),
+      applications: applicationSettingsRegistry.list(),
+      layers: layerConfigurationRegistry.list(),
+      modules: moduleConfigurationRegistry.list(),
+      departments: departmentConfigurationRegistry.list(),
+      servers: serverConfigurationRegistry.list(),
+      components: componentConfigurationRegistry.list(),
+      forms: formConfigurationRegistry.list(),
+      workflows: workflowConfigurationRegistry.list(),
+      commercialPlatforms: commercialPlatformRegistry.list(),
+      navigation: navigationConfigurationRegistry.list(),
+      publicExperience: publicExperienceRegistry.list(),
+      lifecycle: lifecycleConfigurationRegistry.list(),
+      upgrades: upgradeConfigurationRegistry.list()
+    };
+  }
+
+  getModuleSettings(moduleId) {
+    return moduleConfigurationRegistry.get(moduleId);
+  }
+
+  getWorkflowSettings(workflowId) {
+    return workflowConfigurationRegistry.get(workflowId);
+  }
+
+  getPlatformSettings() {
+    return platformSettingsRegistry.list();
+  }
+
+
  health(){
 
   return {

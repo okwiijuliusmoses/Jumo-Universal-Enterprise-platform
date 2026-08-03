@@ -168,19 +168,24 @@ function renderInstalledERPFamilies() {
     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-full">${erp.category || erp.ecosystem || 'Enterprise ERP'}</span>
-        <span class="text-[10px] font-mono text-slate-400">v${erp.version || '1.0.0'} &bull; ${erp.status || 'ACTIVE'}</span>
+        <span class="text-[10px] font-mono text-slate-400">v${erp.version || '1.0.0'} &bull; <span class="text-emerald-600">${erp.status || 'ACTIVE'}</span></span>
       </div>
       <div>
         <h4 class="font-bold text-slate-900 text-sm">${erp.name}</h4>
         <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${erp.description || erp.summary || 'Enterprise resource planning platform for ' + erp.name}</p>
       </div>
       <div class="text-[10px] text-slate-600 font-mono space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-        <div><strong>Portals:</strong> ${erp.portals ? erp.portals.length : 0} active governance portals</div>
-        <div><strong>Modules:</strong> ${erp.modules ? erp.modules.length : 0} enterprise modules</div>
-        ${erp.configuration ? `<div class="text-emerald-600 font-bold">✓ Configuration Hydrated</div>` : `<div class="text-rose-500 font-bold">⚠ Configuration Missing</div>`}
+        <div class="flex justify-between"><strong>Lifecycle:</strong> <span class="text-emerald-600 font-bold">${erp.lifecycle || 'RUNNING'}</span></div>
+        <div class="flex justify-between"><strong>Configuration:</strong> <span class="${erp.configurationStatus === 'CONFIGURED' ? 'text-emerald-600' : 'text-amber-600'} font-bold">${erp.configurationStatus || 'CONFIGURED'}</span></div>
+        <div class="flex justify-between"><strong>Deployment:</strong> <span class="text-blue-600 font-bold">${erp.deploymentStatus || 'DEPLOYED'}</span></div>
+        <div class="flex justify-between"><strong>Runtime:</strong> <span class="text-emerald-600 font-bold">${erp.runtimeStatus || 'ONLINE'}</span></div>
+        <div class="pt-1 border-t border-slate-200 mt-1">
+          <div><strong>Portals:</strong> ${erp.portals ? erp.portals.length : 0} active portals</div>
+          <div><strong>Modules:</strong> ${erp.modules ? erp.modules.length : 0} modules</div>
+        </div>
       </div>
       <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-        <button onclick="window.navigate('/erp-ecosystem/${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>
+        <button onclick="window.navigate('/erp-workspace?id=${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>
         <button onclick="alert('Opening administrative console for ${erp.name}');" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer">Manage</button>
       </div>
     </div>

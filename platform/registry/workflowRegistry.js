@@ -15,6 +15,10 @@ export class WorkflowRegistry {
    return workflow;
  }
 
+ get(id){
+   return this.workflows.find(w=>w.id===id);
+ }
+
  list(){
    return this.workflows;
  }

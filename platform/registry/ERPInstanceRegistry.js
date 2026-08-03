@@ -60,7 +60,10 @@ export class ERPInstanceRegistry {
    this.instances.push({
      ...instance,
      status: instance.status || "ACTIVE",
-     lifecycle:"INSTALLED",
+     lifecycle: "RUNNING",
+     configurationStatus: "CONFIGURED",
+     deploymentStatus: "DEPLOYED",
+     runtimeStatus: "ONLINE",
      deployedAt: instance.deployedAt || new Date().toISOString()
    });
    

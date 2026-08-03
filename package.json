@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "echo \"JUMO UEOS Genesis build successful\""
+    "build": "echo \"JUMO UEOS Genesis build successful\"",
+    "lint": "eslint ."
   },
   "dependencies": {
     "eslint": "^10.8.0",

@@ -19,6 +19,7 @@ import { ueosSettingsService } from "./services/UEOSSettingsService.js";
 import { masterRegistryRegistry } from "./registry/MasterRegistryRegistry.js";
 import { masterRegistrySyncService } from "./services/MasterRegistrySyncService.js";
 import { erpDiscoveryService } from "../factory/erp/services/ERPDiscoveryService.js";
+import { erpWorkspaceResolver } from "../workspace/ERPWorkspaceResolver.js";
 import { registerGovernanceRegistries } from "./registry/registerGovernanceRegistries.js";
 
 registerGovernanceRegistries();
@@ -195,6 +196,10 @@ erpInstances:erpInstanceRegistry.health(),
 
   getERPInstance(id) {
     return erpDiscoveryService.getERP(id);
+  }
+
+  resolveERPWorkspace(tenantId, erpId) {
+    return erpWorkspaceResolver.resolveWorkspace(tenantId, erpId);
   }
 
 

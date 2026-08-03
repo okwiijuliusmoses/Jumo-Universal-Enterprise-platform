@@ -51,7 +51,7 @@ registry.list().forEach(serviceName => {
   runtime.register(serviceName);
 });
 const runtimeState = runtime.start();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -186,7 +186,29 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname.startsWith("/api/ueos/erp/") && pathname !== "/api/ueos/erp/health") {
-    const id = pathname.replace("/api/ueos/erp/", "");
+    const segments = pathname.split("/").filter(Boolean);
+    const lastSegment = segments[segments.length - 1];
+    
+    if (lastSegment === "workspace") {
+        try {
+            const actualId = segments[segments.length - 2];
+            const workspace = ueosControlPlane.resolveERPWorkspace("tenant-default-001", actualId);
+            if (!workspace) {
+                res.writeHead(404, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "ERP Workspace not found" }, null, 2));
+                return;
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(workspace, null, 2));
+        } catch (err) {
+            console.error("Workspace Resolution Error:", err);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Internal Server Error during workspace resolution", details: err.message }, null, 2));
+        }
+        return;
+    }
+
+    const id = segments[segments.length - 1];
     const erpInstance = ueosControlPlane.getERPInstance(id);
     if (!erpInstance) {
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -248,7 +270,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-ueosRegistrySnapshotManager.loadAll();
 restoreAllRegistries();
 server.listen(PORT, () => {
   console.log(`JUMO UEOS Complete Enterprise Architecture running on port ${PORT}`);

@@ -5,8 +5,8 @@
 
 import { erpInstanceRegistry } from "../registry/ERPInstanceRegistry.js";
 import { ERPBlueprintRegistry } from "../factory/erp/ERPBlueprintRegistry.js";
-import { moduleRegistry } from "../registry/moduleRegistry.js";
-import { portalRegistry } from "../registry/portalRegistry.js";
+import { moduleRegistry } from "../registry/ModuleRegistry.js";
+import { portalRegistry } from "../registry/PortalRegistry.js";
 import { workflowRegistry } from "../registry/workflowRegistry.js";
 
 export class ERPWorkspaceResolver {
@@ -40,6 +40,9 @@ export class ERPWorkspaceResolver {
       domain: instance.domain,
       lifecycle: instance.lifecycle,
       status: instance.status,
+      configurationStatus: instance.configurationStatus || "CONFIGURED",
+      deploymentStatus: instance.deploymentStatus || "DEPLOYED",
+      runtimeStatus: instance.runtimeStatus || "ONLINE",
       workspace: {
         modules: loadedModules,
         portals: loadedPortals,

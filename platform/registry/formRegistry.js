@@ -15,6 +15,10 @@ export class FormRegistry {
    return form;
  }
 
+ get(id){
+   return this.forms.find(f=>f.id===id);
+ }
+
  list(){
    return this.forms;
  }

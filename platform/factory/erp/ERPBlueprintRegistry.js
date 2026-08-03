@@ -156,6 +156,35 @@ export const ERPBlueprintRegistry = {
         "Credit Management",
         "Financial Operations"
       ],
+      
+      settings: {
+        theme: "Banking Blue",
+        language: "en-US",
+        timezone: "UTC"
+      },
+      
+      configuration: {
+        fiscalYear: "2026/2027",
+        loanInterestRate: 0.12,
+        maxLoanDurationMonths: 36
+      },
+      
+      features: {
+        mobileBanking: true,
+        automatedScoring: true,
+        onlineSavings: true
+      },
+      
+      permissions: [
+        "LOAN_OFFICER",
+        "CREDIT_MANAGER",
+        "TELLER_VIEW"
+      ],
+      
+      policies: {
+        kycLevel: "STRICT",
+        amlMonitoring: "CONTINUOUS"
+      },
 
       generationRules:{
         configurable:true
@@ -180,6 +209,34 @@ export const ERPBlueprintRegistry = {
         "Pharmacy",
         "Billing"
       ],
+      
+      settings: {
+        theme: "Clinical Clean",
+        language: "en-US",
+        timezone: "UTC"
+      },
+      
+      configuration: {
+        standardShiftHours: 12,
+        emergencyStatus: "NORMAL"
+      },
+      
+      features: {
+        telemedicine: true,
+        ePrescribing: true,
+        patientPortal: true
+      },
+      
+      permissions: [
+        "DOCTOR_ACCESS",
+        "NURSE_VIEW",
+        "PATIENT_READ"
+      ],
+      
+      policies: {
+        hipaaCompliance: "REQUIRED",
+        dataEncryption: "AES-256"
+      },
 
       generationRules:{
         configurable:true
@@ -204,6 +261,34 @@ export const ERPBlueprintRegistry = {
         "Inventory",
         "Farmer Management"
       ],
+      
+      settings: {
+        theme: "Nature Earth",
+        language: "en-US",
+        timezone: "UTC"
+      },
+      
+      configuration: {
+        harvestSeason: "SPRING",
+        inventoryThreshold: 100
+      },
+      
+      features: {
+        iotMonitoring: true,
+        marketPricing: true,
+        logisticsTracking: true
+      },
+      
+      permissions: [
+        "FARM_MANAGER",
+        "SUPPLY_CHAIN_COORDINATOR",
+        "FIELD_AGENT"
+      ],
+      
+      policies: {
+        organicCertification: "OPTIONAL",
+        sustainabilityTracking: "ENABLED"
+      },
 
       generationRules:{
         configurable:true
@@ -349,6 +434,123 @@ export const ERPBlueprintRegistry = {
         "Document Management",
         "Compliance"
       ],
+
+      generationRules:{
+        configurable:true
+      }
+    },
+
+
+    {
+      id:"banking-erp",
+      name:"Commercial Banking ERP",
+      category:"Banking ERP",
+
+      configurableScope:[
+        "Commercial Bank",
+        "Retail Bank",
+        "Investment Bank",
+        "Central Bank"
+      ],
+
+      capabilities:[
+        "Core Banking Engine",
+        "Asset Management",
+        "Liquidity Control",
+        "Risk Assessment",
+        "Regulatory Reporting",
+        "Treasury Operations",
+        "Customer 360",
+        "Fraud Detection"
+      ],
+
+      settings: {
+        theme: "Banking Deep Blue",
+        language: "en-US",
+        timezone: "UTC"
+      },
+
+      configuration: {
+        reserveRatio: 0.1,
+        capitalAdequacyRatio: 0.08,
+        interestRateBase: 0.05
+      },
+
+      features: {
+        realTimeSettlement: true,
+        aiCreditScoring: true,
+        cryptoGateway: false,
+        swiftIntegration: true
+      },
+
+      permissions: [
+        "BANK_ADMIN",
+        "TREASURY_OPERATOR",
+        "AUDIT_CONTROLLER",
+        "BRANCH_MANAGER"
+      ],
+
+      policies: {
+        baselIIICompliance: "REQUIRED",
+        dataPrivacyLevel: "MAXIMUM",
+        transactionMonitoring: "REALTIME"
+      },
+
+      generationRules:{
+        configurable:true
+      }
+    },
+
+
+    {
+      id:"insurance-erp",
+      name:"Insurance ERP",
+      category:"Insurance ERP",
+
+      configurableScope:[
+        "Life Insurance",
+        "Health Insurance",
+        "General Insurance",
+        "Reinsurance"
+      ],
+
+      capabilities:[
+        "Policy Administration",
+        "Claims Management",
+        "Underwriting Engine",
+        "Actuarial Analytics",
+        "Broker Portal",
+        "Reinsurance Management"
+      ],
+
+      settings: {
+        theme: "Insurance Slate",
+        language: "en-US",
+        timezone: "UTC"
+      },
+
+      configuration: {
+        claimThreshold: 1000,
+        underwritingAuthority: "SENIOR"
+      },
+
+      features: {
+        aiClaimsProcessing: true,
+        automatedUnderwriting: true,
+        mobileClaims: true
+      },
+
+      permissions: [
+        "CLAIMS_ADJUSTER",
+        "UNDERWRITER",
+        "ACTUARY",
+        "AGENT_ACCESS"
+      ],
+
+      policies: {
+        solvencyIICompliance: "REQUIRED",
+        riskDisclosure: "MANDATORY"
+      },
 
       generationRules:{
         configurable:true

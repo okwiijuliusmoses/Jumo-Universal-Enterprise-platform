@@ -17,7 +17,10 @@ export class ERPDiscoveryService {
       tenant: instance.tenant,
       domain: instance.domain || "Institutional ERP",
       status: instance.status || "ACTIVE",
-      lifecycle: instance.lifecycle || "INSTALLED",
+      lifecycle: instance.lifecycle || "RUNNING",
+      configurationStatus: instance.configurationStatus || "CONFIGURED",
+      deploymentStatus: instance.deploymentStatus || "DEPLOYED",
+      runtimeStatus: instance.runtimeStatus || "ONLINE",
       modules: instance.modules || [],
       portals: instance.portals || [],
       workflows: instance.workflows || [],
@@ -25,7 +28,9 @@ export class ERPDiscoveryService {
       configuration: {
         settings: instance.settings || {},
         configuration: instance.configuration || {},
-        features: instance.features || {}
+        features: instance.features || {},
+        permissions: instance.permissions || [],
+        policies: instance.policies || {}
       }
     }));
   }
@@ -43,10 +48,13 @@ export class ERPDiscoveryService {
 
   getEcosystem() {
     const erps = this.listERPs();
+    const blueprints = ERPBlueprintRegistry.list();
     return {
       ecosystem: "JUMO UEOS ERP Ecosystem",
-      total: erps.length,
-      erps: erps
+      instances: erps.length,
+      blueprintsCount: blueprints.length,
+      erps: erps,
+      blueprints: blueprints
     };
   }
 
