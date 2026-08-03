@@ -79,15 +79,12 @@ window.state = {
   activeErpInstanceId: "inst-univ-01",
   deployedInstitution: {
     id: "tenant-default-001",
-    name: "JUMO University",
-    type: "Education ERP",
-    domain: "portal.kampala.edu.ug",
+    name: "Enterprise Institution",
+    type: "Enterprise ERP",
+    domain: "portal.jumo.ueos",
     themeColor: "blue",
     portals: [
-      { id: "student", name: "Student Portal" },
-      { id: "faculty", name: "Faculty Portal" },
-      { id: "admin", name: "Administration Portal" },
-      { id: "applicant", name: "Admissions Portal" }
+      { id: "admin", name: "Administration Portal" }
     ]
   },
   faapTransactions: [
@@ -95,9 +92,7 @@ window.state = {
     { id: "TX-99082", type: "Global Vendor Settle", amount: "$42,500", status: "CONFIRMED", timestamp: "2026-05-18 11:02:18" }
   ],
   organizations: [
-    { id: "org-1", name: "JUMO University", role: "Administrator", status: "Active", badge: "Education ERP", color: "blue" },
-    { id: "org-2", name: "JUMO Health Network", role: "Staff", status: "Active", badge: "Healthcare ERP", color: "emerald" },
-    { id: "org-3", name: "Africa's Business Solutions Ltd", role: "Manager", status: "Pending", badge: "Corporate", color: "amber" }
+    { id: "org-1", name: "Sovereign Enterprise", role: "Administrator", status: "Active", badge: "Managed ERP", color: "blue" }
   ],
   notifications: [],
   searchResults: [],
@@ -552,6 +547,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Start Boot Orchestration
     startupDiagnostics.log("KERNEL LOADED");
     await bootOrchestrator.boot(window.state);
+    
+    // Restore ERP Ecosystem Visibility
+    try {
+      const erpResponse = await fetch('/api/ueos/erp');
+      if (erpResponse.ok) {
+        const erpData = await erpResponse.json();
+        window.state.erpApplications = erpData.erps || [];
+        console.log("[UEOS] ERP Ecosystem Federated:", window.state.erpApplications.length);
+      }
+    } catch (e) {
+      console.warn("[UEOS] ERP Federation Deferred:", e.message);
+    }
     
     // Small pause to let user see "complete"
     // await new Promise(res => setTimeout(res, 400));

@@ -175,11 +175,22 @@ erpInstances:erpInstanceRegistry.health(),
   }
 
   getERPApplications() {
-    return erpDiscoveryService.listERPs();
+    const erps = erpDiscoveryService.listERPs();
+    return {
+      total: erps.length,
+      erps: erps
+    };
   }
 
   getERPStatus() {
-    return erpDiscoveryService.health();
+    const health = erpDiscoveryService.health();
+    const erps = erpDiscoveryService.listERPs();
+    return {
+      status: "ONLINE",
+      totalERPInstances: health.instances,
+      activeERPInstances: erps.filter(e => e.status === "ACTIVE").length,
+      erps: erps
+    };
   }
 
   getERPInstance(id) {

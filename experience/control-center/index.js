@@ -154,173 +154,36 @@ function renderControlCenterNavigation() { return ""; }
 
 
 
-function renderInstalledERPFamilies(){
+function renderInstalledERPFamilies() {
+  const erps = window.state.erpApplications || [];
 
-  const controlPlane = window.ueosControlPlane || null;
-
-
-  if(!controlPlane){
-
+  if (erps.length === 0) {
     return `
-    <div class="p-6 text-rose-600">
-      UEOS AI Control Plane unavailable
-    </div>`;
-
+      <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">
+        No ERP instances discovered in registry. Verify RegistryBootstrap status.
+      </div>`;
   }
 
-
-  const health =
-    controlPlane && typeof controlPlane.health === "function"
-    ? controlPlane.health()
-    : {
-        registries:{erp:{platforms:[]}},
-        factories:{enterpriseERP:{templates:0}}
-      };
-
-
-  const registry =
-    health?.registries?.erp || {};
-
-
-  const generated =
-    typeof controlPlane.getGeneratedERPInstances === "function"
-    ? controlPlane.getGeneratedERPInstances()
-    : [];
-
-
-  const registered =
-    registry.platforms || [];
-
-
-  const instances =
-    [
-      ...registered,
-      ...generated
-    ].filter(
-      (item,index,array)=>
-      array.findIndex(
-        x=>x.id===item.id
-      )===index
-    );
-
-
-
-  return `
-
-  <div class="space-y-6">
-
-
-    <div class="bg-white rounded-xl border border-slate-200 p-6">
-
-      <h2 class="text-xl font-bold text-slate-800">
-        JUMO UEOS AI ERP Factory
-      </h2>
-
-      <p class="text-slate-500 mt-2">
-        Configurable enterprise ERP generation platform
-      </p>
-
-
-      <div class="grid grid-cols-3 gap-4 mt-5">
-
-        <div class="p-4 bg-slate-50 rounded-lg">
-          <b>${registry.platforms?.length || 0}</b>
-          <span class="block text-xs">
-          Registered ERP Systems
-          </span>
-        </div>
-
-
-        <div class="p-4 bg-slate-50 rounded-lg">
-          <b>${generated.length}</b>
-          <span class="block text-xs">
-          AI Generated Instances
-          </span>
-        </div>
-
-
-        <div class="p-4 bg-slate-50 rounded-lg">
-          <b>${health?.factories?.enterpriseERP?.templates || 0}</b>
-          <span class="block text-xs">
-          Blueprint Templates
-          </span>
-        </div>
-
+  return erps.map(erp => `
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-full">${erp.category || erp.ecosystem || 'Enterprise ERP'}</span>
+        <span class="text-[10px] font-mono text-slate-400">v${erp.version || '1.0.0'} &bull; ${erp.status || 'ACTIVE'}</span>
       </div>
-
-
-    </div>
-
-
-
-    <div class="bg-white rounded-xl border border-slate-200 p-6">
-
-
-      <h3 class="font-bold text-slate-800 mb-4">
-        Deployed ERP Ecosystems
-      </h3>
-
-
-
-      ${
-      instances.length === 0
-
-      ?
-
-      `
-      <p class="text-slate-500">
-      No ERP instances generated yet.
-      </p>
-      `
-
-      :
-
-      instances.map(erp=>`
-
-      <div class="border rounded-lg p-4 mb-3">
-
-        <div class="font-bold">
-          ${erp.name}
-        </div>
-
-        <div class="text-sm text-slate-500">
-          ${erp.category || "Enterprise ERP"}
-        </div>
-
-
-        <div class="grid grid-cols-3 gap-3 mt-3 text-xs">
-
-          <span>
-          Portals:
-          ${erp.portals?.length || 0}
-          </span>
-
-          <span>
-          Modules:
-          ${erp.modules?.length || 0}
-          </span>
-
-          <span>
-          Status:
-          ${erp.status}
-          </span>
-
-        </div>
-
+      <div>
+        <h4 class="font-bold text-slate-900 text-sm">${erp.name}</h4>
+        <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${erp.description || erp.summary || 'Enterprise resource planning platform for ' + erp.name}</p>
       </div>
-
-      `).join("")
-
-      }
-
-
+      <div class="text-[10px] text-slate-600 font-mono space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+        <div><strong>Portals:</strong> ${erp.portals ? erp.portals.length : 0} active governance portals</div>
+        <div><strong>Modules:</strong> ${erp.modules ? erp.modules.length : 0} enterprise modules</div>
+      </div>
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+        <button onclick="window.navigate('/erp-ecosystem/${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>
+        <button onclick="alert('Opening administrative console for ${erp.name}');" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer">Manage</button>
+      </div>
     </div>
-
-
-  </div>
-
-  `;
-
+  `).join('');
 }
 
 function renderCommercialPlatforms() {
@@ -825,7 +688,7 @@ function renderViewContent(view) {
       faapServices: "OFFLINE"
     };
 
-    const erps = window.UEOSRuntime ? window.UEOSRuntime.erpRegistry.getPlatforms() : [];
+    const erps = window.state.erpApplications || [];
     
     return `
       <div class="space-y-6">
@@ -1163,11 +1026,10 @@ function renderViewContent(view) {
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <h3 class="font-extrabold text-base text-slate-900">Enterprise ERP Ecosystems & Platforms</h3>
-            <span class="text-xs font-mono text-slate-500 font-bold">12 Certified Ecosystem Families</span>
+            <span class="text-xs font-mono text-slate-500 font-bold">Registry Discovered Ecosystems</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 1. Education ERP -->
             ${renderInstalledERPFamilies()}
           </div>
         </div>
@@ -1706,42 +1568,30 @@ if (typeof window !== 'undefined') window.ccLogAction = function(message) {
 };
 
 
-function renderEnterpriseNavigation(){
+function renderEnterpriseNavigation() {
+  const erps = window.state.erpApplications || [];
+  
+  if (erps.length === 0) {
+    return `
+      <div class="col-span-full p-6 text-slate-400 italic text-center">
+        No enterprise architectures discovered in registry.
+      </div>`;
+  }
 
-    const registry =
-        window.UEOSArchitectureRegistry ||
-        {};
-
-    const platforms =
-        registry.platforms || [];
-
-    const portals =
-        registry.portals || [];
-
-    const items = [
-        ...platforms,
-        ...portals
-    ];
-
-    return items.map(item => `
-        <button
-        onclick="window.navigate('${item.id || item.portal}')"
-        class="p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition text-left">
-
-            <div class="text-2xl mb-3">
-                ${item.icon || '◈'}
-            </div>
-
-            <div class="font-bold text-sm text-slate-900">
-                ${item.name}
-            </div>
-
-            <div class="text-xs text-slate-500 mt-1">
-                ${item.type || item.category || 'Enterprise Service'}
-            </div>
-
-        </button>
-    `).join("");
-
+  return erps.map(erp => `
+    <button
+      onclick="window.navigate('/erp-ecosystem/${erp.id}')"
+      class="p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition text-left group">
+      <div class="text-2xl mb-3 group-hover:scale-110 transition-transform duration-300">
+        ${erp.icon || '◈'}
+      </div>
+      <div class="font-bold text-sm text-slate-900">
+        ${erp.name}
+      </div>
+      <div class="text-[10px] text-slate-500 mt-1 uppercase font-mono font-bold tracking-wider">
+        ${erp.category || erp.ecosystem || 'Enterprise ERP'}
+      </div>
+    </button>
+  `).join("");
 }
 
