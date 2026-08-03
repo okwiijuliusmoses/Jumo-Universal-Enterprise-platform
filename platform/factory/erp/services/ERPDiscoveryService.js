@@ -4,17 +4,20 @@
  */
 
 import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
-import { erpBlueprintRegistry } from "../ERPBlueprintRegistry.js";
+import { ERPBlueprintRegistry } from "../ERPBlueprintRegistry.js";
 
 export class ERPDiscoveryService {
 
   listERPs() {
     const instances = erpInstanceRegistry.list();
     return instances.map(instance => ({
-      id: instance.instanceId,
-      name: instance.name,
+      id: instance.id,
+      name: instance.blueprintId,
+      blueprintId: instance.blueprintId,
+      tenant: instance.tenant,
       domain: instance.domain || "Institutional ERP",
-      status: instance.status || "ACTIVE"
+      status: instance.status || "ACTIVE",
+      lifecycle: instance.lifecycle || "INSTALLED"
     }));
   }
 
@@ -22,7 +25,7 @@ export class ERPDiscoveryService {
     const instance = erpInstanceRegistry.get(id);
     if (!instance) return null;
     
-    const blueprint = erpBlueprintRegistry.get(instance.templateId);
+    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId);
     return {
       ...instance,
       blueprint: blueprint || null
@@ -41,8 +44,8 @@ export class ERPDiscoveryService {
   health() {
     return {
       status: "ONLINE",
-      instances: erpInstanceRegistry.count(),
-      blueprints: erpBlueprintRegistry.count()
+      instances: erpInstanceRegistry.count ? erpInstanceRegistry.count() : erpInstanceRegistry.list().length,
+      blueprints: ERPBlueprintRegistry.list().length
     };
   }
 }

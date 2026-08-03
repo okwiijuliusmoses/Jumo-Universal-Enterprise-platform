@@ -253,6 +253,8 @@ window.render = function() {
       controlCenterLoginTemplate(window.state);
     } else if (path.startsWith("/control-center")) {
       controlCenterTemplate(window.state);
+    } else if (path.startsWith("/erp-ecosystem")) {
+      erpPlatformTemplate(window.state);
     } else if (window.state.session) {
       // Authenticated Portal/Office Workspace hierarchy
       if (window.state.activePortalId) {

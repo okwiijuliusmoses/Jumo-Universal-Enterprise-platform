@@ -1,4 +1,4 @@
-import { formRegistry } from "../../registry/formRegistry.js";
+import { formRegistry } from "../../../registry/formRegistry.js";
 
 export class FormGenerator {
 

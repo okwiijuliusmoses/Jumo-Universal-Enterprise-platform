@@ -17,6 +17,9 @@ import { baseClanConfig } from "./kernel/erp/industry/baseClanConfig.js";
 import { baseChurchConfig } from "./kernel/erp/industry/baseChurchConfig.js";
 import { ueosRegistrySnapshotManager } from "./platform/storage/UEOSRegistrySnapshotManager.js";
 
+import { erpDiscoveryService } from "./platform/factory/erp/services/ERPDiscoveryService.js";
+import { ueosControlPlane } from "./platform/control/UEOSControlPlane.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -160,6 +163,37 @@ const server = http.createServer((req, res) => {
     });
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ services: servicesDetail }, null, 2));
+    return;
+  }
+  
+  if (pathname === "/api/ueos/erp/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(ueosControlPlane.getERPStatus(), null, 2));
+    return;
+  }
+
+  if (pathname === "/api/erp/ecosystem") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(erpDiscoveryService.getEcosystem(), null, 2));
+    return;
+  }
+
+  if (pathname === "/api/ueos/erp") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(ueosControlPlane.getERPApplications(), null, 2));
+    return;
+  }
+
+  if (pathname.startsWith("/api/ueos/erp/") && pathname !== "/api/ueos/erp/health") {
+    const id = pathname.replace("/api/ueos/erp/", "");
+    const erpInstance = ueosControlPlane.getERPInstance(id);
+    if (!erpInstance) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "ERP not found" }, null, 2));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(erpInstance, null, 2));
     return;
   }
   

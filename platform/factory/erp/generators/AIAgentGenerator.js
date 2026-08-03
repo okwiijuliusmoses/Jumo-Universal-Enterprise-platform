@@ -1,4 +1,4 @@
-import { aiERPRegistry } from "../../registry/ai/AIERPRegistry.js";
+import { aiERPRegistry } from "../../../registry/ai/AIERPRegistry.js";
 
 export class AIAgentGenerator {
 

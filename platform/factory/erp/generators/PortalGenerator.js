@@ -1,4 +1,4 @@
-import { portalRegistry } from "../../registry/portalRegistry.js";
+import { portalRegistry } from "../../../registry/portalRegistry.js";
 
 export class PortalGenerator {
 

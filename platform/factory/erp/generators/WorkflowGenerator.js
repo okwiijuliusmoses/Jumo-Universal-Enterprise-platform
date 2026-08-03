@@ -1,4 +1,4 @@
-import { workflowRegistry } from "../../registry/workflowRegistry.js";
+import { workflowRegistry } from "../../../registry/workflowRegistry.js";
 
 export class WorkflowGenerator {
 

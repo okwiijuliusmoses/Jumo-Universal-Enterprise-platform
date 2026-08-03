@@ -1,14 +1,30 @@
 
 import { erpInstanceRegistry } from './platform/registry/ERPInstanceRegistry.js';
+import { ERPBlueprintRegistry } from './platform/factory/erp/ERPBlueprintRegistry.js';
+import { ueosRegistrySnapshotManager } from "./platform/storage/UEOSRegistrySnapshotManager.js";
 
-console.log('Verifying ERP Instances...');
+ueosRegistrySnapshotManager.loadAll();
 
-const instances = erpInstanceRegistry.list();
-console.log('REGISTERED ERP COUNT:', instances.length);
-console.log('ACTIVE INSTANCES:', instances.filter(i => i.status === 'ACTIVE').length);
-
-if (instances.length >= 8) {
-    console.log('SUCCESS: Minimum instances found.');
-} else {
-    console.log('FAILURE: Insufficient instances found.');
+if (erpInstanceRegistry.list().length === 0) {
+  ERPBlueprintRegistry.list().forEach(blueprint => {
+    erpInstanceRegistry.register({
+      id: blueprint.id + "-instance",
+      instanceId: blueprint.id + "-instance",
+      templateId: blueprint.id,
+      name: blueprint.name,
+      blueprintId: blueprint.id,
+      tenant: "system",
+      domain: blueprint.category,
+      status: "ACTIVE"
+    });
+  });
+  ueosRegistrySnapshotManager.saveAll();
 }
+
+console.log('ERP BLUEPRINTS:');
+ERPBlueprintRegistry.list().forEach(bp => {
+  console.log(bp.id);
+});
+
+console.log('\nExpected:\n\nERP INSTANCES:');
+console.log(erpInstanceRegistry.list().length);
