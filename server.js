@@ -189,6 +189,39 @@ const server = http.createServer(async (req, res) => {
     const segments = pathname.split("/").filter(Boolean);
     const lastSegment = segments[segments.length - 1];
     
+    if (lastSegment === "status") {
+        try {
+            const actualId = segments[segments.length - 2];
+            const instance = ueosControlPlane.getERPInstance(actualId);
+            if (!instance) {
+                res.writeHead(404, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "ERP Instance not found" }, null, 2));
+                return;
+            }
+            const { erpComplianceValidator } = await import("./platform/factory/erp/services/ERPComplianceValidator.js");
+            const compliance = erpComplianceValidator.validate(instance);
+            const workspace = ueosControlPlane.resolveERPWorkspace("tenant-default-001", actualId);
+            
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                status: instance.lifecycle || "RUNNING",
+                compliance: compliance.status,
+                portals: workspace.workspace.portals.length,
+                modules: workspace.workspace.modules.length,
+                components: workspace.workspace.components.length,
+                forms: workspace.workspace.forms.length,
+                departments: workspace.workspace.departments.length,
+                workflows: workspace.workspace.workflows.length,
+                settings: "CONFIGURED"
+            }, null, 2));
+        } catch (err) {
+            console.error("ERP Status Error:", err);
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Failed to retrieve ERP status", details: err.message }, null, 2));
+        }
+        return;
+    }
+
     if (lastSegment === "workspace") {
         try {
             const actualId = segments[segments.length - 2];
