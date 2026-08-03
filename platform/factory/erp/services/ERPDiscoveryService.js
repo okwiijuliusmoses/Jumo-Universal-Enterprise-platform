@@ -4,7 +4,7 @@
  */
 
 import { erpInstanceRegistry } from "../../../registry/ERPInstanceRegistry.js";
-import { ERPBlueprintRegistry } from "../ERPBlueprintRegistry.js";
+import { EnterprisePlatformTemplateRegistry } from "../templates/EnterprisePlatformTemplateRegistry.js";
 import { erpFamilyRegistry } from "../ERPFamilyRegistry.js";
 import { erpEcosystemTemplateRegistry } from "../ERPEcosystemTemplateRegistry.js";
 import { ERPEnterpriseStandard } from "../ERPEnterpriseStandard.js";
@@ -22,7 +22,7 @@ export class ERPDiscoveryService {
   listERPs() {
     const instances = erpInstanceRegistry.list();
     return instances.map(instance => {
-      const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
+      const blueprint = EnterprisePlatformTemplateRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
       const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
       const template = blueprint ? erpEcosystemTemplateRegistry.getTemplate(blueprint.templateId) : null;
       const family = template ? erpFamilyRegistry.getFamily(template.familyId) : null;
@@ -63,7 +63,7 @@ export class ERPDiscoveryService {
     const instance = erpInstanceRegistry.get(id);
     if (!instance) return null;
     
-    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId) || {};
+    const blueprint = EnterprisePlatformTemplateRegistry.getBlueprint(instance.blueprintId) || {};
     const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
     return {
       ...instance,
@@ -81,7 +81,7 @@ export class ERPDiscoveryService {
   getEcosystemTree() {
     const families = erpFamilyRegistry.listFamilies();
     const templates = erpEcosystemTemplateRegistry.listTemplates();
-    const blueprints = ERPBlueprintRegistry.list();
+    const blueprints = EnterprisePlatformTemplateRegistry.list();
     const instances = this.listERPs();
 
     const familyTree = families.map(family => {
@@ -116,7 +116,7 @@ export class ERPDiscoveryService {
 
   getEcosystem() {
     const erps = this.listERPs();
-    const blueprints = ERPBlueprintRegistry.list();
+    const blueprints = EnterprisePlatformTemplateRegistry.list();
     return {
       ecosystem: "JUMO UEOS ERP Ecosystem",
       instances: erps.length,
@@ -130,7 +130,7 @@ export class ERPDiscoveryService {
     return {
       status: "ONLINE",
       instances: erpInstanceRegistry.count ? erpInstanceRegistry.count() : erpInstanceRegistry.list().length,
-      blueprints: ERPBlueprintRegistry.list().length,
+      blueprints: EnterprisePlatformTemplateRegistry.list().length,
       families: erpFamilyRegistry.listFamilies().length,
       templates: erpEcosystemTemplateRegistry.listTemplates().length
     };
