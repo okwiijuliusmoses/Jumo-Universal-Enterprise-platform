@@ -179,6 +179,12 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (pathname === "/api/ueos/erp/catalogue") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(erpDiscoveryService.getEcosystemTree(), null, 2));
+    return;
+  }
+
   if (pathname === "/api/ueos/erp") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(ueosControlPlane.getERPApplications(), null, 2));
