@@ -1,10 +1,11 @@
 /**
  * JUMO UEOS
- * National AI ERP Factory Manager
+ * National Digital Enterprise ERP Factory Orchestrator
  */
 
 import { enterpriseERPFactory } from "./EnterpriseERPFactory.js";
 import { erpGenerationEngine } from "./ERPGenerationEngine.js";
+import { erpInstanceRegistry } from "../../registry/ERPInstanceRegistry.js";
 import { erpRegistry } from "../../registry/ERPRegistry.js";
 import { portalRegistry } from "../../registry/PortalRegistry.js";
 import { moduleRegistry } from "../../registry/ModuleRegistry.js";
@@ -13,6 +14,7 @@ import { workflowRegistry } from "../../registry/workflowRegistry.js";
 import { componentRegistry } from "../../registry/componentRegistry.js";
 import { departmentRegistry } from "../../registry/departmentRegistry.js";
 import { aiERPRegistry } from "../../registry/ai/AIERPRegistry.js";
+import { saveAllRegistries } from "../../control/registry/RegistryBootstrap.js";
 
 
 export class ERPFactoryManager {
@@ -25,21 +27,20 @@ export class ERPFactoryManager {
 
    this.ai={
      enabled:true,
-     engine:"UEOS AI Intelligence Runtime",
+     engine:"JUMO UEOS AI Enterprise Intelligence Runtime",
      capabilities:[
        "ERP generation",
-       "architecture automation",
-       "deployment orchestration",
-       "digital enterprise modelling"
+       "enterprise modelling",
+       "domain provisioning",
+       "workflow automation",
+       "AI governance"
      ]
    };
-
 
    this.registerFactory(
      "enterprise",
      enterpriseERPFactory
    );
-
  }
 
 
@@ -48,7 +49,6 @@ export class ERPFactoryManager {
    this.factories[name]=factory;
 
    return factory;
-
  }
 
 
@@ -64,7 +64,6 @@ export class ERPFactoryManager {
 
    }
 
-
    const template=factory.createTemplate(definition);
 
    return factory.architectERP(template);
@@ -72,29 +71,76 @@ export class ERPFactoryManager {
  }
 
 
- 
-generateERP(definition){
+ generateERP(definition){
 
-    const instance =
-      erpGenerationEngine.generateERP(definition);
-
-    return {
-      ...instance,
-      factory:"JUMO UEOS AI ERP Factory",
-      managed:true,
-      lifecycle:"GENERATED"
-    };
-
-  }
+   const instance =
+     erpGenerationEngine.generateERP(definition);
 
 
-getGeneratedInstances(){
+   const enterpriseInstance={
 
-    return erpGenerationEngine.listGenerated();
+     ...instance,
 
-}
+     factory:
+     "JUMO UEOS National Digital Enterprise Factory",
 
-listFactories(){
+     tenant:
+     definition.tenant ||
+     `${definition.id}-tenant`,
+
+     domain:
+     definition.domain ||
+     "enterprise",
+
+     lifecycle:
+     "INSTALLED",
+
+     governance:{
+       sovereign:true,
+       multiTenant:true,
+       aiManaged:true
+     }
+
+   };
+
+
+   erpInstanceRegistry.register({
+
+      id:enterpriseInstance.id,
+
+      blueprintId:
+      definition.blueprintId ||
+      definition.id,
+
+      tenant:
+      enterpriseInstance.tenant,
+
+      domain:
+      enterpriseInstance.domain,
+
+      status:"ACTIVE",
+
+      lifecycle:"INSTALLED"
+
+   });
+
+
+   saveAllRegistries();
+
+
+   return enterpriseInstance;
+
+ }
+
+
+ getGeneratedInstances(){
+
+   return erpGenerationEngine.listGenerated();
+
+ }
+
+
+ listFactories(){
 
    return Object.keys(this.factories);
 
@@ -105,13 +151,15 @@ listFactories(){
 
    return {
 
-     runtime:"UEOS National AI ERP Factory Manager",
+    runtime:
+    "JUMO UEOS National ERP Runtime Fabric",
 
-     status:this.status,
+    status:this.status,
 
-     factories:this.listFactories(),
+    factories:
+    this.listFactories(),
 
-     ai:this.ai
+    ai:this.ai
 
    };
 
