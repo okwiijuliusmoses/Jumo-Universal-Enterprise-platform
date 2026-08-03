@@ -18,13 +18,16 @@ export class ERPDeploymentService {
 
 deploy(erp){
 
- const existing = erpRegistry.get(erp.id);
+ const existing = erpInstanceRegistry.get(erp.id);
 
  if(existing){
-  return {
+    saveAllRegistries();
+
+    return {
    deployed:false,
    existing:true,
-   erp:erp.id
+      erp:erp.id,
+      status:"DEPLOYED"
   };
  }
 
@@ -81,13 +84,16 @@ erpInstanceRegistry.register(erp);
 
  aiERPRegistry.register(erp);
 
-return erp;
 
  saveAllRegistries();
 
- return {
-  deployed:true,
-  erp:erp.id
+    saveAllRegistries();
+
+    return {
+      deployed:true,
+      existing:false,
+      erp:erp.id,
+      status:"DEPLOYED"
  };
 
 }

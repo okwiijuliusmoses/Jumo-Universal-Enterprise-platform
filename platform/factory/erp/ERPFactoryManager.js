@@ -78,62 +78,6 @@ generateERP(definition){
     const instance =
       erpGenerationEngine.generateERP(definition);
 
-    erpRegistry.register({
-      ...instance,
-      tenantId: definition.tenant
-    });
-
-
-    instance.forms.forEach((form,index)=>{
-      formRegistry.register({
-        id:`${instance.id}-form-${index}`,
-        name:form,
-        erpId:instance.id
-      });
-    });
-
-    instance.workflows.forEach((workflow,index)=>{
-      workflowRegistry.register({
-        id:`${instance.id}-workflow-${index}`,
-        name:workflow,
-        erpId:instance.id
-      });
-    });
-
-    instance.components.forEach((component,index)=>{
-      componentRegistry.register({
-        id:`${instance.id}-component-${index}`,
-        name:component,
-        erpId:instance.id
-      });
-    });
-
-    instance.departments.forEach((department,index)=>{
-      departmentRegistry.register({
-        id:`${instance.id}-department-${index}`,
-        name:department,
-        erpId:instance.id
-      });
-    });
-
-    aiERPRegistry.register(instance);
-
-    instance.portals.forEach((portal,index)=>{
-      portalRegistry.register({
-        id:`${instance.id}-portal-${index}`,
-        name:portal,
-        erpId:instance.id
-      });
-    });
-
-    instance.modules.forEach((module,index)=>{
-      moduleRegistry.register({
-        id:`${instance.id}-module-${index}`,
-        name:module,
-        erpId:instance.id
-      });
-    });
-
     return {
       ...instance,
       factory:"JUMO UEOS AI ERP Factory",
@@ -141,7 +85,8 @@ generateERP(definition){
       lifecycle:"GENERATED"
     };
 
-}
+  }
+
 
 getGeneratedInstances(){
 

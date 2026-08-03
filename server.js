@@ -26,12 +26,12 @@ const erpRegistry = new ERPRegistry();
 const erpConfigEngine = new ERPConfigEngine(erpRegistry);
 const erpStore = new ERPStore(erpRegistry, erpConfigEngine);
 
-erpRegistry.register("Education-University", baseEducationConfig);
-erpRegistry.register("University-ERP", universityConfig);
-erpRegistry.register("Alumni-Association", baseAlumniConfig);
-erpRegistry.register("Hospitality-Hotel", baseHospitalityConfig);
-erpRegistry.register("Church-Ministry", baseChurchConfig);
-erpRegistry.register("Clan-Governance", baseClanConfig);
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
+// LEGACY ERP REGISTRATION REMOVED - UEOS ERP FACTORY CONTROLLED
 
 registry.register("eventBus", eventBus);
 registry.register("ERPRegistry", erpRegistry);
