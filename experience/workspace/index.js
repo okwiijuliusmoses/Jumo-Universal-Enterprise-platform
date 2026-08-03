@@ -1,5 +1,5 @@
 import { BRAND_CONFIG, getOfficialLogoHtml } from "../brand/brandConfig.js";
-import { DIGITAL_FORMS_CATALOGUE } from "../erp/runtimeEngine.js";
+import { moduleRegistry } from "../../platform/registry/ModuleRegistry.js";
 import { navigationEngine } from "../../kernel/navigation/navigationEngine.js";
 
 // Initialize missing state variables on load to ensure smooth execution
@@ -55,9 +55,9 @@ const initializeWorkspaceState = (state) => {
 
 export const workspaceTemplate = (state) => {
   initializeWorkspaceState(state);
-  const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
+  const controlPlane = window.ueosControlPlane;
 
-  const activeTemplate = state.session?.activeErpTemplate || (runtimeEngine ? runtimeEngine.getDefaultTemplate() : null);
+  const activeTemplate = state.session?.activeErpTemplate || (controlPlane ? controlPlane.getDefaultERPTemplate() : null);
   const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
   const portals = activeTemplate?.governancePortals || institution.portals || [];
 
@@ -104,7 +104,7 @@ export const workspaceTemplate = (state) => {
   
   // Portal Runtime Workspace
   const user = state.session?.user || { name: "Authorized User", role: "Portal Administrator", email: "user@enterprise.com" };
-  const forms = DIGITAL_FORMS_CATALOGUE[state.activePortalId] || [];
+  const forms = moduleRegistry.list()[state.activePortalId] || [];
   
   const activeErp = state.session?.activeErpInstance;
   const activePortal = activeErp?.structure?.portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, departments: [], modules: [] };
@@ -966,7 +966,7 @@ if(typeof window !== 'undefined') window.executeWorkflowAction = function(id, st
 
 // Canvas-based Digital Signatures & Dynamic forms modal
 if(typeof window !== 'undefined') window.openFormModal = function(formId) {
-  const allForms = Object.values(DIGITAL_FORMS_CATALOGUE).flat();
+  const allForms = Object.values(moduleRegistry.list()).flat();
   const form = allForms.find(f => f.id === formId);
   if (!form) return;
 
@@ -1044,7 +1044,7 @@ if(typeof window !== 'undefined') window.openFormModal = function(formId) {
 
 if(typeof window !== 'undefined') window.submitDigitalForm = function(e, formId) {
   e.preventDefault();
-  const allForms = Object.values(DIGITAL_FORMS_CATALOGUE).flat();
+  const allForms = Object.values(moduleRegistry.list()).flat();
   const form = allForms.find(f => f.id === formId);
   if (!form) return;
   

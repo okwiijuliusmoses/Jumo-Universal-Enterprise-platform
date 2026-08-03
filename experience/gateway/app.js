@@ -6,7 +6,7 @@ import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { shellTemplate } from "../shell/index.js";
 import { erpPlatformTemplate } from "../erp/index.js";
-import "../erp/runtimeEngine.js";
+import "../../platform/control/UEOSControlPlane.js";
 
 // Global Error Protection
 window.onerror = function(message, source, lineno, colno, error) {
@@ -113,7 +113,7 @@ window.appState = window.state;
 
 // Dynamic ERP Context Resolver to prevent University structures leakage across templates
 export function resolveActiveERPContext(state) {
-  const runtimeEngine = window.erpRuntimeEngine || (state && state.runtimeEngine);
+  const controlPlane = window.ueosControlPlane;
   
   // Find currently active template ID & active instance ID
   let activeErpId = (state && state.activeErpId) || (state && state.session?.activeErpTemplate?.id) || null;
@@ -122,9 +122,9 @@ export function resolveActiveERPContext(state) {
   let activeInstance = null;
   let activeTemplate = null;
   
-  if (runtimeEngine) {
-    if (typeof runtimeEngine.getInstalled === 'function') {
-      const installed = runtimeEngine.getInstalled();
+  if (controlPlane) {
+    if (typeof controlPlane.getDeployedERPInstances === 'function') {
+      const installed = controlPlane.getDeployedERPInstances();
       if (activeInstanceId) {
         activeInstance = installed.find(i => i.instanceId === activeInstanceId);
       }
@@ -136,8 +136,8 @@ export function resolveActiveERPContext(state) {
       }
     }
     const resolvedTemplateId = activeInstance ? activeInstance.templateId : (activeErpId || (state && state.session?.activeErpTemplate?.id));
-    if (resolvedTemplateId && typeof runtimeEngine.getTemplate === 'function') {
-      activeTemplate = runtimeEngine.getTemplate(resolvedTemplateId);
+    if (resolvedTemplateId && typeof controlPlane.getERPTemplate === 'function') {
+      activeTemplate = controlPlane.getERPTemplate(resolvedTemplateId);
     }
   }
   

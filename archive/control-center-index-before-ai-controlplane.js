@@ -39,10 +39,10 @@ if (typeof window !== 'undefined') {
 
   window.installERPInstance = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane;
-    if (controlPlane) {
-      const tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
-      const inst = controlPlane.deployERP(tmpl ? tmpl.id : erpId, erpName || (tmpl ? tmpl.name : erpId));
+    const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
+    if (runtimeEngine) {
+      const tmpl = runtimeEngine.getTemplate(erpId) || (runtimeEngine.getTemplateByNameOrId && runtimeEngine.getTemplateByNameOrId(erpId));
+      const inst = runtimeEngine.installERP(tmpl ? tmpl.id : erpId, erpName || (tmpl ? tmpl.name : erpId));
       state.activeErpId = tmpl ? tmpl.id : erpId;
       state.activeErpInstanceId = inst ? inst.instanceId : null;
       state.session = state.session || {};
@@ -67,12 +67,12 @@ if (typeof window !== 'undefined') {
 
   window.launchERPWorkspace = function(erpId, erpName) {
     const state = window.state || window.appState || {};
-    const controlPlane = window.ueosControlPlane;
-    if (controlPlane) {
-      let tmpl = controlPlane.getERPTemplate(erpId) || (controlPlane.getERPTemplateByNameOrId && controlPlane.getERPTemplateByNameOrId(erpId));
-      let inst = controlPlane.getDeployedERPInstances().find(i => i.templateId === erpId || i.instanceId === erpId);
+    const runtimeEngine = window.erpRuntimeEngine || state.runtimeEngine;
+    if (runtimeEngine) {
+      let tmpl = runtimeEngine.getTemplate(erpId) || (runtimeEngine.getTemplateByNameOrId && runtimeEngine.getTemplateByNameOrId(erpId));
+      let inst = runtimeEngine.getInstalled().find(i => i.templateId === erpId || i.instanceId === erpId);
       if (!inst && tmpl) {
-        inst = controlPlane.deployERP(tmpl.id, erpName || tmpl.name);
+        inst = runtimeEngine.installERP(tmpl.id, erpName || tmpl.name);
       }
       state.activeErpId = tmpl ? tmpl.id : erpId;
       state.activeErpInstanceId = inst ? inst.instanceId : null;
@@ -1051,8 +1051,8 @@ function renderViewContent(view) {
 
           <div class="space-y-3 text-xs">
             ${(() => {
-              const controlPlane = window.ueosControlPlane;
-              const installed = controlPlane ? controlPlane.getDeployedERPInstances() : [];
+              const runtimeEngine = window.erpRuntimeEngine || (window.state && window.state.runtimeEngine);
+              const installed = runtimeEngine ? runtimeEngine.getInstalled() : [];
               if (installed.length === 0) {
                 return `<p class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 italic">No ERP instances currently deployed. Install an ERP from the catalogue above.</p>`;
               }
@@ -1429,14 +1429,14 @@ if (typeof window !== 'undefined') window.switchCardTab = function(cardTabId, ta
 if (typeof window !== 'undefined') window.openErpInstallationFlow = function(templateName) {
   const customName = `${templateName} Enterprise`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
   
   let template = null;
   let inst = null;
-  if (controlPlane && controlPlane.getERPTemplateByNameOrId) {
-    template = controlPlane.getERPTemplateByNameOrId(templateName);
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
     if (template) {
-      inst = controlPlane.deployERP(template.id, customName);
+      inst = runtimeEngine.installERP(template.id, customName);
       state.activeErpId = template.id;
       if (inst) state.activeErpInstanceId = inst.instanceId;
     }
@@ -1477,13 +1477,13 @@ if (typeof window !== 'undefined') window.openErpInstallationFlow = function(tem
 if (typeof window !== 'undefined') window.configureErpBlueprint = function(templateName) {
   const customName = `${templateName} (Blueprint Configured)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
   
   let template = null;
   let inst = null;
-  if (controlPlane && controlPlane.getERPTemplateByNameOrId) {
-    template = controlPlane.getERPTemplateByNameOrId(templateName);
-    inst = controlPlane.deployERP(template.id, customName);
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
+    inst = runtimeEngine.installERP(template.id, customName);
   }
 
   if (!state.session) {
@@ -1511,13 +1511,13 @@ if (typeof window !== 'undefined') window.configureErpBlueprint = function(templ
 if (typeof window !== 'undefined') window.cloneErpTemplate = function(templateName) {
   const customName = `${templateName} (Cloned Platform)`;
   const state = window.state || window.appState || {};
-  const controlPlane = window.ueosControlPlane;
+  const runtimeEngine = window.erpRuntimeEngine || (state.runtimeEngine);
   
   let template = null;
   let inst = null;
-  if (controlPlane && controlPlane.getERPTemplateByNameOrId) {
-    template = controlPlane.getERPTemplateByNameOrId(templateName);
-    inst = controlPlane.deployERP(template.id, customName);
+  if (runtimeEngine && runtimeEngine.getTemplateByNameOrId) {
+    template = runtimeEngine.getTemplateByNameOrId(templateName);
+    inst = runtimeEngine.installERP(template.id, customName);
   }
 
   if (!state.session) {
