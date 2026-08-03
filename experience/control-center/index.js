@@ -85,7 +85,7 @@ if (typeof window !== 'undefined') {
       window.UEOSRuntime.aiRuntime = data.aiRuntime;
       window.UEOSRuntime.registryFederation = data.masterRegistry || data.registryFederation;
       window.UEOSRuntime.erpFactory = data.erpFactory;
-      window.UEOSRuntime.runtimeStatus = data.runtime;
+      window.UEOSRuntime.runtimeStatus = data.runtimeStatus || data.runtime || window.UEOSRuntime.runtimeStatus;
       if (typeof window.render === 'function') window.render();
     }
   });
