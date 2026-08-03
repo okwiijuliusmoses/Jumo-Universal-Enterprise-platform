@@ -40,76 +40,52 @@ export class UEOSControlAPIService {
 if (typeof window !== 'undefined') {
   window.UEOSControlAPIService = UEOSControlAPIService;
   
-  if (!window.UEOSRuntime) {
-    window.UEOSRuntime = {
-      controlPlane: { status: "ONLINE", version: "1.0.0-sovereign", mode: "SOVEREIGN_ADMIN" },
-      aiCommandCenter: {
-        status: "ONLINE",
-        gateway: "ACTIVE",
-        agentsCount: 4,
-        agents: [
-          { name: "Sovereign Control Assistant", capabilities: ["Platform Governance", "Tenant Provisioning"] },
-          { name: "AEGIS Security Auditor", capabilities: ["Immutable Audit", "Policy Verification"] },
-          { name: "FAAP Financial Router", capabilities: ["Ledger Balance", "Multi-Currency Settlement"] },
-          { name: "ERP Factory Compiler", capabilities: ["Blueprint Generation", "Registry Assembly"] }
-        ],
-        models: ["Gemini 2.0 Flash", "Omni Flash", "Custom Weights"]
-      },
-      registryFederation: { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: 22 },
-      erpFactory: { status: "ONLINE", blueprints: 22, activeInstances: 6 },
-      tenantStatus: { status: "ONLINE", activeTenants: 3 },
-      runtimeStatus: { status: "ONLINE", kernel: "ONLINE", shell: "ONLINE" },
-      faapService: {
-        status: "ONLINE",
-        upgradeAreas: [
-          { name: "Multi-Currency Ledger & Chart of Accounts" },
-          { name: "Automated Appropriation & Budget Control" },
-          { name: "Cross-Border Settlement & Clearinghouse" },
-          { name: "Institutional Procurement Requisition Workflow" },
-          { name: "Payroll & SACCO Direct Deposit Router" },
-          { name: "Digital Tax & Compliance Auditing" },
-          { name: "CBDC & Mobile Money Gateway Interop" },
-          { name: "Immutable FAAP Financial Ledger Seals" }
-        ],
-        treasuryPools: {
-          USD: { balance: 48500000, activeRouter: "JUMO Clearinghouse NY" },
-          EUR: { balance: 32100000, activeRouter: "JUMO Clearinghouse Frankfurt" },
-          GBP: { balance: 18400000, activeRouter: "JUMO Clearinghouse London" },
-          UGX: { balance: 85000000000, activeRouter: "JUMO Settlement Kampala" }
-        }
-      },
-      aegisService: {
-        status: "ONLINE",
-        encryptionRings: "AES-256-GCM Active",
-        auditLedger: "Immutable Sealed"
-      },
-      enterpriseAudit: {
-        getAuditReport: () => ({
-          erpPlatforms: 12,
-          sovereignPlatforms: 10,
-          portalsRegistered: 86,
-          modulesInstalled: 340,
-          activeComponents: 1200,
-          registeredWorkflows: 180,
-          digitalForms: 240,
-          faapServices: "ONLINE"
-        })
-      },
-      erpRegistry: {
-        getPlatforms: () => ecosystemRegistry.getEcosystems(),
-        getModulesForERP: (erpId) => ecosystemRegistry.getModules(erpId) || []
-      }
-    };
-  }
+  window.UEOSRuntime = window.UEOSRuntime || {};
+  
+  // Contract check & initial state
+  window.UEOSRuntime.controlPlaneStatus = window.UEOSRuntime.controlPlaneStatus || { status: "ONLINE", version: "1.0.0-sovereign", mode: "SOVEREIGN_ADMIN" };
+  window.UEOSRuntime.aiRuntime = window.UEOSRuntime.aiRuntime || {
+    status: "ONLINE",
+    gateway: "ACTIVE",
+    agentsCount: 4,
+    agents: [
+      { name: "Sovereign Control Assistant", capabilities: ["Platform Governance", "Tenant Provisioning"] },
+      { name: "AEGIS Security Auditor", capabilities: ["Immutable Audit", "Policy Verification"] },
+      { name: "FAAP Financial Router", capabilities: ["Ledger Balance", "Multi-Currency Settlement"] },
+      { name: "ERP Factory Compiler", capabilities: ["Blueprint Generation", "Registry Assembly"] }
+    ],
+    models: ["Gemini 2.0 Flash", "Omni Flash", "Custom Weights"]
+  };
+  window.UEOSRuntime.registryFederation = window.UEOSRuntime.registryFederation || { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: 22 };
+  window.UEOSRuntime.erpFactory = window.UEOSRuntime.erpFactory || { status: "ONLINE", blueprints: 22, activeInstances: 6 };
+  window.UEOSRuntime.runtimeStatus = window.UEOSRuntime.runtimeStatus || { status: "ONLINE", kernel: "ONLINE", shell: "ONLINE" };
+  
+  // Safe adapters
+  window.UEOSRuntime.enterpriseAudit ||= {
+    getAuditReport(){ return {}; }
+  };
+  window.UEOSRuntime.erpRegistry ||= {
+    getPlatforms(){ return []; },
+    getModulesForERP(){ return []; }
+  };
+  window.UEOSRuntime.aiCommandCenter ||= {
+    agents: window.UEOSRuntime.aiRuntime?.agents || []
+  };
+  window.UEOSRuntime.faapService ||= {
+    upgradeAreas: [],
+    treasuryPools: {}
+  };
+  
+  console.log("[UEOS CONTROL PLANE ONLINE]", window.UEOSRuntime);
+
 
   UEOSControlAPIService.getStatus().then(data => {
     if (data) {
-      if (data.controlPlane) window.UEOSRuntime.controlPlane = data.controlPlane;
-      if (data.aiRuntime) window.UEOSRuntime.aiCommandCenter = data.aiRuntime;
-      if (data.registryFederation) window.UEOSRuntime.registryFederation = data.registryFederation;
-      if (data.erpFactory) window.UEOSRuntime.erpFactory = data.erpFactory;
-      if (data.tenantStatus) window.UEOSRuntime.tenantStatus = data.tenantStatus;
-      if (data.runtimeStatus) window.UEOSRuntime.runtimeStatus = data.runtimeStatus;
+      window.UEOSRuntime.controlPlaneStatus = data.controlPlane;
+      window.UEOSRuntime.aiRuntime = data.aiRuntime;
+      window.UEOSRuntime.registryFederation = data.masterRegistry || data.registryFederation;
+      window.UEOSRuntime.erpFactory = data.erpFactory;
+      window.UEOSRuntime.runtimeStatus = data.runtime;
       if (typeof window.render === 'function') window.render();
     }
   });
