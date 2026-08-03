@@ -2,11 +2,12 @@
  * JUMO UEOS
  * AI ERP Generation Engine
  *
- * Converts ERP Blueprints into configurable
- * digital enterprise ecosystems.
+ * National Digital Enterprise Platform
+ * Registry-driven ERP ecosystem generation runtime
  */
 
 import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
+
 import { portalGenerator } from "./generators/PortalGenerator.js";
 import { moduleGenerator } from "./generators/ModuleGenerator.js";
 import { formGenerator } from "./generators/FormGenerator.js";
@@ -15,243 +16,144 @@ import { componentGenerator } from "./generators/ComponentGenerator.js";
 import { departmentGenerator } from "./generators/DepartmentGenerator.js";
 import { aiAgentGenerator } from "./generators/AIAgentGenerator.js";
 
+import { capabilityRegistry } from "../../registry/CapabilityRegistry.js";
 
 export class ERPGenerationEngine {
 
-constructor(){
+  constructor(){
+    this.status = "ONLINE";
 
-this.status = "ONLINE";
+    this.ai = {
+      enabled:true,
+      engine:"JUMO AI Enterprise Generation Runtime"
+    };
 
-this.ai = {
-enabled:true,
-engine:"JUMO AI Enterprise Generation Runtime"
-};
+    this.generatedInstances = [];
+  }
 
 
-this.generatedInstances = [];
+  generateERP(directive){
 
-}
+    const blueprint =
+      ERPBlueprintRegistry.getBlueprint(
+        directive.blueprintId
+      );
 
+    if(!blueprint){
+      throw new Error(
+        `ERP Blueprint not found: ${directive.blueprintId}`
+      );
+    }
 
 
-generateERP(directive){
+    const generationContext = {
+      ...blueprint,
+      capabilities:
+        capabilityRegistry.list(),
 
-const blueprint =
-ERPBlueprintRegistry.getBlueprint(directive.blueprintId);
+      tenant:
+        directive.tenant || null,
 
+      configuration:
+        directive.configuration || {}
+    };
 
-if(!blueprint){
 
-throw new Error(
-`ERP Blueprint not found: ${directive.blueprintId}`
-);
+    const instance = {
 
-}
+      id:
+        directive.instanceId ||
+        `${blueprint.id}-${Date.now()}`,
 
+      name:
+        directive.name ||
+        blueprint.name,
 
-const instance = {
+      blueprintId:
+        blueprint.id,
 
-id:
-directive.instanceId ||
-`${blueprint.id}-${Date.now()}`,
+      category:
+        blueprint.category,
 
-name:
-directive.name ||
-blueprint.name,
+      tenant:
+        directive.tenant || null,
 
+      configuration:
+        directive.configuration || {},
 
-blueprintId:
-blueprint.id,
+      portals:
+        portalGenerator.generate(
+          generationContext
+        ),
 
+      modules:
+        moduleGenerator.generate(
+          generationContext
+        ),
 
-category:
-blueprint.category,
+      forms:
+        formGenerator.generate(
+          generationContext
+        ),
 
+      workflows:
+        workflowGenerator.generate(
+          generationContext
+        ),
 
-tenant:
-directive.tenant || null,
+      components:
+        componentGenerator.generate(
+          generationContext
+        ),
 
+      departments:
+        departmentGenerator.generate(
+          generationContext
+        ),
 
-configuration:
-directive.configuration || {},
+      aiAgents:
+        aiAgentGenerator.generate(
+          generationContext
+        ),
 
+      status:"GENERATED",
 
+      createdAt:
+        new Date().toISOString()
+    };
 
-portals:
-portalGenerator.generate(blueprint),
 
+    this.generatedInstances.push(instance);
 
-modules:
-moduleGenerator.generate(blueprint),
+    return instance;
+  }
 
 
-forms:
-formGenerator.generate(blueprint),
+  listGenerated(){
+    return this.generatedInstances;
+  }
 
 
-workflows:
-workflowGenerator.generate(blueprint),
+  health(){
 
+    return {
+      engine:
+        "JUMO AI ERP Generation Engine",
 
-components:
-componentGenerator.generate(blueprint),
+      status:
+        this.status,
 
+      generated:
+        this.generatedInstances.length,
 
+      ai:
+        this.ai
+    };
 
-departments:
-departmentGenerator.generate(blueprint),
-
-aiAgents:
-aiAgentGenerator.generate(blueprint),
-
-
-
-status:"GENERATED"
-
-};
-
-
-
-this.generatedInstances.push(instance);
-
-
-return instance;
-
-}
-
-
-
-generatePortals(blueprint){
-
-return [
-
-"Administration Portal",
-"Operations Portal",
-"Finance Portal",
-"Analytics Portal",
-"Workflow Portal",
-"Document Portal",
-"AI Assistant Portal",
-
-`${blueprint.category} Portal`
-
-];
-
-}
-
-
-
-generateModules(blueprint){
-
-return [
-
-"Identity Management",
-"Organization Management",
-"Financial Engine",
-"Workflow Engine",
-"Document Management",
-"Reporting & Analytics",
-"Compliance Engine",
-"Notification Engine",
-
-...blueprint.capabilities
-
-];
-
-}
-
-
-
-generateForms(){
-
-return [
-
-"Registration Forms",
-"Approval Forms",
-"Transaction Forms",
-"Digital Office Forms",
-"Compliance Forms"
-
-];
-
-}
-
-
-
-generateWorkflows(){
-
-return [
-
-"Approval Workflow",
-"Verification Workflow",
-"Service Delivery Workflow",
-"Audit Workflow"
-
-];
-
-}
-
-
-
-generateComponents(){
-
-return [
-
-"Dashboard Components",
-"Data Tables",
-"Search Components",
-"AI Components",
-"Integration Components"
-
-];
-
-}
-
-
-
-generateAIAgents(){
-
-return [
-
-"AI Administrator",
-"AI Analyst",
-"AI Compliance Agent",
-"AI Workflow Agent"
-
-];
-
-}
-
-
-
-listGenerated(){
-
-return this.generatedInstances;
-
-}
-
-
-
-health(){
-
-return {
-
-engine:"JUMO AI ERP Generation Engine",
-
-status:this.status,
-
-generated:
-this.generatedInstances.length,
-
-ai:this.ai
-
-};
-
-}
-
+  }
 
 }
 
 
 export const erpGenerationEngine =
-new ERPGenerationEngine();
+  new ERPGenerationEngine();
