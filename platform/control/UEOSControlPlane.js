@@ -11,6 +11,7 @@ import { portalRegistry } from "../registry/PortalRegistry.js";
 import { moduleRegistry } from "../registry/ModuleRegistry.js";
 import { enterpriseERPFactory } from "../factory/erp/EnterpriseERPFactory.js";
 import { erpFactoryManager } from "../factory/erp/ERPFactoryManager.js";
+import { erpGenerationEngine } from "../factory/erp/ERPGenerationEngine.js";
 
 export class UEOSControlPlane {
 
@@ -110,6 +111,24 @@ export class UEOSControlPlane {
   };
 
  }
+
+
+
+
+  generateERP(directive){
+
+    return erpGenerationEngine.generateERP(directive);
+
+  }
+
+
+  getGeneratedERPInstances(){
+
+    return erpGenerationEngine.listGenerated();
+
+  }
+
+
 
 }
 
