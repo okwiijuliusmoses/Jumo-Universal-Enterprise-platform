@@ -6,6 +6,8 @@
 import { registryPersistenceEngine } from "../../storage/RegistryPersistenceEngine.js";
 
 import { erpRegistry } from "../../registry/ERPRegistry.js";
+import { erpInstanceRegistry } from "../../registry/ERPInstanceRegistry.js";
+
 import { portalRegistry } from "../../registry/PortalRegistry.js";
 import { moduleRegistry } from "../../registry/ModuleRegistry.js";
 import { formRegistry } from "../../registry/formRegistry.js";
@@ -23,6 +25,12 @@ erp:
 registryPersistenceEngine.save(
 "erp-registry",
 erpRegistry.list()
+),
+
+instances:
+registryPersistenceEngine.save(
+"erp-instance-registry",
+erpInstanceRegistry.list()
 ),
 
 portals:
