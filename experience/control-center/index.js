@@ -89,36 +89,6 @@ if (typeof window !== 'undefined') {
       if (typeof window.render === 'function') window.render();
     }
   });
-  window.handleSovereignLogin = function(e, redirectRoute = '/control-center') {
-    e.preventDefault();
-    const emailInput = document.getElementById("cc-email") || document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.ueos" };
-    const email = emailInput.value || "owner@jumo.ueos";
-    
-    if (!window.state) window.state = {};
-    window.state.session = {
-      user: {
-        name: email.split("@")[0].replace(".", " "),
-        email: email,
-        role: "Platform Owner",
-        isAdmin: true,
-        status: "Sovereign Administrator"
-      },
-      organization: "JUMO GLOBAL PLATFORM HQ",
-      tenantId: "tenant-sovereign-000"
-    };
-    
-    if (!window.state.bootStatus) window.state.bootStatus = [];
-    if (!window.state.bootStatus.includes("Sovereign Identity Validated")) {
-      window.state.bootStatus.push("Sovereign Identity Validated");
-    }
-    
-    if (typeof window.navigate === 'function') {
-      window.navigate(redirectRoute);
-    } else {
-      window.location.hash = redirectRoute;
-    }
-  };
-
   window.installERPInstance = function(erpId, erpName) {
     const state = window.state || window.appState || {};
     const controlPlane = window.ueosControlPlane || null;

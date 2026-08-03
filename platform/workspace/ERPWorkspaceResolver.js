@@ -20,7 +20,7 @@ export class ERPWorkspaceResolver {
       throw new Error(`ERP Instance ${erpId} not found or not active.`);
     }
 
-    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.templateId) || {};
+    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
     
     // Merge baseline capabilities with deployed capabilities
     const enabledModules = instance.modules || blueprint.modules || [];
@@ -33,10 +33,12 @@ export class ERPWorkspaceResolver {
     const loadedWorkflows = enabledWorkflows.map(w => workflowRegistry.get(w) || { name: w, type: "Unknown" });
 
     return {
-      tenantId,
-      erpId: instance.instanceId,
+      tenantId: instance.tenant || tenantId,
+      erpId: instance.id || instance.instanceId,
+      blueprintId: instance.blueprintId,
       erpName: instance.name,
       domain: instance.domain,
+      lifecycle: instance.lifecycle,
       status: instance.status,
       workspace: {
         modules: loadedModules,
