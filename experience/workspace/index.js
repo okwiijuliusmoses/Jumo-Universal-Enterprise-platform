@@ -40,45 +40,7 @@ export const workspaceTemplate = (state) => {
             </div>
           </div>
         `;
-      } else if (activeView === 'Portals') {
-      return \`
-        <div class="space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
-            <h1 class="text-2xl font-semibold text-slate-900">Provisioned Portals</h1>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            \${portals.map(p => \`
-              <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                <h3 class="font-bold text-slate-800 text-lg">\${p.name || p}</h3>
-                <p class="text-xs text-slate-500 mt-2">Enterprise Access Portal</p>
-                <div class="mt-4 pt-4 border-t border-slate-100 flex justify-end">
-                   <button class="text-xs font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider">Access</button>
-                </div>
-              </div>
-            \`).join('')}
-          </div>
-        </div>
-      \`;
-    } else if (activeView === 'Modules') {
-      return \`
-        <div class="space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
-            <h1 class="text-2xl font-semibold text-slate-900">Enterprise Modules</h1>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            \${modules.map(m => \`
-              <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between h-24">
-                <h4 class="font-bold text-slate-800 text-sm">\${m.name || m}</h4>
-                <div class="flex justify-between items-center mt-2">
-                   <span class="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-0.5 rounded border border-emerald-100">ACTIVE</span>
-                   <span class="text-[10px] text-slate-400 font-mono">\${m.id || 'N/A'}</span>
-                </div>
-              </div>
-            \`).join('')}
-          </div>
-        </div>
-      \`;
-    } else {
+      } else {
         return `
           <div class="mb-1">
             <button onclick="window.state.activeView = '${nav.label}'; window.render();" class="w-full text-left px-3 py-2 text-xs font-bold rounded transition cursor-pointer ${activeView === nav.label ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}">
@@ -112,6 +74,44 @@ export const workspaceTemplate = (state) => {
               <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">System Status</h3>
               <p class="text-lg font-medium text-emerald-600 mt-2">Operational</p>
             </div>
+          </div>
+        </div>
+      `;
+    } else if (activeView === 'Portals') {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+            <h1 class="text-2xl font-semibold text-slate-900">Provisioned Portals</h1>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${portals.map(p => `
+              <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                <h3 class="font-bold text-slate-800 text-lg">${p.name || p}</h3>
+                <p class="text-xs text-slate-500 mt-2">Enterprise Access Portal</p>
+                <div class="mt-4 pt-4 border-t border-slate-100 flex justify-end">
+                   <button class="text-xs font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider">Access</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (activeView === 'Modules') {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+            <h1 class="text-2xl font-semibold text-slate-900">Enterprise Modules</h1>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${modules.map(m => `
+              <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between h-24">
+                <h4 class="font-bold text-slate-800 text-sm">${m.name || m}</h4>
+                <div class="flex justify-between items-center mt-2">
+                   <span class="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-0.5 rounded border border-emerald-100">ACTIVE</span>
+                   <span class="text-[10px] text-slate-400 font-mono">${m.id || 'N/A'}</span>
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       `;
