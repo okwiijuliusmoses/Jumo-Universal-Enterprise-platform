@@ -11,6 +11,7 @@ import { formRegistry } from "./platform/registry/formRegistry.js";
 import { componentRegistry } from "./platform/registry/componentRegistry.js";
 import { departmentRegistry } from "./platform/registry/departmentRegistry.js";
 import { aiERPRegistry } from "./platform/registry/ai/AIERPRegistry.js";
+import { ERPBlueprintRegistry } from "./platform/factory/erp/ERPBlueprintRegistry.js";
 
 import { RuntimeManager } from "./kernel/runtime/runtimeManager.js";
 import { ServiceRegistry } from "./kernel/registry/serviceRegistry.js";
@@ -88,6 +89,16 @@ const server = http.createServer(async (req, res) => {
   
   if (pathname === "/api/control-plane/status" || pathname === "/api/control-plane/health" || pathname === "/api/ueos/control/health") {
     res.writeHead(200, { "Content-Type": "application/json" });
+    const totalBlueprints = ERPBlueprintRegistry.list().length;
+    const totalInstances = erpInstanceRegistry.list().length;
+    const totalReg = moduleRegistry.list().length +
+                     portalRegistry.list().length +
+                     workflowRegistry.list().length +
+                     formRegistry.list().length +
+                     componentRegistry.list().length +
+                     departmentRegistry.list().length +
+                     totalInstances;
+
     res.end(JSON.stringify({
       controlPlane: { status: "ONLINE", version: "1.0.0-sovereign", mode: "SOVEREIGN_ADMIN" },
       aiRuntime: {
@@ -102,8 +113,8 @@ const server = http.createServer(async (req, res) => {
         ],
         models: ["Gemini 2.0 Flash", "Omni Flash", "Custom Weights"]
       },
-      registryFederation: { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: 22 },
-      erpFactory: { status: "ONLINE", blueprints: 22, activeInstances: 6 },
+      registryFederation: { status: "ONLINE", masterRegistry: "ONLINE", totalRegistered: totalReg },
+      erpFactory: { status: "ONLINE", blueprints: totalBlueprints, activeInstances: totalInstances },
       tenantStatus: { status: "ONLINE", activeTenants: 3 },
       runtimeStatus: { status: "ONLINE", kernel: "ONLINE", shell: "ONLINE" },
       timestamp: new Date().toISOString()

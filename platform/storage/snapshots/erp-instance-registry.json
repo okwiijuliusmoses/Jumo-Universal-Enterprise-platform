@@ -9,7 +9,60 @@
     "domain": "Institutional ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Student Portal",
+      "Academic Portal",
+      "Registrar Portal",
+      "Staff Portal",
+      "Finance Portal"
+    ],
+    "modules": [
+      "Academic Management",
+      "Student Lifecycle",
+      "Admissions",
+      "Examinations",
+      "Learning Management",
+      "Library",
+      "Accommodation",
+      "Research Administration",
+      "Alumni Integration"
+    ],
+    "workflows": [
+      "Education ERP Ecosystem Cryptographic Approval Chain",
+      "Education ERP Ecosystem Role Authorization Matrix",
+      "Education ERP Ecosystem Dynamic Escalation Rules",
+      "Education ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Education ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Enterprise Light",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "academicYear": "2026/2027",
+      "admissionStatus": "OPEN",
+      "gradingSystem": "GPA"
+    },
+    "features": {
+      "onlineLearning": true,
+      "studentPortal": true,
+      "librarySystem": true
+    },
+    "permissions": [
+      "ACADEMIC_ADMIN",
+      "STUDENT_VIEW",
+      "FACULTY_ACCESS"
+    ],
+    "policies": {
+      "dataRetention": "7 Years",
+      "privacyLevel": "HIGH"
+    },
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "government-erp-instance",
@@ -21,7 +74,54 @@
     "domain": "Public Administration ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Citizen Portal",
+      "Ministry Portal",
+      "Administration Portal"
+    ],
+    "modules": [
+      "Administration",
+      "Citizen Services",
+      "Procurement",
+      "Compliance",
+      "Records"
+    ],
+    "workflows": [
+      "Government ERP Ecosystem Cryptographic Approval Chain",
+      "Government ERP Ecosystem Role Authorization Matrix",
+      "Government ERP Ecosystem Dynamic Escalation Rules",
+      "Government ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Government ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Government Standard",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "fiscalYear": "2026/2027",
+      "procurementThreshold": 5000,
+      "complianceLevel": "STRICT"
+    },
+    "features": {
+      "citizenPortal": true,
+      "digitalSignatures": true,
+      "auditLogging": true
+    },
+    "permissions": [
+      "GOV_ADMIN",
+      "CITIZEN_VIEW",
+      "COMPLIANCE_OFFICER"
+    ],
+    "policies": {
+      "publicTransparency": "FULL",
+      "dataSovereignty": "NATIONAL"
+    },
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "finance-microfinance-erp-instance",
@@ -33,7 +133,62 @@
     "domain": "Financial Institution ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Member Management",
+      "Savings",
+      "Loans",
+      "Credit Management",
+      "Financial Operations"
+    ],
+    "workflows": [
+      "Finance & Microfinance ERP Ecosystem Cryptographic Approval Chain",
+      "Finance & Microfinance ERP Ecosystem Role Authorization Matrix",
+      "Finance & Microfinance ERP Ecosystem Dynamic Escalation Rules",
+      "Finance & Microfinance ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Finance & Microfinance ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Banking Blue",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "fiscalYear": "2026/2027",
+      "loanInterestRate": 0.12,
+      "maxLoanDurationMonths": 36
+    },
+    "features": {
+      "mobileBanking": true,
+      "automatedScoring": true,
+      "onlineSavings": true
+    },
+    "permissions": [
+      "LOAN_OFFICER",
+      "CREDIT_MANAGER",
+      "TELLER_VIEW"
+    ],
+    "policies": {
+      "kycLevel": "STRICT",
+      "amlMonitoring": "CONTINUOUS"
+    },
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "healthcare-erp-instance",
@@ -45,7 +200,60 @@
     "domain": "Healthcare Operations ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Patient Management",
+      "Medical Records",
+      "Pharmacy",
+      "Billing"
+    ],
+    "workflows": [
+      "Healthcare ERP Ecosystem Cryptographic Approval Chain",
+      "Healthcare ERP Ecosystem Role Authorization Matrix",
+      "Healthcare ERP Ecosystem Dynamic Escalation Rules",
+      "Healthcare ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Healthcare ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Clinical Clean",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "standardShiftHours": 12,
+      "emergencyStatus": "NORMAL"
+    },
+    "features": {
+      "telemedicine": true,
+      "ePrescribing": true,
+      "patientPortal": true
+    },
+    "permissions": [
+      "DOCTOR_ACCESS",
+      "NURSE_VIEW",
+      "PATIENT_READ"
+    ],
+    "policies": {
+      "hipaaCompliance": "REQUIRED",
+      "dataEncryption": "AES-256"
+    },
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "agriculture-erp-instance",
@@ -57,7 +265,60 @@
     "domain": "Agribusiness ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Production",
+      "Supply Chain",
+      "Inventory",
+      "Farmer Management"
+    ],
+    "workflows": [
+      "Agriculture ERP Ecosystem Cryptographic Approval Chain",
+      "Agriculture ERP Ecosystem Role Authorization Matrix",
+      "Agriculture ERP Ecosystem Dynamic Escalation Rules",
+      "Agriculture ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Agriculture ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Nature Earth",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "harvestSeason": "SPRING",
+      "inventoryThreshold": 100
+    },
+    "features": {
+      "iotMonitoring": true,
+      "marketPricing": true,
+      "logisticsTracking": true
+    },
+    "permissions": [
+      "FARM_MANAGER",
+      "SUPPLY_CHAIN_COORDINATOR",
+      "FIELD_AGENT"
+    ],
+    "policies": {
+      "organicCertification": "OPTIONAL",
+      "sustainabilityTracking": "ENABLED"
+    },
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "commerce-erp-instance",
@@ -69,7 +330,42 @@
     "domain": "Commerce ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Sales",
+      "Inventory",
+      "POS",
+      "Warehousing"
+    ],
+    "workflows": [
+      "Wholesale Retail & Supermarket ERP Ecosystem Cryptographic Approval Chain",
+      "Wholesale Retail & Supermarket ERP Ecosystem Role Authorization Matrix",
+      "Wholesale Retail & Supermarket ERP Ecosystem Dynamic Escalation Rules",
+      "Wholesale Retail & Supermarket ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Wholesale Retail & Supermarket ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "enterprise-company-erp-instance",
@@ -81,7 +377,42 @@
     "domain": "Corporate ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Operations",
+      "CRM",
+      "HR",
+      "Projects"
+    ],
+    "workflows": [
+      "Enterprise Company ERP Ecosystem Cryptographic Approval Chain",
+      "Enterprise Company ERP Ecosystem Role Authorization Matrix",
+      "Enterprise Company ERP Ecosystem Dynamic Escalation Rules",
+      "Enterprise Company ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Enterprise Company ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "community-cultural-erp-instance",
@@ -93,7 +424,42 @@
     "domain": "Social Institution ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Membership",
+      "Events",
+      "Heritage",
+      "Community Services"
+    ],
+    "workflows": [
+      "Community & Cultural Institutions ERP Ecosystem Cryptographic Approval Chain",
+      "Community & Cultural Institutions ERP Ecosystem Role Authorization Matrix",
+      "Community & Cultural Institutions ERP Ecosystem Dynamic Escalation Rules",
+      "Community & Cultural Institutions ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Community & Cultural Institutions ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "alumni-endowment-erp-instance",
@@ -105,7 +471,41 @@
     "domain": "Institutional Network ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Alumni Relations",
+      "Donations",
+      "Scholarships"
+    ],
+    "workflows": [
+      "Alumni & Endowment ERP Ecosystem Cryptographic Approval Chain",
+      "Alumni & Endowment ERP Ecosystem Role Authorization Matrix",
+      "Alumni & Endowment ERP Ecosystem Dynamic Escalation Rules",
+      "Alumni & Endowment ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Alumni & Endowment ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "hospitality-erp-instance",
@@ -117,7 +517,41 @@
     "domain": "Hospitality Operations ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Reservations",
+      "Guest Management",
+      "Operations"
+    ],
+    "workflows": [
+      "Hospitality ERP Ecosystem Cryptographic Approval Chain",
+      "Hospitality ERP Ecosystem Role Authorization Matrix",
+      "Hospitality ERP Ecosystem Dynamic Escalation Rules",
+      "Hospitality ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Hospitality ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
   },
   {
     "id": "legal-case-management-erp-instance",
@@ -129,6 +563,278 @@
     "domain": "Justice ERP",
     "status": "ACTIVE",
     "lifecycle": "READY",
-    "deployedAt": "2026-08-03T18:40:01.546Z"
+    "deployedAt": "2026-08-03T18:40:01.546Z",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Case Management",
+      "Client Management",
+      "Document Management",
+      "Compliance"
+    ],
+    "workflows": [
+      "Legal & Case Management ERP Ecosystem Cryptographic Approval Chain",
+      "Legal & Case Management ERP Ecosystem Role Authorization Matrix",
+      "Legal & Case Management ERP Ecosystem Dynamic Escalation Rules",
+      "Legal & Case Management ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Legal & Case Management ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE"
+  },
+  {
+    "id": "banking-erp-instance",
+    "instanceId": "banking-erp-instance",
+    "templateId": "banking-erp",
+    "name": "Commercial Banking ERP Ecosystem",
+    "blueprintId": "banking-erp",
+    "tenant": "system",
+    "domain": "Banking ERP",
+    "status": "ACTIVE",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Core Banking Engine",
+      "Asset Management",
+      "Liquidity Control",
+      "Risk Assessment",
+      "Regulatory Reporting",
+      "Treasury Operations",
+      "Customer 360",
+      "Fraud Detection"
+    ],
+    "workflows": [
+      "Commercial Banking ERP Ecosystem Cryptographic Approval Chain",
+      "Commercial Banking ERP Ecosystem Role Authorization Matrix",
+      "Commercial Banking ERP Ecosystem Dynamic Escalation Rules",
+      "Commercial Banking ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Commercial Banking ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Banking Deep Blue",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "reserveRatio": 0.1,
+      "capitalAdequacyRatio": 0.08,
+      "interestRateBase": 0.05
+    },
+    "features": {
+      "realTimeSettlement": true,
+      "aiCreditScoring": true,
+      "cryptoGateway": false,
+      "swiftIntegration": true
+    },
+    "permissions": [
+      "BANK_ADMIN",
+      "TREASURY_OPERATOR",
+      "AUDIT_CONTROLLER",
+      "BRANCH_MANAGER"
+    ],
+    "policies": {
+      "baselIIICompliance": "REQUIRED",
+      "dataPrivacyLevel": "MAXIMUM",
+      "transactionMonitoring": "REALTIME"
+    },
+    "lifecycle": "READY",
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE",
+    "deployedAt": "2026-08-04T11:33:30.825Z"
+  },
+  {
+    "id": "insurance-erp-instance",
+    "instanceId": "insurance-erp-instance",
+    "templateId": "insurance-erp",
+    "name": "Insurance ERP Ecosystem",
+    "blueprintId": "insurance-erp",
+    "tenant": "system",
+    "domain": "Insurance ERP",
+    "status": "ACTIVE",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Policy Administration",
+      "Claims Management",
+      "Underwriting Engine",
+      "Actuarial Analytics",
+      "Broker Portal",
+      "Reinsurance Management"
+    ],
+    "workflows": [
+      "Insurance ERP Ecosystem Cryptographic Approval Chain",
+      "Insurance ERP Ecosystem Role Authorization Matrix",
+      "Insurance ERP Ecosystem Dynamic Escalation Rules",
+      "Insurance ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Insurance ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {
+      "theme": "Insurance Slate",
+      "language": "en-US",
+      "timezone": "UTC"
+    },
+    "configuration": {
+      "claimThreshold": 1000,
+      "underwritingAuthority": "SENIOR"
+    },
+    "features": {
+      "aiClaimsProcessing": true,
+      "automatedUnderwriting": true,
+      "mobileClaims": true
+    },
+    "permissions": [
+      "CLAIMS_ADJUSTER",
+      "UNDERWRITER",
+      "ACTUARY",
+      "AGENT_ACCESS"
+    ],
+    "policies": {
+      "solvencyIICompliance": "REQUIRED",
+      "riskDisclosure": "MANDATORY"
+    },
+    "lifecycle": "READY",
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE",
+    "deployedAt": "2026-08-04T11:33:30.825Z"
+  },
+  {
+    "id": "ngo-erp-instance",
+    "instanceId": "ngo-erp-instance",
+    "templateId": "ngo-erp",
+    "name": "NGO & Foundation ERP Ecosystem",
+    "blueprintId": "ngo-erp",
+    "tenant": "system",
+    "domain": "Non-Profit ERP",
+    "status": "ACTIVE",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Donor Management",
+      "Grant Administration",
+      "Project Tracking",
+      "Impact Analytics",
+      "Volunteer Coordination"
+    ],
+    "workflows": [
+      "NGO & Foundation ERP Ecosystem Cryptographic Approval Chain",
+      "NGO & Foundation ERP Ecosystem Role Authorization Matrix",
+      "NGO & Foundation ERP Ecosystem Dynamic Escalation Rules",
+      "NGO & Foundation ERP Ecosystem Immutable AEGIS Audit Trail",
+      "NGO & Foundation ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "lifecycle": "READY",
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE",
+    "deployedAt": "2026-08-04T11:33:30.825Z"
+  },
+  {
+    "id": "finance-banking-erp-instance",
+    "instanceId": "finance-banking-erp-instance",
+    "templateId": "finance-banking-erp",
+    "name": "Core Banking & Finance ERP Ecosystem",
+    "blueprintId": "finance-banking-erp",
+    "tenant": "system",
+    "domain": "Financial Services ERP",
+    "status": "ACTIVE",
+    "portals": [
+      "Public Portal",
+      "Authentication Portal",
+      "Executive Portal",
+      "Administrative Portal",
+      "Staff Workspace",
+      "Operational Workspace",
+      "Finance Workspace",
+      "Management Workspace",
+      "Reporting Portal",
+      "AI Assistant Portal",
+      "Mobile Experience Portal"
+    ],
+    "modules": [
+      "Core Banking Operations",
+      "Loan & Credit Management",
+      "Treasury Management",
+      "Financial Risk Analytics",
+      "Regulatory Compliance"
+    ],
+    "workflows": [
+      "Core Banking & Finance ERP Ecosystem Cryptographic Approval Chain",
+      "Core Banking & Finance ERP Ecosystem Role Authorization Matrix",
+      "Core Banking & Finance ERP Ecosystem Dynamic Escalation Rules",
+      "Core Banking & Finance ERP Ecosystem Immutable AEGIS Audit Trail",
+      "Core Banking & Finance ERP Ecosystem SLA Performance Monitor"
+    ],
+    "agents": [],
+    "settings": {},
+    "configuration": {},
+    "features": {},
+    "permissions": [],
+    "policies": {},
+    "lifecycle": "READY",
+    "configurationStatus": "CONFIGURED",
+    "deploymentStatus": "DEPLOYED",
+    "runtimeStatus": "ONLINE",
+    "deployedAt": "2026-08-04T11:33:30.825Z"
   }
 ]

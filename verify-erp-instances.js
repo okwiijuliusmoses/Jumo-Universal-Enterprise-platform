@@ -5,8 +5,10 @@ import { ueosRegistrySnapshotManager } from "./platform/storage/UEOSRegistrySnap
 
 ueosRegistrySnapshotManager.loadAll();
 
-if (erpInstanceRegistry.list().length === 0) {
-  ERPBlueprintRegistry.list().forEach(blueprint => {
+const existingInstances = erpInstanceRegistry.list();
+ERPBlueprintRegistry.list().forEach(blueprint => {
+  const exists = existingInstances.find(inst => inst.id === blueprint.id + "-instance" || inst.blueprintId === blueprint.id);
+  if (!exists) {
     erpInstanceRegistry.register({
       id: blueprint.id + "-instance",
       instanceId: blueprint.id + "-instance",
@@ -17,9 +19,9 @@ if (erpInstanceRegistry.list().length === 0) {
       domain: blueprint.category,
       status: "ACTIVE"
     });
-  });
-  ueosRegistrySnapshotManager.saveAll();
-}
+  }
+});
+ueosRegistrySnapshotManager.saveAll();
 
 console.log('ERP BLUEPRINTS:');
 ERPBlueprintRegistry.list().forEach(bp => {
