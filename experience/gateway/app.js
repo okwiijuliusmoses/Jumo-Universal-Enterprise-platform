@@ -242,6 +242,25 @@ window.state = {
   authError: null
 };
 
+// Define a reactive/dynamic erpApplications getter/setter on window.state to ensure perfect sync with the Control Plane Client
+let _erpApplications = [];
+Object.defineProperty(window.state, 'erpApplications', {
+  get: () => {
+    if (window.ueosControlPlane && typeof window.ueosControlPlane.getDeployedERPInstances === 'function') {
+      const clientErps = window.ueosControlPlane.getDeployedERPInstances();
+      if (clientErps && clientErps.length > 0) {
+        return clientErps;
+      }
+    }
+    return _erpApplications;
+  },
+  set: (val) => {
+    _erpApplications = val;
+  },
+  configurable: true,
+  enumerable: true
+});
+
 const savedRuntime = localStorage.getItem("UEOS_ACTIVE_ERP");
 if (savedRuntime) {
   try {
@@ -761,6 +780,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Synchronize and initialize client-side UEOS Control Plane
   if (window.ueosControlPlane && typeof window.ueosControlPlane.initialize === 'function') {
     await window.ueosControlPlane.initialize();
+  }
+
+  // Restore ERP Ecosystem Visibility safely
+  if (window.state) {
+    try {
+      if (window.ueosControlPlane && typeof window.ueosControlPlane.getDeployedERPInstances === 'function') {
+        window.state.erpApplications = window.ueosControlPlane.getDeployedERPInstances();
+        console.log("[UEOS] ERP Ecosystem Federated from Client Control Plane (Restore/Reload):", window.state.erpApplications.length);
+      }
+    } catch (e) {
+      console.warn("[UEOS] ERP Federation Deferred during early setup:", e.message);
+    }
   }
 
   if (window.state && window.state.bootComplete) {
