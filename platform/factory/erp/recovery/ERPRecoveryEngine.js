@@ -23,7 +23,7 @@ export class ERPRecoveryEngine {
         
         try {
           const erpDefinition = {
-            id: `${product.id}-instance`,
+            id: `${product.id}-instance`, instanceId: `${product.id}-instance`,
             name: product.name,
             blueprintId: product.ecosystemId,
             templateId: product.id,

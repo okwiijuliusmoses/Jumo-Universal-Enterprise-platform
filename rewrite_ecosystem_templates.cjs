@@ -1,4 +1,6 @@
-/**
+const fs = require('fs');
+
+const content = `/**
  * JUMO UEOS
  * ERP Ecosystem Template Registry
  * 
@@ -15,7 +17,7 @@ export class ERPEcosystemTemplateRegistry {
     // Dynamic generation from ERP Blueprints
     ERPBlueprintRegistry.list().forEach(blueprint => {
       if(blueprint.templates) blueprint.templates.forEach(template => {
-        const templateId = `${template.id}-erp`;
+        const templateId = \`\${template.id}-erp\`;
         const scopeName = template.name.replace(' ERP', '');
         
         // Only add if not already in templates
@@ -24,12 +26,12 @@ export class ERPEcosystemTemplateRegistry {
             id: templateId,
             ecosystemId: blueprint.id,
             name: template.name,
-            description: `Automated national-grade enterprise platform for ${scopeName}.`,
-            portals: [`Executive Portal`, `Administration Portal`, `Staff Portal`, `User Portal`, `Finance Portal`],
-            departments: [`${scopeName} Directorate`, `Finance Directorate`, `Operations Directorate`, `Human Resources Directorate`, `ICT Directorate`],
-            modules: blueprint.capabilities || [`Core ${scopeName} Management`],
+            description: \`Automated national-grade enterprise platform for \${scopeName}.\`,
+            portals: [\`Executive Portal\`, \`Administration Portal\`, \`Staff Portal\`, \`User Portal\`, \`Finance Portal\`],
+            departments: [\`\${scopeName} Directorate\`, \`Finance Directorate\`, \`Operations Directorate\`, \`Human Resources Directorate\`, \`ICT Directorate\`],
+            modules: blueprint.capabilities || [\`Core \${scopeName} Management\`],
             layers: ["Governance Layer", "Operational Layer", "Digital Layer"],
-            components: [`${scopeName} Dashboard`],
+            components: [\`\${scopeName} Dashboard\`],
             branches: ["National HQ", "Regional Node"],
             workflows: ["Standard Approval", "Audit Workflow", "Governance Workflow"]
           });
@@ -63,3 +65,7 @@ export class ERPEcosystemTemplateRegistry {
 }
 
 export const erpEcosystemTemplateRegistry = new ERPEcosystemTemplateRegistry();
+`;
+
+fs.writeFileSync('platform/factory/erp/ERPEcosystemTemplateRegistry.js', content);
+console.log('Ecosystem Templates rewritten');

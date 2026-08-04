@@ -1,4 +1,6 @@
-/**
+const fs = require('fs');
+
+const content = `/**
  * JUMO UEOS
  * Configurable AI ERP Blueprint Registry
  * 
@@ -162,3 +164,7 @@ export const ERPBlueprintRegistry = {
     return this.blueprints;
   }
 };
+`;
+
+fs.writeFileSync('platform/factory/erp/ERPBlueprintRegistry.js', content);
+console.log('Blueprints minimized');

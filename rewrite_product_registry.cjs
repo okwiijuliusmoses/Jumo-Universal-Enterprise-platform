@@ -1,4 +1,6 @@
-/**
+const fs = require('fs');
+
+const content = `/**
  * JUMO UEOS
  * ERP Product Definition Registry
  */
@@ -25,7 +27,7 @@ export class ERPProductRegistry {
         ecosystemId: template.ecosystemId,
         ecosystemName: blueprint ? blueprint.name : "Unknown Ecosystem",
         domain: template.name.replace(' ERP', ''),
-        governanceModel: `${template.name.replace(' ERP', '')} Executive Governance`,
+        governanceModel: \`\${template.name.replace(' ERP', '')} Executive Governance\`,
         portals: template.portals,
         departments: template.departments,
         modules: template.modules,
@@ -54,3 +56,7 @@ export class ERPProductRegistry {
 }
 
 export const erpProductRegistry = new ERPProductRegistry();
+`;
+
+fs.writeFileSync('platform/registry/ERPProductRegistry.js', content);
+console.log('Product Registry rewritten to use Template Registry');
