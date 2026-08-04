@@ -24,9 +24,10 @@ export class ERPEcosystemTemplateRegistry {
             ecosystemId: ecosystem.id,
             name: template.name,
             description: `Automated national-grade enterprise platform for ${scopeName}.`,
-            portals: [`Executive Portal`, `Administration Portal`, `Staff Portal`, `User Portal`, `Finance Portal`],
-            departments: [`${scopeName} Directorate`, `Finance Directorate`, `Operations Directorate`, `Human Resources Directorate`, `ICT Directorate`],
-            modules: ecosystem.sharedServices || [`Core ${scopeName} Management`],
+            governance: template.governance || [],
+            portals: template.portals || [`Executive Portal`, `Administration Portal`, `Staff Portal`, `User Portal`, `Finance Portal`],
+            departments: template.governance || [`${scopeName} Directorate`, `Finance Directorate`, `Operations Directorate`],
+            modules: template.modules || ecosystem.sharedServices || [`Core ${scopeName} Management`],
             layers: ["Governance Layer", "Operational Layer", "Digital Layer"],
             components: [`${scopeName} Dashboard`],
             branches: ["National HQ", "Regional Node"],
@@ -52,7 +53,7 @@ export class ERPEcosystemTemplateRegistry {
     registryPersistenceEngine.save("erp-ecosystem-templates", runtimeTemplates);
   }
 
-  isDefaultTemplate(id) {
+  isDefaultTemplate(_id) {
     return true;
   }
 

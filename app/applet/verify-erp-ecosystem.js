@@ -1,7 +1,7 @@
 import { ERPFactoryArchitecture } from './platform/factory/erp/ERPFactoryArchitecture.config.js';
 import { erpProductRegistry } from './platform/registry/ERPProductRegistry.js';
 
-console.log("=== JUMO UEOS PLATFORM ARCHITECTURE ===");
+console.log("=== JUMO UEOS PLATFORM ARCHITECTURE (10 APPROVED ERP TEMPLATES) ===");
 console.log(`ERP ECOSYSTEM FACTORIES: ${ERPFactoryArchitecture.ecosystems.length}`);
 ERPFactoryArchitecture.ecosystems.forEach(eco => {
   console.log(`- ${eco.name} (${eco.templates.length} templates)`);
@@ -11,7 +11,7 @@ ERPFactoryArchitecture.ecosystems.forEach(eco => {
 });
 
 const products = erpProductRegistry.list();
-console.log(`\nINSTITUTIONAL ERP PRODUCTS: ${products.length}`);
+console.log(`\nINSTITUTIONAL ERP PRODUCTS / TEMPLATES: ${products.length}`);
 products.forEach(p => {
-  console.log(`- ${p.name} (from ${p.ecosystemName})`);
+  console.log(`- ${p.name} (from Ecosystem: ${p.ecosystemId})`);
 });
