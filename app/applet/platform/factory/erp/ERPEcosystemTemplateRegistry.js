@@ -6,6 +6,7 @@
  */
 
 import { ERPFactoryArchitecture } from "./ERPFactoryArchitecture.config.js";
+import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
 import { registryPersistenceEngine } from "../../storage/RegistryPersistenceEngine.js";
 
 export class ERPEcosystemTemplateRegistry {
@@ -57,6 +58,18 @@ export class ERPEcosystemTemplateRegistry {
 
   listTemplates() {
     return this.templates;
+  }
+
+  getTemplatesByEcosystem(ecosystemId) {
+    return this.templates.filter(t => t.ecosystemId === ecosystemId);
+  }
+
+  getTemplate(id) {
+    return this.templates.find(t => t.id === id || t.name === id || t.id.replace('-erp', '') === id);
+  }
+
+  getBlueprint(id) {
+    return ERPBlueprintRegistry.getBlueprint(id);
   }
 }
 
