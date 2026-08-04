@@ -4,7 +4,10 @@ import { erpProductRegistry } from './platform/registry/ERPProductRegistry.js';
 console.log("=== JUMO UEOS PLATFORM ARCHITECTURE ===");
 console.log(`ERP ECOSYSTEM FACTORIES: ${ERPFactoryArchitecture.ecosystems.length}`);
 ERPFactoryArchitecture.ecosystems.forEach(eco => {
-  console.log(`- ${eco.name}`);
+  console.log(`- ${eco.name} (${eco.templates.length} templates)`);
+  eco.templates.forEach(t => {
+    console.log(`   * ${t.name}`);
+  });
 });
 
 const products = erpProductRegistry.list();
