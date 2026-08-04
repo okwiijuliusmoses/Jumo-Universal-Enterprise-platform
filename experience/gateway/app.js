@@ -161,8 +161,8 @@ function displayError(error, component = "Unknown") {
   const appElement = document.getElementById("app");
   if (!appElement) {
     document.body.innerHTML = `
-      <div class="fixed inset-0 bg-slate-900 text-white flex flex-col items-center justify-center p-6 font-mono text-xs">
-        <div class="max-w-md w-full bg-slate-800 p-8 rounded-2xl border border-rose-500/50">
+      <div class="fixed inset-0 bg-white text-slate-800 flex flex-col items-center justify-center p-6 font-mono text-xs">
+        <div class="max-w-md w-full bg-slate-100 p-8 rounded-2xl border border-rose-500/50">
           <h1 class="text-rose-500 font-bold text-lg mb-4">JUMO UEOS CRITICAL FAILURE</h1>
           <p class="text-rose-400 font-bold">${error.message || error}</p>
           <button onclick="window.location.reload()" class="mt-8 w-full py-3 bg-rose-600 hover:bg-rose-700 rounded-lg font-bold">Hard Reload</button>
@@ -173,24 +173,24 @@ function displayError(error, component = "Unknown") {
   }
   
   appElement.innerHTML = `
-    <div class="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 font-mono text-xs">
-      <div class="max-w-2xl w-full bg-slate-800 p-8 rounded-2xl border border-rose-500/50 shadow-2xl">
+    <div class="min-h-screen bg-slate-50 text-slate-800 flex flex-col items-center justify-center p-6 font-mono text-xs">
+      <div class="max-w-2xl w-full bg-slate-100 p-8 rounded-2xl border border-rose-500/50 shadow-2xl">
         <h1 class="text-rose-500 font-bold text-lg mb-2">JUMO UEOS Runtime Recovery</h1>
-        <p class="text-slate-400 mb-6">A critical failure occurred during ${component} initialization.</p>
+        <p class="text-slate-500 mb-6">A critical failure occurred during ${component} initialization.</p>
         
-        <div class="space-y-4 bg-slate-950 p-6 rounded-lg text-xs overflow-x-auto">
+        <div class="space-y-4 bg-slate-50 p-6 rounded-lg text-xs overflow-x-auto">
           <div class="grid grid-cols-2 gap-2 text-slate-500">
             <span>Timestamp:</span> <span>${new Date().toISOString()}</span>
-            <span>Component:</span> <span class="text-white">${component}</span>
-            <span>Route:</span> <span class="text-white">${window.state ? window.state.currentPath : 'Unknown'}</span>
+            <span>Component:</span> <span class="text-slate-800">${component}</span>
+            <span>Route:</span> <span class="text-slate-800">${window.state ? window.state.currentPath : 'Unknown'}</span>
           </div>
-          <div class="border-t border-slate-700 pt-4">
+          <div class="border-t border-slate-300 pt-4">
              <p class="text-slate-500 mb-1">Boot Status:</p>
-             <ul class="text-slate-300 list-disc pl-5">
+             <ul class="text-slate-600 list-disc pl-5">
                ${(window.state && window.state.bootStatus ? window.state.bootStatus : []).map(step => `<li>${step}</li>`).join('')}
              </ul>
           </div>
-          <div class="border-t border-slate-700 pt-4">
+          <div class="border-t border-slate-300 pt-4">
              <p class="text-rose-400 font-bold">Error Trace:</p>
              <p class="text-rose-300">${error.message || error}</p>
              ${error.stack ? `<pre class="mt-2 text-[10px] text-slate-500">${error.stack}</pre>` : ''}
@@ -814,9 +814,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         services.critical.forEach(step => {
           const li = document.createElement("li");
           li.id = `step-${step.id}`;
-          li.className = "flex items-center text-slate-400 transition-colors duration-300";
+          li.className = "flex items-center text-slate-500 transition-colors duration-300";
           li.innerHTML = `
-            <svg class="w-4 h-4 mr-3 text-slate-300 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <svg class="w-4 h-4 mr-3 text-slate-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             ${step.name}
           `;
           bootSteps.appendChild(li);
@@ -826,7 +826,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (step && step.status === 'READY') {
           const li = document.getElementById(`step-${serviceId}`);
           if (li) {
-            li.classList.remove("text-slate-400");
+            li.classList.remove("text-slate-500");
             li.classList.add("text-slate-700");
             li.innerHTML = `
               <svg class="w-4 h-4 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>

@@ -5,7 +5,7 @@ export const publicTemplate = (state) => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   
   window.app.innerHTML = `
-<div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
       
     <!-- JUMO UEOS Enterprise Public Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm text-slate-900">
@@ -42,7 +42,7 @@ export const publicTemplate = (state) => {
             <div class="flex items-center gap-3">
                 <button onclick="window.navigate('/control-center/login')" class="text-xs font-bold text-rose-600 hover:text-rose-800 hover:bg-rose-50 px-4 py-2 border border-rose-200 rounded-lg transition uppercase tracking-widest cursor-pointer flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> Control Center</button>
                 <button onclick="window.navigate('/login')" class="text-xs font-bold text-slate-700 hover:text-blue-600 px-4 py-2 rounded-md transition uppercase tracking-widest cursor-pointer">Sign In</button>
-                <button onclick="window.navigate('/register')" class="text-[10px] font-bold uppercase px-6 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition shadow-md cursor-pointer tracking-widest">Register Institution</button>
+                <button onclick="window.navigate('/register')" class="text-[10px] font-bold uppercase px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition shadow-md cursor-pointer tracking-widest">Register Institution</button>
             </div>
         </div>
     </header>
@@ -51,9 +51,9 @@ export const publicTemplate = (state) => {
     <section class="bg-slate-50 border-b border-slate-200 py-3">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-center gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">
             <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> UEOS v3.4.0 Active</span>
-            <span class="text-slate-300">|</span>
+            <span class="text-slate-600">|</span>
             <span class="hover:text-slate-900 cursor-pointer">Global Compliance Verified</span>
-            <span class="text-slate-300">|</span>
+            <span class="text-slate-600">|</span>
             <span class="hover:text-slate-900 cursor-pointer">Sovereign Identity Protection Enabled</span>
         </div>
     </section>
@@ -83,11 +83,11 @@ export const publicTemplate = (state) => {
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
                         <button class="px-6 py-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-enterprise-blue font-semibold text-slate-700 transition flex items-center justify-between cursor-pointer group">
                             <span>Browse News</span>
-                            <span class="text-slate-400 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
+                            <span class="text-slate-500 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
                         </button>
                         <button class="px-6 py-3 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-enterprise-blue font-semibold text-slate-700 transition flex items-center justify-between cursor-pointer group">
                             <span>View Resources</span>
-                            <span class="text-slate-400 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
+                            <span class="text-slate-500 group-hover:text-enterprise-blue group-hover:translate-x-1 transition">&rarr;</span>
                         </button>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ export const publicTemplate = (state) => {
                 <div class="w-full lg:w-7/12">
                     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[400px]">
                           
-                        <div class="bg-slate-900 px-4 py-3 flex items-center justify-between text-xs font-medium text-slate-400 border-b border-slate-800">
+                        <div class="bg-white px-4 py-3 flex items-center justify-between text-xs font-medium text-slate-500 border-b border-slate-200">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                                 Live Broadcast
@@ -116,9 +116,9 @@ export const publicTemplate = (state) => {
 
                               
                             <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900 to-transparent z-10">
-                                <span class="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase rounded mb-3 inline-block">Platform Showcase</span>
-                                <h3 class="text-2xl font-bold text-white mb-1">Accelerating Digital Transformation</h3>
-                                <p class="text-slate-300 text-sm">See how government agencies and enterprises are leveraging JUMO.</p>
+                                <span class="px-2 py-1 bg-blue-600 text-slate-800 text-[10px] font-bold uppercase rounded mb-3 inline-block">Platform Showcase</span>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-1">Accelerating Digital Transformation</h3>
+                                <p class="text-slate-600 text-sm">See how government agencies and enterprises are leveraging JUMO.</p>
                             </div>
                         </div>
                     </div>
@@ -148,12 +148,12 @@ export const publicTemplate = (state) => {
                             <h3 class="text-2xl font-bold text-slate-900 group-hover:text-enterprise-blue transition">Personal Identity</h3>
                             <p class="text-slate-500 mt-2">For citizens, staff, and individual profiles.</p>
                         </div>
-                        <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 text-3xl group-hover:bg-enterprise-blue group-hover:text-white transition-colors duration-300">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 text-3xl group-hover:bg-enterprise-blue group-hover:text-slate-800 transition-colors duration-300">
                             👤
                         </div>
                     </div>
                     <div class="space-y-3">
-                        <button onclick="window.navigate('/login')" class="w-full py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                        <button onclick="window.navigate('/login')" class="w-full py-4 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
                             Sign In to Workspace
                         </button>
                         <button onclick="window.navigate('/register')" class="w-full py-4 px-6 bg-white border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 text-slate-700 font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
@@ -171,12 +171,12 @@ export const publicTemplate = (state) => {
                             </div>
                             <p class="text-slate-500 mt-2">For government bodies, schools, and corporations.</p>
                         </div>
-                        <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-700 text-3xl group-hover:bg-enterprise-blue group-hover:text-white transition-colors duration-300">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-700 text-3xl group-hover:bg-enterprise-blue group-hover:text-slate-800 transition-colors duration-300">
                             🏛️
                         </div>
                     </div>
                     <div class="space-y-3">
-                        <button onclick="window.navigate('/login')" class="w-full py-4 px-6 bg-enterprise-blue hover:bg-blue-700 text-white font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
+                        <button onclick="window.navigate('/login')" class="w-full py-4 px-6 bg-enterprise-blue hover:bg-blue-700 text-slate-800 font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
                             Institution Login
                         </button>
                         <button onclick="window.navigate('/register')" class="w-full py-4 px-6 bg-white border border-slate-200 hover:border-enterprise-blue hover:bg-blue-50 text-slate-700 font-bold rounded-xl transition cursor-pointer flex justify-center items-center">
@@ -189,7 +189,7 @@ export const publicTemplate = (state) => {
             
             <div class="max-w-6xl mx-auto mt-8 flex flex-wrap justify-center gap-6 text-sm">
                 <button onclick="window.navigate('/control-center/login')" class="text-rose-600 hover:text-rose-800 font-bold transition cursor-pointer flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> JUMO UEOS Control Center Access</button>
-                <span class="text-slate-300">|</span>
+                <span class="text-slate-600">|</span>
                 <button onclick="alert('Password Reset')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Forgot Password?</button>
                 <button onclick="alert('Account Recovery')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path></svg> Recover Account</button>
                 <button onclick="window.navigate('/contact')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> Contact Support</button>
@@ -254,22 +254,22 @@ export const publicTemplate = (state) => {
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       
-                    <div class="bg-slate-900 rounded-2xl p-10 text-white relative overflow-hidden group cursor-pointer flex flex-col justify-end min-h-[400px]">
+                    <div class="bg-white rounded-2xl p-10 text-slate-800 relative overflow-hidden group cursor-pointer flex flex-col justify-end min-h-[400px]">
                         <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/80 to-transparent z-0"></div>
                         <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                         
                         <div class="relative z-10">
                             <div class="inline-flex px-3 py-1 bg-white/20 backdrop-blur-md rounded border border-white/10 text-xs font-bold mb-6 uppercase tracking-wider">Government Agency</div>
                             <h3 class="text-3xl font-bold mb-4 leading-tight">Digitalizing Civil Services at National Scale</h3>
-                            <p class="text-slate-300 mb-6 max-w-lg">A complete transformation of public service delivery using JUMO Government Solutions, reducing processing times by 80%.</p>
-                            <div class="flex items-center gap-2 text-sm font-semibold text-blue-300 group-hover:text-white transition">Read Case Study &rarr;</div>
+                            <p class="text-slate-600 mb-6 max-w-lg">A complete transformation of public service delivery using JUMO Government Solutions, reducing processing times by 80%.</p>
+                            <div class="flex items-center gap-2 text-sm font-semibold text-blue-300 group-hover:text-slate-800 transition">Read Case Study &rarr;</div>
                         </div>
                     </div>
                     
                     <div class="flex flex-col gap-8">
                         <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-md transition cursor-pointer group">
                             <div class="w-full sm:w-1/3 aspect-video sm:aspect-square bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200">
-                                <span class="text-4xl text-slate-300">🎓</span>
+                                <span class="text-4xl text-slate-600">🎓</span>
                             </div>
                             <div class="flex-1 flex flex-col justify-center">
                                 <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Public University</div>
@@ -280,7 +280,7 @@ export const publicTemplate = (state) => {
                         </div>
                         <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-6 hover:shadow-md transition cursor-pointer group">
                             <div class="w-full sm:w-1/3 aspect-video sm:aspect-square bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200">
-                                <span class="text-4xl text-slate-300">🏥</span>
+                                <span class="text-4xl text-slate-600">🏥</span>
                             </div>
                             <div class="flex-1 flex flex-col justify-center">
                                 <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Regional Hospital</div>
@@ -317,7 +317,7 @@ export const publicTemplate = (state) => {
         </section>
         
           
-        <section class="py-24 px-6 bg-enterprise-blue text-white text-center">
+        <section class="py-24 px-6 bg-enterprise-blue text-slate-800 text-center">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Ready to transform your organization?</h2>
                 <p class="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">Connect with our enterprise onboarding team to discuss how JUMO can integrate with your institutional workflows.</p>
@@ -331,7 +331,7 @@ export const publicTemplate = (state) => {
           
         <section class="py-16 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-6">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-10">Trusted by institutions across sectors</h3>
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest text-center mb-10">Trusted by institutions across sectors</h3>
                 <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
                     <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Ministries & Government</div>
                     <div class="px-6 py-3 border border-slate-300 rounded-lg text-slate-500 font-bold text-sm bg-slate-50">Public Universities</div>
@@ -351,9 +351,9 @@ export const publicTemplate = (state) => {
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         
           
-        <div id="public-ai-chat" class="hidden fixed inset-0 z-[101] bg-slate-900/40 flex items-center justify-center p-4">
+        <div id="public-ai-chat" class="hidden fixed inset-0 z-[101] bg-white/40 flex items-center justify-center p-4">
             <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
-                <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-sm">
+                <div class="bg-emerald-600 p-4 flex items-center justify-between text-slate-800 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xl">
                             🤖
@@ -362,13 +362,13 @@ export const publicTemplate = (state) => {
                             <h4 class="font-bold text-sm">Public Front Desk Assistant</h4>
                         </div>
                     </div>
-                    <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-white/80 hover:text-white transition p-1 cursor-pointer">
+                    <button onclick="document.getElementById('public-ai-chat').classList.add('hidden')" class="text-slate-800/80 hover:text-slate-800 transition p-1 cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
                 <div class="p-6 h-[400px] overflow-y-auto bg-slate-50 text-sm space-y-4">
                     <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm shadow-sm">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-slate-800 flex items-center justify-center shrink-0 text-sm shadow-sm">
                             🤖
                         </div>
                         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-slate-700 leading-relaxed">
@@ -378,7 +378,7 @@ export const publicTemplate = (state) => {
                 </div>
                 <div class="p-4 bg-white border-t border-slate-100 flex items-center gap-2">
                     <input type="text" placeholder="Type your inquiry here..." class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 bg-slate-50">
-                    <button class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center hover:bg-emerald-700 transition cursor-pointer shadow-sm">
+                    <button class="w-11 h-11 rounded-xl bg-emerald-600 text-slate-800 flex items-center justify-center hover:bg-emerald-700 transition cursor-pointer shadow-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                     </button>
                 </div>
@@ -386,7 +386,7 @@ export const publicTemplate = (state) => {
         </div>
         
           
-        <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
+        <button onclick="document.getElementById('public-ai-chat').classList.remove('hidden')" class="w-16 h-16 rounded-full bg-emerald-600 text-slate-800 flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
             <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
     </div>
@@ -406,7 +406,7 @@ export const loginTemplate = (state) => {
   const defaultEmail = `user@${defaultEmailDomain}`;
   
   window.app.innerHTML = `
-    <div class="min-h-screen bg-white flex flex-col justify-between font-sans text-slate-800">
+    <div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
         
       <header class="p-6 border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -423,7 +423,7 @@ export const loginTemplate = (state) => {
       <div class="flex-1 flex items-center justify-center p-6 bg-slate-50/30">
         <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 md:p-12 space-y-8">
           <div class="text-center space-y-3">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 text-white rounded-full text-[9px] font-bold tracking-widest uppercase">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-white text-slate-800 rounded-full text-[9px] font-bold tracking-widest uppercase">
               <span>🔐 Identity Gateway</span>
             </div>
             <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Sign In</h2>
@@ -457,7 +457,7 @@ export const loginTemplate = (state) => {
               </div>
             </div>
 
-            <button type="submit" class="w-full py-5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-widest transition shadow-xl cursor-pointer">
+            <button type="submit" class="w-full py-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-widest transition shadow-xl cursor-pointer">
               Authenticate &rarr;
             </button>
           </form>
@@ -469,7 +469,7 @@ export const loginTemplate = (state) => {
         </div>
       </div>
 
-      <footer class="py-6 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-white border-t border-slate-100">
+      <footer class="py-6 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500 bg-white border-t border-slate-100">
         ${BRAND_CONFIG.poweredBy} &bull; ${BRAND_CONFIG.legalName}
       </footer>
     </div>
@@ -517,7 +517,7 @@ export const registerTemplate = (state) => {
               <label class="block text-slate-700 uppercase tracking-wider mb-2">Email Address</label>
               <input type="email" id="reg-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-enterprise-blue text-sm bg-slate-50 font-bold text-slate-900">
             </div>
-            <button type="submit" class="w-full py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+            <button type="submit" class="w-full py-4 rounded-xl bg-enterprise-blue hover:bg-blue-700 text-slate-800 font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
               Register Account &rarr;
             </button>
           </form>
@@ -549,7 +549,7 @@ export const gatewayTemplate = (state) => {
   institution.portals = portals;
 
   window.app.innerHTML = `
-    <div class="min-h-screen bg-white flex flex-col text-slate-800 antialiased font-sans">
+    <div class="min-h-screen bg-slate-50 flex flex-col text-slate-800 antialiased font-sans">
         
       <!-- JUMO UEOS Enterprise Gateway Header -->
       <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm text-slate-900">
@@ -561,17 +561,17 @@ export const gatewayTemplate = (state) => {
                 
                 <!-- Horizontal Enterprise Navigation -->
                 <nav class="hidden lg:flex items-center gap-1">
-                    <button onclick="window.goBack()" class="p-2 text-slate-400 hover:text-slate-900 transition" title="Back">
+                    <button onclick="window.goBack()" class="p-2 text-slate-500 hover:text-slate-900 transition" title="Back">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
-                    <button class="p-2 text-slate-300 transition" title="Forward" disabled>
+                    <button class="p-2 text-slate-600 transition" title="Forward" disabled>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                     <div class="h-6 w-px bg-slate-200 mx-2"></div>
                     
                     <div class="flex items-center gap-2 px-3 py-1 bg-slate-50 rounded-md border border-slate-200">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Portal Directory</span>
-                        <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Portal Directory</span>
+                        <svg class="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         <span class="text-xs font-bold text-slate-900">${institution.name}</span>
                     </div>
                 </nav>
@@ -582,11 +582,11 @@ export const gatewayTemplate = (state) => {
               <div class="relative group hidden md:block">
                   <button class="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-white hover:border-blue-300 transition cursor-pointer">
                       <span>Switch Portal</span>
-                      <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                      <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                   </button>
                   <div class="absolute right-0 top-full mt-1 w-64 bg-white border border-slate-200 shadow-xl rounded-xl py-2 hidden group-hover:block z-[100]">
                       <div class="px-4 py-2 border-b border-slate-100 mb-1">
-                          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Available Portals</p>
+                          <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Available Portals</p>
                       </div>
                       ${portals.map(p => `
                       <button onclick="window.navigate('/workspace?portal=${p.id}')" class="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition flex items-center gap-3">
@@ -602,7 +602,7 @@ export const gatewayTemplate = (state) => {
               <!-- Profile Menu -->
               <div class="relative group">
                 <button class="flex items-center gap-3 cursor-pointer">
-                  <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center border border-slate-200 group-hover:bg-slate-800 transition">
+                  <div class="w-9 h-9 rounded-full bg-white text-slate-800 flex items-center justify-center border border-slate-200 group-hover:bg-slate-100 transition">
                     <span class="text-sm font-bold">${user.name.charAt(0)}</span>
                   </div>
                   <div class="hidden sm:block text-left">
@@ -651,7 +651,7 @@ export const gatewayTemplate = (state) => {
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Deployment Domain</div>
+                        <div class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Deployment Domain</div>
                         <div class="text-xs font-bold text-slate-700">${state.deployedInstitution?.domain || 'portal.jumo.ueos'}</div>
                     </div>
                 </div>
@@ -677,8 +677,8 @@ export const gatewayTemplate = (state) => {
               <p class="text-sm text-slate-500 mb-8 flex-1 relative z-10 leading-relaxed">Enter the ${portal.name} to manage operational workflows, departments, and institutional records.</p>
               
               <div class="flex items-center justify-between relative z-10 pt-4 border-t border-slate-50">
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-400 group-hover:text-blue-600 transition-colors">Open Workspace</span>
-                <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center transform group-hover:translate-x-1 transition-transform shadow-lg">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover:text-blue-600 transition-colors">Open Workspace</span>
+                <div class="w-8 h-8 rounded-full bg-white text-slate-800 flex items-center justify-center transform group-hover:translate-x-1 transition-transform shadow-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
               </div>
@@ -690,16 +690,16 @@ export const gatewayTemplate = (state) => {
       <!-- Enterprise Footer -->
       <footer class="bg-white border-t border-slate-200 py-8 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <div class="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 <span>© 2026 JUMO Global</span>
-                <span class="text-slate-200">|</span>
+                <span class="text-slate-800">|</span>
                 <a href="#" class="hover:text-slate-900">Privacy Protocol</a>
                 <a href="#" class="hover:text-slate-900">Enterprise Terms</a>
                 <a href="#" class="hover:text-slate-900">System Status</a>
             </div>
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                 <span>Powered by</span>
-                <span class="px-2 py-1 bg-slate-900 text-white rounded">JUMO UEOS</span>
+                <span class="px-2 py-1 bg-white text-slate-800 rounded">JUMO UEOS</span>
             </div>
         </div>
       </footer>
@@ -711,7 +711,7 @@ export const contactTemplate = () => {
   const logoHtml = getOfficialLogoHtml({ size: "md", textColor: "dark" });
   
   window.app.innerHTML = `
-<div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm h-16">
         <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
             <div class="cursor-pointer" onclick="window.navigate('/')">
@@ -724,14 +724,14 @@ export const contactTemplate = () => {
             </nav>
             <div class="flex items-center gap-4">
                 <button onclick="window.navigate('/login')" class="text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:text-slate-900 transition cursor-pointer">Sign In</button>
-                <button onclick="window.navigate('/register')" class="text-[10px] font-bold uppercase px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition shadow-md cursor-pointer tracking-widest">Register Institution</button>
+                <button onclick="window.navigate('/register')" class="text-[10px] font-bold uppercase px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition shadow-md cursor-pointer tracking-widest">Register Institution</button>
             </div>
         </div>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-16">
         <div class="mb-12">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 text-white text-[9px] font-bold tracking-widest uppercase font-mono mb-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-slate-800 text-[9px] font-bold tracking-widest uppercase font-mono mb-4">
                 Public Gateway
             </div>
             <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Contact & Communication</h1>
@@ -745,44 +745,44 @@ export const contactTemplate = () => {
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100">Digital Channels</h3>
                     <div class="space-y-5 text-sm">
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">General Enquiries</p>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">General Enquiries</p>
                             <a href="mailto:${BRAND_CONFIG.communication.general}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.general}</a>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Enterprise Support</p>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">Enterprise Support</p>
                             <a href="mailto:${BRAND_CONFIG.communication.support}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.support}</a>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Security Operations</p>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">Security Operations</p>
                             <a href="mailto:${BRAND_CONFIG.communication.security}" class="font-medium text-emerald-600 hover:underline">${BRAND_CONFIG.communication.security}</a>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Legal & Compliance</p>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">Legal & Compliance</p>
                             <a href="mailto:${BRAND_CONFIG.communication.legal}" class="font-medium text-enterprise-blue hover:underline">${BRAND_CONFIG.communication.legal}</a>
                         </div>
                     </div>
                 </div>
 
                   
-                <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
-                    <h3 class="font-bold text-white text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-800">Direct Lines</h3>
+                <div class="bg-white p-6 rounded-2xl shadow-lg text-slate-800">
+                    <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-200">Direct Lines</h3>
                     <div class="space-y-4 text-sm">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">📞</div>
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">📞</div>
                             <div>
-                                <p class="text-[10px] text-slate-400 font-mono">Official Mobile</p>
+                                <p class="text-[10px] text-slate-500 font-mono">Official Mobile</p>
                                 <p class="font-bold tracking-wide">${BRAND_CONFIG.communication.mobile}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">💬</div>
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">💬</div>
                             <div>
-                                <p class="text-[10px] text-slate-400 font-mono">WhatsApp Business</p>
+                                <p class="text-[10px] text-slate-500 font-mono">WhatsApp Business</p>
                                 <p class="font-bold tracking-wide">${BRAND_CONFIG.communication.whatsapp}</p>
                             </div>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-slate-800">
-                            <p class="text-[10px] text-slate-400 font-mono mb-1">Business Hours</p>
+                        <div class="mt-6 pt-4 border-t border-slate-200">
+                            <p class="text-[10px] text-slate-500 font-mono mb-1">Business Hours</p>
                             <p class="font-medium text-sm">Monday - Friday: 08:00 - 17:00 (EAT)</p>
                         </div>
                     </div>
@@ -794,7 +794,7 @@ export const contactTemplate = () => {
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-full">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
                         <span>Office Directory</span>
-                        <span class="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded">${BRAND_CONFIG.location.region}</span>
+                        <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-1 rounded">${BRAND_CONFIG.location.region}</span>
                     </h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

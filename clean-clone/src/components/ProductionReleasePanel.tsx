@@ -271,16 +271,16 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
   };
 
   return (
-    <div className="space-y-6 animate-fade-in p-4 text-slate-200">
+    <div className="space-y-6 animate-fade-in p-4 text-slate-800">
       
       {/* Tab Header */}
       <div className="flex justify-between items-center pb-3 border-b border-slate-900">
         <div>
-          <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
             <ShieldCheck className="h-4.5 w-4.5 text-amber-400" />
             <span>JUMO Production Acceptance &amp; Release Suite</span>
           </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             Transition the JUMO UEOS pre-production environment to a hardened, owner-controlled release platform. Verify live persistent channels, set canonical domains, and activate commercial payment adapters.
           </p>
         </div>
@@ -296,7 +296,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
           className={`px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1.5 ${
             subTab === "audit" 
               ? "bg-amber-500/10 text-amber-400 border-amber-500/20 font-bold" 
-              : "border-transparent text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+              : "border-transparent text-slate-500 hover:bg-white/50 hover:text-slate-800"
           }`}
         >
           <FileText className="h-3.5 w-3.5" />
@@ -308,7 +308,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
           className={`px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1.5 ${
             subTab === "domains" 
               ? "bg-amber-500/10 text-amber-400 border-amber-500/20 font-bold" 
-              : "border-transparent text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+              : "border-transparent text-slate-500 hover:bg-white/50 hover:text-slate-800"
           }`}
         >
           <Globe className="h-3.5 w-3.5" />
@@ -320,7 +320,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
           className={`px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1.5 ${
             subTab === "payments" 
               ? "bg-amber-500/10 text-amber-400 border-amber-500/20 font-bold" 
-              : "border-transparent text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+              : "border-transparent text-slate-500 hover:bg-white/50 hover:text-slate-800"
           }`}
         >
           <Coins className="h-3.5 w-3.5" />
@@ -332,7 +332,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
           className={`px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1.5 ${
             subTab === "mobile" 
               ? "bg-amber-500/10 text-amber-400 border-amber-500/20 font-bold" 
-              : "border-transparent text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+              : "border-transparent text-slate-500 hover:bg-white/50 hover:text-slate-800"
           }`}
         >
           <Smartphone className="h-3.5 w-3.5" />
@@ -355,22 +355,22 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                   : "bg-amber-950/40 border-amber-500/20 text-amber-400"
               }`}>
                 <span>{statusMessage.text}</span>
-                <button onClick={() => setStatusMessage(null)} className="text-[10px] hover:text-slate-200 cursor-pointer pl-4">✕</button>
+                <button onClick={() => setStatusMessage(null)} className="text-[10px] hover:text-slate-800 cursor-pointer pl-4">✕</button>
               </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
               {/* Left System Status Checkers */}
-              <div className="lg:col-span-7 bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
+              <div className="lg:col-span-7 bg-slate-50 border border-slate-900 p-5 rounded-2xl space-y-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
                     <Laptop className="h-4 w-4 text-amber-400" />
                     <span>Executive Platform Diagnostics</span>
                   </h4>
                   <button
                     onClick={runProductionAudit}
-                    className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-mono text-[9px] px-2 py-1 rounded border border-slate-800 cursor-pointer"
+                    className="flex items-center gap-1 bg-white hover:bg-slate-100 text-slate-600 font-mono text-[9px] px-2 py-1 rounded border border-slate-200 cursor-pointer"
                   >
                     <RefreshCw className={`h-3 w-3 ${auditProgress === "running" ? "animate-spin" : ""}`} />
                     <span>Force Diagnostics</span>
@@ -379,44 +379,44 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
                 <div className="space-y-3 font-mono text-[10px]">
                   {/* Database check */}
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-1">
-                    <div className="flex justify-between items-center text-[9px] text-slate-400">
+                  <div className="bg-white p-3 rounded-xl border border-slate-850 space-y-1">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500">
                       <span>PERSISTENCE DATABASE CONNECTION</span>
                       <span className="text-emerald-400 font-bold uppercase bg-emerald-500/10 px-1.5 rounded">CONNECTED</span>
                     </div>
-                    <p className="text-slate-300 leading-relaxed font-bold">{dbEngineStatus}</p>
+                    <p className="text-slate-600 leading-relaxed font-bold">{dbEngineStatus}</p>
                   </div>
 
                   {/* Ledger Balance check */}
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-1">
-                    <div className="flex justify-between items-center text-[9px] text-slate-400">
+                  <div className="bg-white p-3 rounded-xl border border-slate-850 space-y-1">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500">
                       <span>FAAP BALANCE SHEET LEDGER CHECKSUM</span>
                       <span className="text-emerald-400 font-bold uppercase bg-emerald-500/10 px-1.5 rounded">BALANCED</span>
                     </div>
-                    <p className="text-slate-300 leading-relaxed font-bold">{ledgerIntegrity}</p>
+                    <p className="text-slate-600 leading-relaxed font-bold">{ledgerIntegrity}</p>
                   </div>
 
                   {/* Kernel status check */}
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-1">
-                    <div className="flex justify-between items-center text-[9px] text-slate-400">
+                  <div className="bg-white p-3 rounded-xl border border-slate-850 space-y-1">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500">
                       <span>CORE OPERATING SYSTEM KERNEL STATUS</span>
                       <span className="text-emerald-400 font-bold uppercase bg-emerald-500/10 px-1.5 rounded">ONLINE</span>
                     </div>
-                    <p className="text-slate-300 leading-relaxed font-bold">{kernelStatus}</p>
+                    <p className="text-slate-600 leading-relaxed font-bold">{kernelStatus}</p>
                   </div>
 
                   {/* Zero-Trust verification */}
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-1">
-                    <div className="flex justify-between items-center text-[9px] text-slate-400">
+                  <div className="bg-white p-3 rounded-xl border border-slate-850 space-y-1">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500">
                       <span>ZERO-TRUST ADMINISTRATIVE CLEARANCES</span>
                       <span className="text-emerald-400 font-bold uppercase bg-emerald-500/10 px-1.5 rounded">HARDENED</span>
                     </div>
-                    <p className="text-slate-300 leading-relaxed font-bold">{securityStatus}</p>
+                    <p className="text-slate-600 leading-relaxed font-bold">{securityStatus}</p>
                   </div>
 
                   {/* Dynamic Database Snapshot Controls */}
-                  <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 space-y-3">
-                    <div className="flex justify-between items-center text-[9px] text-slate-400">
+                  <div className="bg-white p-3 rounded-xl border border-slate-850 space-y-3">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500">
                       <span>HYBRID DATABASE STATE CONTROLS</span>
                       <span className="text-amber-400 font-bold uppercase bg-amber-500/10 px-1.5 rounded">PERSISTENCE</span>
                     </div>
@@ -424,7 +424,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                       <button
                         onClick={triggerBackup}
                         disabled={dbLoading}
-                        className="flex-1 flex items-center justify-center gap-1.5 bg-slate-950 hover:bg-slate-850 text-slate-300 font-mono text-[9px] py-2 px-3 rounded-lg border border-slate-800 cursor-pointer disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-slate-50 hover:bg-slate-850 text-slate-600 font-mono text-[9px] py-2 px-3 rounded-lg border border-slate-200 cursor-pointer disabled:opacity-50"
                       >
                         <RefreshCw className={`h-3 w-3 ${dbLoading ? "animate-spin" : ""}`} />
                         <span>Take Backup Snapshot</span>
@@ -432,7 +432,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                       <button
                         onClick={triggerRestore}
                         disabled={dbLoading}
-                        className="flex-1 flex items-center justify-center gap-1.5 bg-slate-950 hover:bg-slate-850 text-slate-300 font-mono text-[9px] py-2 px-3 rounded-lg border border-slate-800 cursor-pointer disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-slate-50 hover:bg-slate-850 text-slate-600 font-mono text-[9px] py-2 px-3 rounded-lg border border-slate-200 cursor-pointer disabled:opacity-50"
                       >
                         <RefreshCw className={`h-3 w-3 ${dbLoading ? "animate-spin" : ""}`} />
                         <span>Restore DB Backup</span>
@@ -453,9 +453,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
               </div>
 
               {/* Right Segregation Checklist */}
-              <div className="lg:col-span-5 bg-slate-950 border border-slate-900 p-5 rounded-2xl space-y-4">
+              <div className="lg:col-span-5 bg-slate-50 border border-slate-900 p-5 rounded-2xl space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
                     <ShieldAlert className="h-4 w-4 text-emerald-400" />
                     <span>Ecosystem Reality Segregation</span>
                   </h4>
@@ -471,19 +471,19 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                       &bull; Verified Live Features (Ready)
                     </span>
                     <div className="space-y-1.5 text-[10px] font-mono">
-                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-600">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                         <span>Hardened MFA &amp; Secure Owner Initialization Wizard</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-600">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                         <span>JUMODBEngine Hybrid SQL/JSON Persistence Engine</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-600">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                         <span>11 Active Operating Sector Registries &amp; Micro-Kernel</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2 rounded-lg text-slate-600">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                         <span>FAAP Consolidated Financial Ledger Core</span>
                       </div>
@@ -496,11 +496,11 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                       &bull; Key-Activated Integrations (Awaiting Setup)
                     </span>
                     <div className="space-y-1.5 text-[10px] font-mono">
-                      <div className="flex items-center gap-2 bg-amber-500/5 border border-amber-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-amber-500/5 border border-amber-500/10 p-2 rounded-lg text-slate-600">
                         <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                         <span>Live FinTech Payments (Stripe, Airtel/MTN, M-Pesa API)</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-amber-500/5 border border-amber-500/10 p-2 rounded-lg text-slate-300">
+                      <div className="flex items-center gap-2 bg-amber-500/5 border border-amber-500/10 p-2 rounded-lg text-slate-600">
                         <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                         <span>Custom Canonical Domain Mapping (Awaiting DNS update)</span>
                       </div>
@@ -515,9 +515,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
         {/* TAB 2: DOMAIN & SSL ROUTING */}
         {subTab === "domains" && (
-          <div className="space-y-6 animate-fade-in bg-slate-950 border border-slate-900 p-5 rounded-2xl">
+          <div className="space-y-6 animate-fade-in bg-slate-50 border border-slate-900 p-5 rounded-2xl">
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <Globe className="h-4.5 w-4.5 text-amber-400" />
                 <span>Production Domain &amp; SSL Routing Configuration</span>
               </h4>
@@ -529,38 +529,38 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">CANONICAL PRODUCTION DOMAIN</label>
+                  <label className="block text-slate-500 mb-1">CANONICAL PRODUCTION DOMAIN</label>
                   <input
                     type="text"
                     value={canonicalDomain}
                     onChange={(e) => setCanonicalDomain(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="https://your-jumo-ueos-domain.com"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Used for absolute URL resolution, OAuth callback redirects, and secure transactions.</span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">SECURE OWNER PORTAL ROUTE</label>
+                  <label className="block text-slate-500 mb-1">SECURE OWNER PORTAL ROUTE</label>
                   <input
                     type="text"
                     value={ownerAccessPath}
                     onChange={(e) => setOwnerAccessPath(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="/portal/secure-owner-mfa"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Custom obfuscated route to direct owner MFA initialized during secure system setup.</span>
                 </div>
 
-                <div className="bg-slate-900 p-4.5 rounded-xl border border-slate-850 flex items-center justify-between">
+                <div className="bg-white p-4.5 rounded-xl border border-slate-850 flex items-center justify-between">
                   <div>
-                    <span className="block text-[10px] font-bold text-slate-300">ENFORCE STRICT HTTPS POLICY</span>
+                    <span className="block text-[10px] font-bold text-slate-600">ENFORCE STRICT HTTPS POLICY</span>
                     <span className="text-[8px] text-slate-500">Forcefully redirect unencrypted port 80 requests to secure SSL layer.</span>
                   </div>
                   <button
                     onClick={() => setEnforceHttps(!enforceHttps)}
                     className={`px-3 py-1 rounded font-bold text-[9px] transition ${
-                      enforceHttps ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" : "bg-slate-800 text-slate-500 border border-transparent"
+                      enforceHttps ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" : "bg-slate-100 text-slate-500 border border-transparent"
                     }`}
                   >
                     {enforceHttps ? "STRICT" : "OFF"}
@@ -568,27 +568,27 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 p-4.5 rounded-xl border border-slate-850 space-y-3">
-                <span className="text-[10px] font-bold text-slate-300 block uppercase tracking-wider">DNS Pointer Specifications</span>
-                <p className="text-[9px] text-slate-400 leading-normal">
+              <div className="bg-white/40 p-4.5 rounded-xl border border-slate-850 space-y-3">
+                <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">DNS Pointer Specifications</span>
+                <p className="text-[9px] text-slate-500 leading-normal">
                   To complete the domain routing, map your domain nameserver record pointer inside your domain registry:
                 </p>
-                <div className="space-y-2 text-[9px] bg-slate-950 p-3 rounded-lg border border-slate-900">
+                <div className="space-y-2 text-[9px] bg-slate-50 p-3 rounded-lg border border-slate-900">
                   <div className="flex justify-between">
                     <span className="text-slate-500">RECORD TYPE</span>
                     <strong className="text-amber-400">A / CNAME</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">HOST TARGET</span>
-                    <strong className="text-slate-200">@ (Root) / jumo-ueos</strong>
+                    <strong className="text-slate-800">@ (Root) / jumo-ueos</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">IPv4 POINTER</span>
-                    <strong className="text-slate-200">142.250.190.46 (Cloud Run edge IP)</strong>
+                    <strong className="text-slate-800">142.250.190.46 (Cloud Run edge IP)</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">TTL INTERVAL</span>
-                    <strong className="text-slate-200">3600 seconds</strong>
+                    <strong className="text-slate-800">3600 seconds</strong>
                   </div>
                 </div>
                 <div className="bg-amber-500/10 border border-amber-500/20 p-2.5 rounded text-[8px] text-amber-300/90 leading-normal">
@@ -600,7 +600,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
             {/* JUMO MULTI-TENANT HOSTNAME ANALYZER & SIMULATOR */}
             <div className="border-t border-slate-900 pt-6 space-y-4">
               <div className="space-y-1">
-                <h5 className="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <h5 className="text-xs font-bold text-slate-600 uppercase tracking-wider font-mono flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse"></span>
                   <span>JUMO Multi-Tenant Hostname Analyzer &amp; Simulator</span>
                 </h5>
@@ -611,9 +611,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Input Simulator Form */}
-                <div className="lg:col-span-5 bg-slate-900 p-4.5 rounded-xl border border-slate-850 space-y-4">
+                <div className="lg:col-span-5 bg-white p-4.5 rounded-xl border border-slate-850 space-y-4">
                   <div className="space-y-2 text-xs font-mono">
-                    <label className="block text-slate-400 font-bold">SIMULATED INCOMING URL</label>
+                    <label className="block text-slate-500 font-bold">SIMULATED INCOMING URL</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -622,7 +622,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                           setSimulatedDomain(e.target.value);
                           analyzeSimulatedDomain(e.target.value);
                         }}
-                        className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-teal-500 text-xs font-mono"
+                        className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-teal-500 text-xs font-mono"
                         placeholder="abc-sacco.jumo.ug.com"
                       />
                       <button
@@ -652,7 +652,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                             setSimulatedDomain(tpl);
                             analyzeSimulatedDomain(tpl);
                           }}
-                          className="bg-slate-950 hover:bg-slate-800 border border-slate-850 text-slate-400 hover:text-slate-200 px-2.5 py-1 rounded-md text-[9px] transition cursor-pointer"
+                          className="bg-slate-50 hover:bg-slate-100 border border-slate-850 text-slate-500 hover:text-slate-800 px-2.5 py-1 rounded-md text-[9px] transition cursor-pointer"
                         >
                           {tpl}
                         </button>
@@ -662,13 +662,13 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                 </div>
 
                 {/* Simulated Analysis Breakdown */}
-                <div className="lg:col-span-7 bg-slate-950 p-4.5 rounded-xl border border-slate-900 space-y-4 text-xs font-mono">
+                <div className="lg:col-span-7 bg-slate-50 p-4.5 rounded-xl border border-slate-900 space-y-4 text-xs font-mono">
                   {analysisResult ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-3">
                         <div className="space-y-0.5">
                           <span className="text-[8px] text-slate-500 uppercase tracking-widest block font-bold">Country Detection</span>
-                          <span className="text-slate-200 text-xs font-bold flex items-center gap-1.5">
+                          <span className="text-slate-800 text-xs font-bold flex items-center gap-1.5">
                             <span className="text-[10px] font-sans px-1.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded">
                               {analysisResult.countryCode}
                             </span>
@@ -685,7 +685,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
                         <div className="space-y-0.5">
                           <span className="text-[8px] text-slate-500 uppercase tracking-widest block font-bold">Subsystem Scope</span>
-                          <span className="text-slate-300">
+                          <span className="text-slate-600">
                             {analysisResult.subsystem}
                           </span>
                         </div>
@@ -726,7 +726,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                   )}
 
                   {analysisResult && (
-                    <div className="border-t border-slate-900/60 pt-3 flex items-center justify-between text-[10px] text-slate-500 bg-slate-900/10 px-3 py-2 rounded-lg">
+                    <div className="border-t border-slate-900/60 pt-3 flex items-center justify-between text-[10px] text-slate-500 bg-white/10 px-3 py-2 rounded-lg">
                       <span className="flex items-center gap-1.5">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>FAAP Shared Ledger Ledger Integrity Check:</span>
@@ -743,9 +743,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
         {/* TAB 3: PAYMENT GATEWAYS */}
         {subTab === "payments" && (
-          <div className="space-y-6 animate-fade-in bg-slate-950 border border-slate-900 p-5 rounded-2xl">
+          <div className="space-y-6 animate-fade-in bg-slate-50 border border-slate-900 p-5 rounded-2xl">
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <Coins className="h-4.5 w-4.5 text-amber-400" />
                 <span>Production FinTech Settlement Gateways</span>
               </h4>
@@ -756,9 +756,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
               <div className="space-y-4">
-                <div className="bg-slate-900 p-4.5 rounded-xl border border-slate-850 flex items-center justify-between">
+                <div className="bg-white p-4.5 rounded-xl border border-slate-850 flex items-center justify-between">
                   <div>
-                    <span className="block text-[10px] font-bold text-slate-300">SETTLEMENT ENVIRONMENT</span>
+                    <span className="block text-[10px] font-bold text-slate-600">SETTLEMENT ENVIRONMENT</span>
                     <span className="text-[8px] text-slate-500">Toggle live commercial clearing channels vs. simulated mode.</span>
                   </div>
                   <button
@@ -772,48 +772,48 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">STRIPE LIVE SECRET KEY</label>
+                  <label className="block text-slate-500 mb-1">STRIPE LIVE SECRET KEY</label>
                   <input
                     type="password"
                     value={stripeSecretKey}
                     onChange={(e) => setStripeSecretKey(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="sk_live_..."
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Used for general credit card clearing and instant merchant account payouts.</span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">M-PESA MERCHANT CLEARING PIN</label>
+                  <label className="block text-slate-500 mb-1">M-PESA MERCHANT CLEARING PIN</label>
                   <input
                     type="password"
                     value={mpesaPin}
                     onChange={(e) => setMpesaPin(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="••••••••"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Direct settlement PIN for Kenya M-Pesa C2B/B2C payment routes.</span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">MOBILE MONEY GATEWAY (AIRTEL/MTN) SECRET</label>
+                  <label className="block text-slate-500 mb-1">MOBILE MONEY GATEWAY (AIRTEL/MTN) SECRET</label>
                   <input
                     type="password"
                     value={mobileMoneySecret}
                     onChange={(e) => setMobileMoneySecret(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="MTN Airtel API credentials"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Direct settlement integration secret key for Zambia, Uganda, and East African cellular money networks.</span>
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 p-4.5 rounded-xl border border-slate-850 space-y-4">
-                <span className="text-[10px] font-bold text-slate-300 block uppercase tracking-wider">SECURE PAYMENTS WEBHOOK ENDPOINT</span>
-                <p className="text-[9px] text-slate-400 leading-normal">
+              <div className="bg-white/40 p-4.5 rounded-xl border border-slate-850 space-y-4">
+                <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">SECURE PAYMENTS WEBHOOK ENDPOINT</span>
+                <p className="text-[9px] text-slate-500 leading-normal">
                   To receive asynchronous transaction settlements and instant confirmation updates, register the following endpoint URL inside your gateway developer accounts:
                 </p>
-                <div className="bg-slate-950 p-3 rounded-lg border border-slate-900 text-slate-300 select-all font-bold text-[9.5px]">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-900 text-slate-600 select-all font-bold text-[9.5px]">
                   {canonicalDomain}/api/webhooks/payments
                 </div>
                 <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded text-[8px] text-rose-300/90 leading-relaxed flex items-start gap-2">
@@ -829,9 +829,9 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
         {/* TAB 4: MOBILE & PWA READINESS */}
         {subTab === "mobile" && (
-          <div className="space-y-6 animate-fade-in bg-slate-950 border border-slate-900 p-5 rounded-2xl">
+          <div className="space-y-6 animate-fade-in bg-slate-50 border border-slate-900 p-5 rounded-2xl">
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <Smartphone className="h-4.5 w-4.5 text-amber-400" />
                 <span>Mobile Hybrid Packaging &amp; PWA Configuration</span>
               </h4>
@@ -843,24 +843,24 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">ANDROID PACKAGE TARGET IDENTIFIER</label>
+                  <label className="block text-slate-500 mb-1">ANDROID PACKAGE TARGET IDENTIFIER</label>
                   <input
                     type="text"
                     value={androidPackage}
                     onChange={(e) => setAndroidPackage(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     placeholder="com.jumo.ueos.app"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Canonical package identifier for compiling Android APK or AAB release binaries.</span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1">DIGITAL ASSET LINKS SHA-256 FINGERPRINT</label>
+                  <label className="block text-slate-500 mb-1">DIGITAL ASSET LINKS SHA-256 FINGERPRINT</label>
                   <input
                     type="text"
                     value={assetLinksFingerprint}
                     onChange={(e) => setAssetLinksFingerprint(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500 text-[10px]"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500 text-[10px]"
                     placeholder="SHA-256 Signature"
                   />
                   <span className="text-[8px] text-slate-500 mt-1 block">Used to establish seamless trust validation with Android. Required for hide URL address bar inside Android browser views.</span>
@@ -868,11 +868,11 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-slate-400 mb-1">DEFAULT ORIENTATION</label>
+                    <label className="block text-slate-500 mb-1">DEFAULT ORIENTATION</label>
                     <select
                       value={orientationMode}
                       onChange={(e) => setOrientationMode(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     >
                       <option value="portrait">PORTRAIT</option>
                       <option value="landscape">LANDSCAPE</option>
@@ -880,23 +880,23 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                     </select>
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1">SPLASH SCREEN TIMER</label>
+                    <label className="block text-slate-500 mb-1">SPLASH SCREEN TIMER</label>
                     <input
                       type="number"
                       value={splashDuration}
                       onChange={(e) => setSplashDuration(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-900/40 p-4.5 rounded-xl border border-slate-850 space-y-4">
-                <span className="text-[10px] font-bold text-slate-300 block uppercase tracking-wider">Digital Asset Link File Schema (.well-known)</span>
-                <p className="text-[9px] text-slate-400 leading-normal">
+              <div className="bg-white/40 p-4.5 rounded-xl border border-slate-850 space-y-4">
+                <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Digital Asset Link File Schema (.well-known)</span>
+                <p className="text-[9px] text-slate-500 leading-normal">
                   JUMO UEOS automatically generates and serves the required security validation handshake at:
                 </p>
-                <div className="bg-slate-950 p-2.5 rounded border border-slate-900 text-teal-400 text-[8.5px] whitespace-pre-wrap font-bold overflow-x-auto max-h-[140px]">
+                <div className="bg-slate-50 p-2.5 rounded border border-slate-900 text-teal-400 text-[8.5px] whitespace-pre-wrap font-bold overflow-x-auto max-h-[140px]">
 {`[{
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
@@ -919,7 +919,7 @@ PWA Manifest Scope Settings      : Standard Secure (Standalone Mode)
                       setStatusMessage({ text: "Success: Handshake credentials compiled to secure Android assetlinks.json manifest.", type: "success" });
                       setTimeout(() => setStatusMessage(null), 5000);
                     }}
-                    className="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-300 py-1.5 rounded-lg border border-slate-800 cursor-pointer text-[10px]"
+                    className="flex-1 bg-white hover:bg-slate-100 text-slate-600 py-1.5 rounded-lg border border-slate-200 cursor-pointer text-[10px]"
                   >
                     Generate Manifests
                   </button>

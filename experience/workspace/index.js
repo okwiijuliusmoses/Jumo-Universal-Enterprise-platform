@@ -9,330 +9,38 @@ const initializeWorkspaceState = (state) => {
   if (!state.portalActionLogs) state.portalActionLogs = [];
   if (!state.portalAuths) state.portalAuths = {};
   if (!state.pendingPortalAuth) state.pendingPortalAuth = null;
-
+  
   const activeErp = state.session?.activeErpInstance || state.erpRuntime;
-  const erpNameLower = (activeErp?.name || activeErp?.erpName || "Education").toLowerCase();
   
-  const isFaith = erpNameLower.includes("church") || erpNameLower.includes("faith") || erpNameLower.includes("ministry") || erpNameLower.includes("cathedral");
-  const isHotel = erpNameLower.includes("hotel") || erpNameLower.includes("hospitality");
-  const isClan = erpNameLower.includes("clan") || erpNameLower.includes("governance");
-  const isAlumni = erpNameLower.includes("alumni") || erpNameLower.includes("association");
-
-  if (!state.faapTransactions) {
-    if (isFaith) {
-      state.faapTransactions = [
-        { id: "TX-CH-001", type: "FAAP Sanctuary Fund Settlement", amount: "$35,000", status: "CONFIRMED", timestamp: "2026-05-18 08:00:10" },
-        { id: "TX-CH-002", type: "FAAP Global Outreach Disbursement", amount: "$12,500", status: "CONFIRMED", timestamp: "2026-05-18 10:45:00" }
-      ];
-    } else if (isHotel) {
-      state.faapTransactions = [
-        { id: "TX-HOT-001", type: "FAAP Room Settlement Ledger", amount: "$48,500", status: "CONFIRMED", timestamp: "2026-05-18 12:05:10" },
-        { id: "TX-HOT-002", type: "FAAP Culinary Supply Logistics Settle", amount: "$12,400", status: "CONFIRMED", timestamp: "2026-05-18 14:15:30" }
-      ];
-    } else if (isClan) {
-      state.faapTransactions = [
-        { id: "TX-CL-001", type: "FAAP Heritage Trust Settlement", amount: "$55,000", status: "CONFIRMED", timestamp: "2026-05-18 09:00:20" },
-        { id: "TX-CL-002", type: "FAAP Land Acquisition Clearing", amount: "$150,000", status: "CONFIRMED", timestamp: "2026-05-18 11:30:45" }
-      ];
-    } else if (isAlumni) {
-      state.faapTransactions = [
-        { id: "TX-AL-001", type: "FAAP Endowment Deposit", amount: "$95,000", status: "CONFIRMED", timestamp: "2026-05-18 09:12:05" },
-        { id: "TX-AL-002", type: "FAAP Scholarship Grant Settle", amount: "$18,000", status: "CONFIRMED", timestamp: "2026-05-18 11:45:30" }
-      ];
-    } else {
-      state.faapTransactions = [
-        { id: "TX-EDU-001", type: "FAAP Tuition Revenue Ledger Sync", amount: "$380,000", status: "CONFIRMED", timestamp: "2026-05-18 09:15:22" },
-        { id: "TX-EDU-002", type: "FAAP Research Grant Clearance", amount: "$120,000", status: "CONFIRMED", timestamp: "2026-05-18 11:20:05" }
-      ];
-    }
-  }
-
-  if (!state.saccoLoans) {
-    if (isFaith) {
-      state.saccoLoans = [
-        { id: "WEL-CH-001", applicant: "Pastor John Mukasa", amount: "$5,000", purpose: "Community Medical Camp Support", status: "APPROVED", date: "2026-06-12" },
-        { id: "WEL-CH-002", applicant: "Evangelism Committee", amount: "$3,200", purpose: "Outreach Materials & Media Setup", status: "PENDING", date: "2026-07-28" }
-      ];
-    } else if (isHotel) {
-      state.saccoLoans = [
-        { id: "FUND-HOT-001", applicant: "Executive Chef Mukasa", amount: "$9,000", purpose: "Kitchen Double-Deck Convection Oven", status: "APPROVED", date: "2026-06-12" },
-        { id: "FUND-HOT-002", applicant: "Facilities Manager Nakato", amount: "$18,500", purpose: "Hotel HVAC System Upgrade", status: "PENDING", date: "2026-07-28" }
-      ];
-    } else if (isClan) {
-      state.saccoLoans = [
-        { id: "WEL-CL-001", applicant: "Councilor Sarah Namubiru", amount: "$20,000", purpose: "Heritage Archives Digitization Program", status: "APPROVED", date: "2026-06-12" },
-        { id: "WEL-CL-002", applicant: "Welfare Advisory Council", amount: "$7,500", purpose: "Emergency Cultural Relief Fund", status: "PENDING", date: "2026-07-28" }
-      ];
-    } else if (isAlumni) {
-      state.saccoLoans = [
-        { id: "FUND-AL-001", applicant: "Alumni Reunion Committee", amount: "$14,000", purpose: "Global Convention Venue Logistics", status: "APPROVED", date: "2026-06-12" },
-        { id: "FUND-AL-002", applicant: "Alumni Chapter Kampala", amount: "$5,500", purpose: "Local Networking Chapter Launch", status: "PENDING", date: "2026-07-28" }
-      ];
-    } else {
-      state.saccoLoans = [
-        { id: "GRANT-EDU-001", applicant: "Dr. Sarah Namubiru", amount: "$15,000", purpose: "High-Performance GPU Compute Grant", status: "APPROVED", date: "2026-06-12" },
-        { id: "SCHOLAR-EDU-002", applicant: "Prof. John Mukasa", amount: "$8,500", purpose: "Student Academic Tuition Subsidies", status: "PENDING", date: "2026-07-28" }
-      ];
-    }
-  }
-
-  if (!state.submittedForms) {
-    if (isFaith) {
-      state.submittedForms = [
-        {
-          id: "SUB-CH-001",
-          formId: "form-missions-req",
-          formName: "Missions Outreach Clearance Requisition",
-          applicant: "Pastor John Mukasa",
-          submittedAt: "2026-07-29 09:12:00",
-          fields: { "Outreach Title": "Gulu Community Medical Camp Logistics", "Location Node": "Northern Region", "Technical Equipment Required": "Mobile Medical Assessment Van & Ultrasound Kit", "Estimated Cost ($ USD)": "5,000" },
-          status: "PENDING",
-          signature: "0x3F2A4C...9B0E",
-          history: [
-            { step: "Submission", user: "Pastor John Mukasa", date: "2026-07-29 09:12:00", action: "Submitted", comment: "Vital support for outpatient wellness campaign." }
-          ]
-        },
-        {
-          id: "WF-8921-A",
-          formId: "form-sla-audit",
-          formName: "Quarterly SLA Compliance Audit",
-          applicant: "Operations Directorate",
-          submittedAt: "2026-07-28 14:15:00",
-          fields: { "Audit Scope": "SLA alignment review across missions platforms and donation portals." },
-          status: "Pending You",
-          signature: "0x8A2C19EF90",
-          history: [
-            { step: "Submission", user: "Operations Directorate", date: "2026-07-28 14:15:00", action: "Submitted", comment: "Quarterly automated SLA compliance review." }
-          ]
-        }
-      ];
-    } else if (isHotel) {
-      state.submittedForms = [
-        {
-          id: "SUB-HOT-001",
-          formId: "form-hotel-req",
-          formName: "Kitchen Equipment Capex Requisition",
-          applicant: "Chef Mukasa",
-          submittedAt: "2026-07-29 09:12:00",
-          fields: { "Equipment Title": "Double-Deck Convection Oven", "Vendor Option": "Continental Kitchens Ltd", "Technical Specifications": "12-pan dynamic air recirculating thermal cooker", "Estimated Cost ($ USD)": "9,000" },
-          status: "PENDING",
-          signature: "0x89FC2A...38DE",
-          history: [
-            { step: "Submission", user: "Chef Mukasa", date: "2026-07-29 09:12:00", action: "Submitted", comment: "Essential replacement to maintain culinary SLA standards." }
-          ]
-        },
-        {
-          id: "WF-8921-A",
-          formId: "form-sla-audit",
-          formName: "Quarterly SLA Compliance Audit",
-          applicant: "Operations Directorate",
-          submittedAt: "2026-07-28 14:15:00",
-          fields: { "Audit Scope": "Departmental operational SLA indicators and database connection uptime reports." },
-          status: "Pending You",
-          signature: "0x8A2C19EF90",
-          history: [
-            { step: "Submission", user: "Operations Directorate", date: "2026-07-28 14:15:00", action: "Submitted", comment: "Quarterly automated SLA compliance review." }
-          ]
-        }
-      ];
-    } else if (isClan) {
-      state.submittedForms = [
-        {
-          id: "SUB-CL-001",
-          formId: "form-clan-req",
-          formName: "Heritage Archives Digitization Requisition",
-          applicant: "Councilor Sarah Namubiru",
-          submittedAt: "2026-07-29 09:12:00",
-          fields: { "Program Title": "Royal Court Historical Logs Digitization", "Archive Node": "Sovereign Cultural Museum", "Preservation Specifications": "High-DPI scanner with immutable decentralized metadata storage", "Estimated Cost ($ USD)": "20,000" },
-          status: "PENDING",
-          signature: "0x20BA8F...14CD",
-          history: [
-            { step: "Submission", user: "Councilor Sarah Namubiru", date: "2026-07-29 09:12:00", action: "Submitted", comment: "Preserving historical scrolls for the next generation of leadership." }
-          ]
-        },
-        {
-          id: "WF-8921-A",
-          formId: "form-sla-audit",
-          formName: "Quarterly SLA Compliance Audit",
-          applicant: "Operations Directorate",
-          submittedAt: "2026-07-28 14:15:00",
-          fields: { "Audit Scope": "Sovereign clan records ledger sync audit and verification." },
-          status: "Pending You",
-          signature: "0x8A2C19EF90",
-          history: [
-            { step: "Submission", user: "Operations Directorate", date: "2026-07-28 14:15:00", action: "Submitted", comment: "Quarterly automated SLA compliance review." }
-          ]
-        }
-      ];
-    } else if (isAlumni) {
-      state.submittedForms = [
-        {
-          id: "SUB-AL-001",
-          formId: "form-alumni-req",
-          formName: "Reunion Event Logistics Clearance Requisition",
-          applicant: "Chapter Chair Sarah",
-          submittedAt: "2026-07-29 09:12:00",
-          fields: { "Event Title": "Global Alumni Convention & Fundraiser", "Venue Location": "Grand Hall Conference Suite", "Technical Setup Required": "Dual-Screen Video Stream Hub & Hybrid Telephony System", "Estimated Cost ($ USD)": "14,000" },
-          status: "PENDING",
-          signature: "0x98EF0A...C821",
-          history: [
-            { step: "Submission", user: "Chapter Chair Sarah", date: "2026-07-29 09:12:00", action: "Submitted", comment: "Approved to host major donors and global partners." }
-          ]
-        },
-        {
-          id: "WF-8921-A",
-          formId: "form-sla-audit",
-          formName: "Quarterly SLA Compliance Audit",
-          applicant: "Operations Directorate",
-          submittedAt: "2026-07-28 14:15:00",
-          fields: { "Audit Scope": "Quarterly operational SLA verification for alumni engagement portals." },
-          status: "Pending You",
-          signature: "0x8A2C19EF90",
-          history: [
-            { step: "Submission", user: "Operations Directorate", date: "2026-07-28 14:15:00", action: "Submitted", comment: "Quarterly automated SLA compliance review." }
-          ]
-        }
-      ];
-    } else {
-      state.submittedForms = [
-        {
-          id: "SUB-EDU-001",
-          formId: "form-proc-req",
-          formName: "Academic Equipment Clearance Requisition",
-          applicant: "Dr. Sarah Namubiru",
-          submittedAt: "2026-07-29 09:12:00",
-          fields: { "Requisition Title": "High-Performance Compute Cluster Nodes", "Department Code & Cost Center": "CS-01", "Item Technical Specifications": "8x GPU cluster for AI workflows", "Quantity Required": "2", "Estimated Cost ($ USD)": "25,000" },
-          status: "PENDING",
-          signature: "0x82FA49...9E10",
-          history: [
-            { step: "Submission", user: "Dr. Sarah Namubiru", date: "2026-07-29 09:12:00", action: "Submitted", comment: "Essential equipment for deep learning lab." }
-          ]
-        },
-        {
-          id: "WF-8921-A",
-          formId: "form-sla-audit",
-          formName: "Quarterly SLA Compliance Audit",
-          applicant: "Operations Directorate",
-          submittedAt: "2026-07-28 14:15:00",
-          fields: { "Audit Scope": "Verify institutional infrastructure SLA targets and database connectivity indicators." },
-          status: "Pending You",
-          signature: "0x8A2C19EF90",
-          history: [
-            { step: "Submission", user: "Operations Directorate", date: "2026-07-28 14:15:00", action: "Submitted", comment: "Quarterly automated SLA compliance review." }
-          ]
-        }
-      ];
-    }
-  }
-  if (!state.activePersona) state.activePersona = 'admin'; // Default is all-access Admin
-  if (!state.navigationHistory) {
-    state.navigationHistory = [{ tab: 'org', portalId: null }];
-    state.navigationHistoryIndex = 0;
-  }
-  if (!state.favorites) state.favorites = [];
-  if (!state.searchQuery) state.searchQuery = '';
-  if (!state.jumoChatOpen) state.jumoChatOpen = false;
-  if (!state.jumoChatMessages) {
-    state.jumoChatMessages = [
-      { sender: 'ai', text: `Welcome! I am the Public Front Desk Assistant. I can help you discover available public services, locate the correct institutional portal, and assist with general enquiries like admissions and registration. I cannot access or disclose internal institutional records. How can I help you today?` }
-    ];
-  }
-};
-
-export const workspaceTemplate = (state) => {
-  initializeWorkspaceState(state);
-  const controlPlane = window.ueosControlPlane;
-
-  const activeTemplate = state.session?.activeErpTemplate || (controlPlane ? controlPlane.getDefaultERPTemplate() : null);
-  const institution = state.deployedInstitution || { name: "Enterprise Platform", portals: [] };
-  const portals = activeTemplate?.governancePortals || institution.portals || [];
-
-  institution.portals = portals;
-  
-  if (!state.activePortalId) {
-    // Redirect to gateway to pick a portal
-    setTimeout(() => window.navigate('/gateway'), 0);
-    return;
-  }
-  
-  const authPortal = portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, desc: "Sovereign Enterprise Portal" };
-  const isAuth = state.portalAuths[authPortal.id];
-  
-  if (!isAuth) {
-    // Portal Login View (No sidebars, no forms, secure auth only)
-    window.app.innerHTML = `
-      <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
-          <div class="bg-slate-900 p-8 text-center border-b border-slate-800">
-             ${getOfficialLogoHtml({ size: "lg", textColor: "light" })}
-          </div>
-          <div class="p-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-2">${authPortal.name}</h2>
-            <p class="text-sm text-slate-500 mb-6">${authPortal.desc}</p>
-            <form onsubmit="event.preventDefault(); window.submitPortalLogin(event, '${authPortal.id}', '${authPortal.name}')" class="space-y-4">
-               <div>
-                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Portal Access Identity</label>
-                  <input type="text" id="portal-user" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-enterprise-blue focus:border-transparent font-medium" placeholder="Staff ID or Email" required>
-               </div>
-               <div>
-                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Zero Trust Credentials</label>
-                  <input type="password" id="portal-pass" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-enterprise-blue focus:border-transparent font-mono" placeholder="••••••••" required>
-               </div>
-               <button type="submit" class="w-full bg-enterprise-blue hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md hover:shadow-lg transition-all mt-6 text-sm tracking-wide">AUTHENTICATE & ENTER</button>
-               <button type="button" onclick="window.navigate('/gateway')" class="w-full bg-white text-slate-600 hover:text-slate-900 font-bold py-3 rounded-lg border border-slate-200 hover:border-slate-300 transition-all mt-3 text-sm">CANCEL</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    `;
-    return;
-  }
-  
-  // Portal Runtime Workspace
-  const user = state.session?.user || { name: "Authorized User", role: "Portal Administrator", email: "user@enterprise.com" };
-  const forms = moduleRegistry.list()[state.activePortalId] || [];
-  
-  const activeErp = state.session?.activeErpInstance;
-  const activePortal = activeErp?.structure?.portals.find(p => p.id === state.activePortalId) || { id: state.activePortalId, name: state.activePortalId, departments: [], modules: [] };
-  
-  const currentView = state.activePortalTab || 'modules';
-  
-  // Group modules by category
-  const modulesByCategory = {};
-  (activePortal.modules || []).forEach(mod => {
-    if (!modulesByCategory[mod.category]) {
-      modulesByCategory[mod.category] = [];
-    }
-    modulesByCategory[mod.category].push(mod);
-  });
-
-  const selectedModule = (activePortal.modules || []).find(m => m.id === state.activeModuleId);
+  if (!state.faapTransactions) state.faapTransactions = [];
+  if (!state.saccoLoans) state.saccoLoans = [];
+  if (!state.submittedForms) state.submittedForms = [];
   if (!state.activeComponentId) state.activeComponentId = 'dashboard';
 
   window.app.innerHTML = `
-    <div class="min-h-screen bg-white flex flex-col font-sans text-slate-800">
+    <div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
        
       <!-- JUMO UEOS Enterprise Header -->
-      <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-[60] shadow-sm">
+      <header class="bg-slate-50 border-b border-slate-200 sticky top-0 z-[60] shadow-sm">
         <div class="px-6 flex items-center justify-between h-14">
           <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2 mr-2 border-r border-slate-800 pr-4">
-               <button onclick="window.history.back()" class="w-7 h-7 rounded flex items-center justify-center text-slate-500 hover:bg-slate-800 hover:text-white transition cursor-pointer" title="Back">
+            <div class="flex items-center gap-2 mr-2 border-r border-slate-200 pr-4">
+               <button onclick="window.history.back()" class="w-7 h-7 rounded flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Back">
                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                </button>
-               <button onclick="window.history.forward()" class="w-7 h-7 rounded flex items-center justify-center text-slate-500 hover:bg-slate-800 hover:text-white transition cursor-pointer" title="Forward">
+               <button onclick="window.history.forward()" class="w-7 h-7 rounded flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Forward">
                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                </button>
             </div>
 
             <!-- Universal Portal Switcher -->
             <div class="relative group">
-              <button class="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" title="Portal Switcher">
+              <button class="w-9 h-9 rounded flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Portal Switcher">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
               </button>
               <div class="absolute left-0 top-full mt-1 w-72 bg-white border border-slate-200 shadow-2xl rounded-xl hidden group-hover:block z-[70] p-4">
                 <div class="pb-3 border-b border-slate-100 mb-3">
-                  <p class="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-widest">Institutional Portals</p>
+                  <p class="text-[10px] font-mono text-slate-500 font-bold uppercase tracking-widest">Institutional Portals</p>
                 </div>
                 <div class="space-y-1 max-h-96 overflow-y-auto pr-1">
                   ${portals.map(p => `
@@ -349,14 +57,14 @@ export const workspaceTemplate = (state) => {
             </div>
 
             <div class="flex items-center gap-2 cursor-pointer" onclick="window.navigate('/')">
-              <span class="text-white font-extrabold text-sm tracking-wide">JUMO</span>
+              <span class="text-slate-800 font-extrabold text-sm tracking-wide">JUMO</span>
               <span class="text-slate-500 font-mono text-[10px] uppercase">UEOS</span>
             </div>
             
             <!-- Global System Navigation -->
-            <nav class="hidden lg:flex items-center gap-1 ml-6 pl-6 border-l border-slate-800">
+            <nav class="hidden lg:flex items-center gap-1 ml-6 pl-6 border-l border-slate-200">
               ${navigationEngine.getSystemNavigation(user).map(nav => `
-                 <button onclick="window.navigate('${nav.path}')" class="px-4 py-1.5 rounded text-[11px] font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition uppercase tracking-wider cursor-pointer">
+                 <button onclick="window.navigate('${nav.path}')" class="px-4 py-1.5 rounded text-[11px] font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition uppercase tracking-wider cursor-pointer">
                     ${nav.label}
                  </button>
               `).join('')}
@@ -366,14 +74,14 @@ export const workspaceTemplate = (state) => {
           <div class="flex items-center gap-4">
             <!-- Global Search -->
             <div class="relative hidden md:block">
-              <input type="text" placeholder="Global search..." class="bg-slate-900 border border-slate-700 text-slate-300 text-[11px] font-bold rounded-md pl-4 pr-4 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 w-48 transition" onchange="window.handleGlobalSearch(event)">
+              <input type="text" placeholder="Global search..." class="bg-white border border-slate-300 text-slate-600 text-[11px] font-bold rounded-md pl-4 pr-4 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 w-48 transition" onchange="window.handleGlobalSearch(event)">
             </div>
             
-            <button class="w-8 h-8 rounded flex items-center justify-center text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer relative" onclick="window.navigate('/control-center')">
+            <button class="w-8 h-8 rounded flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer relative" onclick="window.navigate('/control-center')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             </button>
             
-            <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-white font-bold text-xs">
+            <div class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-300 text-slate-800 font-bold text-xs">
               ${user.name.charAt(0)}
             </div>
           </div>
@@ -384,11 +92,11 @@ export const workspaceTemplate = (state) => {
       <div class="bg-white border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
           <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
-            <span class="text-slate-400 hover:text-slate-600 cursor-pointer" onclick="window.navigate('/gateway')">Institution</span>
-            <span class="text-slate-300">/</span>
+            <span class="text-slate-500 hover:text-slate-600 cursor-pointer" onclick="window.navigate('/gateway')">Institution</span>
+            <span class="text-slate-600">/</span>
             <span class="text-slate-900">${activePortal.name}</span>
             ${state.activeModuleId ? `
-              <span class="text-slate-300">/</span>
+              <span class="text-slate-600">/</span>
               <span class="text-slate-600">${selectedModule.name.split(' - ')[1] || selectedModule.name}</span>
             ` : ''}
           </div>
@@ -435,12 +143,12 @@ export const workspaceTemplate = (state) => {
                       <div onclick="window.loadEnterpriseModule('${mod.id}')" class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-emerald-500 hover:bg-emerald-50/10 transition duration-150 cursor-pointer flex flex-col justify-between h-[130px] group relative">
                         <div>
                           <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wide bg-slate-200/50 px-1.5 py-0.5 rounded">${mod.categoryPrefix}</span>
+                            <span class="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wide bg-slate-200/50 px-1.5 py-0.5 rounded">${mod.categoryPrefix}</span>
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                           </div>
                           <h4 class="font-bold text-xs text-slate-800 leading-snug group-hover:text-emerald-700 transition duration-150">${mod.name.split(' - ')[1] || mod.name}</h4>
                         </div>
-                        <div class="flex items-center justify-between border-t border-slate-200/60 pt-2 text-[10px] text-slate-400 font-medium">
+                        <div class="flex items-center justify-between border-t border-slate-200/60 pt-2 text-[10px] text-slate-500 font-medium">
                           <span>${mod.components?.length || 0} Components</span>
                           <span class="text-emerald-600 font-bold group-hover:translate-x-0.5 transition duration-150">Load &rarr;</span>
                         </div>
@@ -454,17 +162,17 @@ export const workspaceTemplate = (state) => {
              
             <div class="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
                
-              <div class="bg-slate-900 text-white p-8 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div class="bg-white text-slate-800 p-8 border-b border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="space-y-2">
-                  <button onclick="window.state.activeModuleId = null; window.render();" class="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">
+                  <button onclick="window.state.activeModuleId = null; window.render();" class="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800 transition cursor-pointer">
                     &larr; Back to Operational Directory
                   </button>
                   <div class="flex items-center gap-3">
                     <span class="px-3 py-0.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-[10px] font-bold rounded-full">${selectedModule.category}</span>
-                    <span class="px-3 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px] font-bold rounded-full">${selectedModule.id}</span>
+                    <span class="px-3 py-0.5 bg-slate-100 border border-slate-300 text-slate-600 font-mono text-[10px] font-bold rounded-full">${selectedModule.id}</span>
                   </div>
                   <h2 class="text-2xl font-extrabold tracking-tight">${selectedModule.name}</h2>
-                  <p class="text-xs text-slate-400">Owner: <strong class="text-white">${selectedModule.owner}</strong> | Access Level: <span class="text-red-400 font-mono font-bold">${selectedModule.dataAccessPolicy}</span></p>
+                  <p class="text-xs text-slate-500">Owner: <strong class="text-slate-800">${selectedModule.owner}</strong> | Access Level: <span class="text-red-400 font-mono font-bold">${selectedModule.dataAccessPolicy}</span></p>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-xl flex items-center gap-1.5">
@@ -476,47 +184,52 @@ export const workspaceTemplate = (state) => {
 
                
               <div class="bg-slate-50 border-b border-slate-200 px-8 py-3 flex flex-wrap gap-2">
-                <button onclick="window.state.activeComponentId='dashboard'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='dashboard'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-dashboard">📊 Dashboard Metrics</button>
-                <button onclick="window.state.activeComponentId='registry'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='registry'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-registry">🗃️ Master Registry</button>
-                <button onclick="window.state.activeComponentId='forms'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='forms'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-forms">📝 Digital Form Console</button>
-                <button onclick="window.state.activeComponentId='workflow'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='workflow'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-workflow">🔄 Approval Workflows</button>
-                <button onclick="window.state.activeComponentId='security'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='security'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-security">🔐 AEGIS Ledger Logs</button>
-                <button onclick="window.state.activeComponentId='ai'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='ai'?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-ai">🤖 Cognitive AI Auditor</button>
+                <button onclick="window.state.activeComponentId='dashboard'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='dashboard'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-dashboard">⚙️ Workspace Overview</button>
+                <button onclick="window.state.activeComponentId='registry'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='registry'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-registry">🗃️ Master Registry</button>
+                <button onclick="window.state.activeComponentId='forms'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='forms'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-forms">📝 Digital Form Console</button>
+                <button onclick="window.state.activeComponentId='workflow'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='workflow'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-workflow">🔄 Approval Workflows</button>
+                <button onclick="window.state.activeComponentId='security'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='security'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-security">🔐 AEGIS Ledger Logs</button>
+                <button onclick="window.state.activeComponentId='ai'; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${state.activeComponentId==='ai'?'bg-slate-100 text-blue-600':'text-slate-600 hover:bg-slate-200'}" id="comp-tab-ai">🤖 Cognitive AI Auditor</button>
               </div>
 
                
               <div class="p-8">
                 ${state.activeComponentId === 'dashboard' ? `
                   <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wide">SLA SLA Compliance</span>
-                        <h4 class="text-3xl font-extrabold text-slate-900 mt-1">98.4%</h4>
-                        <p class="text-xs text-emerald-600 mt-1">&bull; Target SLA exceeded by 1.4%</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div class="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col">
+                        <h4 class="font-bold text-slate-800 text-sm mb-2">My Pending Actions</h4>
+                        <div class="flex-1 bg-white border border-slate-200 rounded-xl p-4 overflow-y-auto">
+                            ${state.submittedForms.filter(f => f.status === 'Pending You' || f.status === 'PENDING').length > 0 ? 
+                                state.submittedForms.filter(f => f.status === 'Pending You' || f.status === 'PENDING').map(f => `
+                                    <div class="mb-3 pb-3 border-b border-slate-100 last:border-0 last:mb-0 last:pb-0">
+                                        <div class="text-[11px] font-bold text-slate-700">${f.formName}</div>
+                                        <div class="text-[10px] text-slate-500 mt-1">Applicant: ${f.applicant}</div>
+                                    </div>
+                                `).join('') 
+                            : '<div class="text-[11px] text-slate-500 flex items-center justify-center h-full">No pending actions requiring your attention.</div>'}
+                        </div>
                       </div>
-                      <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wide">Registered Records</span>
-                        <h4 class="text-3xl font-extrabold text-slate-900 mt-1">14,290</h4>
-                        <p class="text-xs text-slate-500 mt-1">&bull; Secure biometric ledger</p>
-                      </div>
-                      <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wide">Pending Approvals</span>
-                        <h4 class="text-3xl font-extrabold text-slate-900 mt-1">1 Queue</h4>
-                        <p class="text-xs text-amber-600 mt-1">&bull; Standard approval routing</p>
-                      </div>
-                      <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wide">AEGIS Ledger Status</span>
-                        <h4 class="text-3xl font-extrabold text-emerald-600 mt-1">SECURED</h4>
-                        <p class="text-xs text-slate-500 mt-1">&bull; Block key: verified</p>
+                      <div class="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col">
+                        <h4 class="font-bold text-slate-800 text-sm mb-2">Recent System Events</h4>
+                        <div class="flex-1 bg-white border border-slate-200 rounded-xl p-4 overflow-y-auto">
+                            ${state.portalActionLogs.length > 0 ? 
+                                state.portalActionLogs.slice(0, 5).map(log => `
+                                    <div class="mb-3 pb-3 border-b border-slate-100 last:border-0 last:mb-0 last:pb-0">
+                                        <div class="text-[10px] text-slate-400 mb-0.5">${log.time}</div>
+                                        <div class="text-[11px] font-medium text-slate-700">${log.action}</div>
+                                    </div>
+                                `).join('')
+                            : '<div class="text-[11px] text-slate-500 flex items-center justify-center h-full">No recent operational events recorded.</div>'}
+                        </div>
                       </div>
                     </div>
-
-                    <div class="p-6 bg-slate-900 text-white rounded-2xl border border-slate-800">
-                      <h3 class="font-bold text-sm mb-3">Modular Registry Capabilities (${selectedModule.components.length} Active Components)</h3>
-                      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 text-[10px] font-mono text-slate-400">
+                    <div class="p-6 bg-white text-slate-800 rounded-2xl border border-slate-200">
+                      <h3 class="font-bold text-sm mb-3">Module Operations (${selectedModule.components.length} Capabilities)</h3>
+                      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 text-[10px] font-mono text-slate-600">
                         ${selectedModule.components.map(comp => `
-                          <div class="p-3.5 bg-slate-800/50 border border-slate-800 rounded-xl flex items-center gap-2">
-                            <span class="text-emerald-400">&bull;</span>
+                          <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2 font-semibold">
+                            <span class="text-blue-500">&bull;</span>
                             <span class="truncate">${comp}</span>
                           </div>
                         `).join('')}
@@ -548,21 +261,21 @@ export const workspaceTemplate = (state) => {
                             <td class="p-4">General Operational Ledger</td>
                             <td class="p-4">${selectedModule.officerRole}</td>
                             <td class="p-4"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold">VERIFIED</span></td>
-                            <td class="p-4 font-mono text-slate-400">0xAEF91...2A</td>
+                            <td class="p-4 font-mono text-slate-500">0xAEF91...2A</td>
                           </tr>
                           <tr class="hover:bg-slate-50">
                             <td class="p-4 font-mono font-bold text-slate-900">REC-M01-0983</td>
                             <td class="p-4">Regulatory Standard Ledger</td>
                             <td class="p-4">${selectedModule.approvalAuthority}</td>
                             <td class="p-4"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold">VERIFIED</span></td>
-                            <td class="p-4 font-mono text-slate-400">0xAEF92...9B</td>
+                            <td class="p-4 font-mono text-slate-500">0xAEF92...9B</td>
                           </tr>
                           <tr class="hover:bg-slate-50">
                             <td class="p-4 font-mono font-bold text-slate-900">REC-M01-0984</td>
                             <td class="p-4">SLA Compliance Baseline</td>
                             <td class="p-4">${selectedModule.officerRole}</td>
                             <td class="p-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full font-bold">PENDING AUDIT</span></td>
-                            <td class="p-4 font-mono text-slate-400">0xAEF93...4C</td>
+                            <td class="p-4 font-mono text-slate-500">0xAEF93...4C</td>
                           </tr>
                         </tbody>
                       </table>
@@ -573,7 +286,7 @@ export const workspaceTemplate = (state) => {
                 ${state.activeComponentId === 'forms' ? `
                   <div class="max-w-2xl mx-auto space-y-6 bg-slate-50 p-8 rounded-2xl border border-slate-200">
                     <div>
-                      <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">${selectedModule.category} Form Node</span>
+                      <span class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">${selectedModule.category} Form Node</span>
                       <h3 class="font-extrabold text-slate-900 text-lg mt-1">Digital Clearance & Requisition Form</h3>
                       <p class="text-xs text-slate-500 mt-1">Submit signed requisitions to the portal clearance workflow.</p>
                     </div>
@@ -626,7 +339,7 @@ export const workspaceTemplate = (state) => {
                         </div>
                         ${(state.uploadedFiles || []).length > 0 ? `
                           <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Validated Uploads:</p>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Validated Uploads:</p>
                             ${state.uploadedFiles.map(file => `
                               <div class="flex items-center justify-between text-[11px] font-mono">
                                 <span class="text-slate-700 font-semibold">${file.name} (${file.size})</span>
@@ -639,7 +352,7 @@ export const workspaceTemplate = (state) => {
 
                         
                       <div class="space-y-2">
-                        <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-200 pb-1">Cryptographic Signature Signoff</p>
+                        <p class="text-[10px] font-bold uppercase text-slate-500 border-b border-slate-200 pb-1">Cryptographic Signature Signoff</p>
                         <div class="bg-white border border-slate-200 p-4 rounded-xl">
                           <label class="block text-slate-600 mb-1.5">Type Cryptographic Authorization Code</label>
                           <input type="text" id="form-sig-text" placeholder="e.g. /${user.name}/" value="/${user.name}/" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-[11px] font-mono font-bold">
@@ -652,7 +365,7 @@ export const workspaceTemplate = (state) => {
                       </div>
 
                       <div class="pt-2 flex items-center justify-end gap-2">
-                        <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition">Sign & Submit Requisition</button>
+                        <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-slate-800 rounded-xl font-bold text-xs shadow-sm transition">Sign & Submit Requisition</button>
                       </div>
                     </form>
                   </div>
@@ -699,12 +412,12 @@ export const workspaceTemplate = (state) => {
                               </td>
                               <td class="p-4 text-right space-x-1">
                                 ${sf.status === 'PENDING' ? `
-                                  <button onclick="window.executeWorkflowAction('${sf.id}', 'APPROVED')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition cursor-pointer text-[10px]">Approve</button>
-                                  <button onclick="window.executeWorkflowAction('${sf.id}', 'REJECTED')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition cursor-pointer text-[10px]">Reject</button>
+                                  <button onclick="window.executeWorkflowAction('${sf.id}', 'APPROVED')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold rounded-lg transition cursor-pointer text-[10px]">Approve</button>
+                                  <button onclick="window.executeWorkflowAction('${sf.id}', 'REJECTED')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-slate-800 font-bold rounded-lg transition cursor-pointer text-[10px]">Reject</button>
                                 ` : sf.status === 'Pending You' ? `
-                                  <button onclick="window.advanceWorkflow('${sf.id}', 'Pending You')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg cursor-pointer text-[10px]">Advance Workflow &rarr;</button>
+                                  <button onclick="window.advanceWorkflow('${sf.id}', 'Pending You')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer text-[10px]">Advance Workflow &rarr;</button>
                                 ` : `
-                                  <span class="text-slate-400 font-mono text-[10px]">Closed Log Entry</span>
+                                  <span class="text-slate-500 font-mono text-[10px]">Closed Log Entry</span>
                                 `}
                               </td>
                             </tr>
@@ -722,17 +435,17 @@ export const workspaceTemplate = (state) => {
                         <h3 class="font-extrabold text-slate-900 text-base">Immutable AEGIS Cryptographic Ledger</h3>
                         <p class="text-xs text-slate-500">Auditable blockchain blocks protecting transactional entries from tamper operations.</p>
                       </div>
-                      <button onclick="window.triggerAegisSystemBackup()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm transition">Generate Immutable Snapshot</button>
+                      <button onclick="window.triggerAegisSystemBackup()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm transition">Generate Immutable Snapshot</button>
                     </div>
 
                       
                     <div class="space-y-4">
-                      <div class="p-5 bg-slate-900 text-slate-300 font-mono text-xs rounded-2xl border border-slate-800 space-y-3 shadow-inner">
-                        <div class="flex items-center justify-between text-emerald-400 border-b border-slate-800 pb-2">
+                      <div class="p-5 bg-white text-slate-600 font-mono text-xs rounded-2xl border border-slate-200 space-y-3 shadow-inner">
+                        <div class="flex items-center justify-between text-emerald-400 border-b border-slate-200 pb-2">
                           <span class="font-bold uppercase text-[10px]">AEGIS Block Node: Connected</span>
                           <span>Chain Version: 2.1.8-Core</span>
                         </div>
-                        <div class="space-y-2 text-slate-400">
+                        <div class="space-y-2 text-slate-500">
                           ${(state.portalActionLogs || []).length > 0 
                             ? (state.portalActionLogs || []).map(log => `<div>${log}</div>`).join('')
                             : '<div>[SYSTEM] Zero transactional modifications recorded in active session memory.</div>'
@@ -768,7 +481,7 @@ export const workspaceTemplate = (state) => {
                 ${state.activeComponentId === 'ai' ? `
                   <div class="space-y-6 max-w-2xl mx-auto">
                     <div>
-                      <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">Cognitive Systems</span>
+                      <span class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">Cognitive Systems</span>
                       <h3 class="font-extrabold text-slate-900 text-lg mt-1">JUMO Gemini Core Compliance Assistant</h3>
                       <p class="text-xs text-slate-500 mt-1">Audit active operations, scan rulebook alignment, and evaluate compliance thresholds.</p>
                     </div>
@@ -784,7 +497,7 @@ export const workspaceTemplate = (state) => {
                             <button onclick="window.insertAiQueryPlaceholder('Verify SLA standards alignment for ledger')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-indigo-500 rounded-lg text-[10px] text-slate-600 font-bold transition">Verify SLAs</button>
                             <button onclick="window.insertAiQueryPlaceholder('Review access keys permissions policies')" class="px-2.5 py-1 bg-white border border-slate-200 hover:border-indigo-500 rounded-lg text-[10px] text-slate-600 font-bold transition">Review Policy Keys</button>
                           </div>
-                          <button onclick="window.submitPortalAiQuery('${selectedModule.name}')" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm transition">Run Cognitive Audit</button>
+                          <button onclick="window.submitPortalAiQuery('${selectedModule.name}')" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-slate-800 font-bold rounded-xl text-xs shadow-sm transition">Run Cognitive Audit</button>
                         </div>
                       </div>
 
@@ -813,7 +526,7 @@ export const workspaceTemplate = (state) => {
                   <h3 class="font-bold text-slate-900 text-sm">${form.title}</h3>
                   <p class="text-xs text-slate-500">${form.desc}</p>
                 </div>
-                <button onclick="window.state.activeModuleId='${activePortal.id}-MOD-003'; window.state.activeComponentId='forms'; window.state.activePortalTab='modules'; window.render();" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition cursor-pointer">Open Form</button>
+                <button onclick="window.state.activeModuleId='${activePortal.id}-MOD-003'; window.state.activeComponentId='forms'; window.state.activePortalTab='modules'; window.render();" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 rounded-xl text-xs font-bold transition cursor-pointer">Open Form</button>
               </div>
             `).join('')}
           </div>
@@ -855,12 +568,12 @@ export const workspaceTemplate = (state) => {
                     </td>
                     <td class="p-4 text-right space-x-1">
                       ${sf.status === 'PENDING' ? `
-                        <button onclick="window.executeWorkflowAction('${sf.id}', 'APPROVED')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition cursor-pointer text-[10px]">Approve</button>
-                        <button onclick="window.executeWorkflowAction('${sf.id}', 'REJECTED')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition cursor-pointer text-[10px]">Reject</button>
+                        <button onclick="window.executeWorkflowAction('${sf.id}', 'APPROVED')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold rounded-lg transition cursor-pointer text-[10px]">Approve</button>
+                        <button onclick="window.executeWorkflowAction('${sf.id}', 'REJECTED')" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-slate-800 font-bold rounded-lg transition cursor-pointer text-[10px]">Reject</button>
                       ` : sf.status === 'Pending You' ? `
-                        <button onclick="window.advanceWorkflow('${sf.id}', 'Pending You')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg cursor-pointer text-[10px]">Advance Workflow &rarr;</button>
+                        <button onclick="window.advanceWorkflow('${sf.id}', 'Pending You')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer text-[10px]">Advance Workflow &rarr;</button>
                       ` : `
-                        <span class="text-slate-400 font-mono text-[10px]">Closed Log Entry</span>
+                        <span class="text-slate-500 font-mono text-[10px]">Closed Log Entry</span>
                       `}
                     </td>
                   </tr>
@@ -875,12 +588,12 @@ export const workspaceTemplate = (state) => {
             <h2 class="text-2xl font-bold text-slate-900 mb-1">Immutable AEGIS Blockchain Security Node</h2>
             <p class="text-sm text-slate-500">Sovereign ledgers and tamper-proof session action logs for this portal.</p>
           </div>
-          <div class="bg-slate-900 text-slate-300 rounded-2xl p-6 font-mono text-xs shadow-inner space-y-4">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="bg-white text-slate-600 rounded-2xl p-6 font-mono text-xs shadow-inner space-y-4">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
               <span class="text-emerald-400 font-bold tracking-widest uppercase text-[10px]">AEGIS Secure Consensus Active</span>
-              <button onclick="window.triggerAegisSystemBackup()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer">Export Ledger Snapshot</button>
+              <button onclick="window.triggerAegisSystemBackup()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer">Export Ledger Snapshot</button>
             </div>
-            <div class="space-y-2 text-slate-400">
+            <div class="space-y-2 text-slate-500">
               ${(state.portalActionLogs || []).length > 0 
                 ? (state.portalActionLogs || []).map(log => `<div>${log}</div>`).join('')
                 : '<div>[SYSTEM] No recent immutable transactions recorded in this session.</div>'
@@ -902,18 +615,18 @@ export const workspaceTemplate = (state) => {
           </div>
         ` : ''}
         
-        <div id="module-loading-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] hidden flex-col items-center justify-center font-mono">
-          <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 shadow-2xl flex flex-col items-center max-w-sm w-full">
+        <div id="module-loading-overlay" class="fixed inset-0 bg-white/60 backdrop-blur-sm z-[150] hidden flex-col items-center justify-center font-mono">
+          <div class="bg-white p-8 rounded-2xl border border-slate-300 shadow-2xl flex flex-col items-center max-w-sm w-full">
              <svg class="w-10 h-10 text-emerald-500 animate-spin mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-             <h3 class="text-white font-bold text-sm tracking-wide">Provisioning Module</h3>
-             <p class="text-slate-400 mt-2 text-[10px] uppercase text-center">Loading component registry and compiling views into virtual runtime...</p>
+             <h3 class="text-slate-800 font-bold text-sm tracking-wide">Provisioning Module</h3>
+             <p class="text-slate-500 mt-2 text-[10px] uppercase text-center">Loading component registry and compiling views into virtual runtime...</p>
           </div>
         </div>
 
         <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         ${state.jumoChatOpen ? `
           <div id="public-ai-chat" class="mb-4 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden h-[450px]">
-            <div class="bg-emerald-600 p-4 flex items-center justify-between text-white shadow-sm shrink-0">
+            <div class="bg-emerald-600 p-4 flex items-center justify-between text-slate-800 shadow-sm shrink-0">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xl">
                   🤖
@@ -923,7 +636,7 @@ export const workspaceTemplate = (state) => {
                   <p class="text-[10px] text-emerald-100">JUMO Core Interop Active</p>
                 </div>
               </div>
-              <button onclick="window.toggleJumoChat()" class="text-white/80 hover:text-white transition p-1 cursor-pointer">
+              <button onclick="window.toggleJumoChat()" class="text-slate-800/80 hover:text-slate-800 transition p-1 cursor-pointer">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </div>
@@ -931,10 +644,10 @@ export const workspaceTemplate = (state) => {
               ${(state.jumoChatMessages || []).map(msg => `
                 <div class="flex gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}">
                   ${msg.sender !== 'user' ? `
-                    <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-xs shadow-sm">🤖</div>
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 text-slate-800 flex items-center justify-center shrink-0 text-xs shadow-sm">🤖</div>
                   ` : ''}
                   <div class="p-4 rounded-xl border leading-relaxed shadow-xs max-w-[85%]
-                    ${msg.sender === 'user' ? 'bg-emerald-600 text-white border-transparent' : 'bg-white text-slate-700 border-slate-200'}
+                    ${msg.sender === 'user' ? 'bg-emerald-600 text-slate-800 border-transparent' : 'bg-white text-slate-700 border-slate-200'}
                   ">
                     ${msg.text}
                   </div>
@@ -943,7 +656,7 @@ export const workspaceTemplate = (state) => {
             </div>
             <form onsubmit="window.sendJumoChatMessage(event)" class="p-4 bg-white border-t border-slate-100 flex items-center gap-2 shrink-0">
               <input type="text" id="jumo-chat-input" placeholder="Type your inquiry here..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 bg-slate-50">
-              <button type="submit" class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center hover:bg-emerald-700 transition cursor-pointer shadow-sm">
+              <button type="submit" class="w-11 h-11 rounded-xl bg-emerald-600 text-slate-800 flex items-center justify-center hover:bg-emerald-700 transition cursor-pointer shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
               </button>
             </form>
@@ -951,21 +664,21 @@ export const workspaceTemplate = (state) => {
         ` : ''}
         
          
-        <button onclick="window.toggleJumoChat()" class="w-16 h-16 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
+        <button onclick="window.toggleJumoChat()" class="w-16 h-16 rounded-full bg-emerald-600 text-slate-800 flex items-center justify-center shadow-2xl hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer relative group">
           <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-lg">🤖</div>
         </button>
       </div>
 
        
       ${state.activeFormId ? `
-        <div class="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="fixed inset-0 bg-white/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
           <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center">
               <div>
                 <h3 class="text-xl font-bold text-slate-900">Submit Document</h3>
                 <p class="text-xs text-slate-500 uppercase tracking-wider font-bold mt-1">Form ID: ${state.activeFormId}</p>
               </div>
-              <button onclick="window.state.activeFormId = null; window.render();" class="text-slate-400 hover:text-slate-700">
+              <button onclick="window.state.activeFormId = null; window.render();" class="text-slate-500 hover:text-slate-700">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </div>
@@ -985,7 +698,7 @@ export const workspaceTemplate = (state) => {
                 </div>
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
                   <button type="button" onclick="window.state.activeFormId = null; window.render();" class="px-6 py-2 border border-slate-300 rounded-lg text-slate-700 font-bold hover:bg-slate-50">Cancel</button>
-                  <button type="submit" class="px-6 py-2 bg-enterprise-blue hover:bg-blue-700 text-white rounded-lg font-bold">Sign & Submit to Workflow</button>
+                  <button type="submit" class="px-6 py-2 bg-enterprise-blue hover:bg-blue-700 text-slate-800 rounded-lg font-bold">Sign & Submit to Workflow</button>
                 </div>
               </form>
             </div>
@@ -1150,17 +863,17 @@ if(typeof window !== 'undefined') window.openFormModal = function(formId) {
   modalContent.innerHTML = `
     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
       <div>
-        <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider">${form.category || 'Forms'}</span>
+        <span class="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider">${form.category || 'Forms'}</span>
         <h4 class="font-extrabold text-slate-900 text-sm font-sans tracking-tight">${form.title}</h4>
       </div>
-      <button onclick="document.getElementById('digital-form-modal').classList.add('hidden');" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      <button onclick="document.getElementById('digital-form-modal').classList.add('hidden');" class="text-slate-500 hover:text-slate-600 font-bold text-lg">&times;</button>
     </div>
     
     <form onsubmit="window.submitDigitalForm(event, '${form.id}')" class="space-y-4 text-xs font-semibold">
       
         
       <div class="space-y-4">
-        <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">1. Requisition & Clearance Details</p>
+        <p class="text-[10px] font-bold uppercase text-slate-500 border-b border-slate-100 pb-1">1. Requisition & Clearance Details</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-slate-700 font-bold mb-1.5">Applicant Full Name</label>
@@ -1176,7 +889,7 @@ if(typeof window !== 'undefined') window.openFormModal = function(formId) {
 
         
       <div class="space-y-2">
-        <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">2. Supporting Attachments</p>
+        <p class="text-[10px] font-bold uppercase text-slate-500 border-b border-slate-100 pb-1">2. Supporting Attachments</p>
         <div class="border-2 border-dashed border-slate-200 p-4 rounded-xl text-center bg-slate-50">
           <p class="text-xs text-slate-600">Simulate Supporting File Uploads (Drag files or click below)</p>
           <input type="file" class="hidden" id="form-file-attachment">
@@ -1186,7 +899,7 @@ if(typeof window !== 'undefined') window.openFormModal = function(formId) {
 
         
       <div class="space-y-2">
-        <p class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100 pb-1">3. Cryptographic Signature Stamp</p>
+        <p class="text-[10px] font-bold uppercase text-slate-500 border-b border-slate-100 pb-1">3. Cryptographic Signature Stamp</p>
         <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl">
           <label class="block text-slate-600 mb-1">Type Cryptographic Name for Sign-Off</label>
           <input type="text" id="form-sig-text" placeholder="Type your full signature code e.g. /Sarah Namubiru/" required class="w-full p-2 bg-white border border-slate-200 rounded focus:outline-none text-[11px] font-mono font-bold">
@@ -1200,7 +913,7 @@ if(typeof window !== 'undefined') window.openFormModal = function(formId) {
 
       <div class="pt-2 flex items-center justify-end gap-2">
         <button type="button" onclick="document.getElementById('digital-form-modal').classList.add('hidden');" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">Cancel</button>
-        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Submit Requisition & Sign</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-slate-800 rounded-xl font-bold">Submit Requisition & Sign</button>
       </div>
     </form>
   `;

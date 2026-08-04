@@ -165,7 +165,7 @@ function renderInstalledERPFamilies() {
     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-full">${erp.category || erp.ecosystem || 'Enterprise ERP'}</span>
-        <span class="text-[10px] font-mono text-slate-400">v${erp.version || '1.0.0'} &bull; <span class="text-emerald-600">${erp.status || 'ACTIVE'}</span></span>
+        <span class="text-[10px] font-mono text-slate-500">v${erp.version || '1.0.0'} &bull; <span class="text-emerald-600">${erp.status || 'ACTIVE'}</span></span>
       </div>
       <div>
         <h4 class="font-bold text-slate-900 text-sm">${erp.name}</h4>
@@ -182,7 +182,7 @@ function renderInstalledERPFamilies() {
         </div>
       </div>
       <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-        <button onclick="window.navigate('/erp-workspace?id=${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>
+        <button onclick="window.navigate('/erp-workspace?id=${erp.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Launch Platform</button>
         <button onclick="alert('Opening administrative console for ${erp.name}');" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer">Manage</button>
       </div>
     </div>
@@ -206,7 +206,7 @@ function renderCommercialPlatforms() {
           <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-mono px-2 py-0.5 bg-blue-50 text-blue-700 font-bold rounded-full">${p.category}</span>
-              <span class="text-[10px] font-mono text-slate-400">v${p.version} &bull; ${p.tenantCount} Tenants</span>
+              <span class="text-[10px] font-mono text-slate-500">v${p.version} &bull; ${p.tenantCount} Tenants</span>
             </div>
             <div>
               <h4 class="font-bold text-slate-900 text-sm">${p.name}</h4>
@@ -217,7 +217,7 @@ function renderCommercialPlatforms() {
               <div><strong>Modules:</strong> ${p.modules.slice(0, 2).join(', ')}...</div>
             </div>
             <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-              <button onclick="installCommercialPlatform('${p.id}', '${p.name}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Deploy Product</button>
+              <button onclick="installCommercialPlatform('${p.id}', '${p.name}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer shadow-xs">Deploy Product</button>
               <button onclick="alert('Opening administrative console for ${p.name}');" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] uppercase rounded-lg transition cursor-pointer">Configure</button>
             </div>
           </div>
@@ -239,7 +239,7 @@ export const controlCenterLoginTemplate = (state) => {
       <header class="p-6 border-b border-slate-200 bg-white shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.navigate('/')">
-            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-md">J</div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-slate-800 flex items-center justify-center font-bold text-lg shadow-md">J</div>
             <div>
               <div class="font-extrabold text-slate-900 tracking-tight text-base">JUMO UEOS</div>
               <div class="text-[10px] text-emerald-700 font-bold tracking-widest uppercase">Digital Control Center</div>
@@ -287,13 +287,13 @@ export const controlCenterLoginTemplate = (state) => {
               </div>
             </div>
 
-            <button type="submit" class="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+            <button type="submit" class="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
               Authenticate & Access Control Center &rarr;
             </button>
           </form>
 
           <div class="pt-4 border-t border-slate-100 text-center">
-            <p class="text-[11px] text-slate-400 font-mono">JUMO UEOS v1.0-genesis &bull; Sovereign Architecture</p>
+            <p class="text-[11px] text-slate-500 font-mono">JUMO UEOS v1.0-genesis &bull; Sovereign Architecture</p>
           </div>
         </div>
       </div>
@@ -339,7 +339,7 @@ export const controlCenterTemplate = (state) => {
         <div class="flex items-center gap-6">
           <!-- Workspace Launcher Button -->
           <div class="relative group">
-            <button class="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer" title="Workspace Launcher">
+            <button class="w-9 h-9 rounded flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer" title="Workspace Launcher">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
             </button>
             <div class="absolute left-0 top-full mt-1 w-[600px] bg-white border border-slate-200 shadow-2xl rounded-2xl hidden group-hover:block z-[70] p-6 animate-scaleUp">
@@ -360,7 +360,7 @@ export const controlCenterTemplate = (state) => {
           </div>
           
           <div class="flex items-center gap-3 cursor-pointer" onclick="setCCView('overview')">
-            <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-sm">J</div>
+            <div class="w-8 h-8 rounded-lg bg-white text-slate-800 flex items-center justify-center font-bold text-sm shadow-sm">J</div>
             <div class="flex flex-col">
               <span class="font-extrabold text-slate-900 tracking-tight text-xs">JUMO UEOS</span>
               <span class="text-[9px] text-emerald-700 font-bold tracking-widest uppercase">Digital Control Center</span>
@@ -369,7 +369,7 @@ export const controlCenterTemplate = (state) => {
 
           <!-- Command Palette Launcher -->
           <button onclick="toggleCCCommandPalette()" class="hidden md:flex items-center gap-3 px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] text-slate-500 hover:bg-white hover:border-emerald-300 transition shadow-xs">
-            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <span>Search Platform Command (Ctrl+K)</span>
           </button>
         </div>
@@ -380,12 +380,12 @@ export const controlCenterTemplate = (state) => {
             <button onclick="toggleCCAiAssistant()" class="px-3 py-1.5 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-2 text-[11px] font-bold">
               <span>🤖</span> Assistant
             </button>
-            <button onclick="toggleCCHelp()" class="p-2 rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition cursor-pointer" title="Help">
+            <button onclick="toggleCCHelp()" class="p-2 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition cursor-pointer" title="Help">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </button>
           </div>
 
-          <button onclick="toggleCCNotification()" class="p-2 rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-900 relative transition cursor-pointer" title="Notifications">
+          <button onclick="toggleCCNotification()" class="p-2 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900 relative transition cursor-pointer" title="Notifications">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
             <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-emerald-500 border border-white"></span>
           </button>
@@ -393,12 +393,12 @@ export const controlCenterTemplate = (state) => {
           <!-- Profile Menu -->
           <div class="relative group">
             <button class="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-50 transition cursor-pointer">
-              <div class="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-[11px] shadow-sm">SO</div>
+              <div class="w-8 h-8 rounded-lg bg-white text-slate-800 font-bold flex items-center justify-center text-[11px] shadow-sm">SO</div>
               <div class="hidden sm:block text-left mr-1">
                 <p class="text-[11px] font-bold text-slate-900 leading-none">Platform Owner</p>
                 <p class="text-[9px] text-slate-500 font-mono mt-0.5 tracking-tighter">Sovereign Admin</p>
               </div>
-              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             <div class="absolute right-0 top-full mt-1 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 py-2 hidden group-hover:block z-[100] animate-scaleUp">
               <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 mb-1">
@@ -423,8 +423,8 @@ export const controlCenterTemplate = (state) => {
       <!-- JUMO UEOS Enterprise Breadcrumb / Context Bar -->
       <div class="h-10 bg-slate-50 border-b border-slate-200 px-6 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
-          <span class="text-slate-400 hover:text-slate-900 cursor-pointer" onclick="setCCView('overview')">Headquarters</span>
-          <span class="text-slate-300">/</span>
+          <span class="text-slate-500 hover:text-slate-900 cursor-pointer" onclick="setCCView('overview')">Headquarters</span>
+          <span class="text-slate-600">/</span>
           <span class="text-slate-900">${activeView.replace('-', ' ')}</span>
         </div>
         
@@ -434,7 +434,7 @@ export const controlCenterTemplate = (state) => {
                 Sovereign Kernel Active
             </span>
             <div class="h-4 w-px bg-slate-200"></div>
-            <span class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-tighter">BUILD: UEOS-X.1.0-GENESIS</span>
+            <span class="text-[9px] font-mono text-slate-500 font-bold uppercase tracking-tighter">BUILD: UEOS-X.1.0-GENESIS</span>
         </div>
       </div>
 
@@ -444,12 +444,12 @@ export const controlCenterTemplate = (state) => {
         <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-start justify-center pt-24 p-4 animate-fadeIn" onclick="toggleCCCommandPalette()">
           <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp" onclick="event.stopPropagation()">
             <div class="flex items-center px-5 py-4 border-b border-slate-200 bg-slate-50">
-              <svg class="w-5 h-5 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <svg class="w-5 h-5 text-slate-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               <input type="text" id="cc-palette-input" placeholder="Search ERPs, installed apps, services, settings..." class="w-full bg-transparent text-sm text-slate-900 focus:outline-none font-medium" autofocus>
               <span class="text-[10px] font-mono bg-slate-200 text-slate-600 px-2 py-1 rounded">ESC</span>
             </div>
             <div class="p-3 max-h-96 overflow-y-auto space-y-1">
-              <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase px-3 py-1">Quick Navigation & Commands</div>
+              <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase px-3 py-1">Quick Navigation & Commands</div>
               ${paletteItem('overview', '🏠', 'Platform Overview', 'Executive Dashboard')}
               ${paletteItem('erp-factory', '🏭', 'ERP Factory', 'Design Enterprise Blueprints')}
               ${paletteItem('installed-apps', '📦', 'Installed Enterprise Platforms', 'Manage All Deployed Instances')}
@@ -477,7 +477,7 @@ export const controlCenterTemplate = (state) => {
                     <p class="text-[11px] text-emerald-700 font-bold">Sovereign Platform Management AI</p>
                   </div>
                 </div>
-                <button onclick="toggleCCAiAssistant()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
+                <button onclick="toggleCCAiAssistant()" class="text-slate-500 hover:text-slate-600 font-bold">&times;</button>
               </div>
 
               <div class="space-y-4 text-xs">
@@ -498,7 +498,7 @@ export const controlCenterTemplate = (state) => {
             <div class="pt-4 border-t border-slate-200">
               <div class="flex gap-2">
                 <input type="text" placeholder="Ask UEOS Assistant..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600">
-                <button onclick="ccLogAction('Command processed by UEOS Assistant.');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition cursor-pointer">Send</button>
+                <button onclick="ccLogAction('Command processed by UEOS Assistant.');" class="px-4 py-2 bg-emerald-600 text-slate-800 rounded-xl text-xs font-bold hover:bg-emerald-700 transition cursor-pointer">Send</button>
               </div>
             </div>
           </div>
@@ -515,7 +515,7 @@ export const controlCenterTemplate = (state) => {
                   <h3 class="font-bold text-slate-900">Universal Notification Center</h3>
                   <p class="text-xs text-slate-500">Platform alerts, security ring & deployments</p>
                 </div>
-                <button onclick="toggleCCNotification()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
+                <button onclick="toggleCCNotification()" class="text-slate-500 hover:text-slate-600 font-bold">&times;</button>
               </div>
 
               <div class="space-y-3">
@@ -542,7 +542,7 @@ export const controlCenterTemplate = (state) => {
                   <h3 class="font-bold text-slate-900">Global Activity Center</h3>
                   <p class="text-xs text-slate-500">Operational audit trail & platform events</p>
                 </div>
-                <button onclick="toggleCCActivity()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
+                <button onclick="toggleCCActivity()" class="text-slate-500 hover:text-slate-600 font-bold">&times;</button>
               </div>
 
               <div class="space-y-4 text-xs">
@@ -571,7 +571,7 @@ export const controlCenterTemplate = (state) => {
                   <h3 class="font-bold text-slate-900">Context Help & Documentation</h3>
                   <p class="text-xs text-slate-500">JUMO UEOS Sovereign Operating Guidelines</p>
                 </div>
-                <button onclick="toggleCCHelp()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
+                <button onclick="toggleCCHelp()" class="text-slate-500 hover:text-slate-600 font-bold">&times;</button>
               </div>
 
               <div class="space-y-4 text-xs text-slate-600 leading-relaxed">
@@ -608,7 +608,7 @@ export const controlCenterTemplate = (state) => {
               <button onclick="ccLogAction('Import dialog opened.')" class="px-4 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-[11px] font-extrabold text-slate-700 shadow-xs transition cursor-pointer uppercase tracking-wider">Import</button>
               <button onclick="ccLogAction('Exporting data package...');" class="px-4 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-[11px] font-extrabold text-slate-700 shadow-xs transition cursor-pointer uppercase tracking-wider">Export</button>
               <button onclick="window.location.reload()" class="px-4 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-[11px] font-extrabold text-slate-700 shadow-xs transition cursor-pointer uppercase tracking-wider">Refresh</button>
-              <button onclick="toggleCCCommandPalette()" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-extrabold shadow-md transition cursor-pointer uppercase tracking-widest">Search...</button>
+              <button onclick="toggleCCCommandPalette()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-[11px] font-extrabold shadow-md transition cursor-pointer uppercase tracking-widest">Search...</button>
             </div>
           </div>
 
@@ -700,31 +700,31 @@ function renderViewContent(view) {
         <!-- Global Audit Summary -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ERP Ecosystems</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">ERP Ecosystems</div>
             <div class="text-xl font-black text-slate-900">${audit.erpPlatforms}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sovereign Platforms</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Sovereign Platforms</div>
             <div class="text-xl font-black text-emerald-700">${audit.sovereignPlatforms}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Gov. Portals</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Gov. Portals</div>
             <div class="text-xl font-black text-slate-900">${audit.portalsRegistered}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Installed Modules</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Installed Modules</div>
             <div class="text-xl font-black text-emerald-600">${audit.modulesInstalled.toLocaleString()}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Active Components</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Active Components</div>
             <div class="text-xl font-black text-blue-600">${audit.activeComponents.toLocaleString()}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Workflows & Forms</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Workflows & Forms</div>
             <div class="text-xl font-black text-amber-600">${audit.digitalForms.toLocaleString()}</div>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">FAAP Status</div>
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">FAAP Status</div>
             <div class="text-sm font-black text-emerald-500 mt-1">${audit.faapServices}</div>
           </div>
         </div>
@@ -758,19 +758,19 @@ function renderViewContent(view) {
                   </div>
                   <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                     <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
-                      <div class="text-[10px] text-slate-400 font-bold uppercase">Portals</div>
+                      <div class="text-[10px] text-slate-500 font-bold uppercase">Portals</div>
                       <div class="font-mono text-sm font-bold ${pCount > 0 ? 'text-slate-800' : 'text-rose-500'}">${pCount}</div>
                     </div>
                     <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
-                      <div class="text-[10px] text-slate-400 font-bold uppercase">Modules</div>
+                      <div class="text-[10px] text-slate-500 font-bold uppercase">Modules</div>
                       <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-emerald-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
                     </div>
                     <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
-                      <div class="text-[10px] text-slate-400 font-bold uppercase">Workflows</div>
+                      <div class="text-[10px] text-slate-500 font-bold uppercase">Workflows</div>
                       <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-blue-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
                     </div>
                     <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm text-center">
-                      <div class="text-[10px] text-slate-400 font-bold uppercase">Forms</div>
+                      <div class="text-[10px] text-slate-500 font-bold uppercase">Forms</div>
                       <div class="font-mono text-sm font-bold ${mCount > 0 ? 'text-amber-600' : 'text-rose-500'}">${mCount.toLocaleString()}</div>
                     </div>
                   </div>
@@ -787,7 +787,7 @@ function renderViewContent(view) {
     return `
       <div class="space-y-8">
         <!-- Executive Greeting & Status -->
-        <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-slate-800 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-800/80 text-emerald-200 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>🛡️ Sovereign Control Center</span>
@@ -796,12 +796,12 @@ function renderViewContent(view) {
             <p class="text-xs text-emerald-200 max-w-xl">JUMO UEOS operating headquarters is running at peak multi-tenant efficiency. All platform services, AEGIS audit rings, and FAAP ledgers are fully synchronized.</p>
           </div>
           <div class="flex flex-col items-center gap-3 shrink-0">
-            <button onclick="window.navigate('/erp')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
+            <button onclick="window.navigate('/erp')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
               <span>🚀 Launch Dynamic ERP Platform</span>
             </button>
             <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 text-center">
               <span class="text-[10px] uppercase font-mono text-emerald-300">System Health: </span>
-              <span class="text-xs font-bold text-white">Healthy & Secure</span>
+              <span class="text-xs font-bold text-slate-800">Healthy & Secure</span>
             </div>
           </div>
         </div>
@@ -813,7 +813,7 @@ function renderViewContent(view) {
                 <h3 class="font-extrabold text-base text-slate-900">
                     📂 JUMO Enterprise Architecture
                 </h3>
-                <span class="text-xs font-mono text-slate-400 font-bold">
+                <span class="text-xs font-mono text-slate-500 font-bold">
                     Registry Controlled
                 </span>
             </div>
@@ -828,7 +828,7 @@ function renderViewContent(view) {
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold text-sm text-slate-900">Recently Used Workspaces</h3>
-            <span class="text-[10px] font-mono text-slate-400">Quick Access</span>
+            <span class="text-[10px] font-mono text-slate-500">Quick Access</span>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs font-semibold">
             ${recentTile('installed-apps', 'Installed Platforms', '📦')}
@@ -846,15 +846,15 @@ function renderViewContent(view) {
     const ai = window.UEOSRuntime ? window.UEOSRuntime.aiCommandCenter : { agents: [] };
     return `
       <div class="space-y-8">
-        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-slate-800 p-8 rounded-3xl shadow-xl flex items-center justify-between">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-slate-800 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>🧠 Centralized Master AI Authority</span>
             </div>
             <h2 class="text-2xl font-extrabold tracking-tight">JUMO AI Command & Management Center</h2>
-            <p class="text-xs text-slate-300 max-w-2xl">Master oversight of all autonomous enterprise agents, LLM model registries, prompt governance, task queues, and AEGIS AI security audit logs.</p>
+            <p class="text-xs text-slate-600 max-w-2xl">Master oversight of all autonomous enterprise agents, LLM model registries, prompt governance, task queues, and AEGIS AI security audit logs.</p>
           </div>
-          <button onclick="alert('Synchronizing all agent clusters...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Sync AI Fleet</button>
+          <button onclick="alert('Synchronizing all agent clusters...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Sync AI Fleet</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -894,15 +894,15 @@ function renderViewContent(view) {
   if (view === 'engineering-workspace') {
     return `
       <div class="space-y-8">
-        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-slate-800 p-8 rounded-3xl shadow-xl flex items-center justify-between">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-slate-800 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>🛠️ Platform Engineering Headquarters</span>
             </div>
             <h2 class="text-2xl font-extrabold tracking-tight">JUMO ERP Engineering & Deployment Workspace</h2>
-            <p class="text-xs text-slate-300 max-w-2xl">Provisioning, building, upgrading, and maintaining certified ERP templates and tenant instances. Strictly restricted to Platform Engineers.</p>
+            <p class="text-xs text-slate-600 max-w-2xl">Provisioning, building, upgrading, and maintaining certified ERP templates and tenant instances. Strictly restricted to Platform Engineers.</p>
           </div>
-          <button onclick="alert('Initializing new ERP build sequence...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">New Build Sequence</button>
+          <button onclick="alert('Initializing new ERP build sequence...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">New Build Sequence</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -947,15 +947,15 @@ function renderViewContent(view) {
   if (view === 'release-center') {
     return `
       <div class="space-y-8">
-        <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+        <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-slate-800 p-8 rounded-3xl shadow-xl flex items-center justify-between">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-slate-800 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>🚀 Version Control & Rollback Management</span>
             </div>
             <h2 class="text-2xl font-extrabold tracking-tight">JUMO Release Center</h2>
-            <p class="text-xs text-slate-300 max-w-2xl">Manage platform build versions, deployment history, changelogs, and instant cryptographic rollbacks.</p>
+            <p class="text-xs text-slate-600 max-w-2xl">Manage platform build versions, deployment history, changelogs, and instant cryptographic rollbacks.</p>
           </div>
-          <button onclick="alert('Creating new release tag...');" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Publish Release</button>
+          <button onclick="alert('Creating new release tag...');" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Publish Release</button>
         </div>
 
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
@@ -998,15 +998,15 @@ function renderViewContent(view) {
     return `
       <div class="space-y-8">
         <!-- Enterprise Ecosystem Banner -->
-        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="bg-gradient-to-r from-slate-900 to-emerald-950 text-slate-800 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600 text-slate-800 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>🏭 JUMO ERP Ecosystem Factory & Store</span>
             </div>
             <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Universal Enterprise Ecosystem Marketplace</h2>
-            <p class="text-xs text-slate-300 max-w-2xl">Provision, configure, and manage modular enterprise ERP ecosystems. Every template inherits the sovereign UEOS kernel, FAAP treasury, Digital Pay clearinghouse, AEGIS security, and Staff SACCO platform.</p>
+            <p class="text-xs text-slate-600 max-w-2xl">Provision, configure, and manage modular enterprise ERP ecosystems. Every template inherits the sovereign UEOS kernel, FAAP treasury, Digital Pay clearinghouse, AEGIS security, and Staff SACCO platform.</p>
           </div>
-          <button onclick="alert('Opening ERP Provisioning Wizard...');" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer shrink-0">
+          <button onclick="alert('Opening ERP Provisioning Wizard...');" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer shrink-0">
             <span>➕ Create New ERP</span>
           </button>
         </div>
@@ -1049,21 +1049,21 @@ function renderViewContent(view) {
     const faap = window.UEOSRuntime ? window.UEOSRuntime.faapService : { upgradeAreas: [], treasuryPools: {} };
     return `
       <div class="space-y-8">
-        <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex items-center justify-between">
+        <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-slate-800 p-8 rounded-3xl shadow-xl flex items-center justify-between">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-700 text-white rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-700 text-slate-800 rounded-full text-[11px] font-mono uppercase font-bold tracking-wider">
               <span>💰 FAAP 2.0 • Financial Architecture Operating Layer</span>
             </div>
             <h2 class="text-2xl font-extrabold tracking-tight">Universal Financial Clearinghouse</h2>
             <p class="text-xs text-emerald-200 max-w-2xl">Global treasury, accounts, budget appropriation, and cross-border settlement engine.</p>
           </div>
-          <button onclick="alert('Running FAAP global ledger reconciliation...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Reconcile Ledgers</button>
+          <button onclick="alert('Running FAAP global ledger reconciliation...');" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer">Reconcile Ledgers</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           ${Object.entries(faap.treasuryPools || {}).map(([cur, pool]) => `
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <div class="text-[10px] text-slate-400 font-bold uppercase">${cur} Treasury Pool</div>
+              <div class="text-[10px] text-slate-500 font-bold uppercase">${cur} Treasury Pool</div>
               <div class="text-lg font-black text-slate-900">${pool.balance.toLocaleString()}</div>
               <div class="text-[9px] text-emerald-600 font-bold mt-1">● ${pool.activeRouter}</div>
             </div>
@@ -1147,7 +1147,7 @@ function renderViewContent(view) {
               <h2 class="font-bold text-sm text-slate-900">Installed Enterprise Platforms</h2>
               <p class="text-xs text-slate-500">Manage, configure, update, or suspend every deployed ERP installation across the platform.</p>
             </div>
-            <button onclick="alert('Deploying new ERP instance...');" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Deploy New Instance</button>
+            <button onclick="alert('Deploying new ERP instance...');" class="px-4 py-2 bg-emerald-600 text-slate-800 rounded-xl text-xs font-bold hover:bg-emerald-700 transition">Deploy New Instance</button>
           </div>
 
           <div class="space-y-3 text-xs">
@@ -1280,7 +1280,7 @@ function installedPlatformRow(name, family, status, color, erpId, instanceId) {
       <div class="flex items-center gap-3">
         <span class="text-[10px] font-bold bg-${color}-100 text-${color}-800 px-2.5 py-1 rounded-full">${status}</span>
         <div class="flex gap-1.5 text-xs font-bold">
-          <button onclick="launchERPWorkspace('${launchId}', '${name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-xs cursor-pointer">Open Workspace</button>
+          <button onclick="launchERPWorkspace('${launchId}', '${name}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-800 font-bold rounded-lg shadow-xs cursor-pointer">Open Workspace</button>
           <button onclick="configureERPInstance('${launchId}', '${name}')" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Configure</button>
           <button onclick="alert('Updating ${name}...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Update</button>
           <button onclick="alert('Monitoring ${name} telemetry...');" class="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-slate-700 shadow-xs cursor-pointer">Monitor</button>
@@ -1302,7 +1302,7 @@ function registryBox(name, count) {
 function diagnosticCard(label, val, color) {
   return `
     <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-1">
-      <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">${label}</p>
+      <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">${label}</p>
       <p class="text-base font-bold text-${color}-700 font-mono">${val}</p>
     </div>
   `;
@@ -1369,7 +1369,7 @@ function paletteItem(viewKey, iconSymbol, title, desc) {
           <p class="text-[10px] text-slate-500">${desc}</p>
         </div>
       </div>
-      <span class="text-[10px] font-mono text-slate-400">&rarr;</span>
+      <span class="text-[10px] font-mono text-slate-500">&rarr;</span>
     </div>
   `;
 }
@@ -1379,7 +1379,7 @@ function notifCard(type, title, desc, time, badgeColor) {
     <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-bold uppercase tracking-wider text-${badgeColor}-700 bg-${badgeColor}-100 px-2 py-0.5 rounded">${type}</span>
-        <span class="text-[10px] text-slate-400 font-mono">${time}</span>
+        <span class="text-[10px] text-slate-500 font-mono">${time}</span>
       </div>
       <h4 class="font-bold text-xs text-slate-900">${title}</h4>
       <p class="text-xs text-slate-600">${desc}</p>
@@ -1394,7 +1394,7 @@ function activityItem(action, detail, time) {
         <p class="font-bold text-slate-900">${action}</p>
         <p class="text-slate-500 text-[11px]">${detail}</p>
       </div>
-      <span class="text-[10px] text-slate-400 font-mono">${time}</span>
+      <span class="text-[10px] text-slate-500 font-mono">${time}</span>
     </div>
   `;
 }
@@ -1556,7 +1556,7 @@ function renderEnterpriseNavigation() {
   
   if (erps.length === 0) {
     return `
-      <div class="col-span-full p-6 text-slate-400 italic text-center">
+      <div class="col-span-full p-6 text-slate-500 italic text-center">
         No enterprise architectures discovered in registry.
       </div>`;
   }

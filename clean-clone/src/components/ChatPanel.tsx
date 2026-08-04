@@ -86,24 +86,24 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
         const lang = lines[0].replace("```", "").trim() || "code";
         const code = lines.slice(1, -1).join("\n");
         return (
-          <div key={idx} className="my-3 bg-slate-950 border border-slate-800 rounded-lg overflow-hidden font-mono text-[11px] leading-relaxed shadow-inner">
-            <div className="bg-slate-900 border-b border-slate-800 px-3.5 py-1.5 flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase">
+          <div key={idx} className="my-3 bg-slate-50 border border-slate-200 rounded-lg overflow-hidden font-mono text-[11px] leading-relaxed shadow-inner">
+            <div className="bg-white border-b border-slate-200 px-3.5 py-1.5 flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase">
               <span>{lang}</span>
               <Terminal className="h-3 w-3 text-emerald-400" />
             </div>
-            <pre className="p-3 overflow-x-auto text-slate-300 whitespace-pre scrollbar-none">{code}</pre>
+            <pre className="p-3 overflow-x-auto text-slate-600 whitespace-pre scrollbar-none">{code}</pre>
           </div>
         );
       }
       
       // Basic formatting for bold text and list lines
       return (
-        <span key={idx} className="whitespace-pre-wrap leading-relaxed text-xs text-slate-300">
+        <span key={idx} className="whitespace-pre-wrap leading-relaxed text-xs text-slate-600">
           {seg.split("\n").map((line, lIdx) => {
             // Check for list items
             if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
               return (
-                <span key={lIdx} className="block pl-4 relative my-1 text-slate-300">
+                <span key={lIdx} className="block pl-4 relative my-1 text-slate-600">
                   <span className="absolute left-0 text-emerald-400 font-bold">•</span>
                   {line.trim().substring(2)}
                 </span>
@@ -113,7 +113,7 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
             const numMatch = line.trim().match(/^(\d+)\.\s(.*)/);
             if (numMatch) {
               return (
-                <span key={lIdx} className="block pl-5 relative my-1 text-slate-300">
+                <span key={lIdx} className="block pl-5 relative my-1 text-slate-600">
                   <span className="absolute left-0 text-emerald-400 font-bold font-mono text-[10px]">{numMatch[1]}.</span>
                   {numMatch[2]}
                 </span>
@@ -133,15 +133,15 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
   if (!isOpen) return null;
 
   return (
-    <div className="w-full md:w-[380px] lg:w-[420px] bg-slate-900/90 backdrop-blur-lg border-l border-slate-800 flex flex-col h-full fixed md:relative right-0 top-0 z-40 shadow-2xl">
+    <div className="w-full md:w-[380px] lg:w-[420px] bg-white/90 backdrop-blur-lg border-l border-slate-200 flex flex-col h-full fixed md:relative right-0 top-0 z-40 shadow-2xl">
       {/* Header controls */}
-      <div className="p-4 border-b border-slate-800 bg-slate-950/30 flex justify-between items-center shrink-0">
+      <div className="p-4 border-b border-slate-200 bg-slate-50/30 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-emerald-950/40 border border-emerald-800/30 flex items-center justify-center">
             <Bot className="h-4.5 w-4.5 text-emerald-400" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white tracking-wide">Architect Copilot</h4>
+            <h4 className="text-xs font-bold text-slate-800 tracking-wide">Architect Copilot</h4>
             <span className="text-[10px] font-mono text-emerald-400/90 flex items-center gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
               {blueprint ? "Analyzing Blueprint" : "General Assistant"}
@@ -150,7 +150,7 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg transition cursor-pointer"
+          className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg transition cursor-pointer"
         >
           <X className="h-4.5 w-4.5" />
         </button>
@@ -159,11 +159,11 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
       {/* Messages List Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Onboarding greeting */}
-        <div className="bg-slate-950/20 border border-slate-850 p-4 rounded-xl flex gap-3">
+        <div className="bg-slate-50/20 border border-slate-850 p-4 rounded-xl flex gap-3">
           <Bot className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
           <div className="space-y-1.5">
-            <h5 className="text-xs font-bold text-slate-200">System Architect Assigned</h5>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h5 className="text-xs font-bold text-slate-800">System Architect Assigned</h5>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Hi! I'm your Senior Software Architect. Ask me anything about your generated project, draft SQL statements, design tables, or debug API structures.
             </p>
             {blueprint && (
@@ -192,8 +192,8 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
             {/* Bubble contents */}
             <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 shadow-sm border ${
               msg.role === "user"
-                ? "bg-blue-600/10 border-blue-500/20 rounded-tr-none text-slate-100"
-                : "bg-slate-950/30 border-slate-850 rounded-tl-none text-slate-300"
+                ? "bg-blue-600/10 border-blue-500/20 rounded-tr-none text-slate-900"
+                : "bg-slate-50/30 border-slate-850 rounded-tl-none text-slate-600"
             }`}>
               {msg.role === "user" ? (
                 <span className="text-xs leading-relaxed whitespace-pre-wrap select-text">{msg.content}</span>
@@ -213,7 +213,7 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
             <div className="h-7 w-7 rounded-full bg-emerald-950/40 border border-emerald-800/20 text-emerald-400 flex items-center justify-center shrink-0">
               <Bot className="h-3.5 w-3.5" />
             </div>
-            <div className="bg-slate-950/30 border border-slate-850 rounded-2xl rounded-tl-none px-4 py-3 text-slate-500 flex items-center gap-1.5">
+            <div className="bg-slate-50/30 border border-slate-850 rounded-2xl rounded-tl-none px-4 py-3 text-slate-500 flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-bounce"></span>
               <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
               <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -224,18 +224,18 @@ export default function ChatPanel({ blueprint, isOpen, onClose, messages, onUpda
       </div>
 
       {/* Message Input Form */}
-      <form onSubmit={handleSend} className="p-3 border-t border-slate-800 bg-slate-950/50 flex gap-2 shrink-0">
+      <form onSubmit={handleSend} className="p-3 border-t border-slate-200 bg-slate-50/50 flex gap-2 shrink-0">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about table queries, routes, schemas..."
-          className="flex-1 bg-slate-950 text-slate-100 border border-slate-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 placeholder-slate-600 transition"
+          className="flex-1 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 placeholder-slate-600 transition"
         />
         <button
           type="submit"
           disabled={!input.trim() || isTyping}
-          className="bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-bold p-2.5 rounded-xl transition flex items-center justify-center cursor-pointer shrink-0"
+          className="bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-100 disabled:text-slate-600 text-slate-950 font-bold p-2.5 rounded-xl transition flex items-center justify-center cursor-pointer shrink-0"
         >
           <Send className="h-4 w-4" />
         </button>

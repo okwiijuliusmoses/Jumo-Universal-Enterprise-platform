@@ -71,8 +71,8 @@ export function getOfficialLogoHtml(options = {}) {
     subtitleSize = "text-[10px]";
   }
 
-  const titleColorClass = textColor === "light" ? "text-white" : "text-[#1E293B]";
-  const subtitleColorClass = textColor === "light" ? "text-slate-200" : "text-[#64748B]";
+  const titleColorClass = textColor === "light" ? "text-slate-800" : "text-[#1E293B]";
+  const subtitleColorClass = textColor === "light" ? "text-slate-800" : "text-[#64748B]";
   const tagColorClass = textColor === "light" ? "text-emerald-300" : "text-[#007A5A]";
 
   // Official JUMO Enterprise Logo SVG Architecture Specification
@@ -115,16 +115,16 @@ export function getOfficialLogoHtml(options = {}) {
 
 export function getEnterpriseFooterHtml() {
   return `
-    <footer class="bg-slate-900 border-t border-slate-800 py-8 px-6 mt-auto">
+    <footer class="bg-white border-t border-slate-200 py-8 px-6 mt-auto">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             <div>
-                <p class="text-xs text-slate-400 font-medium">&copy; ${new Date().getFullYear()} ${BRAND_CONFIG.platformName}. All Rights Reserved.</p>
+                <p class="text-xs text-slate-500 font-medium">&copy; ${new Date().getFullYear()} ${BRAND_CONFIG.platformName}. All Rights Reserved.</p>
                 <p class="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest">${BRAND_CONFIG.poweredBy} &bull; Sovereign Architecture</p>
             </div>
-            <div class="flex items-center gap-4 text-xs font-medium text-slate-400">
-                <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition">Terms of Service</a>
-                <a href="#" class="hover:text-white transition">AEGIS Security Statement</a>
+            <div class="flex items-center gap-4 text-xs font-medium text-slate-500">
+                <a href="#" class="hover:text-slate-800 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-800 transition">Terms of Service</a>
+                <a href="#" class="hover:text-slate-800 transition">AEGIS Security Statement</a>
             </div>
         </div>
     </footer>

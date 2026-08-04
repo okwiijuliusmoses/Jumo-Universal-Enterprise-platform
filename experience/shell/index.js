@@ -11,7 +11,7 @@ export const shellTemplate = (state) => {
               <div class="flex items-center space-x-6">
                 <div class="cursor-pointer flex items-center gap-2" onclick="window.navigate('/gateway')">
                   ${logoHtml}
-                  <span class="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-tighter border-l border-slate-200 pl-2">UEOS</span>
+                  <span class="text-[10px] font-mono text-slate-500 font-bold uppercase tracking-tighter border-l border-slate-200 pl-2">UEOS</span>
                 </div>
                 
                 <!-- Portal Switcher / Launcher -->
@@ -22,7 +22,7 @@ export const shellTemplate = (state) => {
                   </button>
                   <div class="absolute left-0 top-full mt-1 w-64 bg-white border border-slate-200 shadow-xl rounded-lg hidden group-hover:block z-50 p-2">
                     <div class="p-2 border-b border-slate-100 mb-2">
-                      <p class="text-[9px] font-mono text-slate-400 uppercase font-bold">Switch Operational Context</p>
+                      <p class="text-[9px] font-mono text-slate-500 uppercase font-bold">Switch Operational Context</p>
                     </div>
                     <button onclick="window.navigate('/gateway')" class="w-full text-left px-3 py-2 hover:bg-slate-50 rounded text-xs font-bold text-slate-700 transition">🛍️ Application Marketplace</button>
                     <button onclick="window.navigate('/workspace')" class="w-full text-left px-3 py-2 hover:bg-slate-50 rounded text-xs font-bold text-slate-700 transition">🏢 Institutional Workspace</button>
@@ -34,18 +34,18 @@ export const shellTemplate = (state) => {
 
                 <!-- Primary Horizontal Navigation -->
                 <nav class="hidden lg:flex items-center space-x-1">
-                  <button onclick="state.activeTab='launcher'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='launcher'?'bg-slate-900 text-white':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Marketplace</button>
-                  <button onclick="state.activeTab='domains'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='domains'?'bg-slate-900 text-white':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Domains</button>
-                  <button onclick="state.activeTab='workflows'; fetchWorkflows();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='workflows'?'bg-slate-900 text-white':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Workflows</button>
-                  <button onclick="state.activeTab='aegis'; fetchAudit();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='aegis'?'bg-slate-900 text-white':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">AEGIS Ledger</button>
-                  <button onclick="state.activeTab='ai'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='ai'?'bg-slate-900 text-white':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">AI Assistant</button>
+                  <button onclick="state.activeTab='launcher'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='launcher'?'bg-slate-100 text-blue-600':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Marketplace</button>
+                  <button onclick="state.activeTab='domains'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='domains'?'bg-slate-100 text-blue-600':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Domains</button>
+                  <button onclick="state.activeTab='workflows'; fetchWorkflows();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='workflows'?'bg-slate-100 text-blue-600':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">Workflows</button>
+                  <button onclick="state.activeTab='aegis'; fetchAudit();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='aegis'?'bg-slate-100 text-blue-600':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">AEGIS Ledger</button>
+                  <button onclick="state.activeTab='ai'; window.render();" class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition ${state.activeTab==='ai'?'bg-slate-100 text-blue-600':'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}">AI Assistant</button>
                 </nav>
               </div>
 
               <div class="flex items-center space-x-4">
                 <!-- Tenant Switcher (Compact) -->
                 <div class="hidden sm:flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2 py-1">
-                   <span class="text-[9px] font-mono font-bold text-slate-400 mr-2">TENANT:</span>
+                   <span class="text-[9px] font-mono font-bold text-slate-500 mr-2">TENANT:</span>
                    <select onchange="switchTenant(this.value, this.options[this.selectedIndex].text)" class="bg-transparent text-[10px] font-bold text-slate-700 focus:outline-none cursor-pointer">
                     <option value="tenant-default-001" ${state.activeTenantId==='tenant-default-001'?'selected':''}>Jumo Global HQ</option>
                     <option value="org-02" ${state.activeTenantId==='org-02'?'selected':''}>Ministry of Tech</option>
@@ -66,7 +66,7 @@ export const shellTemplate = (state) => {
                           <p class="font-bold text-slate-900">${n.title}</p>
                           <p class="text-slate-500 mt-0.5 text-[10px]">${n.message}</p>
                         </div>
-                      `).join('') : '<p class="py-4 text-slate-400 italic text-center">No active notifications</p>'}
+                      `).join('') : '<p class="py-4 text-slate-500 italic text-center">No active notifications</p>'}
                     </div>
                   ` : ''}
                 </div>
@@ -78,7 +78,7 @@ export const shellTemplate = (state) => {
             </header>
 
             <!-- Breadcrumbs / Secondary Sub-Navigation -->
-            <div class="h-10 bg-slate-50 border-b border-slate-200 px-6 flex items-center text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div class="h-10 bg-slate-50 border-b border-slate-200 px-6 flex items-center text-[10px] font-bold uppercase tracking-wider text-slate-500">
                <div class="flex items-center gap-2">
                  <span class="hover:text-slate-700 cursor-pointer" onclick="window.navigate('/gateway')">Platform</span>
                  <span>/</span>
@@ -90,9 +90,9 @@ export const shellTemplate = (state) => {
                 
               <header class="h-12 bg-white border-b border-slate-100 px-6 flex items-center justify-between shrink-0">
                 <div class="flex items-center space-x-4 w-1/3">
-                  <input type="text" placeholder="Search applications, logs, audit transactions..." oninput="performSearch(this.value)" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-slate-300 font-semibold placeholder:text-slate-400">
+                  <input type="text" placeholder="Search applications, logs, audit transactions..." oninput="performSearch(this.value)" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-slate-300 font-semibold placeholder:text-slate-500">
                 </div>
-                <div class="flex items-center space-x-2 text-[10px] font-mono font-bold text-slate-400">
+                <div class="flex items-center space-x-2 text-[10px] font-mono font-bold text-slate-500">
                   <span>ID: ${state.session?.user?.email || 'admin@jumo.org'}</span>
                   <span>|</span>
                   <button onclick="window.handleLogout()" class="text-rose-500 hover:text-rose-700 uppercase">Sign Out</button>
@@ -102,7 +102,7 @@ export const shellTemplate = (state) => {
               <main class="flex-1 p-8 overflow-y-auto">
                 ${(state.searchResults || []).length > 0 ? `
                   <div class="mb-8 p-6 bg-white rounded-xl border border-slate-200 shadow-xs">
-                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-400 mb-4">Resolved Platform Search Results</h4>
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-4">Resolved Platform Search Results</h4>
                     <div class="space-y-2 text-xs font-semibold">
                       ${(state.searchResults || []).map(r => `
                         <div class="p-3 bg-slate-50 rounded-lg flex items-center justify-between">
@@ -128,7 +128,7 @@ export const shellTemplate = (state) => {
                     ${state.simulatedAppRunning === 'FAAP Financial Ledger' ? `
                       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-semibold">
                         <div class="lg:col-span-5 bg-slate-50 border border-slate-200 p-5 rounded-xl text-xs">
-                          <h5 class="font-bold uppercase text-slate-400 mb-4">Record Financial Ledger Block (Ring-1)</h5>
+                          <h5 class="font-bold uppercase text-slate-500 mb-4">Record Financial Ledger Block (Ring-1)</h5>
                           <form onsubmit="window.recordFaapTransaction(event)" class="space-y-4">
                             <div>
                               <label class="block text-slate-500 mb-1.5">Disbursement Amount</label>
@@ -149,7 +149,7 @@ export const shellTemplate = (state) => {
                                 <option value="EUR">EUR (€)</option>
                               </select>
                             </div>
-                            <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase rounded cursor-pointer transition text-[10px] tracking-wider font-sans">Record & Sign Cryptographically</button>
+                            <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-slate-800 font-bold uppercase rounded cursor-pointer transition text-[10px] tracking-wider font-sans">Record & Sign Cryptographically</button>
                           </form>
                         </div>
                         <div class="lg:col-span-7 space-y-4">
@@ -159,7 +159,7 @@ export const shellTemplate = (state) => {
                               <div class="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between text-xs font-mono">
                                 <div>
                                   <span class="font-bold text-slate-800">${tx.type}</span>
-                                  <p class="text-[9px] text-slate-400 mt-0.5">${tx.id} &bull; ${tx.timestamp}</p>
+                                  <p class="text-[9px] text-slate-500 mt-0.5">${tx.id} &bull; ${tx.timestamp}</p>
                                 </div>
                                 <div class="text-right">
                                   <span class="font-bold text-indigo-600">${tx.amount}</span>
@@ -172,7 +172,7 @@ export const shellTemplate = (state) => {
                       </div>
                     ` : `
                       <div class="p-8 text-center text-xs text-slate-500 font-semibold">
-                        <p class="font-bold uppercase text-slate-400 mb-2">IFrame Shell Container Mockup</p>
+                        <p class="font-bold uppercase text-slate-500 mb-2">IFrame Shell Container Mockup</p>
                         <p>Application context sandbox loaded on Ring-2 memory block. Fully sandbox isolated from Kernel.</p>
                       </div>
                     `}
@@ -199,7 +199,7 @@ export const shellTemplate = (state) => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                           <span class="text-emerald-600 font-bold">Installed</span>
-                          <button onclick="launchSimulationApp('UEOS Workspace Shell')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Launch</button>
+                          <button onclick="launchSimulationApp('UEOS Workspace Shell')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Launch</button>
                         </div>
                       </div>
 
@@ -211,7 +211,7 @@ export const shellTemplate = (state) => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                           <span class="text-emerald-600 font-bold">Installed</span>
-                          <button onclick="launchSimulationApp('FAAP Financial Ledger')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Launch</button>
+                          <button onclick="launchSimulationApp('FAAP Financial Ledger')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Launch</button>
                         </div>
                       </div>
 
@@ -223,7 +223,7 @@ export const shellTemplate = (state) => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                           <span class="text-emerald-600 font-bold">Installed</span>
-                          <button onclick="state.activeTab='workflows'; fetchWorkflows();" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Explore Engine</button>
+                          <button onclick="state.activeTab='workflows'; fetchWorkflows();" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Explore Engine</button>
                         </div>
                       </div>
 
@@ -235,7 +235,7 @@ export const shellTemplate = (state) => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                           <span class="text-emerald-600 font-bold">Installed</span>
-                          <button onclick="state.activeTab='aegis'; fetchAudit();" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Inspect Ledger</button>
+                          <button onclick="state.activeTab='aegis'; fetchAudit();" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Inspect Ledger</button>
                         </div>
                       </div>
 
@@ -247,7 +247,7 @@ export const shellTemplate = (state) => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                           <span class="text-emerald-600 font-bold">Installed</span>
-                          <button onclick="state.activeTab='ai'; window.render();" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Chat AI</button>
+                          <button onclick="state.activeTab='ai'; window.render();" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Chat AI</button>
                         </div>
                       </div>
 
@@ -258,7 +258,7 @@ export const shellTemplate = (state) => {
                           <p class="text-xs text-slate-600 mt-1">Student information registers, class plans and campus finance nodes.</p>
                         </div>
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                          <span class="text-slate-400 font-bold font-semibold">Available</span>
+                          <span class="text-slate-500 font-bold font-semibold">Available</span>
                           <button onclick="alert('Licensing verification required. Request Ring-0 approval.')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold uppercase tracking-wider rounded transition cursor-pointer font-sans">Acquire License</button>
                         </div>
                       </div>
@@ -282,7 +282,7 @@ export const shellTemplate = (state) => {
                             <span class="font-mono text-indigo-600 font-bold uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded text-[10px] border border-indigo-100">${d.version}</span>
                           </div>
                           <p class="text-slate-600 mb-4 leading-relaxed">${d.description}</p>
-                          <div class="flex items-center justify-between font-mono text-[10px] uppercase font-bold text-slate-400">
+                          <div class="flex items-center justify-between font-mono text-[10px] uppercase font-bold text-slate-500">
                             <span>Status: <span class="text-emerald-600 font-extrabold">${d.status}</span></span>
                             <span>Mapped Memory space ID: dmn-${d.id}</span>
                           </div>
@@ -337,7 +337,7 @@ export const shellTemplate = (state) => {
                       </div>
                       <div class="flex items-center space-x-3 text-xs font-bold font-sans">
                         <span id="aegis-ledger-status" class="text-emerald-600 font-mono tracking-wider uppercase">🛡️ Integrity State: SECURE</span>
-                        <button onclick="verifyAegisIntegrity()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white uppercase text-[10px] tracking-wider rounded cursor-pointer transition">Re-Verify Integrity Chain</button>
+                        <button onclick="verifyAegisIntegrity()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white uppercase text-[10px] tracking-wider rounded cursor-pointer transition">Re-Verify Integrity Chain</button>
                       </div>
                     </div>
 
@@ -378,7 +378,7 @@ export const shellTemplate = (state) => {
                       <form onsubmit="window.askAi(event, 'shell-ai-prompt', 'aiResponse')" class="space-y-4">
                         <textarea id="shell-ai-prompt" rows="3" placeholder="e.g. Generate a compliance check log comparing the FAAP Treasury ledger against the AEGIS Zero-Trust security kernel." required class="w-full p-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-600 bg-slate-50 font-semibold"></textarea>
                         <div class="text-right">
-                          <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition cursor-pointer font-sans">Process AI query</button>
+                          <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition cursor-pointer font-sans">Process AI query</button>
                         </div>
                       </form>
                       ${state.aiResponse ? `

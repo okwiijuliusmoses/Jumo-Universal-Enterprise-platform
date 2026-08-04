@@ -143,7 +143,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
       <header className="w-full bg-white border-b border-slate-200 py-4 px-6 sm:px-8 shadow-xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center text-white font-bold text-base shadow-xs">
+            <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center text-slate-800 font-bold text-base shadow-xs">
               JU
             </div>
             <div>
@@ -242,11 +242,11 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
             <button
               type="submit"
               disabled={isAuthenticating}
-              className="w-full mt-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-lg shadow-xs transition-all text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full mt-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 disabled:opacity-60 text-slate-800 font-semibold py-2.5 px-4 rounded-lg shadow-xs transition-all text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer"
             >
               {isAuthenticating ? (
                 <>
-                  <RefreshCw className="h-4 w-4 animate-spin text-white" />
+                  <RefreshCw className="h-4 w-4 animate-spin text-slate-800" />
                   <span>SIGNING IN...</span>
                 </>
               ) : (
@@ -263,7 +263,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               LIVE SYSTEM STATUS
             </span>
-            <span className="text-[10px] font-mono text-slate-400">{statusTimestamp || "CONNECTING..."}</span>
+            <span className="text-[10px] font-mono text-slate-500">{statusTimestamp || "CONNECTING..."}</span>
           </div>
 
           <div className="space-y-2.5 text-xs font-medium text-slate-700">
@@ -316,7 +316,7 @@ export default function PublicPortal({ onLoginSuccess }: PublicPortalProps) {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="font-semibold text-slate-700">JUMO UEOS v4.1</div>
           <div className="text-slate-500">Universal Enterprise Operating System</div>
-          <div className="text-slate-400 font-mono text-[11px]">Secure Multi-Tenant Digital Hybrid Platform</div>
+          <div className="text-slate-500 font-mono text-[11px]">Secure Multi-Tenant Digital Hybrid Platform</div>
         </div>
       </footer>
 

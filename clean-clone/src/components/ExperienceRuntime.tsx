@@ -824,10 +824,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <BookOpen className="h-4 w-4 text-teal-400" />
                     <span>Double-Entry Chart of Accounts (COA)</span>
                   </h3>
@@ -835,7 +835,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </div>
                 <button
                   onClick={loadWorkspaceData}
-                  className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
+                  className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
                 >
                   <RefreshCw className={`h-3 w-3 ${isDataLoading ? "animate-spin" : ""}`} />
                   <span>Refresh Registry</span>
@@ -862,9 +862,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       </tr>
                     ) : (
                       ledgerAccounts.map(acc => (
-                        <tr key={acc.code} className="hover:bg-slate-900/20 transition">
+                        <tr key={acc.code} className="hover:bg-white/20 transition">
                           <td className="py-3 px-4 text-teal-400 font-extrabold">{acc.code}</td>
-                          <td className="py-3 px-4 text-slate-200 font-bold">{acc.name}</td>
+                          <td className="py-3 px-4 text-slate-800 font-bold">{acc.name}</td>
                           <td className="py-3 px-4">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${
                               acc.category === "Asset" 
@@ -880,7 +880,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                               {acc.category}
                             </span>
                           </td>
-                          <td className={`py-3 px-4 text-right font-extrabold ${acc.balance >= 0 ? "text-slate-100" : "text-rose-400"}`}>
+                          <td className={`py-3 px-4 text-right font-extrabold ${acc.balance >= 0 ? "text-slate-900" : "text-rose-400"}`}>
                             ${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </td>
                           <td className="py-3 px-4 text-center">
@@ -907,10 +907,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Left side: List transactions */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <ArrowUpDown className="h-4 w-4 text-teal-400" />
                     <span>Double-Entry Transaction History</span>
                   </h3>
@@ -936,13 +936,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       </tr>
                     ) : (
                       ledgerTransactions.map(tx => (
-                        <tr key={tx.id} className="hover:bg-slate-900/20 transition">
+                        <tr key={tx.id} className="hover:bg-white/20 transition">
                           <td className="py-3 px-4 text-teal-400 font-extrabold">{tx.voucherNumber}</td>
-                          <td className="py-3 px-4 text-slate-300 max-w-xs truncate">{tx.narration}</td>
-                          <td className="py-3 px-4 text-right font-extrabold text-slate-100">
+                          <td className="py-3 px-4 text-slate-600 max-w-xs truncate">{tx.narration}</td>
+                          <td className="py-3 px-4 text-right font-extrabold text-slate-900">
                             {tx.debitAmount > 0 ? `$${tx.debitAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "-"}
                           </td>
-                          <td className="py-3 px-4 text-right font-extrabold text-slate-100">
+                          <td className="py-3 px-4 text-right font-extrabold text-slate-900">
                             {tx.creditAmount > 0 ? `$${tx.creditAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "-"}
                           </td>
                           <td className="py-3 px-4 text-center">
@@ -959,18 +959,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Right side: Creation Form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Create Journal Voucher</span>
               </h3>
               <form onSubmit={handlePostJournal} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1.5">Debit Account Code</label>
+                  <label className="block text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">Debit Account Code</label>
                   <select 
                     value={journalForm.debitAcc} 
                     onChange={e => setJournalForm({...journalForm, debitAcc: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     <option value="1010">1010 - Cash Assets</option>
                     <option value="1020">1020 - Accounts Receivable</option>
@@ -978,11 +978,11 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1.5">Credit Account Code</label>
+                  <label className="block text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">Credit Account Code</label>
                   <select 
                     value={journalForm.creditAcc} 
                     onChange={e => setJournalForm({...journalForm, creditAcc: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     <option value="4010">4010 - Fee Revenue (1.5%)</option>
                     <option value="2010">2010 - Accounts Payable</option>
@@ -990,24 +990,24 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1.5">Posting Amount ($)</label>
+                  <label className="block text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">Posting Amount ($)</label>
                   <input
                     type="number"
                     placeholder="Enter absolute posting amount..."
                     value={journalForm.amount}
                     onChange={e => setJournalForm({...journalForm, amount: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1.5">Narration / Voucher Description</label>
+                  <label className="block text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">Narration / Voucher Description</label>
                   <textarea
                     placeholder="Provide professional auditing context..."
                     value={journalForm.narration}
                     onChange={e => setJournalForm({...journalForm, narration: e.target.value})}
                     rows={3}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500 resize-none"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500 resize-none"
                     required
                   />
                 </div>
@@ -1041,10 +1041,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-400" />
                     <span>Trial Balance & Ledger Parity Audit</span>
                   </h3>
@@ -1061,25 +1061,25 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
-                <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-xl space-y-1">
+                <div className="bg-white/40 border border-slate-900 p-5 rounded-xl space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase tracking-widest block">Debit Totals</span>
-                  <div className="text-xl font-extrabold text-slate-100">
+                  <div className="text-xl font-extrabold text-slate-900">
                     ${(trialBalance?.totalDebits ?? 15400250).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </div>
                   <span className="text-[9px] text-emerald-400 block flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Fully verified
                   </span>
                 </div>
-                <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-xl space-y-1">
+                <div className="bg-white/40 border border-slate-900 p-5 rounded-xl space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase tracking-widest block">Credit Totals</span>
-                  <div className="text-xl font-extrabold text-slate-100">
+                  <div className="text-xl font-extrabold text-slate-900">
                     ${(trialBalance?.totalCredits ?? 15400250).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </div>
                   <span className="text-[9px] text-emerald-400 block flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Fully verified
                   </span>
                 </div>
-                <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-xl space-y-1">
+                <div className="bg-white/40 border border-slate-900 p-5 rounded-xl space-y-1">
                   <span className="text-[10px] text-slate-500 uppercase tracking-widest block">Trial Balance Discrepancy</span>
                   <div className="text-xl font-extrabold text-emerald-400">
                     $0.00 offset
@@ -1090,9 +1090,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-900/25 border border-slate-900 rounded-xl space-y-2">
-                <h5 className="font-bold text-xs text-slate-300">Continuous Audit Policy Gating</h5>
-                <p className="text-xs text-slate-400 leading-normal">
+              <div className="p-4 bg-white/25 border border-slate-900 rounded-xl space-y-2">
+                <h5 className="font-bold text-xs text-slate-600">Continuous Audit Policy Gating</h5>
+                <p className="text-xs text-slate-500 leading-normal">
                   JUMO Universal Enterprise Operating System (UEOS) enforces atomic double-entry operations at the micro-kernel database layer. Any operational posting that creates a non-zero parity offset is automatically trapped, rejected, and quarantined. The 1.5% Master fintech clearing fee automatically posts to the sovereign treasury pool on all simulated transactional triggers.
                 </p>
               </div>
@@ -1111,10 +1111,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Left Column: Member List */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Users className="h-4 w-4 text-teal-400" />
                     <span>SACCO Active Member Registry</span>
                   </h3>
@@ -1124,14 +1124,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
               <div className="space-y-3 font-mono text-xs">
                 {saccoMembers.map(member => (
-                  <div key={member.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-4 rounded-xl hover:bg-slate-900/60 transition">
+                  <div key={member.id} className="flex justify-between items-center bg-white/40 border border-slate-900 p-4 rounded-xl hover:bg-white/60 transition">
                     <div className="space-y-1">
-                      <span className="text-slate-200 font-extrabold text-sm block">{member.name}</span>
+                      <span className="text-slate-800 font-extrabold text-sm block">{member.name}</span>
                       <span className="text-slate-500 text-[10px] block">Joined: {member.joinDate} &bull; Registry Claim: <span className="text-teal-400 font-bold">{member.id}</span></span>
                     </div>
                     <div className="text-right space-y-1">
                       <span className="text-emerald-400 font-extrabold text-base block">${member.balance.toLocaleString()}</span>
-                      <span className="text-[10px] text-slate-400 block bg-slate-900 px-2 py-1 rounded inline-block font-bold">Active Loans: {member.activeLoans}</span>
+                      <span className="text-[10px] text-slate-500 block bg-white px-2 py-1 rounded inline-block font-bold">Active Loans: {member.activeLoans}</span>
                     </div>
                   </div>
                 ))}
@@ -1139,30 +1139,30 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Right Column: Register Member */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Register Cooperative Member</span>
               </h3>
               <div className="space-y-4 text-xs font-mono">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Applicant Full Name</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Applicant Full Name</label>
                   <input
                     type="text"
                     placeholder="Enter legal name..."
                     value={newMemberName}
                     onChange={e => setNewMemberName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Initial Savings Share Deposit ($)</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Initial Savings Share Deposit ($)</label>
                   <input
                     type="number"
                     placeholder="Enter deposit value..."
                     value={newMemberDeposit}
                     onChange={e => setNewMemberDeposit(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1185,18 +1185,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-2 gap-6"
           >
             {/* Left Panel: Loan Evaluator inputs */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Coins className="h-4 w-4 text-teal-400 animate-pulse" />
                 <span>Credit Risk Evaluation Model</span>
               </h3>
               <form onSubmit={handleEvaluateLoan} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Target Cooperative Member</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Target Cooperative Member</label>
                   <select 
                     value={selectedMemberId} 
                     onChange={e => setSelectedMemberId(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     {saccoMembers.map(m => (
                       <option key={m.id} value={m.id}>{m.name} (Shares: ${m.balance.toLocaleString()})</option>
@@ -1204,21 +1204,21 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Requested Loan Limit ($)</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Requested Loan Limit ($)</label>
                   <input
                     type="number"
                     value={loanForm.amount}
                     onChange={e => setLoanForm({...loanForm, amount: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Pledged Audited Collateral</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Pledged Audited Collateral</label>
                   <input
                     type="text"
                     value={loanForm.collateral}
                     onChange={e => setLoanForm({...loanForm, collateral: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1237,9 +1237,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Right Panel: Risk Model Report output */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 flex flex-col justify-between">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 flex flex-col justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                   <FileText className="h-4 w-4 text-teal-400" />
                   <span>Cognitive Assessment Report</span>
                 </h3>
@@ -1249,7 +1249,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     animate={{ opacity: 1, scale: 1 }}
                     className="mt-4 font-mono text-xs space-y-4"
                   >
-                    <div className="flex justify-between items-center p-3 bg-slate-900/60 border border-slate-900 rounded-xl">
+                    <div className="flex justify-between items-center p-3 bg-white/60 border border-slate-900 rounded-xl">
                       <span className="text-slate-500 uppercase tracking-widest text-[9px] font-bold">Risk Assessment Result</span>
                       <span className={`font-extrabold px-3 py-1 rounded-full text-[10px] border tracking-wider uppercase ${
                         loanReport.decision === "Approved" 
@@ -1260,18 +1260,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       </span>
                     </div>
 
-                    <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl leading-relaxed text-slate-300">
+                    <div className="p-4 bg-white/30 border border-slate-900 rounded-xl leading-relaxed text-slate-600">
                       {loanReport.reason}
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 text-[10px]">
-                      <div className="p-3 bg-slate-900/40 border border-slate-900 rounded-xl">
+                      <div className="p-3 bg-white/40 border border-slate-900 rounded-xl">
                         <span className="text-slate-500 block uppercase text-[8px] mb-1">Annual Interest Rate</span>
                         <span className="text-teal-400 font-extrabold text-sm">{loanReport.metrics?.interestRate}</span>
                       </div>
-                      <div className="p-3 bg-slate-900/40 border border-slate-900 rounded-xl">
+                      <div className="p-3 bg-white/40 border border-slate-900 rounded-xl">
                         <span className="text-slate-500 block uppercase text-[8px] mb-1">Maximum Allowed Limit</span>
-                        <span className="text-slate-200 font-extrabold text-sm">${loanReport.metrics?.maxApprovedAmount?.toLocaleString()}</span>
+                        <span className="text-slate-800 font-extrabold text-sm">${loanReport.metrics?.maxApprovedAmount?.toLocaleString()}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -1283,7 +1283,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 )}
               </div>
 
-              <div className="p-3 bg-slate-900/20 border border-slate-900 rounded-xl text-[10px] font-mono text-slate-500 leading-normal">
+              <div className="p-3 bg-white/20 border border-slate-900 rounded-xl text-[10px] font-mono text-slate-500 leading-normal">
                 Policy constraint check (1:3 collateral multiplier rule) is continuously simulated against active members' deposit shares inside local memory cache layers.
               </div>
             </div>
@@ -1302,10 +1302,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Congregants List */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Users className="h-4 w-4 text-teal-400" />
                     <span>Diocesan Parish Congregants Directory</span>
                   </h3>
@@ -1324,17 +1324,17 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       <th className="py-3 px-4 text-center">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-900/60 text-slate-300">
+                  <tbody className="divide-y divide-slate-900/60 text-slate-600">
                     {churchCongregants.map(c => (
-                      <tr key={c.id} className="hover:bg-slate-900/20 transition">
+                      <tr key={c.id} className="hover:bg-white/20 transition">
                         <td className="py-3 px-4 text-teal-400 font-extrabold">{c.id}</td>
-                        <td className="py-3 px-4 font-bold text-slate-100">{c.name}</td>
+                        <td className="py-3 px-4 font-bold text-slate-900">{c.name}</td>
                         <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 rounded text-[9px] bg-slate-900 border border-slate-800 text-slate-400 font-bold uppercase">
+                          <span className="px-2 py-0.5 rounded text-[9px] bg-white border border-slate-200 text-slate-500 font-bold uppercase">
                             {c.role}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-slate-400">{c.joined}</td>
+                        <td className="py-3 px-4 text-slate-500">{c.joined}</td>
                         <td className="py-3 px-4 text-center">
                           <span className="text-[9px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">
                             {c.status}
@@ -1348,28 +1348,28 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Register Congregant Form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Admit New Congregant</span>
               </h3>
               <div className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Legal Full Name</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Legal Full Name</label>
                   <input
                     type="text"
                     placeholder="Enter full name..."
                     value={newCongregantName}
                     onChange={e => setNewCongregantName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Parish Liturgical Role</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Parish Liturgical Role</label>
                   <select
                     value={newCongregantRole}
                     onChange={e => setNewCongregantRole(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     <option value="Congregant">Congregant / Layperson</option>
                     <option value="Choir Leader">Choir Leader / Vocalist</option>
@@ -1397,28 +1397,28 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Contribution Recorder Form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Coins className="h-4 w-4 text-teal-400" />
                 <span>Record Congregational Tithe</span>
               </h3>
               <form onSubmit={handlePostChurchOffering} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Payer Name / Family</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Payer Name / Family</label>
                   <input
                     type="text"
                     required
                     value={churchOfferingForm.contributor}
                     onChange={e => setChurchOfferingForm({...churchOfferingForm, contributor: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Contribution Code</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Contribution Code</label>
                   <select
                     value={churchOfferingForm.type}
                     onChange={e => setChurchOfferingForm({...churchOfferingForm, type: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     <option value="Tithes">Tithing (10% Income Pledge)</option>
                     <option value="Offerings">General Parish Thanksgiving Offering</option>
@@ -1426,19 +1426,19 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Offering Amount ($)</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Offering Amount ($)</label>
                   <input
                     type="number"
                     required
                     value={churchOfferingForm.amount}
                     onChange={e => setChurchOfferingForm({...churchOfferingForm, amount: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isPostingChurchOffering}
-                  className="w-full bg-teal-500 hover:bg-teal-400 disabled:bg-slate-800 text-slate-950 font-extrabold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer flex justify-center items-center gap-1.5 shadow-lg shadow-teal-500/10"
+                  className="w-full bg-teal-500 hover:bg-teal-400 disabled:bg-slate-100 text-slate-950 font-extrabold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer flex justify-center items-center gap-1.5 shadow-lg shadow-teal-500/10"
                 >
                   {isPostingChurchOffering ? <RefreshCw className="h-4 w-4 animate-spin text-slate-950" /> : <Plus className="h-4 w-4" />}
                   <span>Commit Tithe Ledger Post</span>
@@ -1447,27 +1447,27 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Platform FAAP Double-Entry Integration Panel */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Landmark className="h-4 w-4 text-emerald-400" />
                 <span>Shared Core Financial Architecture (FAAP)</span>
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-mono">
+              <p className="text-xs text-slate-500 leading-relaxed font-mono">
                 Under JUMO UEOS canonical platform guidelines, the Diocesan Church ERP does not duplicate financial tables. Offering posts execute transaction entries directly against the master FAAP ledger:
               </p>
-              <div className="bg-slate-900/60 border border-slate-900 p-5 rounded-2xl space-y-3 font-mono text-[11px] leading-relaxed">
-                <div className="flex justify-between font-bold text-slate-300 uppercase text-[9px] border-b border-slate-800 pb-2 mb-1.5">
+              <div className="bg-white/60 border border-slate-900 p-5 rounded-2xl space-y-3 font-mono text-[11px] leading-relaxed">
+                <div className="flex justify-between font-bold text-slate-600 uppercase text-[9px] border-b border-slate-200 pb-2 mb-1.5">
                   <span>Entry Ledger Detail</span>
                   <span>Impacted Account</span>
                 </div>
-                <div className="flex justify-between items-center text-slate-200">
+                <div className="flex justify-between items-center text-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="text-emerald-400 font-extrabold">[DEBIT]</span>
                     <span>Increase Parish Cash Reserves</span>
                   </div>
                   <span className="text-teal-400">1010 - Cash Assets</span>
                 </div>
-                <div className="flex justify-between items-center text-slate-200">
+                <div className="flex justify-between items-center text-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="text-amber-500 font-extrabold">[CREDIT]</span>
                     <span>Tithing Revenue Recognition (1.5% Fee)</span>
@@ -1477,7 +1477,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               </div>
               <div className="p-4 bg-teal-950/10 border border-teal-900/40 rounded-xl flex items-start gap-3">
                 <ShieldCheck className="h-5 w-5 text-teal-400 shrink-0 mt-0.5" />
-                <p className="text-[11.5px] text-slate-400 leading-normal font-mono">
+                <p className="text-[11.5px] text-slate-500 leading-normal font-mono">
                   <strong>Zero-Trust Auditing Policy Enforced:</strong> All tithe collections are immediately balance-verified. If any journal entry is out of parity by even $0.01, the system halts, issues a security log threat, and rejects the session block.
                 </p>
               </div>
@@ -1494,20 +1494,20 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Active Liturgical Events Timeline */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Calendar className="h-4 w-4 text-teal-400" />
                 <span>Parish Liturgical & Synod Events</span>
               </h3>
               <div className="space-y-4 font-mono text-xs">
                 {churchEvents.map(e => (
-                  <div key={e.id} className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl flex justify-between items-center hover:bg-slate-900/60 transition">
+                  <div key={e.id} className="bg-white/40 border border-slate-900 p-4 rounded-xl flex justify-between items-center hover:bg-white/60 transition">
                     <div className="space-y-1.5">
-                      <h4 className="text-slate-100 font-extrabold text-sm">{e.title}</h4>
-                      <span className="text-slate-500 text-[10px] block">Location: <span className="text-slate-400 font-bold">{e.location}</span></span>
+                      <h4 className="text-slate-900 font-extrabold text-sm">{e.title}</h4>
+                      <span className="text-slate-500 text-[10px] block">Location: <span className="text-slate-500 font-bold">{e.location}</span></span>
                     </div>
                     <div className="text-right">
-                      <span className="text-teal-400 font-bold block bg-slate-950 border border-slate-850 px-2.5 py-1 rounded text-[10.5px]">
+                      <span className="text-teal-400 font-bold block bg-slate-50 border border-slate-850 px-2.5 py-1 rounded text-[10.5px]">
                         {e.date}
                       </span>
                     </div>
@@ -1517,43 +1517,43 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Schedule Event Form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Schedule New Liturgical Event</span>
               </h3>
               <div className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Event Title</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Event Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Sunday Choir Thanksgiving..."
                     value={newEventTitle}
                     onChange={e => setNewEventTitle(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Liturgical Date / Frequency</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Liturgical Date / Frequency</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 2026-08-25 10:00 AM..."
                     value={newEventDate}
                     onChange={e => setNewEventDate(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Sanctuary Location</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Sanctuary Location</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Parish Chapel Room..."
                     value={newEventLocation}
                     onChange={e => setNewEventLocation(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1579,16 +1579,16 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Donation Pipeline List */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Award className="h-4 w-4 text-teal-400" />
                 <span>NGO Donor & Grants Pipeline</span>
               </h3>
               <div className="space-y-3 font-mono text-xs">
                 {ngoDonations.map(don => (
-                  <div key={don.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-4 rounded-xl hover:bg-slate-900/60 transition">
+                  <div key={don.id} className="flex justify-between items-center bg-white/40 border border-slate-900 p-4 rounded-xl hover:bg-white/60 transition">
                     <div className="space-y-1">
-                      <span className="text-slate-100 font-extrabold text-sm block">{don.donor}</span>
+                      <span className="text-slate-900 font-extrabold text-sm block">{don.donor}</span>
                       <span className="text-slate-500 text-[10px] block">Grant Ref: <span className="text-teal-400">{don.grantCode}</span></span>
                     </div>
                     <div className="text-right space-y-1">
@@ -1603,42 +1603,42 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Log Donation Form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Log Grant Donation</span>
               </h3>
               <form onSubmit={handlePostNgoDonation} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Donor / Foundation Name</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Donor / Foundation Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Bill & Melinda Gates..."
                     value={newDonorName}
                     onChange={e => setNewDonorName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Specific Grant Ref Code</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Specific Grant Ref Code</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. HEALTH-WASH-2026..."
                     value={newDonorGrantCode}
                     onChange={e => setNewDonorGrantCode(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Grant Amount ($)</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Grant Amount ($)</label>
                   <input
                     type="number"
                     required
                     value={newDonorAmount}
                     onChange={e => setNewDonorAmount(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1661,15 +1661,15 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
             {ngoPrograms.map(prog => (
-              <div key={prog.id} className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
+              <div key={prog.id} className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
                 <div>
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{prog.id}</span>
                     <Globe className="h-4 w-4 text-teal-400" />
                   </div>
-                  <h4 className="font-bold text-slate-100 text-sm font-sans mb-1.5 leading-normal">{prog.name}</h4>
-                  <div className="text-[11.5px] font-mono text-slate-400 leading-normal mb-4">
-                    Target Outcome: <span className="text-slate-200 font-bold">{prog.target}</span>
+                  <h4 className="font-bold text-slate-900 text-sm font-sans mb-1.5 leading-normal">{prog.name}</h4>
+                  <div className="text-[11.5px] font-mono text-slate-500 leading-normal mb-4">
+                    Target Outcome: <span className="text-slate-800 font-bold">{prog.target}</span>
                   </div>
                 </div>
 
@@ -1678,7 +1678,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     <span>Program Progress</span>
                     <span className="text-teal-400">{prog.progress}%</span>
                   </div>
-                  <div className="w-full bg-slate-900 border border-slate-850 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-white border border-slate-850 h-2 rounded-full overflow-hidden">
                     <div className="bg-teal-500 h-full rounded-full" style={{ width: `${prog.progress}%` }}></div>
                   </div>
                   <div className="flex justify-between items-center text-[10px] pt-3 border-t border-slate-900">
@@ -1703,8 +1703,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Graduates Chapter Table */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Compass className="h-4 w-4 text-teal-400" />
                 <span>Alumni Chapters graduates database</span>
               </h3>
@@ -1719,13 +1719,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       <th className="py-3 px-4">Secure Contact</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-900/60 text-slate-300">
+                  <tbody className="divide-y divide-slate-900/60 text-slate-600">
                     {alumniMembers.map(a => (
-                      <tr key={a.id} className="hover:bg-slate-900/20 transition">
+                      <tr key={a.id} className="hover:bg-white/20 transition">
                         <td className="py-3 px-4 text-teal-400 font-extrabold">{a.id}</td>
-                        <td className="py-3 px-4 font-bold text-slate-100">{a.name}</td>
+                        <td className="py-3 px-4 font-bold text-slate-900">{a.name}</td>
                         <td className="py-3 px-4 text-center font-extrabold text-teal-300">{a.classYear}</td>
-                        <td className="py-3 px-4 text-slate-400">{a.profession}</td>
+                        <td className="py-3 px-4 text-slate-500">{a.profession}</td>
                         <td className="py-3 px-4 text-slate-500 font-bold italic">{a.contact}</td>
                       </tr>
                     ))}
@@ -1735,29 +1735,29 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Add Alumni form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Record Class Graduate</span>
               </h3>
               <div className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Graduate Full Name</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Graduate Full Name</label>
                   <input
                     type="text"
                     required
                     placeholder="Enter legal name..."
                     value={newAlumniName}
                     onChange={e => setNewAlumniName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Class Year</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Class Year</label>
                   <select
                     value={newAlumniClass}
                     onChange={e => setNewAlumniClass(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     <option value="1998">Class of 1998 (Memorial Chapter)</option>
                     <option value="2005">Class of 2005 (Fintech Pioneers)</option>
@@ -1767,14 +1767,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Active Chapter Profession</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Active Chapter Profession</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Senior Software Engineer..."
                     value={newAlumniProfession}
                     onChange={e => setNewAlumniProfession(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1797,8 +1797,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Active Class Gift Campaigns */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-6">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-6">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Coins className="h-4 w-4 text-teal-400 animate-pulse" />
                 <span>Alumni Endowment & Class Gift Campaigns</span>
               </h3>
@@ -1806,9 +1806,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 {alumniCampaigns.map(camp => {
                   const pct = Math.min(100, Math.floor((camp.pledged / camp.goal) * 100));
                   return (
-                    <div key={camp.id} className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl space-y-3 font-mono text-xs">
+                    <div key={camp.id} className="p-5 bg-white/40 border border-slate-900 rounded-2xl space-y-3 font-mono text-xs">
                       <div className="flex justify-between items-start">
-                        <h4 className="text-slate-100 font-extrabold text-sm font-sans">{camp.name}</h4>
+                        <h4 className="text-slate-900 font-extrabold text-sm font-sans">{camp.name}</h4>
                         <span className="text-[10px] text-slate-500 uppercase tracking-widest">{camp.id}</span>
                       </div>
                       <div className="space-y-2">
@@ -1816,12 +1816,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                           <span>Total Pledged Trust Fund</span>
                           <span>{pct}% Completed</span>
                         </div>
-                        <div className="w-full bg-slate-900 border border-slate-850 h-2.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-white border border-slate-850 h-2.5 rounded-full overflow-hidden">
                           <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${pct}%` }}></div>
                         </div>
                       </div>
                       <div className="flex justify-between text-[11px] pt-2 border-t border-slate-900/60">
-                        <span className="text-slate-500">Fund Goal: <strong className="text-slate-300 font-extrabold">${camp.goal.toLocaleString()}</strong></span>
+                        <span className="text-slate-500">Fund Goal: <strong className="text-slate-600 font-extrabold">${camp.goal.toLocaleString()}</strong></span>
                         <span className="text-emerald-400 font-extrabold">Active Pledges: ${camp.pledged.toLocaleString()} ({camp.donorsCount} Alumni Payer Claims)</span>
                       </div>
                     </div>
@@ -1831,18 +1831,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Pledge contribution form */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Pledge Class Gift</span>
               </h3>
               <form onSubmit={handlePostAlumniGift} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Select Active Campaign</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Select Active Campaign</label>
                   <select
                     value={newCampaignContribution.campaignId}
                     onChange={e => setNewCampaignContribution({...newCampaignContribution, campaignId: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     {alumniCampaigns.map(c => (
                       <option key={c.id} value={c.id}>{c.name}</option>
@@ -1850,11 +1850,11 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Alumni Donor Payer</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Alumni Donor Payer</label>
                   <select
                     value={newCampaignContribution.alumniName}
                     onChange={e => setNewCampaignContribution({...newCampaignContribution, alumniName: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 font-bold focus:outline-none focus:border-teal-500"
                   >
                     {alumniMembers.map(a => (
                       <option key={a.id} value={a.name}>{a.name} ({a.classYear})</option>
@@ -1862,13 +1862,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Endowment Pledge ($)</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Endowment Pledge ($)</label>
                   <input
                     type="number"
                     required
                     value={newCampaignContribution.amount}
                     onChange={e => setNewCampaignContribution({...newCampaignContribution, amount: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -1901,10 +1901,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Health & Live Telemetry Graphs */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-6">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-6">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Activity className="h-4 w-4 text-teal-400" />
                     <span>UEOS Core Kernel Telemetry</span>
                   </h3>
@@ -1917,28 +1917,28 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
               {/* Dynamic Metrics grids */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs">
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-1">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-1">
                   <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">CPU Core Load</span>
-                  <div className="text-lg font-extrabold text-slate-100">{systemMetrics.cpu}%</div>
-                  <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div className="text-lg font-extrabold text-slate-900">{systemMetrics.cpu}%</div>
+                  <div className="w-full bg-slate-50 h-1.5 rounded-full overflow-hidden mt-2">
                     <div className="bg-teal-400 h-full rounded-full" style={{ width: `${systemMetrics.cpu}%` }}></div>
                   </div>
                 </div>
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-1">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-1">
                   <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Heap Memory</span>
-                  <div className="text-lg font-extrabold text-slate-100">{systemMetrics.memory}%</div>
-                  <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div className="text-lg font-extrabold text-slate-900">{systemMetrics.memory}%</div>
+                  <div className="w-full bg-slate-50 h-1.5 rounded-full overflow-hidden mt-2">
                     <div className="bg-emerald-400 h-full rounded-full" style={{ width: `${systemMetrics.memory}%` }}></div>
                   </div>
                 </div>
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-1">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-1">
                   <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">I/O Sync Channels</span>
-                  <div className="text-lg font-extrabold text-slate-100">{systemMetrics.io} active</div>
+                  <div className="text-lg font-extrabold text-slate-900">{systemMetrics.io} active</div>
                   <span className="text-[8px] text-emerald-400 font-bold block mt-1.5 flex items-center gap-1">
                     <CheckCircle2 className="h-2.5 w-2.5" /> Synchronized
                   </span>
                 </div>
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-1">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-1">
                   <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Replication Nodes</span>
                   <div className="text-lg font-extrabold text-teal-400">{systemMetrics.nodesCount} Online</div>
                   <span className="text-[8px] text-slate-500 block mt-1.5 font-bold">AWS/GCP Cross-Cloud</span>
@@ -1946,15 +1946,15 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               </div>
 
               {/* Advanced diagnostic command triggers */}
-              <div className="p-5 bg-slate-900/25 border border-slate-900 rounded-xl space-y-3 font-mono text-xs">
-                <h4 className="font-bold text-slate-300 uppercase tracking-widest text-[9px]">Sovereign Operator Commands</h4>
+              <div className="p-5 bg-white/25 border border-slate-900 rounded-xl space-y-3 font-mono text-xs">
+                <h4 className="font-bold text-slate-600 uppercase tracking-widest text-[9px]">Sovereign Operator Commands</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <button
                     onClick={() => {
                       addToast("info", "Executing memory sweep...");
                       setTimeout(() => addToast("success", "Heap Garbage Collection forced. 142MB memory released."), 1000);
                     }}
-                    className="bg-slate-900 hover:bg-slate-850 border border-slate-800 p-3 rounded-xl hover:text-teal-300 text-left cursor-pointer transition flex items-center justify-between font-bold text-[11px]"
+                    className="bg-white hover:bg-slate-850 border border-slate-200 p-3 rounded-xl hover:text-teal-300 text-left cursor-pointer transition flex items-center justify-between font-bold text-[11px]"
                   >
                     <span>Force Heap Garbage Collection</span>
                     <Wrench className="h-3.5 w-3.5 text-slate-500" />
@@ -1964,7 +1964,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       addToast("info", "Checking DNS and cluster sync state...");
                       setTimeout(() => addToast("success", "Cross-Cloud Parity fully synchronized on all 12 container hubs."), 1200);
                     }}
-                    className="bg-slate-900 hover:bg-slate-850 border border-slate-800 p-3 rounded-xl hover:text-teal-300 text-left cursor-pointer transition flex items-center justify-between font-bold text-[11px]"
+                    className="bg-white hover:bg-slate-850 border border-slate-200 p-3 rounded-xl hover:text-teal-300 text-left cursor-pointer transition flex items-center justify-between font-bold text-[11px]"
                   >
                     <span>Sync Distributed Nodes Parity</span>
                     <Network className="h-3.5 w-3.5 text-slate-500" />
@@ -1974,19 +1974,19 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Operator Control Box */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Settings className="h-4 w-4 text-teal-400" />
                 <span>Micro-Kernel Diagnostics</span>
               </h3>
-              <div className="space-y-3 font-mono text-xs leading-relaxed text-slate-400">
+              <div className="space-y-3 font-mono text-xs leading-relaxed text-slate-500">
                 <p>
                   This terminal provides atomic debugging hooks into JUMO UEOS Container Ingress routing, ledger thread limits, and database pools.
                 </p>
-                <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 text-slate-500 text-[10px] space-y-1.5">
-                  <div>Vite Ingress Route: <span className="text-slate-300 font-bold">PORT 3000 (Reverse Proxied)</span></div>
-                  <div>Storage Engine: <span className="text-slate-300 font-bold">Firestore / SQLite Hybrid</span></div>
-                  <div>Auth Gateway: <span className="text-slate-300 font-bold">Zero-Trust Security Filter</span></div>
+                <div className="bg-white p-3 rounded-xl border border-slate-850 text-slate-500 text-[10px] space-y-1.5">
+                  <div>Vite Ingress Route: <span className="text-slate-600 font-bold">PORT 3000 (Reverse Proxied)</span></div>
+                  <div>Storage Engine: <span className="text-slate-600 font-bold">Firestore / SQLite Hybrid</span></div>
+                  <div>Auth Gateway: <span className="text-slate-600 font-bold">Zero-Trust Security Filter</span></div>
                 </div>
                 <button
                   onClick={async () => {
@@ -2003,7 +2003,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       addToast("error", `Ingress connection failed: ${e.message}`);
                     }
                   }}
-                  className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-extrabold py-2.5 rounded-xl text-center transition cursor-pointer flex justify-center items-center gap-2"
+                  className="w-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-extrabold py-2.5 rounded-xl text-center transition cursor-pointer flex justify-center items-center gap-2"
                 >
                   <FileText className="h-4 w-4 text-teal-400" />
                   <span>Execute DB Integrity Check</span>
@@ -2022,10 +2022,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Active Secrets Vault List */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Key className="h-4 w-4 text-teal-400" />
                     <span>AES-256 Encrypted Secrets Vault</span>
                   </h3>
@@ -2033,7 +2033,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </div>
                 <button
                   onClick={loadOwnerRoomData}
-                  className="text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                  className="text-slate-500 hover:text-slate-600 transition cursor-pointer"
                 >
                   <RefreshCw className="h-4 w-4" />
                 </button>
@@ -2044,9 +2044,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   <div className="py-8 text-center text-slate-600">No active keys registered. Add credentials via the administrator panel.</div>
                 ) : (
                   ownerSecrets.map(sec => (
-                    <div key={sec.key} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-3.5 rounded-xl hover:bg-slate-900/60 transition">
+                    <div key={sec.key} className="flex justify-between items-center bg-white/40 border border-slate-900 p-3.5 rounded-xl hover:bg-white/60 transition">
                       <div className="space-y-1">
-                        <span className="text-slate-200 font-extrabold text-sm block flex items-center gap-1.5">
+                        <span className="text-slate-800 font-extrabold text-sm block flex items-center gap-1.5">
                           <Lock className="h-3.5 w-3.5 text-slate-500" />
                           <span>{sec.key}</span>
                         </span>
@@ -2071,7 +2071,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                               addToast("error", `Reveal failed: ${e.message}`);
                             }
                           }}
-                          className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 p-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition flex items-center gap-1.5"
+                          className="bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 p-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition flex items-center gap-1.5"
                         >
                           <Eye className="h-3.5 w-3.5 text-slate-500" />
                           <span>Decrypt</span>
@@ -2090,32 +2090,32 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Secrets Manager Control Panel */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Plus className="h-4 w-4 text-teal-400" />
                 <span>Register Secret Key</span>
               </h3>
               <form onSubmit={handleRegisterSecret} className="space-y-4 font-mono text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Secret Key Name</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Secret Key Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. GEMINI_API_KEY..."
                     value={newSecretKey}
                     onChange={e => setNewSecretKey(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500 uppercase"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500 uppercase"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1.5 uppercase tracking-wider text-[10px]">Production Key Value</label>
+                  <label className="block text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Production Key Value</label>
                   <input
                     type="password"
                     required
                     placeholder="Enter confidential token value..."
                     value={newSecretVal}
                     onChange={e => setNewSecretVal(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <button
@@ -2138,10 +2138,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             className="grid grid-cols-1 xl:grid-cols-3 gap-6"
           >
             {/* Security Threat Stream */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="xl:col-span-2 bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Terminal className="h-4 w-4 text-rose-500 animate-pulse" />
                     <span>Real-Time Intrusion Threat Stream</span>
                   </h3>
@@ -2157,7 +2157,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </button>
               </div>
 
-              <div className="bg-slate-900 border border-slate-850 p-5 rounded-2xl font-mono text-[11px] leading-relaxed max-h-[400px] overflow-y-auto space-y-2.5 text-slate-400">
+              <div className="bg-white border border-slate-850 p-5 rounded-2xl font-mono text-[11px] leading-relaxed max-h-[400px] overflow-y-auto space-y-2.5 text-slate-500">
                 {securityThreats.length === 0 ? (
                   <div className="text-slate-600 text-center py-8 flex flex-col items-center gap-2">
                     <Shield className="h-6 w-6 text-slate-700 animate-pulse" />
@@ -2165,10 +2165,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   </div>
                 ) : (
                   securityThreats.map((threat, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
+                    <div key={idx} className="flex items-start gap-2.5 p-2 bg-slate-50/40 rounded-lg border border-slate-900">
                       <span className="text-rose-500 shrink-0 font-extrabold">[ATTACK-BLOCKED]</span>
                       <div className="space-y-1">
-                        <p className="text-slate-200 font-bold">{threat.description || threat.signature}</p>
+                        <p className="text-slate-800 font-bold">{threat.description || threat.signature}</p>
                         <span className="text-[9.5px] text-slate-500">Source IP: <strong className="text-teal-400 font-bold">{threat.ip || "102.164.88.22"}</strong> &bull; Protocol: HTTP Ingress TLSv1.3 &bull; Threat Level: <span className="text-rose-400 font-bold uppercase">{threat.severity || "HIGH"}</span></span>
                       </div>
                     </div>
@@ -2178,15 +2178,15 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* Telemetry Auditing Panel */}
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit font-mono text-xs leading-relaxed text-slate-400">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4 h-fit font-mono text-xs leading-relaxed text-slate-500">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <ShieldCheck className="h-4 w-4 text-teal-400" />
                 <span>Zero-Trust SecOps Policy</span>
               </h3>
               <p>
                 All workspace sessions log administrative events under the `/api/ueos/security/audit-logs` endpoint. Local JSON cache logs sync automatically to regional buckets for non-repudiation:
               </p>
-              <div className="space-y-2 text-[10px] bg-slate-900 p-4 rounded-xl border border-slate-850 text-slate-500">
+              <div className="space-y-2 text-[10px] bg-white p-4 rounded-xl border border-slate-850 text-slate-500">
                 <div className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" /> SSH Key Decryption Audited</div>
                 <div className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" /> CORS Domain Policies Restricted</div>
                 <div className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" /> AES-256 Secrets Store Enforced</div>
@@ -2209,10 +2209,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Coins className="h-4 w-4 text-teal-400" />
                     <span>Master reserves &amp; Fee Splits</span>
                   </h3>
@@ -2220,7 +2220,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </div>
                 <button
                   onClick={loadWorkspaceData}
-                  className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
+                  className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
                 >
                   <RefreshCw className={`h-3 w-3 ${isDataLoading ? "animate-spin" : ""}`} />
                   <span>Refresh stats</span>
@@ -2228,22 +2228,22 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-2">
                   <span className="text-slate-500 text-[10px] uppercase">JUMO Fee Reserves Balance</span>
                   <div className="text-lg font-extrabold text-teal-400">
                     ${v1TreasurySummary?.treasuryReserves?.toLocaleString() || "15,400,250"}
                   </div>
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-500">
                     Auto-credited on every transactions clear. Status: <span className="text-emerald-400">Healthy</span>
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/40 border border-slate-900 rounded-xl space-y-2">
                   <span className="text-slate-500 text-[10px] uppercase">Total Fees Processed</span>
-                  <div className="text-lg font-bold text-slate-200">
+                  <div className="text-lg font-bold text-slate-800">
                     ${v1TreasurySummary?.feeCollected?.toLocaleString() || "231,003"}
                   </div>
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-500">
                     Global 1.5% split rate active. Status: <span className="text-teal-400">Enforced</span>
                   </div>
                 </div>
@@ -2259,8 +2259,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <ArrowUpDown className="h-4 w-4 text-teal-400" />
                 <span>FinTech Settlements Clearing Log</span>
               </h3>
@@ -2276,17 +2276,17 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-900/60">
-                    <tr className="hover:bg-slate-900/30">
+                    <tr className="hover:bg-white/30">
                       <td className="py-3 px-4 text-teal-400 font-bold">TX-SET-8812</td>
                       <td className="py-3 px-4">1010 Dr / 4010 Cr</td>
-                      <td className="py-3 px-4 text-right font-bold text-slate-200">$450,000</td>
+                      <td className="py-3 px-4 text-right font-bold text-slate-800">$450,000</td>
                       <td className="py-3 px-4 text-center text-emerald-400">1.5% Enforced</td>
                       <td className="py-3 px-4 text-right text-teal-400 font-bold">$6,750</td>
                     </tr>
-                    <tr className="hover:bg-slate-900/30">
+                    <tr className="hover:bg-white/30">
                       <td className="py-3 px-4 text-teal-400 font-bold">TX-SET-8813</td>
                       <td className="py-3 px-4">5010 Dr / 2010 Cr</td>
-                      <td className="py-3 px-4 text-right font-bold text-slate-200">$125,000</td>
+                      <td className="py-3 px-4 text-right font-bold text-slate-800">$125,000</td>
                       <td className="py-3 px-4 text-center text-emerald-400">1.5% Enforced</td>
                       <td className="py-3 px-4 text-right text-teal-400 font-bold">$1,875</td>
                     </tr>
@@ -2308,31 +2308,31 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <Activity className="h-4 w-4 text-teal-400" />
                     <span>Microkernel Background Execution Pipelines</span>
                   </h3>
                   <p className="text-xs text-slate-500 mt-1">Live active background worker pools routing system workflow nodes.</p>
                 </div>
-                <div className="flex items-center gap-3 font-mono text-[10px] bg-slate-900 p-2 border border-slate-850 rounded-xl">
+                <div className="flex items-center gap-3 font-mono text-[10px] bg-white p-2 border border-slate-850 rounded-xl">
                   <span>Active Workers: <strong className="text-teal-400">{v1WorkflowStatus?.activeCount || 3}</strong></span>
                   <span className="text-slate-800">|</span>
-                  <span>Total Jobs: <strong className="text-slate-300">{v1WorkflowStatus?.totalCount || 5}</strong></span>
+                  <span>Total Jobs: <strong className="text-slate-600">{v1WorkflowStatus?.totalCount || 5}</strong></span>
                 </div>
               </div>
 
               <div className="space-y-3 font-mono text-xs">
                 {v1WorkflowStatus?.recentWorkflows?.map((wf: any) => (
-                  <div key={wf.id} className="p-3 bg-slate-900/40 border border-slate-900 rounded-xl flex justify-between items-center">
+                  <div key={wf.id} className="p-3 bg-white/40 border border-slate-900 rounded-xl flex justify-between items-center">
                     <div>
-                      <span className="font-bold text-slate-200">{wf.name}</span>
+                      <span className="font-bold text-slate-800">{wf.name}</span>
                       <span className="text-[10px] text-slate-500 block mt-0.5">ID: {wf.id} | Action: {wf.triggerAction}</span>
                     </div>
                     <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
-                      wf.status === "active" ? "bg-teal-500/10 text-teal-400" : "bg-slate-800 text-slate-500"
+                      wf.status === "active" ? "bg-teal-500/10 text-teal-400" : "bg-slate-100 text-slate-500"
                     }`}>
                       {wf.status}
                     </span>
@@ -2350,21 +2350,21 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Settings className="h-4 w-4 text-teal-400" />
                 <span>Microkernel Event Triggers</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-slate-900/20 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/20 border border-slate-900 rounded-xl space-y-2">
                   <span className="text-teal-400 font-bold uppercase text-[9px] tracking-wider">LEDGER_POST_TRIGGER</span>
-                  <p className="text-slate-400 leading-relaxed text-[10px]">
+                  <p className="text-slate-500 leading-relaxed text-[10px]">
                     Fired whenever double-entry transactions log to FAAP database. Validates mathematical parity and debits fee split instantly.
                   </p>
                 </div>
-                <div className="p-4 bg-slate-900/20 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/20 border border-slate-900 rounded-xl space-y-2">
                   <span className="text-teal-400 font-bold uppercase text-[9px] tracking-wider">SESSION_EXPIRE_TRIGGER</span>
-                  <p className="text-slate-400 leading-relaxed text-[10px]">
+                  <p className="text-slate-500 leading-relaxed text-[10px]">
                     SecOps admin token lifetime observer. Revokes credentials, triggers clean database cache flush, and redirects to public portal.
                   </p>
                 </div>
@@ -2384,24 +2384,24 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Key className="h-4 w-4 text-teal-400" />
                 <span>Sovereign AES-256 Encrypted Secrets Store</span>
               </h3>
               <p className="text-xs text-slate-500">Global system secrets loaded secure from the owner vault. Production credentials are isolated from client side payloads.</p>
               
               <div className="space-y-3 font-mono text-xs">
-                <div className="p-3 bg-slate-900/30 border border-slate-900 rounded-xl flex justify-between items-center">
+                <div className="p-3 bg-white/30 border border-slate-900 rounded-xl flex justify-between items-center">
                   <div>
-                    <span className="font-bold block text-slate-300">GEMINI_API_KEY</span>
+                    <span className="font-bold block text-slate-600">GEMINI_API_KEY</span>
                     <span className="text-[10px] text-slate-500 mt-0.5 block">Used in multi-model routing gateway</span>
                   </div>
                   <span className="text-[10px] font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded uppercase">AES-256 Locked</span>
                 </div>
-                <div className="p-3 bg-slate-900/30 border border-slate-900 rounded-xl flex justify-between items-center">
+                <div className="p-3 bg-white/30 border border-slate-900 rounded-xl flex justify-between items-center">
                   <div>
-                    <span className="font-bold block text-slate-300">STRIPE_SECRET_KEY</span>
+                    <span className="font-bold block text-slate-600">STRIPE_SECRET_KEY</span>
                     <span className="text-[10px] text-slate-500 mt-0.5 block">FinTech subscription billing webhooks</span>
                   </div>
                   <span className="text-[10px] font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded uppercase">AES-256 Locked</span>
@@ -2418,10 +2418,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
               <div className="flex justify-between items-center border-b border-slate-900 pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-teal-400" />
                     <span>Zero-Trust SecOps Security Audit Log</span>
                   </h3>
@@ -2429,7 +2429,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 </div>
                 <button
                   onClick={loadWorkspaceData}
-                  className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
+                  className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5"
                 >
                   <RefreshCw className={`h-3 w-3 ${isDataLoading ? "animate-spin" : ""}`} />
                   <span>Sync logs</span>
@@ -2438,12 +2438,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
               <div className="space-y-2.5 font-mono text-xs max-h-[400px] overflow-y-auto pr-2">
                 {v1SecurityEvents?.logs?.map((log: any) => (
-                  <div key={log.id} className="p-3 bg-slate-900/40 border border-slate-900 rounded-xl">
+                  <div key={log.id} className="p-3 bg-white/40 border border-slate-900 rounded-xl">
                     <div className="flex justify-between items-center text-[10px] mb-1">
                       <span className="text-teal-400 font-bold uppercase">{log.action}</span>
                       <span className="text-slate-500">{new Date(log.timestamp).toLocaleTimeString()}</span>
                     </div>
-                    <p className="text-slate-300 leading-relaxed text-[10.5px]">{log.details}</p>
+                    <p className="text-slate-600 leading-relaxed text-[10.5px]">{log.details}</p>
                     <span className="text-[9px] text-slate-500 block mt-1.5">Actor: {log.user || "System"} | Status: <strong className="text-emerald-400">{log.status}</strong></span>
                   </div>
                 ))}
@@ -2463,27 +2463,27 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Cpu className="h-4 w-4 text-teal-400" />
                 <span>Cognitive Gateway Model Registry</span>
               </h3>
               <p className="text-xs text-slate-500">Multi-provider abstraction layer routing queries to secure models.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/30 border border-slate-900 rounded-xl space-y-2">
                   <div className="flex justify-between items-center text-[10px]">
-                    <span className="text-slate-300 font-bold">gemini-2.5-flash</span>
+                    <span className="text-slate-600 font-bold">gemini-2.5-flash</span>
                     <span className="text-teal-400 uppercase text-[8px] font-bold">Standard</span>
                   </div>
-                  <p className="text-[10px] text-slate-400">Fast, low-latency semantic translations and structural schema mapping queries.</p>
+                  <p className="text-[10px] text-slate-500">Fast, low-latency semantic translations and structural schema mapping queries.</p>
                 </div>
-                <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl space-y-2">
+                <div className="p-4 bg-white/30 border border-slate-900 rounded-xl space-y-2">
                   <div className="flex justify-between items-center text-[10px]">
-                    <span className="text-slate-300 font-bold">gemini-2.5-pro</span>
+                    <span className="text-slate-600 font-bold">gemini-2.5-pro</span>
                     <span className="text-teal-400 uppercase text-[8px] font-bold">Reasoning</span>
                   </div>
-                  <p className="text-[10px] text-slate-400">Deep mathematical and architectural planning routines. Secure ledger audit loops.</p>
+                  <p className="text-[10px] text-slate-500">Deep mathematical and architectural planning routines. Secure ledger audit loops.</p>
                 </div>
               </div>
             </div>
@@ -2497,14 +2497,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2 border-b border-slate-900 pb-4">
+            <div className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-900 pb-4">
                 <Database className="h-4 w-4 text-teal-400" />
                 <span>Semantic Long-Term Memory Buffer</span>
               </h3>
               <p className="text-xs text-slate-500">Maintains user and tenant semantic context profiles mapped from previous chat sessions.</p>
               
-              <div className="p-4 bg-slate-900/10 border border-slate-900 rounded-xl font-mono text-xs leading-relaxed text-slate-400 space-y-2">
+              <div className="p-4 bg-white/10 border border-slate-900 rounded-xl font-mono text-xs leading-relaxed text-slate-500 space-y-2">
                 <div className="flex justify-between text-[10px] text-teal-400 uppercase font-bold">
                   <span>Owner Memory Profile</span>
                   <span>Index ID: MEM-991</span>
@@ -2528,11 +2528,11 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4"
+        className="bg-slate-50 border border-slate-900 rounded-2xl p-6 shadow-2xl space-y-4"
       >
         <div className="flex justify-between items-center border-b border-slate-900 pb-4">
           <div>
-            <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               {renderIcon(activeRoute?.iconName || "Sliders", "h-4 w-4 text-teal-400")}
               <span>{activeRoute?.label || "Workspace Module"} Module Workspace</span>
             </h3>
@@ -2547,9 +2547,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-xs">
-          <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-xl space-y-3">
-            <h4 className="font-bold text-slate-300 uppercase tracking-widest text-[10px]">Simulated Registry Entry</h4>
-            <p className="text-slate-400 leading-relaxed text-[10.5px]">
+          <div className="p-5 bg-white/40 border border-slate-900 rounded-xl space-y-3">
+            <h4 className="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Simulated Registry Entry</h4>
+            <p className="text-slate-500 leading-relaxed text-[10.5px]">
               This operational workspace represents the {activeRoute?.label} interface for {workspaces[activeWorkspace]?.name}. Under the JUMO UEOS canonical platform-first deployment guideline, all domain modules share Zero-Trust authorization, audit pipelines, global telemetry, and the master financial accounting double-entry backend ledger.
             </p>
             <div className="pt-2 border-t border-slate-850/60 flex justify-between text-[9px] text-slate-500">
@@ -2558,12 +2558,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
           </div>
 
-          <div className="p-5 bg-slate-900/20 border border-slate-900 rounded-xl space-y-4">
-            <h4 className="font-bold text-slate-300 uppercase tracking-widest text-[10px]">Operational Quick Audits</h4>
+          <div className="p-5 bg-white/20 border border-slate-900 rounded-xl space-y-4">
+            <h4 className="font-bold text-slate-600 uppercase tracking-widest text-[10px]">Operational Quick Audits</h4>
             <div className="space-y-2.5">
               <button
                 onClick={() => addToast("success", `Security Sweep complete for ${activeRoute?.label}. 0 warnings.`)}
-                className="w-full bg-slate-900 hover:bg-slate-850 border border-slate-800 p-2.5 rounded-lg text-[10px] text-slate-300 font-bold hover:text-slate-200 text-left transition flex justify-between items-center cursor-pointer"
+                className="w-full bg-white hover:bg-slate-850 border border-slate-200 p-2.5 rounded-lg text-[10px] text-slate-600 font-bold hover:text-slate-800 text-left transition flex justify-between items-center cursor-pointer"
               >
                 <span>Run Cryptographic Token Security Sweep</span>
                 <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded uppercase">Passed</span>
@@ -2576,7 +2576,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     { sender: "bot", text: `Under Nairobi Sacco HQ, our RAG knowledge indexing confirms the ${activeRoute?.label} configuration fits standard double-entry parity rule metrics. Security firewalls indicate no structural anomalies inside the sandboxed node.` }
                   ]);
                 }}
-                className="w-full bg-slate-900 hover:bg-slate-850 border border-slate-800 p-2.5 rounded-lg text-[10px] text-slate-300 font-bold hover:text-slate-200 text-left transition flex justify-between items-center cursor-pointer"
+                className="w-full bg-white hover:bg-slate-850 border border-slate-200 p-2.5 rounded-lg text-[10px] text-slate-600 font-bold hover:text-slate-800 text-left transition flex justify-between items-center cursor-pointer"
               >
                 <span>Analyze logs with AI Copilot</span>
                 <span className="text-[8px] bg-teal-500/10 text-teal-400 px-1.5 py-0.5 rounded uppercase">RAG Connected</span>
@@ -2782,7 +2782,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans tracking-wide relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex font-sans tracking-wide relative overflow-hidden">
       
       {/* Toast Stack */}
       <div className="fixed top-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full">
@@ -2798,7 +2798,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   ? "bg-emerald-950/85 border-emerald-500/30 text-emerald-300"
                   : toast.type === "error"
                   ? "bg-rose-950/85 border-rose-500/30 text-rose-300"
-                  : "bg-slate-900/85 border-slate-800 text-slate-300"
+                  : "bg-white/85 border-slate-200 text-slate-600"
               }`}
             >
               {toast.type === "success" && <ShieldCheck className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />}
@@ -2816,7 +2816,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       </div>
 
       {/* 1. Left Adaptive OS Workspace Navigation Sidebar */}
-      <aside className="w-64 border-r border-slate-900 bg-slate-950/70 backdrop-blur-md shrink-0 hidden lg:flex flex-col select-none">
+      <aside className="w-64 border-r border-slate-900 bg-slate-50/70 backdrop-blur-md shrink-0 hidden lg:flex flex-col select-none">
         {/* Workspace Launcher Dropdown */}
         <div className="p-4 border-b border-slate-900">
           <label className="text-[9px] font-mono font-extrabold text-teal-500 tracking-widest block uppercase mb-2">Workspace context</label>
@@ -2824,7 +2824,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             <select
               value={activeWorkspace}
               onChange={(e) => setActiveWorkspace(e.target.value as WorkspaceId)}
-              className="w-full bg-slate-900 border border-slate-800 text-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-teal-500/50 cursor-pointer appearance-none shadow-inner"
+              className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:border-teal-500/50 cursor-pointer appearance-none shadow-inner"
             >
               <option value="faap">🏛️ FAAP Ledger Engine</option>
               <option value="sacco">🏢 SACCO Cooperative ERP</option>
@@ -2854,7 +2854,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition duration-150 ${
                 activeRouteId === null
                   ? "bg-teal-500/10 text-teal-400 font-extrabold border-l-2 border-teal-500 rounded-l-none pl-2.5"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-white/40"
               }`}
             >
               <LayoutGrid className={`h-4 w-4 ${activeRouteId === null ? "text-teal-400" : "text-slate-500"}`} />
@@ -2873,7 +2873,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition duration-150 ${
                     isActive
                       ? "bg-teal-500/10 text-teal-400 font-extrabold border-l-2 border-teal-500 rounded-l-none pl-2.5"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40"
+                      : "text-slate-500 hover:text-slate-800 hover:bg-white/40"
                   }`}
                 >
                   {renderIcon(route.iconName, `h-4 w-4 ${isActive ? "text-teal-400" : "text-slate-500"}`)}
@@ -2888,18 +2888,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-extrabold px-3 block">Operational Shortcuts</span>
             <button
               onClick={() => setIsCommandPaletteOpen(true)}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center justify-between transition"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-white/40 flex items-center justify-between transition"
             >
               <div className="flex items-center gap-2.5">
                 <Command className="h-4 w-4 text-slate-500" />
                 <span>Command Palette</span>
               </div>
-              <span className="text-[9px] font-mono text-slate-600 bg-slate-900 px-1.5 py-0.5 rounded">Ctrl+K</span>
+              <span className="text-[9px] font-mono text-slate-600 bg-white px-1.5 py-0.5 rounded">Ctrl+K</span>
             </button>
 
             <button
               onClick={handleTriggerRebalance}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center gap-2.5 transition"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-white/40 flex items-center gap-2.5 transition"
             >
               <RefreshCw className={`h-4 w-4 text-slate-500 ${isSyncing ? "animate-spin text-teal-400" : ""}`} />
               <span>Verify Double-Entry Parity</span>
@@ -2908,7 +2908,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             {currentUser.role === "SecOps_Administrator" && (
               <button
                 onClick={handleTriggerBackup}
-                className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 flex items-center gap-2.5 transition"
+                className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-white/40 flex items-center gap-2.5 transition"
               >
                 <Database className="h-4 w-4 text-slate-500" />
                 <span>Run Encrypted DB Backup</span>
@@ -2930,28 +2930,28 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-extrabold px-3 block">Recent Logs Discovered</span>
             {preferences.recentItems.map(item => (
-              <div key={item.id} className="px-3 py-1.5 rounded-lg bg-slate-900/10 border border-slate-900 text-[10px] font-mono flex justify-between items-center text-slate-400">
+              <div key={item.id} className="px-3 py-1.5 rounded-lg bg-white/10 border border-slate-900 text-[10px] font-mono flex justify-between items-center text-slate-500">
                 <span>{item.name}</span>
-                <span className="text-[8px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded">{item.type}</span>
+                <span className="text-[8px] bg-slate-100 text-slate-500 px-1 py-0.5 rounded">{item.type}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* User Identity Panel */}
-        <div className="p-4 border-t border-slate-900 bg-slate-950 flex flex-col gap-2 shrink-0">
+        <div className="p-4 border-t border-slate-900 bg-slate-50 flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-slate-950 font-mono text-xs">
               {currentUser.name.split(" ").map(n => n[0]).join("")}
             </div>
             <div className="min-w-0 flex-1">
-              <h5 className="text-xs font-bold text-slate-200 truncate">{currentUser.name}</h5>
+              <h5 className="text-xs font-bold text-slate-800 truncate">{currentUser.name}</h5>
               <p className="text-[9px] font-mono text-slate-500 truncate">{currentUser.email}</p>
             </div>
           </div>
           <button
             onClick={onLogout}
-            className="w-full text-center py-2 bg-slate-900 hover:bg-rose-950/20 text-rose-400 hover:text-rose-300 border border-slate-800 rounded-xl text-xs font-bold cursor-pointer transition"
+            className="w-full text-center py-2 bg-white hover:bg-rose-950/20 text-rose-400 hover:text-rose-300 border border-slate-200 rounded-xl text-xs font-bold cursor-pointer transition"
           >
             Sign Out Operating Session
           </button>
@@ -2962,14 +2962,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       <div className="flex-1 flex flex-col min-w-0 relative">
         
         {/* Dynamic Top Header Bar */}
-        <header className="border-b border-slate-900 bg-slate-950/60 backdrop-blur-md py-3.5 px-6 flex items-center justify-between sticky top-0 z-30">
+        <header className="border-b border-slate-900 bg-slate-50/60 backdrop-blur-md py-3.5 px-6 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3 min-w-0">
             {/* Mobile Workspace Selector */}
             <div className="lg:hidden relative">
               <select
                 value={activeWorkspace}
                 onChange={(e) => setActiveWorkspace(e.target.value as WorkspaceId)}
-                className="bg-slate-900 border border-slate-800 text-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-teal-500 cursor-pointer appearance-none pr-8"
+                className="bg-white border border-slate-200 text-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-teal-500 cursor-pointer appearance-none pr-8"
               >
                 <option value="faap">🏛️ FAAP</option>
                 <option value="sacco">🏢 SACCO</option>
@@ -2990,7 +2990,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             <div className="hidden sm:flex items-center gap-1 text-[11px] font-mono text-slate-500">
               <span className="text-teal-400 font-bold uppercase tracking-wider">{activeWorkspace}</span>
               <ChevronRight className="h-3 w-3 text-slate-700" />
-              <span className="text-slate-300 truncate">{workspaces[activeWorkspace]?.name}</span>
+              <span className="text-slate-600 truncate">{workspaces[activeWorkspace]?.name}</span>
               {activeRouteId && (
                 <>
                   <ChevronRight className="h-3 w-3 text-slate-700" />
@@ -3007,14 +3007,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             {/* Global search trigger */}
             <button
               onClick={() => setIsCommandPaletteOpen(true)}
-              className="p-2 hover:bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-slate-850 bg-slate-950 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer"
+              className="p-2 hover:bg-white/60 text-slate-500 hover:text-slate-800 border border-slate-850 bg-slate-50 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer"
             >
-              <Search className="h-3.5 w-3.5 text-slate-400" />
+              <Search className="h-3.5 w-3.5 text-slate-500" />
               <span className="hidden md:inline font-mono text-[10px] text-slate-500">Ctrl+K</span>
             </button>
 
             {/* Sync status */}
-            <div className="hidden md:flex items-center gap-1.5 text-[10px] font-mono bg-slate-900/40 border border-slate-900 px-2.5 py-1.5 rounded-xl text-slate-400">
+            <div className="hidden md:flex items-center gap-1.5 text-[10px] font-mono bg-white/40 border border-slate-900 px-2.5 py-1.5 rounded-xl text-slate-500">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>Online Core</span>
             </div>
@@ -3023,7 +3023,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             <div className="relative">
               <button
                 onClick={() => setShowNotificationCenter(!showNotificationCenter)}
-                className="p-2.5 hover:bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-900 rounded-xl transition cursor-pointer relative"
+                className="p-2.5 hover:bg-white text-slate-500 hover:text-slate-800 border border-slate-900 rounded-xl transition cursor-pointer relative"
               >
                 <Bell className="h-4 w-4" />
                 {notifications.some(n => !n.read) && (
@@ -3033,9 +3033,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
               {/* Notification Center Popover */}
               {showNotificationCenter && (
-                <div className="absolute right-0 mt-3 w-80 bg-slate-950 border border-slate-850 rounded-2xl shadow-2xl p-4 z-40 space-y-3 font-mono text-xs">
+                <div className="absolute right-0 mt-3 w-80 bg-slate-50 border border-slate-850 rounded-2xl shadow-2xl p-4 z-40 space-y-3 font-mono text-xs">
                   <div className="flex justify-between items-center border-b border-slate-900 pb-2.5">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">M-Kernel Notifications</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">M-Kernel Notifications</span>
                     <button 
                       onClick={() => {
                         setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -3051,14 +3051,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       <p className="text-[10px] text-slate-600 text-center py-4">No pending alerts.</p>
                     ) : (
                       notifications.map(item => (
-                        <div key={item.id} className="p-2 rounded-lg bg-slate-900 border border-slate-850/40 text-[10px] leading-relaxed">
+                        <div key={item.id} className="p-2 rounded-lg bg-white border border-slate-850/40 text-[10px] leading-relaxed">
                           <div className="flex justify-between items-start mb-1">
                             <span className={`font-bold uppercase text-[9px] ${
                               item.type === "success" ? "text-emerald-400" : item.type === "warning" ? "text-amber-400" : "text-rose-400"
                             }`}>{item.title}</span>
                             <span className="text-[8px] text-slate-600">{new Date(item.timestamp).toLocaleTimeString()}</span>
                           </div>
-                          <p className="text-slate-400 text-[9.5px]">{item.message}</p>
+                          <p className="text-slate-500 text-[9.5px]">{item.message}</p>
                         </div>
                       ))
                     )}
@@ -3073,7 +3073,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               className={`p-2.5 rounded-xl border transition cursor-pointer flex items-center gap-1.5 ${
                 isAiPanelOpen 
                   ? "bg-teal-500/10 border-teal-500/30 text-teal-300"
-                  : "bg-slate-950 border-slate-900 text-slate-400 hover:text-slate-200"
+                  : "bg-slate-50 border-slate-900 text-slate-500 hover:text-slate-800"
               }`}
             >
               <Bot className="h-4 w-4" />
@@ -3092,8 +3092,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 {renderIcon(workspaces[activeWorkspace]?.iconName, "h-5 w-5 text-teal-400")}
                 <span className="text-[10px] font-mono font-extrabold tracking-widest text-teal-400/90 uppercase">Active Workspace</span>
               </div>
-              <h2 className="text-xl font-bold font-sans tracking-tight text-slate-100">{workspaces[activeWorkspace]?.name}</h2>
-              <p className="text-xs text-slate-400 mt-1">{workspaces[activeWorkspace]?.description}</p>
+              <h2 className="text-xl font-bold font-sans tracking-tight text-slate-900">{workspaces[activeWorkspace]?.name}</h2>
+              <p className="text-xs text-slate-500 mt-1">{workspaces[activeWorkspace]?.description}</p>
             </div>
 
             {/* Workspace action triggers */}
@@ -3121,7 +3121,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               {currentUser.role === "SecOps_Administrator" && (
                 <button
                   onClick={handleTriggerBackup}
-                  className="bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer"
+                  className="bg-white hover:bg-slate-850 border border-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer"
                 >
                   <Database className="h-3.5 w-3.5 text-teal-400" />
                   <span>Encrypted Backup</span>
@@ -3134,7 +3134,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                <h3 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
                   <LayoutGrid className="h-3.5 w-3.5 text-teal-500" />
                   <span>Dynamic Dashboard Engine</span>
                 </h3>
@@ -3144,7 +3144,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               {/* Layout widget toggle bar */}
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono text-slate-500">Configure layout:</span>
-                <div className="flex flex-wrap gap-1 bg-slate-900 border border-slate-850 p-1 rounded-xl">
+                <div className="flex flex-wrap gap-1 bg-white border border-slate-850 p-1 rounded-xl">
                   {workspaces[activeWorkspace]?.defaultWidgets.map(widgetId => {
                     const isEnabled = preferences.enabledWidgets[activeWorkspace]?.includes(widgetId);
                     return (
@@ -3152,7 +3152,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         key={widgetId}
                         onClick={() => handleToggleWidget(activeWorkspace, widgetId)}
                         className={`px-2 py-1 rounded text-[9px] font-mono font-bold uppercase transition ${
-                          isEnabled ? "bg-teal-500/10 text-teal-400" : "text-slate-600 hover:text-slate-400"
+                          isEnabled ? "bg-teal-500/10 text-teal-400" : "text-slate-600 hover:text-slate-500"
                         }`}
                       >
                         {widgetId.split("-")[1]}
@@ -3178,13 +3178,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 return (
                   <div 
                     key={widgetId} 
-                    className={`${gridSpan} bg-slate-950 border border-slate-900 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col`}
+                    className={`${gridSpan} bg-slate-50 border border-slate-900 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col`}
                   >
                     {/* Widget header controls */}
-                    <div className="bg-slate-900/40 border-b border-slate-900 px-4 py-3 flex justify-between items-center select-none font-mono">
+                    <div className="bg-white/40 border-b border-slate-900 px-4 py-3 flex justify-between items-center select-none font-mono">
                       <div className="flex items-center gap-2">
                         <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse"></span>
-                        <h4 className="text-[11px] font-extrabold text-slate-300 uppercase tracking-widest">
+                        <h4 className="text-[11px] font-extrabold text-slate-600 uppercase tracking-widest">
                           {widgetId.replace("-", " ").toUpperCase()}
                         </h4>
                       </div>
@@ -3194,7 +3194,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <button
                           onClick={() => handleMoveWidget(activeWorkspace, index, "up")}
                           disabled={index === 0}
-                          className="p-1 hover:bg-slate-900 border border-slate-850 rounded text-slate-500 hover:text-slate-300 disabled:opacity-20 transition"
+                          className="p-1 hover:bg-white border border-slate-850 rounded text-slate-500 hover:text-slate-600 disabled:opacity-20 transition"
                           title="Move widget up in grid order"
                         >
                           &larr;
@@ -3202,7 +3202,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <button
                           onClick={() => handleMoveWidget(activeWorkspace, index, "down")}
                           disabled={index === preferences.widgetOrder[activeWorkspace].length - 1}
-                          className="p-1 hover:bg-slate-900 border border-slate-850 rounded text-slate-500 hover:text-slate-300 disabled:opacity-20 transition"
+                          className="p-1 hover:bg-white border border-slate-850 rounded text-slate-500 hover:text-slate-600 disabled:opacity-20 transition"
                           title="Move widget down in grid order"
                         >
                           &rarr;
@@ -3216,16 +3216,16 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {widgetId === "faap-treasury" && (
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-3 font-mono">
-                            <div className="bg-slate-900/30 border border-slate-900 p-3 rounded-xl">
+                            <div className="bg-white/30 border border-slate-900 p-3 rounded-xl">
                               <span className="text-[9px] text-slate-500 uppercase">JUMO Fee Reserve</span>
                               <div className="text-sm font-extrabold text-teal-400 mt-1">$15,400,250</div>
                               <span className="text-[8px] text-emerald-500 mt-0.5 block flex items-center gap-0.5">
                                 <TrendingUp className="h-2.5 w-2.5" /> 1.5% Settlement Active
                               </span>
                             </div>
-                            <div className="bg-slate-900/30 border border-slate-900 p-3 rounded-xl">
+                            <div className="bg-white/30 border border-slate-900 p-3 rounded-xl">
                               <span className="text-[9px] text-slate-500 uppercase">Operational Parity</span>
-                              <div className="text-sm font-extrabold text-slate-100 mt-1">$0.00 offset</div>
+                              <div className="text-sm font-extrabold text-slate-900 mt-1">$0.00 offset</div>
                               <span className="text-[8px] text-emerald-400 mt-0.5 block">Audit checks green</span>
                             </div>
                           </div>
@@ -3239,7 +3239,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                 <select 
                                   value={journalForm.debitAcc} 
                                   onChange={e => setJournalForm({...journalForm, debitAcc: e.target.value})}
-                                  className="w-full bg-slate-900 border border-slate-850 p-1.5 rounded text-slate-300 font-bold focus:outline-none focus:border-teal-500"
+                                  className="w-full bg-white border border-slate-850 p-1.5 rounded text-slate-600 font-bold focus:outline-none focus:border-teal-500"
                                 >
                                   <option value="1010">1010 - Cash Assets</option>
                                   <option value="1020">1020 - Accounts Receivable</option>
@@ -3251,7 +3251,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                 <select 
                                   value={journalForm.creditAcc} 
                                   onChange={e => setJournalForm({...journalForm, creditAcc: e.target.value})}
-                                  className="w-full bg-slate-900 border border-slate-850 p-1.5 rounded text-slate-300 font-bold focus:outline-none focus:border-teal-500"
+                                  className="w-full bg-white border border-slate-850 p-1.5 rounded text-slate-600 font-bold focus:outline-none focus:border-teal-500"
                                 >
                                   <option value="4010">4010 - Fee Revenue</option>
                                   <option value="2010">2010 - Accounts Payable</option>
@@ -3266,7 +3266,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   placeholder="Amount ($)"
                                   value={journalForm.amount}
                                   onChange={e => setJournalForm({...journalForm, amount: e.target.value})}
-                                  className="w-full bg-slate-900 border border-slate-850 p-1.5 rounded text-slate-300 focus:outline-none focus:border-teal-500"
+                                  className="w-full bg-white border border-slate-850 p-1.5 rounded text-slate-600 focus:outline-none focus:border-teal-500"
                                 />
                               </div>
                               <button 
@@ -3301,13 +3301,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                 </tr>
                               ) : (
                                 ledgerTransactions.slice(0, 5).map((tx: any) => (
-                                  <tr key={tx.id} className="hover:bg-slate-900/10">
+                                  <tr key={tx.id} className="hover:bg-white/10">
                                     <td className="py-2.5 text-teal-400 font-bold">{tx.voucherNumber}</td>
-                                    <td className="py-2.5 text-slate-400 max-w-xs truncate">{tx.narration}</td>
-                                    <td className="py-2.5 text-right font-bold text-slate-300">
+                                    <td className="py-2.5 text-slate-500 max-w-xs truncate">{tx.narration}</td>
+                                    <td className="py-2.5 text-right font-bold text-slate-600">
                                       {tx.debitAmount > 0 ? `$${tx.debitAmount.toLocaleString()}` : "-"}
                                     </td>
-                                    <td className="py-2.5 text-right font-bold text-slate-300">
+                                    <td className="py-2.5 text-right font-bold text-slate-600">
                                       {tx.creditAmount > 0 ? `$${tx.creditAmount.toLocaleString()}` : "-"}
                                     </td>
                                     <td className="py-2.5 text-right">
@@ -3326,7 +3326,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {/* FAAP 3: Trial balance validation parity status */}
                       {widgetId === "faap-parity" && (
                         <div className="space-y-4 font-mono text-xs">
-                          <div className="bg-slate-900/40 border border-slate-900/60 p-4 rounded-xl space-y-2">
+                          <div className="bg-white/40 border border-slate-900/60 p-4 rounded-xl space-y-2">
                             <div className="flex justify-between items-center text-[10px]">
                               <span className="text-slate-500 uppercase">Trial Balance Status</span>
                               <span className="text-emerald-400 font-bold flex items-center gap-1">
@@ -3335,11 +3335,11 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                             </div>
                             <div className="flex justify-between items-center font-bold text-sm">
                               <span>Debit Sum:</span>
-                              <span className="text-slate-100">${(trialBalance?.totalDebits ?? 15400250).toLocaleString()}</span>
+                              <span className="text-slate-900">${(trialBalance?.totalDebits ?? 15400250).toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between items-center font-bold text-sm border-b border-slate-900 pb-2">
                               <span>Credit Sum:</span>
-                              <span className="text-slate-100">${(trialBalance?.totalCredits ?? 15400250).toLocaleString()}</span>
+                              <span className="text-slate-900">${(trialBalance?.totalCredits ?? 15400250).toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between items-center text-[10px] pt-1">
                               <span>Parity Discrepancy Offset:</span>
@@ -3347,9 +3347,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                             </div>
                           </div>
 
-                          <div className="bg-slate-900/20 p-3 rounded-lg border border-slate-900">
+                          <div className="bg-white/20 p-3 rounded-lg border border-slate-900">
                             <span className="text-[9px] uppercase tracking-wider text-slate-500 block mb-1">Clearing Fee Ledger</span>
-                            <p className="text-[10px] text-slate-400 leading-normal">
+                            <p className="text-[10px] text-slate-500 leading-normal">
                               The 1.5% master fintech clearing fee automatically posts to account 4010 on simulated transactional triggers to fuel the core sovereign treasury reserve.
                             </p>
                           </div>
@@ -3360,13 +3360,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {widgetId === "sacco-overview" && (
                         <div className="space-y-4 font-mono">
                           <div className="grid grid-cols-2 gap-3 text-xs">
-                            <div className="bg-slate-900/30 border border-slate-900 p-3 rounded-xl">
+                            <div className="bg-white/30 border border-slate-900 p-3 rounded-xl">
                               <span className="text-[9px] text-slate-500 uppercase">Cooperative Savings</span>
                               <div className="text-sm font-extrabold text-teal-400 mt-1">$45,230,000</div>
                             </div>
-                            <div className="bg-slate-900/30 border border-slate-900 p-3 rounded-xl">
+                            <div className="bg-white/30 border border-slate-900 p-3 rounded-xl">
                               <span className="text-[9px] text-slate-500 uppercase">Active Loan Pool</span>
-                              <div className="text-sm font-extrabold text-slate-100 mt-1">$12,850,000</div>
+                              <div className="text-sm font-extrabold text-slate-900 mt-1">$12,850,000</div>
                             </div>
                           </div>
 
@@ -3376,7 +3376,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                               <span>Reserve Liquidity Threshold</span>
                               <span>74% Healthy</span>
                             </div>
-                            <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                            <div className="w-full bg-white h-2 rounded-full overflow-hidden">
                               <div className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[74%] rounded-full"></div>
                             </div>
                           </div>
@@ -3394,7 +3394,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   type="number"
                                   value={loanForm.amount}
                                   onChange={e => setLoanForm({...loanForm, amount: e.target.value})}
-                                  className="w-full bg-slate-900 border border-slate-850 p-1.5 rounded text-slate-300 text-[10.5px] focus:outline-none focus:border-teal-500"
+                                  className="w-full bg-white border border-slate-850 p-1.5 rounded text-slate-600 text-[10.5px] focus:outline-none focus:border-teal-500"
                                 />
                               </div>
                               <div>
@@ -3403,7 +3403,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   type="number"
                                   value={loanForm.creditScore}
                                   onChange={e => setLoanForm({...loanForm, creditScore: e.target.value})}
-                                  className="w-full bg-slate-900 border border-slate-850 p-1.5 rounded text-slate-300 text-[10.5px] focus:outline-none focus:border-teal-500"
+                                  className="w-full bg-white border border-slate-850 p-1.5 rounded text-slate-600 text-[10.5px] focus:outline-none focus:border-teal-500"
                                 />
                               </div>
                             </div>
@@ -3424,7 +3424,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
                           {/* Render risk report evaluation results */}
                           {loanReport && (
-                            <div className="p-3 bg-slate-900 border border-slate-850 rounded-xl space-y-2">
+                            <div className="p-3 bg-white border border-slate-850 rounded-xl space-y-2">
                               <div className="flex justify-between items-center text-[9px]">
                                 <span className="text-slate-500 uppercase font-bold">Risk Assessment Report</span>
                                 <span className={`font-bold px-1.5 py-0.5 rounded border ${
@@ -3435,10 +3435,10 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   {loanReport.decision}
                                 </span>
                               </div>
-                              <p className="text-[9.5px] text-slate-400 leading-normal">{loanReport.reason}</p>
+                              <p className="text-[9.5px] text-slate-500 leading-normal">{loanReport.reason}</p>
                               <div className="grid grid-cols-2 gap-2 text-[8.5px] text-slate-500 border-t border-slate-850/30 pt-1.5">
-                                <span>Interest rate: <span className="text-slate-300 font-bold">{loanReport.metrics?.interestRate}</span></span>
-                                <span>Approved max: <span className="text-slate-300 font-bold">${loanReport.metrics?.maxApprovedAmount?.toLocaleString()}</span></span>
+                                <span>Interest rate: <span className="text-slate-600 font-bold">{loanReport.metrics?.interestRate}</span></span>
+                                <span>Approved max: <span className="text-slate-600 font-bold">${loanReport.metrics?.maxApprovedAmount?.toLocaleString()}</span></span>
                               </div>
                             </div>
                           )}
@@ -3450,9 +3450,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <div className="space-y-3 font-mono text-xs">
                           <div className="max-h-40 overflow-y-auto pr-1 space-y-2">
                             {saccoMembers.map(member => (
-                              <div key={member.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-2.5 rounded-xl">
+                              <div key={member.id} className="flex justify-between items-center bg-white/40 border border-slate-900 p-2.5 rounded-xl">
                                 <div className="space-y-0.5">
-                                  <span className="text-slate-200 font-bold block text-[10.5px]">{member.name}</span>
+                                  <span className="text-slate-800 font-bold block text-[10.5px]">{member.name}</span>
                                   <span className="text-slate-500 text-[8.5px] block">Joined: {member.joinDate} &bull; {member.id}</span>
                                 </div>
                                 <div className="text-right">
@@ -3470,11 +3470,11 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <div className="space-y-3 font-mono text-xs">
                           <span className="text-[9px] uppercase tracking-wider text-slate-500 block">Kampala Parish Registry</span>
                           <div className="space-y-1.5">
-                            <div className="flex justify-between items-center p-2 bg-slate-900/30 border border-slate-900 rounded-lg">
+                            <div className="flex justify-between items-center p-2 bg-white/30 border border-slate-900 rounded-lg">
                               <span>Congregants Registered:</span>
-                              <span className="text-slate-200 font-bold">1,840 Families</span>
+                              <span className="text-slate-800 font-bold">1,840 Families</span>
                             </div>
-                            <div className="flex justify-between items-center p-2 bg-slate-900/30 border border-slate-900 rounded-lg">
+                            <div className="flex justify-between items-center p-2 bg-white/30 border border-slate-900 rounded-lg">
                               <span>Baptismal Requests (v4):</span>
                               <span className="text-emerald-400 font-bold">14 Pending</span>
                             </div>
@@ -3485,13 +3485,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {widgetId === "church-offerings" && (
                         <div className="space-y-3 font-mono text-xs">
                           <div className="grid grid-cols-2 gap-2 text-[10px]">
-                            <div className="p-2.5 bg-slate-900/40 border border-slate-900 rounded-xl">
+                            <div className="p-2.5 bg-white/40 border border-slate-900 rounded-xl">
                               <span className="text-slate-500 uppercase block text-[8px]">Tithing collections</span>
                               <span className="text-teal-400 font-extrabold block mt-0.5">$485,000/mo</span>
                             </div>
-                            <div className="p-2.5 bg-slate-900/40 border border-slate-900 rounded-xl">
+                            <div className="p-2.5 bg-white/40 border border-slate-900 rounded-xl">
                               <span className="text-slate-500 uppercase block text-[8px]">Thanksgiving pool</span>
-                              <span className="text-slate-300 font-extrabold block mt-0.5">$120,500/mo</span>
+                              <span className="text-slate-600 font-extrabold block mt-0.5">$120,500/mo</span>
                             </div>
                           </div>
                         </div>
@@ -3499,12 +3499,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
                       {widgetId === "church-events" && (
                         <div className="space-y-3 font-mono text-xs">
-                          <div className="p-2.5 bg-slate-900/20 border border-slate-900 rounded-xl space-y-1.5">
+                          <div className="p-2.5 bg-white/20 border border-slate-900 rounded-xl space-y-1.5">
                             <div className="flex justify-between text-[9px] text-teal-400 font-bold">
                               <span>Mass Scheduler</span>
                               <span>JULY 26</span>
                             </div>
-                            <p className="text-[10px] text-slate-300">Confirmation Ceremony &bull; Kampala Cathedral</p>
+                            <p className="text-[10px] text-slate-600">Confirmation Ceremony &bull; Kampala Cathedral</p>
                           </div>
                         </div>
                       )}
@@ -3512,7 +3512,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {/* NGO widgets */}
                       {widgetId === "ngo-grants" && (
                         <div className="space-y-3 font-mono text-xs">
-                          <div className="p-2.5 bg-slate-900/30 border border-slate-900 rounded-xl space-y-1">
+                          <div className="p-2.5 bg-white/30 border border-slate-900 rounded-xl space-y-1">
                             <div className="flex justify-between items-center">
                               <span className="font-bold text-teal-400">USAID Grant proposal</span>
                               <span className="text-[8px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded uppercase">Submitted</span>
@@ -3525,15 +3525,15 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {widgetId === "ngo-impact" && (
                         <div className="space-y-3 font-mono text-xs">
                           <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                            <div className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg">
+                            <div className="p-2 bg-white/40 border border-slate-900 rounded-lg">
                               <span className="text-[14px] font-extrabold text-teal-400 block">14</span>
                               <span className="text-[8px] text-slate-500 block">Schools Built</span>
                             </div>
-                            <div className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg">
-                              <span className="text-[14px] font-extrabold text-slate-300 block">120k</span>
+                            <div className="p-2 bg-white/40 border border-slate-900 rounded-lg">
+                              <span className="text-[14px] font-extrabold text-slate-600 block">120k</span>
                               <span className="text-[8px] text-slate-500 block">Meals served</span>
                             </div>
-                            <div className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg">
+                            <div className="p-2 bg-white/40 border border-slate-900 rounded-lg">
                               <span className="text-[14px] font-extrabold text-emerald-400 block">85</span>
                               <span className="text-[8px] text-slate-500 block">Clean bores</span>
                             </div>
@@ -3543,9 +3543,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
                       {widgetId === "ngo-volunteers" && (
                         <div className="space-y-2 font-mono text-xs">
-                          <div className="flex justify-between items-center p-2 bg-slate-900/30 border border-slate-900 rounded-lg">
+                          <div className="flex justify-between items-center p-2 bg-white/30 border border-slate-900 rounded-lg">
                             <span>Active Field Volunteers:</span>
-                            <span className="text-slate-200 font-bold">148 Active</span>
+                            <span className="text-slate-800 font-bold">148 Active</span>
                           </div>
                         </div>
                       )}
@@ -3553,8 +3553,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {/* Alumni widgets */}
                       {widgetId === "alumni-directory" && (
                         <div className="space-y-3 font-mono text-xs">
-                          <div className="p-2.5 bg-slate-900/30 border border-slate-900 rounded-xl space-y-1">
-                            <span className="text-[10px] text-slate-300 font-bold block"> Kampala Chapter Matrix</span>
+                          <div className="p-2.5 bg-white/30 border border-slate-900 rounded-xl space-y-1">
+                            <span className="text-[10px] text-slate-600 font-bold block"> Kampala Chapter Matrix</span>
                             <p className="text-[9px] text-slate-500">Graduates registered: 3,450 chapter members.</p>
                           </div>
                         </div>
@@ -3562,7 +3562,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
                       {widgetId === "alumni-endowment" && (
                         <div className="space-y-3 font-mono text-xs">
-                          <div className="bg-slate-900/30 border border-slate-900 p-3 rounded-xl text-center">
+                          <div className="bg-white/30 border border-slate-900 p-3 rounded-xl text-center">
                             <span className="text-[8px] text-slate-500 uppercase block">Endowment Campaign</span>
                             <span className="text-sm font-extrabold text-teal-400 block mt-0.5">$2,485,000</span>
                           </div>
@@ -3571,7 +3571,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
                       {widgetId === "alumni-mentors" && (
                         <div className="space-y-2 font-mono text-xs">
-                          <div className="flex justify-between items-center p-2 bg-slate-900/30 border border-slate-900 rounded-lg">
+                          <div className="flex justify-between items-center p-2 bg-white/30 border border-slate-900 rounded-lg">
                             <span>Active Mentorship Matches:</span>
                             <span className="text-emerald-400 font-bold">48 Matches</span>
                           </div>
@@ -3584,13 +3584,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                           {v1PlatformStatus ? (
                             <>
                               <div className="grid grid-cols-2 gap-2 text-[10px]">
-                                <div className="bg-slate-900/30 border border-slate-900 p-2.5 rounded-xl">
+                                <div className="bg-white/30 border border-slate-900 p-2.5 rounded-xl">
                                   <span className="text-slate-500 uppercase block text-[8px]">Platform Status</span>
                                   <span className="text-teal-400 font-bold block mt-0.5">{v1PlatformStatus.status?.toUpperCase() || "OPERATIONAL"}</span>
                                 </div>
-                                <div className="bg-slate-900/30 border border-slate-900 p-2.5 rounded-xl">
+                                <div className="bg-white/30 border border-slate-900 p-2.5 rounded-xl">
                                   <span className="text-slate-500 uppercase block text-[8px]">Memory allocation</span>
-                                  <span className="text-slate-300 font-bold block mt-0.5">{v1PlatformStatus.memoryUsage || "64MB"}</span>
+                                  <span className="text-slate-600 font-bold block mt-0.5">{v1PlatformStatus.memoryUsage || "64MB"}</span>
                                 </div>
                               </div>
 
@@ -3599,7 +3599,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   <span>Uptime (live container)</span>
                                   <span>{v1PlatformStatus.uptimeSeconds || 0}s</span>
                                 </div>
-                                <div className="w-full bg-slate-900 h-1 rounded overflow-hidden">
+                                <div className="w-full bg-white h-1 rounded overflow-hidden">
                                   <div className="bg-teal-500 h-full w-[45%]"></div>
                                 </div>
                               </div>
@@ -3607,13 +3607,13 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                           ) : (
                             <>
                               <div className="grid grid-cols-2 gap-2 text-[10px]">
-                                <div className="bg-slate-900/30 border border-slate-900 p-2.5 rounded-xl">
+                                <div className="bg-white/30 border border-slate-900 p-2.5 rounded-xl">
                                   <span className="text-slate-500 uppercase block text-[8px]">Kernel load</span>
                                   <span className="text-teal-400 font-bold block mt-0.5">14.2% CPU</span>
                                 </div>
-                                <div className="bg-slate-900/30 border border-slate-900 p-2.5 rounded-xl">
+                                <div className="bg-white/30 border border-slate-900 p-2.5 rounded-xl">
                                   <span className="text-slate-500 uppercase block text-[8px]">Memory allocation</span>
-                                  <span className="text-slate-300 font-bold block mt-0.5">652MB / 2.5GB</span>
+                                  <span className="text-slate-600 font-bold block mt-0.5">652MB / 2.5GB</span>
                                 </div>
                               </div>
 
@@ -3622,7 +3622,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                   <span>Replicated TCP Sockets</span>
                                   <span>18 active</span>
                                 </div>
-                                <div className="w-full bg-slate-900 h-1 rounded overflow-hidden">
+                                <div className="w-full bg-white h-1 rounded overflow-hidden">
                                   <div className="bg-teal-500 h-full w-[35%]"></div>
                                 </div>
                               </div>
@@ -3636,28 +3636,28 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                           <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                             {v1Domains && v1Domains.length > 0 ? (
                               v1Domains.map((srv: any) => (
-                                <div key={srv.id || srv.name} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
-                                  <span className="font-bold text-slate-300">{srv.name || srv.id}</span>
+                                <div key={srv.id || srv.name} className="flex justify-between items-center bg-white/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
+                                  <span className="font-bold text-slate-600">{srv.name || srv.id}</span>
                                   <span className="text-[8px] px-1 bg-emerald-500/10 text-emerald-400 rounded">
                                     {srv.status?.toUpperCase() || "ACTIVE"}
                                   </span>
                                 </div>
                               ))
                             ) : ownerData?.registeredServices?.map((srv: any) => (
-                              <div key={srv.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
-                                <span className="font-bold text-slate-300">{srv.name}</span>
+                              <div key={srv.id} className="flex justify-between items-center bg-white/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
+                                <span className="font-bold text-slate-600">{srv.name}</span>
                                 <span className="text-[8px] px-1 bg-emerald-500/10 text-emerald-400 rounded">
                                   {srv.status}
                                 </span>
                               </div>
                             )) ?? (
                               <>
-                                <div className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
-                                  <span className="font-bold text-slate-300">FAAP Master double entry ledger</span>
+                                <div className="flex justify-between items-center bg-white/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
+                                  <span className="font-bold text-slate-600">FAAP Master double entry ledger</span>
                                   <span className="text-[8px] px-1 bg-emerald-500/10 text-emerald-400 rounded">ACTIVE</span>
                                 </div>
-                                <div className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
-                                  <span className="font-bold text-slate-300">Identity Zero-Trust RBAC auth</span>
+                                <div className="flex justify-between items-center bg-white/40 border border-slate-900 p-2 rounded-lg text-[9.5px]">
+                                  <span className="font-bold text-slate-600">Identity Zero-Trust RBAC auth</span>
                                   <span className="text-[8px] px-1 bg-emerald-500/10 text-emerald-400 rounded">ACTIVE</span>
                                 </div>
                               </>
@@ -3670,12 +3670,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <div className="space-y-2 font-mono text-xs max-h-40 overflow-y-auto pr-1">
                           {v1SecurityEvents?.logs && v1SecurityEvents.logs.length > 0 ? (
                             v1SecurityEvents.logs.map((log: any) => (
-                              <div key={log.id} className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg text-[9.5px] leading-relaxed">
+                              <div key={log.id} className="p-2 bg-white/40 border border-slate-900 rounded-lg text-[9.5px] leading-relaxed">
                                 <div className="flex justify-between items-center mb-1 text-[8px]">
                                   <span className="text-teal-400 font-bold uppercase">{log.action || "SECURITY_EVENT"}</span>
                                   <span className="text-slate-500">{new Date(log.timestamp).toLocaleTimeString()}</span>
                                 </div>
-                                <p className="text-slate-400">{log.details}</p>
+                                <p className="text-slate-500">{log.details}</p>
                                 <span className="text-[8px] text-slate-500 block mt-1">Actor: {log.user || "System"}</span>
                               </div>
                             ))
@@ -3683,12 +3683,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                             { id: "A-01", action: "BOOT_INIT", actor: "System", timestamp: new Date().toISOString(), details: "Core bootstrap parameters initialized successfully." },
                             { id: "A-02", action: "LEDGER_PARITY", actor: "SecOps_Administrator", timestamp: new Date().toISOString(), details: "Double entry parity verified automatically." }
                           ]).map((log: any) => (
-                            <div key={log.id} className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg text-[9.5px] leading-relaxed">
+                            <div key={log.id} className="p-2 bg-white/40 border border-slate-900 rounded-lg text-[9.5px] leading-relaxed">
                               <div className="flex justify-between items-center mb-1 text-[8px]">
                                 <span className="text-teal-400 font-bold uppercase">{log.action}</span>
                                   <span className="text-slate-500">{new Date(log.timestamp).toLocaleTimeString()}</span>
                                 </div>
-                                <p className="text-slate-400">{log.details}</p>
+                                <p className="text-slate-500">{log.details}</p>
                                 <span className="text-[8px] text-slate-500 block mt-1">Actor: {log.actor}</span>
                               </div>
                             ))
@@ -3704,9 +3704,9 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                                 <span className="text-slate-500 uppercase block text-[8px] font-mono">Treasury reserves</span>
                                 <span className="text-teal-400 font-bold text-sm block mt-0.5">${v1TreasurySummary.treasuryReserves?.toLocaleString()}</span>
                               </div>
-                              <div className="p-2.5 bg-slate-900/30 border border-slate-900 rounded-xl">
+                              <div className="p-2.5 bg-white/30 border border-slate-900 rounded-xl">
                                 <span className="text-slate-500 uppercase block text-[8px] font-mono">Fees collected (1.5%)</span>
-                                <span className="text-slate-300 font-bold block mt-0.5">${v1TreasurySummary.feeCollected?.toLocaleString()}</span>
+                                <span className="text-slate-600 font-bold block mt-0.5">${v1TreasurySummary.feeCollected?.toLocaleString()}</span>
                               </div>
                             </div>
                           ) : (
@@ -3739,17 +3739,17 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 340, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className="w-80 border-l border-slate-900 bg-slate-950/70 backdrop-blur-md shrink-0 flex flex-col relative z-20 select-none"
+            className="w-80 border-l border-slate-900 bg-slate-50/70 backdrop-blur-md shrink-0 flex flex-col relative z-20 select-none"
           >
             {/* Header */}
             <div className="p-4 border-b border-slate-900 flex justify-between items-center shrink-0">
               <div className="flex items-center gap-2">
                 <Bot className="h-4 w-4 text-teal-400 animate-pulse" />
-                <h4 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-widest">Cognitive Assistant</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-600 uppercase tracking-widest">Cognitive Assistant</h4>
               </div>
               <button 
                 onClick={() => setIsAiPanelOpen(false)}
-                className="text-slate-500 hover:text-slate-300 text-xs font-bold px-1.5"
+                className="text-slate-500 hover:text-slate-600 text-xs font-bold px-1.5"
               >
                 &times;
               </button>
@@ -3763,7 +3763,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     key={i} 
                     className={`p-3 rounded-2xl leading-normal border max-w-[90%] ${
                       item.sender === "user" 
-                        ? "bg-slate-900 border-slate-850/60 text-slate-300 ml-auto"
+                        ? "bg-white border-slate-850/60 text-slate-600 ml-auto"
                         : "bg-teal-950/10 border-teal-900/10 text-teal-300 mr-auto"
                     }`}
                   >
@@ -3785,7 +3785,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             </div>
 
             {/* AI Action quick tools */}
-            <div className="p-4 border-t border-slate-900 bg-slate-950 space-y-2 shrink-0">
+            <div className="p-4 border-t border-slate-900 bg-slate-50 space-y-2 shrink-0">
               <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest block">Cognitive Quick Audits</span>
               <div className="grid grid-cols-2 gap-1.5 text-[9px] font-mono text-center">
                 <button
@@ -3796,7 +3796,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       { sender: "bot", text: "Grounded RAG analysis: Triggered ledger balance integrity sweep... Verified ledger debits match credit totals perfectly with absolute zero-offset consistency ($0.00 offset). Zero-Trust RBAC policies verified as active." }
                     ]);
                   }}
-                  className="bg-slate-900 hover:bg-slate-850 border border-slate-800 p-2 rounded-lg text-slate-300 hover:text-slate-200 transition cursor-pointer"
+                  className="bg-white hover:bg-slate-850 border border-slate-200 p-2 rounded-lg text-slate-600 hover:text-slate-800 transition cursor-pointer"
                 >
                   Ledger Audit
                 </button>
@@ -3808,7 +3808,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       { sender: "bot", text: "Context-aware recommendations:\n1. FAAP Ledger: Rotate key sensitive secrets inside Owner Center.\n2. Sacco: Run Credit evaluations on evaluation model before committing deposits.\n3. Registry: Update discovered active micro-kernel templates." }
                     ]);
                   }}
-                  className="bg-slate-900 hover:bg-slate-850 border border-slate-800 p-2 rounded-lg text-slate-300 hover:text-slate-200 transition cursor-pointer"
+                  className="bg-white hover:bg-slate-850 border border-slate-200 p-2 rounded-lg text-slate-600 hover:text-slate-800 transition cursor-pointer"
                 >
                   Workflow Assist
                 </button>
@@ -3821,7 +3821,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   placeholder={getWorkspaceAiPrompt()}
                   value={aiInput}
                   onChange={e => setAiInput(e.target.value)}
-                  className="flex-1 bg-slate-900 border border-slate-850 p-2 rounded-xl text-[10.5px] text-slate-300 font-mono placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                  className="flex-1 bg-white border border-slate-850 p-2 rounded-xl text-[10.5px] text-slate-600 font-mono placeholder-slate-600 focus:outline-none focus:border-teal-500"
                 />
                 <button
                   type="submit"
@@ -3839,12 +3839,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       {/* 4. Global Command Palette Modal Dialog */}
       <AnimatePresence>
         {isCommandPaletteOpen && (
-          <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-start justify-center pt-[15vh] px-4 font-mono select-none">
+          <div className="fixed inset-0 bg-slate-50/85 backdrop-blur-sm z-50 flex items-start justify-center pt-[15vh] px-4 font-mono select-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="bg-slate-950 border border-slate-850 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+              className="bg-slate-50 border border-slate-850 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             >
               <div className="p-4 border-b border-slate-900 flex items-center gap-3">
                 <Search className="h-4 w-4 text-slate-500 shrink-0" />
@@ -3853,12 +3853,12 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                   placeholder="Type a command or workspace (e.g., 'sacco', 'reconcile', 'backup')..."
                   value={commandQuery}
                   onChange={e => setCommandQuery(e.target.value)}
-                  className="w-full bg-transparent text-slate-200 placeholder-slate-600 font-mono text-xs focus:outline-none"
+                  className="w-full bg-transparent text-slate-800 placeholder-slate-600 font-mono text-xs focus:outline-none"
                   autoFocus
                 />
                 <button
                   onClick={() => setIsCommandPaletteOpen(false)}
-                  className="text-slate-600 hover:text-slate-400 text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-850"
+                  className="text-slate-600 hover:text-slate-500 text-xs bg-white px-2 py-0.5 rounded border border-slate-850"
                 >
                   ESC
                 </button>
@@ -3872,7 +3872,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     <button
                       key={c.id}
                       onClick={c.action}
-                      className="w-full text-left px-3.5 py-3 text-[11px] text-slate-400 hover:text-slate-100 hover:bg-slate-900/50 flex items-center justify-between rounded-lg transition"
+                      className="w-full text-left px-3.5 py-3 text-[11px] text-slate-500 hover:text-slate-900 hover:bg-white/50 flex items-center justify-between rounded-lg transition"
                     >
                       <div className="flex items-center gap-2.5">
                         <Terminal className="h-3.5 w-3.5 text-slate-500" />
@@ -3884,7 +3884,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 )}
               </div>
 
-              <div className="bg-slate-900/40 px-4 py-2.5 border-t border-slate-900 text-[9px] text-slate-500 flex justify-between items-center">
+              <div className="bg-white/40 px-4 py-2.5 border-t border-slate-900 text-[9px] text-slate-500 flex justify-between items-center">
                 <span>Select command to trigger on JUMO microkernel.</span>
                 <span>CTRL+K</span>
               </div>
@@ -3896,18 +3896,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       {/* 5. SACCO Register Member Dialog Modal */}
       <AnimatePresence>
         {showAddMemberModal && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-mono select-none">
+          <div className="fixed inset-0 bg-slate-50/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-mono select-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-950 border border-slate-850 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col p-5 space-y-4"
+              className="bg-slate-50 border border-slate-850 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col p-5 space-y-4"
             >
               <div className="flex justify-between items-center border-b border-slate-900 pb-2.5">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Register Sacco Membership</span>
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Register Sacco Membership</span>
                 <button 
                   onClick={() => setShowAddMemberModal(false)}
-                  className="text-slate-500 hover:text-slate-300 text-sm font-bold"
+                  className="text-slate-500 hover:text-slate-600 text-sm font-bold"
                 >
                   &times;
                 </button>
@@ -3921,7 +3921,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     placeholder="Enter full name..."
                     value={newMemberName}
                     onChange={e => setNewMemberName(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-300 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-600 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
                 <div>
@@ -3931,7 +3931,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     placeholder="Amount to deposit..."
                     value={newMemberDeposit}
                     onChange={e => setNewMemberDeposit(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-300 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-850 p-2.5 rounded-xl text-slate-600 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -3939,7 +3939,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               <div className="flex gap-2 pt-2 text-xs">
                 <button
                   onClick={() => setShowAddMemberModal(false)}
-                  className="flex-1 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-400 py-2.5 rounded-xl text-xs font-bold transition"
+                  className="flex-1 bg-white hover:bg-slate-850 border border-slate-200 text-slate-500 py-2.5 rounded-xl text-xs font-bold transition"
                 >
                   Cancel
                 </button>

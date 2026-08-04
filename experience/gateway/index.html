@@ -60,18 +60,18 @@
 
       if (app) {
         app.innerHTML = `
-          <div class="fixed inset-0 bg-slate-900 text-white flex flex-col items-center justify-center p-6 font-mono text-xs z-50">
-            <div class="max-w-2xl w-full bg-slate-800 p-8 rounded-2xl border border-rose-500 shadow-2xl space-y-4">
+          <div class="fixed inset-0 bg-white text-slate-800 flex flex-col items-center justify-center p-6 font-mono text-xs z-50">
+            <div class="max-w-2xl w-full bg-slate-100 p-8 rounded-2xl border border-rose-500 shadow-2xl space-y-4">
               <h1 class="text-rose-500 font-bold text-base mb-1">JUMO UEOS FATAL BOOT EXCEPTION</h1>
-              <p class="text-slate-400">Application startup halted due to an unhandled script or module error.</p>
+              <p class="text-slate-500">Application startup halted due to an unhandled script or module error.</p>
               
-              <div class="bg-slate-950 p-4 rounded text-rose-300 overflow-x-auto text-[11px] space-y-2">
+              <div class="bg-slate-50 p-4 rounded text-rose-300 overflow-x-auto text-[11px] space-y-2">
                 <div><span class="text-slate-500">Message:</span> <span class="font-bold text-rose-400">${msg}</span></div>
                 <div><span class="text-slate-500">File:</span> ${file}</div>
                 <div><span class="text-slate-500">Location:</span> Line ${line}, Col ${col}</div>
-                ${stack ? `<div><span class="text-slate-500">Stack:</span><pre class="text-[10px] text-slate-400 mt-1">${stack}</pre></div>` : ''}
+                ${stack ? `<div><span class="text-slate-500">Stack:</span><pre class="text-[10px] text-slate-500 mt-1">${stack}</pre></div>` : ''}
               </div>
-              <button onclick="window.location.reload()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg transition-colors cursor-pointer">Hard Reload Platform</button>
+              <button onclick="window.location.reload()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-slate-800 font-bold rounded-lg transition-colors cursor-pointer">Hard Reload Platform</button>
             </div>
           </div>
         `;

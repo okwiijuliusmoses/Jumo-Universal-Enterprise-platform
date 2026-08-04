@@ -362,9 +362,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans tracking-wide">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans tracking-wide">
       {/* Dynamic Top Header */}
-      <header className="border-b border-slate-900 bg-slate-950/60 backdrop-blur-md sticky top-0 z-30 shrink-0">
+      <header className="border-b border-slate-900 bg-slate-50/60 backdrop-blur-md sticky top-0 z-30 shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
@@ -372,7 +372,7 @@ export default function App() {
             </div>
             <div>
               <span className="text-xs font-mono font-bold tracking-widest text-emerald-400/90 uppercase">{currentUser.role} @ {currentUser.tenantId}</span>
-              <h1 className="text-sm font-bold text-slate-100 font-sans tracking-tight">Project Blueprint Architect</h1>
+              <h1 className="text-sm font-bold text-slate-900 font-sans tracking-tight">Project Blueprint Architect</h1>
             </div>
           </div>
 
@@ -385,7 +385,7 @@ export default function App() {
                   setActiveProjectId(e.target.value);
                   setError(null);
                 }}
-                className="bg-slate-900 text-slate-200 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-emerald-500/50 cursor-pointer"
+                className="bg-white text-slate-800 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-emerald-500/50 cursor-pointer"
               >
                 <option value="" disabled>Select Blueprint...</option>
                 {projects.map((proj) => (
@@ -403,7 +403,7 @@ export default function App() {
                   setActiveProjectId("");
                   setError(null);
                 }}
-                className="bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-2 rounded-xl text-xs font-bold text-slate-300 flex items-center gap-1.5 transition cursor-pointer"
+                className="bg-white hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 flex items-center gap-1.5 transition cursor-pointer"
                 title="Create a new system blueprint"
               >
                 <Plus className="h-3.5 w-3.5 text-emerald-400" />
@@ -434,14 +434,14 @@ export default function App() {
           <div className="flex-1 flex flex-col items-center">
 
             {projects.length > 0 && (
-              <div className="mt-8 text-center bg-slate-900/20 border border-slate-850 p-6 rounded-2xl max-w-lg w-full">
-                <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Or Resume Active Work</h4>
+              <div className="mt-8 text-center bg-white/20 border border-slate-850 p-6 rounded-2xl max-w-lg w-full">
+                <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Or Resume Active Work</h4>
                 <div className="flex flex-wrap justify-center gap-2">
                   {projects.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => setActiveProjectId(p.id)}
-                      className="bg-slate-950 hover:bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 transition cursor-pointer"
+                      className="bg-slate-50 hover:bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 transition cursor-pointer"
                     >
                       {p.title}
                     </button>
@@ -460,12 +460,12 @@ export default function App() {
             {/* Left Column Workbench */}
             <div className="flex-1 space-y-6 min-w-0">
               {/* Project Bar Context */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/20 border border-slate-850 p-4 rounded-2xl gap-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/20 border border-slate-850 p-4 rounded-2xl gap-3">
                 <div>
                   <div className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">Active Design Context</div>
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                     {activeProject.title}
-                    <span className="text-[10px] bg-slate-800 font-normal px-2 py-0.5 rounded-full text-slate-400">
+                    <span className="text-[10px] bg-slate-100 font-normal px-2 py-0.5 rounded-full text-slate-500">
                       {activeProject.createdAt}
                     </span>
                   </h2>
@@ -475,14 +475,14 @@ export default function App() {
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button
                     onClick={handleExportJSON}
-                    className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 border border-slate-800 p-2 rounded-xl text-xs text-slate-300 flex items-center justify-center gap-1.5 transition cursor-pointer"
+                    className="flex-1 sm:flex-none bg-white hover:bg-slate-100 border border-slate-200 p-2 rounded-xl text-xs text-slate-600 flex items-center justify-center gap-1.5 transition cursor-pointer"
                     title="Export blueprint as JSON file"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Export</span>
                   </button>
 
-                  <label className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 border border-slate-800 p-2 rounded-xl text-xs text-slate-300 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                  <label className="flex-1 sm:flex-none bg-white hover:bg-slate-100 border border-slate-200 p-2 rounded-xl text-xs text-slate-600 flex items-center justify-center gap-1.5 transition cursor-pointer">
                     <Upload className="h-3.5 w-3.5" />
                     <span>Import</span>
                     <input
@@ -504,7 +504,7 @@ export default function App() {
                   ) : (
                     <button
                       onClick={handleLoadDemo}
-                      className="p-2 border border-slate-800 hover:bg-slate-850 text-slate-400 rounded-xl transition cursor-pointer"
+                      className="p-2 border border-slate-200 hover:bg-slate-850 text-slate-500 rounded-xl transition cursor-pointer"
                       title="Reset templates to default core state"
                     >
                       <RefreshCw className="h-4 w-4" />
@@ -519,7 +519,7 @@ export default function App() {
                   <AlertTriangle className="h-5 w-5 text-rose-400 shrink-0 mt-0.5" />
                   <div>
                     <h5 className="text-xs font-bold text-rose-400 mb-1">Architecture Pipeline Interrupted</h5>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-slate-500 leading-relaxed">
                       {error}. If you don't have an API key set, you can still test full functionality by clicking the columns in the **Sprint Kanban Board**, selecting templates in the **Boilerplate Scaffolder**, or exporting files.
                     </p>
                   </div>
@@ -527,7 +527,7 @@ export default function App() {
               )}
 
               {/* View Selector Controls */}
-              <div className="flex flex-wrap bg-slate-950 border border-slate-850 p-1 rounded-xl gap-1">
+              <div className="flex flex-wrap bg-slate-50 border border-slate-850 p-1 rounded-xl gap-1">
                 <button
                   onClick={() => setActiveTab("runtime_os")}
                   className="flex-1 min-w-[140px] py-2 rounded-lg text-xs font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 text-emerald-400 hover:from-emerald-500/20 hover:to-teal-500/20 hover:border-emerald-500/50"
@@ -540,8 +540,8 @@ export default function App() {
                     onClick={() => setActiveTab("owner_center")}
                     className={`flex-1 min-w-[120px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                       activeTab === "owner_center"
-                        ? "bg-slate-900 text-teal-400 shadow"
-                        : "text-slate-400 hover:text-slate-200"
+                        ? "bg-white text-teal-400 shadow"
+                        : "text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     <Sliders className="h-4 w-4" />
@@ -552,8 +552,8 @@ export default function App() {
                   onClick={() => setActiveTab("blueprint")}
                   className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeTab === "blueprint"
-                      ? "bg-slate-900 text-emerald-400 shadow"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-white text-emerald-400 shadow"
+                      : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <Layers className="h-4 w-4" />
@@ -563,8 +563,8 @@ export default function App() {
                   onClick={() => setActiveTab("kanban")}
                   className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeTab === "kanban"
-                      ? "bg-slate-900 text-emerald-400 shadow"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-white text-emerald-400 shadow"
+                      : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <ListChecks className="h-4 w-4" />
@@ -574,8 +574,8 @@ export default function App() {
                   onClick={() => setActiveTab("boilerplate")}
                   className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeTab === "boilerplate"
-                      ? "bg-slate-900 text-emerald-400 shadow"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-white text-emerald-400 shadow"
+                      : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <Cpu className="h-4 w-4" />
@@ -585,8 +585,8 @@ export default function App() {
                   onClick={() => setActiveTab("console")}
                   className={`flex-1 min-w-[100px] py-2 rounded-lg text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeTab === "console"
-                      ? "bg-slate-900 text-emerald-400 shadow"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-white text-emerald-400 shadow"
+                      : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <Activity className="h-4 w-4" />
@@ -631,7 +631,7 @@ export default function App() {
       </main>
 
       {/* Humble Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-4 text-center shrink-0">
+      <footer className="border-t border-slate-900 bg-slate-50 py-4 text-center shrink-0">
         <span className="text-[10px] font-mono text-slate-600 tracking-wider">
           PROJECT BLUEPRINT ARCHITECT — CRAFTED WITH REACT & TAILWIND CSS V4
         </span>
