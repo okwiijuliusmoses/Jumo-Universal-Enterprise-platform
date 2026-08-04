@@ -1,0 +1,6 @@
+{
+  "name": "JUMO DIGITAL ENTERPRISE PLATFORM",
+  "description": "Unified Enterprise Operating System (UEOS) for Digital Hybrid Enterprise Platforms.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
