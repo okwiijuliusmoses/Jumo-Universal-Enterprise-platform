@@ -60,6 +60,14 @@ export class ERPEcosystemTemplateRegistry {
   listTemplates() {
     return this.templates;
   }
+
+  getTemplate(id) {
+    return this.templates.find(t => t.id === id || t.name === id || t.id.replace('-erp', '') === id);
+  }
+
+  getBlueprint(id) {
+    return ERPBlueprintRegistry.getBlueprint(id);
+  }
 }
 
 export const erpEcosystemTemplateRegistry = new ERPEcosystemTemplateRegistry();

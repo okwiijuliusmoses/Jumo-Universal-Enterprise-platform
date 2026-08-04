@@ -43,7 +43,11 @@ export class ERPProductRegistry {
   }
 
   getProduct(id) {
-    return this.products.find(p => p.id === id);
+    return this.products.find(p => p.id === id || p.name === id);
+  }
+
+  get(id) {
+    return this.getProduct(id);
   }
 
   registerProduct(product) {
