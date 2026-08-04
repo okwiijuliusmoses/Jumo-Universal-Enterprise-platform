@@ -7,13 +7,17 @@ import { portalRegistry } from "../../../registry/portalRegistry.js";
 
 export class PortalGenerator {
   generate(instance, departments = []) {
+    const depts = Array.isArray(departments)
+      ? departments
+      : (departments && Array.isArray(departments.departments) ? departments.departments : []);
+
     const corePortals = [
       "Public Portal",
       "Executive Dashboard",
       "Control Center"
     ];
 
-    const departmentPortals = departments.map(d => `${d} Workspace`);
+    const departmentPortals = depts.map(d => `${typeof d === 'string' ? d : (d.name || d)} Workspace`);
     
     const allPortals = [...corePortals, ...departmentPortals];
 

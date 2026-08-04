@@ -63,46 +63,46 @@ generateERP(definition){
       tenantId: definition.tenant
     });
     erpInstanceRegistry.register(instance);
-    instance.forms.forEach((form,index)=>{
+    (instance.forms || []).forEach((form,index)=>{
       formRegistry.register({
         id:`${instance.id}-form-${index}`,
-        name:form,
+        name: typeof form === 'string' ? form : (form && form.name) || `Form ${index}`,
         erpId:instance.id
       });
     });
-    instance.workflows.forEach((workflow,index)=>{
+    (instance.workflows || []).forEach((workflow,index)=>{
       workflowRegistry.register({
         id:`${instance.id}-workflow-${index}`,
-        name:workflow,
+        name: typeof workflow === 'string' ? workflow : (workflow && workflow.name) || `Workflow ${index}`,
         erpId:instance.id
       });
     });
-    instance.components.forEach((component,index)=>{
+    (instance.components || []).forEach((component,index)=>{
       componentRegistry.register({
         id:`${instance.id}-component-${index}`,
-        name:component,
+        name: typeof component === 'string' ? component : (component && component.name) || `Component ${index}`,
         erpId:instance.id
       });
     });
-    instance.departments.forEach((department,index)=>{
+    (instance.departments || []).forEach((department,index)=>{
       departmentRegistry.register({
         id:`${instance.id}-department-${index}`,
-        name:department,
+        name: typeof department === 'string' ? department : (department && department.name) || `Department ${index}`,
         erpId:instance.id
       });
     });
     aiERPRegistry.register(instance);
-    instance.portals.forEach((portal,index)=>{
+    (instance.portals || []).forEach((portal,index)=>{
       portalRegistry.register({
         id:`${instance.id}-portal-${index}`,
-        name:portal,
+        name: typeof portal === 'string' ? portal : (portal && portal.name) || `Portal ${index}`,
         erpId:instance.id
       });
     });
-    instance.modules.forEach((module,index)=>{
+    (instance.modules || []).forEach((module,index)=>{
       moduleRegistry.register({
         id:`${instance.id}-module-${index}`,
-        name:module,
+        name: typeof module === 'string' ? module : (module && module.name) || `Module ${index}`,
         erpId:instance.id
       });
     });
