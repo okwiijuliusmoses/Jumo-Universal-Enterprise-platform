@@ -147,6 +147,8 @@ export function restoreAllRegistries() {
   if (Array.isArray(instances)) {
     instances.forEach(instance => erpInstanceRegistry.register(instance));
   }
+  console.log("[UEOS] ERP Instance Registry Count:", erpInstanceRegistry.list().length);
+  console.log("[UEOS] ERP Instances Loaded:", erpInstanceRegistry.list().map(i => i.name));
 
   // Restore others
   const erps = registryPersistenceEngine.load("erp-registry");
