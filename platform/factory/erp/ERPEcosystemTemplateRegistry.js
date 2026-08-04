@@ -6,6 +6,7 @@
  */
 
 import { ERPBlueprintRegistry } from "./ERPBlueprintRegistry.js";
+import { registryPersistenceEngine } from "../../storage/RegistryPersistenceEngine.js";
 
 export class ERPEcosystemTemplateRegistry {
   constructor() {
@@ -515,157 +516,51 @@ export class ERPEcosystemTemplateRegistry {
         name: "Sovereign Central Bank ERP",
         description: "Reserve ratio tracking, monetary policy monitors, commercial bank auditing, and currency clearing.",
         portals: ["Governor Central Bank Portal", "Commercial Auditor Portal", "Monetary Operations Portal", "Treasury Vault Portal"],
-        departments: ["Office of Governor Synod", "Bank Supervision Directorate", "Monetary Policy & Research Unit", "National Treasury Vault Operations", "Clearing House Section"],
-        modules: ["Commercial Bank reserve Ratio Tracker", "Commercial Bank Financial Auditor Node", "Monetary Policy Indicator Tracker", "Sovereign Treasury Vault Controller", "National Clearing House Server"],
-        layers: ["Sovereign Board of Governors", "Monetary Supervision Operations Core", "National Financial Settlement network"],
-        components: ["Reserve Ratio Monitor Grid", "Supervision Audit Report List", "Policy Indicators Sheet", "Vault Transaction Table"],
-        branches: ["Sovereign Central Bank Palace", "National Security Gold Vault Annex", "Metropolitan Settlement Annex"],
-        workflows: ["Commercial Bank Audit Issue Escalation", "Reserve Ratio Deviation Notice Approval", "Vault Asset Transit Security Path"]
-      },
-
-      // 13. INSURANCE ECOSYSTEM TEMPLATES
-      {
-        id: "life-insurance-erp",
-        ecosystemId: "insurance-erp",
-        name: "Life Insurance ERP",
-        description: "Policy administration, claims adjustment, underwriting engine, and brokerage portals.",
-        portals: ["Life Insurance Director Portal", "Underwriter Dashboard Portal", "Claims Adjuster Portal", "Broker Portal"],
-        departments: ["Life Insurance Executive Office", "Underwriting Directorate", "Claims Management Division", "Broker & Agent Network Division"],
-        modules: ["Life Policy Registry Database", "Underwriting Assessment Engine", "Claims Validation & Review Node", "FAAP Insurance Reserve ledger", "Broker Commissions Recorder"],
-        layers: ["Corporate Board of Directors", "Insurance Underwriting Operations", "Broker Distribution Network"],
-        components: ["Policy Ledger Table", "Underwriting Risk Assigner Grid", "Claim Investigation Panel", "Commission Sheet"],
-        branches: ["Life Insurance Corporate HQ", "Main City Broker Annex", "Northern Regional Broker Branch"],
-        workflows: ["Policy Issuance Approval Pathway", "Critical Claim Escalation Pathway", "Broker Commission Settlement Route"]
-      },
-      {
-        id: "health-insurance-erp",
-        ecosystemId: "insurance-erp",
-        name: "Health Insurance ERP",
-        description: "Provider networks, medical claims coding, billing limits, and patient clearance hubs.",
-        portals: ["Health Insurance Director Portal", "Provider Liaison Portal", "Medical Adjuster Portal", "Patient Portal"],
-        departments: ["Health Insurance Directorate", "Hospital Provider Network Office", "Medical Claim Auditing Unit", "Accounts & Settle Office"],
-        modules: ["Provider Hospital Directory", "Medical Claim Coding (ICD) Validator", "Provider Billing Limits Monitor", "FAAP Hospital Settlement Server", "Patient Health Policy Database"],
-        layers: ["Health Insurance Operations Core", "Hospital Service Provider Network", "Member Support Interface"],
-        components: ["Hospital Provider List Table", "ICD Code Claim validation Sheet", "Billing Limit Tracker Panel", "Patient Invoice Board"],
-        branches: ["Health Insurance HQ Office", "Clinical Liaison Station 1", "Clinical Liaison Station 2"],
-        workflows: ["Hospital Invoice Verification Route", "Claim Deviation Auditor Referral", "Patient Enrollment Route"]
-      },
-      {
-        id: "general-insurance-erp",
-        ecosystemId: "insurance-erp",
-        name: "General Property & Casualty Insurance ERP",
-        description: "Asset risk valuations, incident inspections, premium calculators, and adjuster logs.",
-        portals: ["General Insurance Director Portal", "Inspection Officer Portal", "Adjuster Portal", "Client Portal"],
-        departments: ["General Insurance Directorate", "Risk Inspection Division", "Property Adjusters Section", "Claims Outbound Settle Desk"],
-        modules: ["Asset Risk Valuation Database", "Incident Inspector Dispatch Node", "Premium Calculator Engine", "FAAP Outbound Claim Settler", "Fleet & Cargo Insurance Node"],
-        layers: ["General Insurance Board", "Property Inspection & Adjustment Core", "Logistics Delivery Hub"],
-        components: ["Asset Value Evaluation Matrix", "Incident Dispatch Board", "Premium Configurator Panel", "Settlement Payments Table"],
-        branches: ["General Insurance HQ", "Maritime Port Cargo Hub Office", "Metropolitan Car Claim Depot"],
-        workflows: ["Asset Risk Verification Path", "Incident Claim Settlement Sign-off", "Inspector Field Action Dispatch Path"]
-      },
-
-      // 14. NGO & FOUNDATION ECOSYSTEM TEMPLATES
-      {
-        id: "ngo-national-erp",
-        ecosystemId: "ngo-erp",
-        name: "National NGO ERP",
-        description: "Grant management, donor reporting, project tracking, and volunteer coordinators for non-profits.",
-        portals: ["Executive Director Portal", "Grant Manager Portal", "Project Coordinator Portal", "Volunteer Portal"],
-        departments: ["Executive Directorate Secretariat", "Grant & Donor Relations Division", "Project Implementation Directorate", "Volunteer Liaison & HR Office", "Finance Office"],
-        modules: ["Grant Allocation Registry Database", "Donor Report Composer Node", "Project Milestones Monitor", "Volunteer Dispatch Coordinator", "FAAP Development Budget Ledger"],
-        layers: ["NGO Board of Trustees Synod", "Development Program Operations Core", "Field Implementation Hubs"],
-        components: ["Grant Allocation Matrix", "Donor Reporting Table", "Project Milestones Grid", "Volunteer Dispatch Panel"],
-        branches: ["National NGO HQ", "Northern Field Action Station", "Eastern Field Action Station", "Western Field Action Station"],
-        workflows: ["Grant Clearance Pathway", "Project Budget Relocation Approval", "Volunteer Dispatch Action Path"]
-      },
-      {
-        id: "international-ngo-erp",
-        ecosystemId: "ngo-erp",
-        name: "International NGO ERP",
-        description: "Multi-country charity networks, currency hedge accounts, and international compliance auditing.",
-        portals: ["Country Director Portal", "HQ Grant Monitor Portal", "Logistics Portal", "Compliance Portal"],
-        departments: ["Country Director Secretariat", "International Grant Audit Section", "Logistics & Fleet Operations", "International Compliance Office"],
-        modules: ["Multi-Country Grant Database", "Hedge Account Ledger Node", "Fleet Dispatcher & Transit Map", "Compliance Customs Documents", "NGO Program Analytics"],
-        layers: ["International Oversight Synod", "Logistics & Grant Operations", "International Compliance Network"],
-        components: ["Grant Blockchain Ledger", "Hedge Fund Allocation Grid", "Fleet Router Panel", "Compliance Document Console"],
-        branches: ["International NGO Global HQ", "Country Office Capital", "Regional Border Transit Office"],
-        workflows: ["Compliance Certificate Validation Path", "Grant Discrepancy Escalation Route", "Export Materials Clearance Path"]
-      },
-      {
-        id: "charity-trust-erp",
-        ecosystemId: "ngo-erp",
-        name: "Charitable Trust ERP",
-        description: "Legacy trust capital allocation, asset manager, and scholarship clearing platform.",
-        portals: ["Trustee Board Chairman Portal", "Fund Manager Portal", "Scholarship Coordinator Portal", "Auditor Portal"],
-        departments: ["Board of Trustees Secretariat", "Capital Investment Division", "Scholarship Grants Directorate", "Compliance Office"],
-        modules: ["Trustee Asset Registry", "Investment Allocation Portfolio Engine", "Scholarship Allocation Node", "FAAP Trust Fund clearing", "Compliance Auditor Node"],
-        layers: ["Board of Trustees Governance Synod", "Investment Operations Core", "Scholarship Support Interface"],
-        components: ["Trust Asset Chart", "Fund Allocation Grid", "Scholarship Recipient Table", "Audit Log Viewer"],
-        branches: ["Charitable Trust HQ", "Downtown Trust Office", "Suburban Liaison Center"],
-        workflows: ["Capital Allocation Authorization Path", "Scholarship Award Sign-off Pathway", "Auditor Certification Release Workflow"]
-      },
-
-      // 15. CORE BANKING & FINANCE ECOSYSTEM TEMPLATES
-      {
-        id: "fintech-erp",
-        ecosystemId: "finance-banking-erp",
-        name: "FinTech Operations ERP",
-        description: "Core e-money registers, digital transaction settling, api ledger validators, and merchant dashboards.",
-        portals: ["Fintech Director Portal", "Transaction settling Desk Portal", "Compliance Auditor Portal", "Merchant Portal"],
-        departments: ["FinTech Directorate", "Digital Operations Division", "Compliance & AML Office", "Merchant Services Division", "Finance Directorate"],
-        modules: ["Digital Wallet Ledger Core", "Payment Settlement Gateway Node", "API Ledger transaction Validator", "Merchant Settlement Accountant", "FAAP Centralized Cash Repository"],
-        layers: ["FinTech Board of Directors Synod", "Digital Core Processing Engine", "Merchant Service Portal Interface"],
-        components: ["Wallet Balances Table", "Payment Transaction Queue", "API Ledger Audit Sheet", "Merchant Settlement Grid"],
-        branches: ["FinTech Corporate HQ", "Digital Processing Engine Node 1", "Backup Operations Center Node 2"],
-        workflows: ["Merchant Settlement Release Path", "AML High-Value Transaction Alert Path", "API Endpoint Configuration Approval"]
-      },
-      {
-        id: "investment-bank-erp",
-        ecosystemId: "finance-banking-erp",
-        name: "Investment Banking ERP",
-        description: "Capital market asset allocation, compound portfolio auditing, and scholarship clearing platform.",
-        portals: ["Investment Board Chairman Portal", "Fund Investment Manager Portal", "Grants Coordinator Portal", "Auditor Portal"],
-        departments: ["Board of Trustees Secretariat", "Capital Investment Division", "Scholarship Grants Directorate", "Compliance Office"],
-        modules: ["Asset Allocation Portfolio Engine", "Investment Portfolio Ledger", "Investment Settlement Server", "Sovereign Compliance Monitor", "Audit Trail System"],
-        layers: ["Investment Board Governance Synod", "Capital Operations Core", "Investor Support Interface"],
-        components: ["Asset Allocation Matrix", "Portfolio Grid", "Investment Goal Progress Bar", "Audit Log Viewer"],
-        branches: ["Investment Banking HQ", "Metropolitan Financial District Branch", "Offshore Fund Advisory Center"],
-        workflows: ["Capital Allocation Authorization Path", "Investment Award Sign-off Pathway", "Auditor Certification Release Workflow"]
-      },
-      {
-        id: "payment-gateway-erp",
-        ecosystemId: "finance-banking-erp",
-        name: "National Payment Settlement ERP",
-        description: "National payment settlement gateway, reserve accounting, and sovereign clearing core.",
-        portals: ["Governor Central Bank Portal", "Commercial Auditor Portal", "Monetary Operations Portal", "Treasury Vault Portal"],
-        departments: ["Office of Governor Synod", "Bank Supervision Directorate", "Monetary Policy & Research Unit", "National Treasury Vault Operations", "Clearing House Section"],
-        modules: ["Commercial Bank reserve Ratio Tracker", "Commercial Bank Financial Auditor Node", "Monetary Policy Indicator Tracker", "Sovereign Treasury Vault Controller", "National Clearing House Server"],
-        layers: ["Sovereign Board of Governors", "Monetary Supervision Operations Core", "National Financial Settlement network"],
-        components: ["Reserve Ratio Monitor Grid", "Supervision Audit Report List", "Policy Indicators Sheet", "Vault Transaction Table"],
-        branches: ["Sovereign Central Bank Palace", "National Security Gold Vault Annex", "Metropolitan Settlement Annex"],
-        workflows: ["Commercial Bank Audit Issue Escalation", "Reserve Ratio Deviation Notice Approval", "Vault Asset Transit Security Path"]
+        departments: ["Office of the Governor", "Monetary Policy Directorate", "Commercial Bank Audit Directorate", "Treasury & Currency Division"],
+        modules: ["Monetary Reserve Ledger", "Commercial Bank Audit Registry", "Sovereign Currency Clearing Node", "Inflation & Economic Monitor", "Sovereign Audit Ledger Logs"],
+        layers: ["Sovereign Governance Board", "Monetary Policy Operations", "Commercial Banking Oversight Network"],
+        components: ["Reserve Ratio Chart", "Bank Audit Status Grid", "Currency Clearing Table", "Economic Monitor Panel"],
+        branches: ["Sovereign Central Bank HQ", "Regional Monetary Branch North", "Regional Monetary Branch East", "Regional Monetary Branch West"],
+        workflows: ["Monetary Policy Revision Workflow", "Commercial Bank Audit Certification", "Currency Allocation Authorization Path"]
       }
     ];
+    this.loadFromStorage();
+  }
+
+  loadFromStorage() {
+    const stored = registryPersistenceEngine.load("erp-ecosystem-templates");
+    if (Array.isArray(stored)) {
+        this.templates = [...this.templates, ...stored];
+    }
+  }
+
+  registerTemplate(template) {
+    this.templates.push(template);
+    // Persist to storage for UEOS runtime consistency
+    const runtimeTemplates = this.templates.filter(t => !this.isDefaultTemplate(t.id));
+    registryPersistenceEngine.save("erp-ecosystem-templates", runtimeTemplates);
+  }
+
+  isDefaultTemplate(id) {
+    // Simplified default template check based on ID prefix or explicit list
+    return [
+      "university-erp", "college-erp", "vocational-erp", "secondary-erp", "primary-erp",
+      "ministry-erp", "agency-erp", "local-gov-erp",
+      "microfinance-erp", "sacco-erp", "credit-union-erp",
+      "hospital-erp", "clinic-erp", "health-network-erp",
+      "cooperative-erp", "agribusiness-erp", "supply-chain-erp",
+      "wholesale-erp", "retail-chain-erp", "supermarket-erp",
+      "corporate-erp", "service-company-erp", "manufacturing-erp",
+      "cultural-erp", "religious-erp", "clan-erp",
+      "alumni-network-erp", "endowment-erp", "foundation-erp",
+      "hotel-erp", "restaurant-group-erp", "tourism-erp",
+      "law-firm-erp", "court-erp", "legal-aid-erp",
+      "retail-bank-erp", "commercial-bank-erp", "central-bank-erp"
+    ].includes(id);
   }
 
   listTemplates() {
     return this.templates;
-  }
-
-  getTemplate(id) {
-    return this.templates.find(t => t.id === id);
-  }
-
-  getTemplatesByEcosystem(ecosystemId) {
-    return this.templates.filter(t => t.ecosystemId === ecosystemId);
-  }
-
-  getBlueprint(id) {
-    const template = this.templates.find(t => t.id === id || t.ecosystemId === id);
-    if (template) {
-      return template;
-    }
-    return ERPBlueprintRegistry.getBlueprint(id);
   }
 }
 
