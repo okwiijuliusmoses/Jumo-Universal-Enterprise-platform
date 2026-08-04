@@ -40,6 +40,7 @@ export const publicTemplate = (state) => {
             </div>
             
             <div class="flex items-center gap-3">
+                <button onclick="window.navigate('/control-center/login')" class="text-xs font-bold text-rose-600 hover:text-rose-800 hover:bg-rose-50 px-4 py-2 border border-rose-200 rounded-lg transition uppercase tracking-widest cursor-pointer flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> Control Center</button>
                 <button onclick="window.navigate('/login')" class="text-xs font-bold text-slate-700 hover:text-blue-600 px-4 py-2 rounded-md transition uppercase tracking-widest cursor-pointer">Sign In</button>
                 <button onclick="window.navigate('/register')" class="text-[10px] font-bold uppercase px-6 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition shadow-md cursor-pointer tracking-widest">Register Institution</button>
             </div>
@@ -187,6 +188,8 @@ export const publicTemplate = (state) => {
             </div>
             
             <div class="max-w-6xl mx-auto mt-8 flex flex-wrap justify-center gap-6 text-sm">
+                <button onclick="window.navigate('/control-center/login')" class="text-rose-600 hover:text-rose-800 font-bold transition cursor-pointer flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> JUMO UEOS Control Center Access</button>
+                <span class="text-slate-300">|</span>
                 <button onclick="alert('Password Reset')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Forgot Password?</button>
                 <button onclick="alert('Account Recovery')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path></svg> Recover Account</button>
                 <button onclick="window.navigate('/contact')" class="text-slate-500 hover:text-enterprise-blue font-medium transition cursor-pointer flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> Contact Support</button>

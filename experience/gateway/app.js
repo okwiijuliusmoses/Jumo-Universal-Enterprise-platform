@@ -339,7 +339,7 @@ window.render = function() {
 window.handleSovereignLogin = async function(e, redirectRoute = '/control-center') {
   e.preventDefault();
   
-  const emailInput = document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.enterprise" };
+  const emailInput = document.getElementById("cc-email") || document.getElementById("sov-email") || document.getElementById("login-email") || { value: "owner@jumo.enterprise" };
   const email = emailInput.value || "owner@jumo.enterprise";
   
   try {
