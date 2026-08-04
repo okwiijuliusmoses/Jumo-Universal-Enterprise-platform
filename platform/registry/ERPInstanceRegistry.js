@@ -80,6 +80,15 @@ export class ERPInstanceRegistry {
    return this.instances;
  }
 
+ delete(id) {
+   const idx = this.instances.findIndex(i => i.id === id);
+   if (idx !== -1) {
+     this.instances.splice(idx, 1);
+     return true;
+   }
+   return false;
+ }
+
  updateLifecycle(id, state) {
     const validStates = ["REGISTERED", "DEPLOYED", "CONFIGURED", "PROVISIONED", "READY", "RUNNING", "SUSPENDED", "RESTORED"];
     const item = this.get(id);

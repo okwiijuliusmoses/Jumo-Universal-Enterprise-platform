@@ -14,6 +14,16 @@ export class ERPRecoveryEngine {
     const products = erpProductRegistry.list();
     let recoveredCount = 0;
 
+    // Prune stale instances that do not match active governed templates
+    const validTemplateIds = new Set(products.map(p => p.id));
+    const currentInstances = erpInstanceRegistry.list();
+    currentInstances.forEach(inst => {
+      if (inst.templateId && !validTemplateIds.has(inst.templateId)) {
+        console.log(`[UEOS] Pruning stale unapproved ERP instance: ${inst.name} (${inst.id})`);
+        erpInstanceRegistry.delete(inst.id);
+      }
+    });
+
     products.forEach(product => {
       const isProvisioned = erpProvisioningStateRegistry.isProvisioned(product.id);
       const existingInstance = erpInstanceRegistry.get(`${product.id}-instance`);
@@ -23,7 +33,8 @@ export class ERPRecoveryEngine {
         
         try {
           const erpDefinition = {
-            id: `${product.id}-instance`, instanceId: `${product.id}-instance`,
+            id: `${product.id}-instance`,
+            instanceId: `${product.id}-instance`,
             name: product.name,
             blueprintId: product.ecosystemId,
             templateId: product.id,
