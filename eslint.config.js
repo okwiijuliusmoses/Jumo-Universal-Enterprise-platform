@@ -1,6 +1,6 @@
 export default [
   {
-    ignores: ["archive/**", "clean-clone/**", "dist/**", "node_modules/**", "control-center/**", "src/**"]
+    ignores: ["archive/**", "dist/**", "node_modules/**", "control-center/**", "src/**"]
   },
   {
     files: ["**/*.js", "**/*.cjs"],
@@ -8,7 +8,6 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        // Browser
         window: "readonly",
         document: "readonly",
         console: "readonly",
@@ -21,7 +20,6 @@ export default [
         URL: "readonly",
         location: "readonly",
         history: "readonly",
-        // Node.js
         process: "readonly",
         __dirname: "readonly",
         __filename: "readonly",
