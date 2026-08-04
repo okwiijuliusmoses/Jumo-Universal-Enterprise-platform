@@ -1,6 +1,0 @@
-{
-  "name": "Project Blueprint Architect",
-  "description": "An AI-powered full-stack planner and JUMO UEOS hybrid runtime engine that orchestrates micro-kernels, double-entry FAAP ledgers, dynamic hot-reload registries, and Gemini multi-agent workflows.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
