@@ -192,7 +192,7 @@ export function bootstrapEnterprisePlatform() {
       const erpDefinition = {
         id: template.id.replace("-template", ""),
         name: template.name.replace(" Template", ""),
-        blueprintId: template.blueprintId,
+        blueprintId: template.blueprintId || template.ecosystemId,
         templateId: template.id,
         familyId: template.familyId,
         tenant: "tenant-default-001",
