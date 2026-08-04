@@ -102,28 +102,28 @@ institution:
 directive.institution || {},
 
 portals:
-portalGenerator.generate(blueprint),
+portalGenerator.generate(blueprint, directive),
 
 
 modules:
-moduleGenerator.generate(blueprint),
+moduleGenerator.generate(blueprint, directive),
 
 
 forms:
-formGenerator.generate(blueprint),
+formGenerator.generate(blueprint, directive),
 
 
 workflows:
-workflowGenerator.generate(blueprint),
+workflowGenerator.generate(blueprint, directive),
 
 
 components:
-componentGenerator.generate(blueprint),
+componentGenerator.generate(blueprint, directive),
 
 
 
 departments:
-departmentGenerator.generate(blueprint),
+departmentGenerator.generate(blueprint, directive),
 
 aiAgents:
 aiAgentGenerator.generate(blueprint),

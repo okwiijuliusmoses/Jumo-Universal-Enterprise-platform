@@ -24,7 +24,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"education-erp",
-      name:"Education ERP",
+      name:"Education ERP Ecosystem",
       category:"Institutional ERP",
 
       configurableScope:[
@@ -92,7 +92,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"government-erp",
-      name:"Government ERP",
+      name:"Government ERP Ecosystem",
       category:"Public Administration ERP",
 
       configurableScope:[
@@ -153,7 +153,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"finance-microfinance-erp",
-      name:"Finance & Microfinance ERP",
+      name:"Finance & Microfinance ERP Ecosystem",
       category:"Financial Institution ERP",
 
       configurableScope:[
@@ -208,7 +208,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"healthcare-erp",
-      name:"Healthcare ERP",
+      name:"Healthcare ERP Ecosystem",
       category:"Healthcare Operations ERP",
 
       configurableScope:[
@@ -260,7 +260,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"agriculture-erp",
-      name:"Agriculture ERP",
+      name:"Agriculture ERP Ecosystem",
       category:"Agribusiness ERP",
 
       configurableScope:[
@@ -312,7 +312,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"commerce-erp",
-      name:"Wholesale Retail & Supermarket ERP",
+      name:"Wholesale Retail & Supermarket ERP Ecosystem",
       category:"Commerce ERP",
 
       configurableScope:[
@@ -337,7 +337,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"enterprise-company-erp",
-      name:"Enterprise Company ERP",
+      name:"Enterprise Company ERP Ecosystem",
       category:"Corporate ERP",
 
       configurableScope:[
@@ -361,7 +361,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"community-cultural-erp",
-      name:"Community & Cultural Institutions ERP",
+      name:"Community & Cultural Institutions ERP Ecosystem",
       category:"Social Institution ERP",
 
       configurableScope:[
@@ -387,7 +387,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"alumni-endowment-erp",
-      name:"Alumni & Endowment ERP",
+      name:"Alumni & Endowment ERP Ecosystem",
       category:"Institutional Network ERP",
 
       configurableScope:[
@@ -410,7 +410,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"hospitality-erp",
-      name:"Hospitality ERP",
+      name:"Hospitality ERP Ecosystem",
       category:"Hospitality Operations ERP",
 
       configurableScope:[
@@ -433,7 +433,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"legal-case-management-erp",
-      name:"Legal & Case Management ERP",
+      name:"Legal & Case Management ERP Ecosystem",
       category:"Justice ERP",
 
       configurableScope:[
@@ -457,7 +457,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"banking-erp",
-      name:"Commercial Banking ERP",
+      name:"Commercial Banking ERP Ecosystem",
       category:"Banking ERP",
 
       configurableScope:[
@@ -518,7 +518,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"insurance-erp",
-      name:"Insurance ERP",
+      name:"Insurance ERP Ecosystem",
       category:"Insurance ERP",
 
       configurableScope:[
@@ -574,7 +574,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"ngo-erp",
-      name:"NGO & Foundation ERP",
+      name:"NGO & Foundation ERP Ecosystem",
       category:"Non-Profit ERP",
 
       configurableScope:[
@@ -600,7 +600,7 @@ export const ERPBlueprintRegistry = {
 
     {
       id:"finance-banking-erp",
-      name:"Core Banking & Finance ERP",
+      name:"Core Banking & Finance ERP Ecosystem",
       category:"Financial Services ERP",
 
       configurableScope:[

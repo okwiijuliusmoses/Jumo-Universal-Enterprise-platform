@@ -1,6 +1,9 @@
 /**
  * JUMO UEOS
  * ERP Workspace Resolver
+ *
+ * Resolves the operational enterprise workspace dynamically from the instance,
+ * blueprint, and templates, configuring layers, portals, departments, and branches.
  */
 
 import { erpInstanceRegistry } from "../registry/ERPInstanceRegistry.js";
@@ -25,8 +28,11 @@ export class ERPWorkspaceResolver {
       throw new Error(`ERP Instance ${erpId} not found or not active.`);
     }
 
-    const blueprint = ERPBlueprintRegistry.getBlueprint(instance.blueprintId || instance.templateId) || {};
-    const standard = ERPEnterpriseStandard.getStandardProfile(blueprint);
+    const blueprintId = instance.blueprintId || instance.templateId;
+    const blueprint = ERPBlueprintRegistry.getBlueprint(blueprintId) || {};
+    
+    // Resolve standard and template properties
+    const standard = ERPEnterpriseStandard.getStandardProfile(blueprint, instance.templateId);
     const sector = instance.domain || blueprint.domain || instance.name;
     
     // Merge baseline capabilities with deployed capabilities & factories
@@ -35,11 +41,11 @@ export class ERPWorkspaceResolver {
     const allComponents = enterpriseComponentRegistry.listComponents();
     const enterpriseLayers = enterpriseLayerRegistry.listLayers();
 
-    const enabledModules = instance.modules || blueprint.modules || blueprint.capabilities || factoryModules;
-    const enabledPortals = instance.portals || blueprint.portals || factoryPortals;
+    const enabledModules = instance.modules || blueprint.modules || standard.modules || blueprint.capabilities || factoryModules;
+    const enabledPortals = instance.portals || blueprint.portals || standard.portals || factoryPortals;
     const enabledWorkflows = instance.workflows || blueprint.workflows || standard.workflows;
     const activeAgents = instance.agents || blueprint.agents || blueprint.aiAgents || ["UEOS Enterprise AI Assistant"];
-    const enabledComponents = instance.components || blueprint.components || allComponents;
+    const enabledComponents = instance.components || blueprint.components || standard.components || allComponents;
     const enabledForms = instance.forms || blueprint.forms || standard.forms;
     const enabledDepartments = instance.departments || blueprint.departments || standard.departments;
     const enabledRoles = instance.roles || blueprint.roles || standard.roles;
@@ -73,6 +79,7 @@ export class ERPWorkspaceResolver {
       tenantId: instance.tenant || tenantId,
       erpId: instance.id || instance.instanceId,
       blueprintId: instance.blueprintId,
+      templateId: instance.templateId,
       erpName: instance.name,
       domain: instance.domain,
       lifecycle: instance.lifecycle || "RUNNING",
@@ -82,13 +89,14 @@ export class ERPWorkspaceResolver {
       deploymentStatus: instance.deploymentStatus || "DEPLOYED",
       runtimeStatus: instance.runtimeStatus || "ONLINE",
       workspace: {
-        layers: enterpriseLayers,
+        layers: standard.layers || enterpriseLayers,
         modules: loadedModules,
         portals: loadedPortals,
         workflows: loadedWorkflows,
         components: enabledComponents,
         forms: enabledForms,
         departments: enabledDepartments,
+        branches: standard.branches || [],
         roles: enabledRoles,
         permissions: enabledPermissions,
         reports: enabledReports,
