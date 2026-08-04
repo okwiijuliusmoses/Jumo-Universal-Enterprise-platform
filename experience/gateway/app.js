@@ -5,6 +5,146 @@ import { workspaceTemplate } from "../workspace/index.js";
 import { controlCenterTemplate, controlCenterLoginTemplate } from "../control-center/index.js";
 import { erpPlatformTemplate } from "../erp/index.js";
 
+// Client-side UEOS Control Plane Sync Client
+class UEOSControlPlaneClient {
+  constructor() {
+    this.templates = [];
+    this.instances = [];
+    this.status = "ONLINE";
+  }
+
+  async initialize() {
+    try {
+      const tRes = await fetch("/api/ueos/templates");
+      if (tRes.ok) {
+        this.templates = await tRes.json();
+      }
+      const iRes = await fetch("/api/ueos/instances");
+      if (iRes.ok) {
+        this.instances = await iRes.json();
+      }
+      console.log("[UEOS Client] Control Plane Client Initialized. Templates:", this.templates.length, "Instances:", this.instances.length);
+    } catch (e) {
+      console.error("[UEOS Client] Failed to initialize control plane", e);
+    }
+  }
+
+  getERPTemplates() {
+    return this.templates;
+  }
+
+  getERPTemplate(id) {
+    return this.templates.find(t => t.id === id || t.blueprintId === id);
+  }
+
+  getERPTemplateByNameOrId(idOrName) {
+    return this.templates.find(t => t.id === idOrName || t.name === idOrName || t.blueprintId === idOrName);
+  }
+
+  getDefaultERPTemplate() {
+    return this.templates[0] || null;
+  }
+
+  getDeployedERPInstances() {
+    return this.instances;
+  }
+
+  getERPInstance(id) {
+    return this.instances.find(i => i.id === id || i.instanceId === id);
+  }
+
+  getERPApplications() {
+    return {
+      total: this.instances.length,
+      erps: this.instances
+    };
+  }
+
+  getERPStatus() {
+    return {
+      status: "ONLINE",
+      totalERPInstances: this.instances.length,
+      activeERPInstances: this.instances.filter(i => i.status === "ACTIVE").length,
+      erps: this.instances
+    };
+  }
+
+  deployERP(templateId, name) {
+    const template = this.getERPTemplate(templateId) || this.getERPTemplateByNameOrId(templateId);
+    if (!template) {
+      console.error("[UEOS Client] Template not found for deployment:", templateId);
+      return null;
+    }
+
+    const instanceId = `inst-${template.id}-${Date.now().toString().slice(-4)}`;
+    const newInstance = {
+      id: instanceId,
+      instanceId: instanceId,
+      templateId: template.id,
+      blueprintId: template.blueprintId || template.id,
+      name: name || `${template.name} Instance`,
+      tenant: `tenant-${Date.now().toString().slice(-6)}`,
+      status: "ACTIVE",
+      lifecycle: "RUNNING",
+      configurationStatus: "CONFIGURED",
+      deploymentStatus: "DEPLOYED",
+      runtimeStatus: "ONLINE",
+      portals: template.portals || [],
+      modules: template.modules || [],
+      workflows: template.workflows || [],
+      components: template.components || [],
+      forms: template.forms || [],
+      departments: template.departments || []
+    };
+
+    this.instances.push(newInstance);
+    if (window.state) {
+      window.state.erpApplications = this.instances;
+    }
+
+    fetch("/api/ueos/deploy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ templateId: template.id, name: newInstance.name })
+    })
+    .then(async (res) => {
+      if (res.ok) {
+        const persisted = await res.json();
+        const idx = this.instances.findIndex(i => i.id === instanceId);
+        if (idx !== -1) {
+          this.instances[idx] = persisted;
+        }
+        if (window.state) {
+          window.state.erpApplications = this.instances;
+          window.render();
+        }
+      }
+    })
+    .catch(err => {
+      console.error("[UEOS Client] Background deployment network error:", err);
+    });
+
+    return newInstance;
+  }
+
+  health() {
+    return {
+      status: "ONLINE",
+      registries: {
+        erp: { status: "ONLINE" },
+        erpInstances: { status: "ONLINE", count: this.instances.length },
+        templates: { count: this.templates.length }
+      },
+      ai: {
+        enabled: true,
+        engine: "UEOS AI Intelligence Runtime"
+      }
+    };
+  }
+}
+
+window.ueosControlPlane = new UEOSControlPlaneClient();
+
 // Global Error Protection
 window.onerror = function(message, source, lineno, colno, error) {
   console.error("UEOS Runtime Error:", { message, source, lineno, colno, error });
@@ -618,6 +758,11 @@ window.switchTenant = function(id, name) {
 document.addEventListener("DOMContentLoaded", async () => {
   startupDiagnostics.log("HTML LOADED");
 
+  // Synchronize and initialize client-side UEOS Control Plane
+  if (window.ueosControlPlane && typeof window.ueosControlPlane.initialize === 'function') {
+    await window.ueosControlPlane.initialize();
+  }
+
   if (window.state && window.state.bootComplete) {
     if (typeof window.render === 'function') window.render();
     return;
@@ -667,18 +812,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // Restore ERP Ecosystem Visibility
     try {
-      const erpResponse = await fetch('/api/ueos/erp');
-      if (erpResponse.ok) {
-        const erpData = await erpResponse.json();
-        window.state.erpApplications = erpData.erps || [];
-        console.log("[UEOS] ERP Ecosystem Federated:", window.state.erpApplications.length);
+      if (window.ueosControlPlane && typeof window.ueosControlPlane.getDeployedERPInstances === 'function') {
+        window.state.erpApplications = window.ueosControlPlane.getDeployedERPInstances();
+        console.log("[UEOS] ERP Ecosystem Federated from Client Control Plane:", window.state.erpApplications.length);
+      } else {
+        const erpResponse = await fetch('/api/ueos/erp');
+        if (erpResponse.ok) {
+          const erpData = await erpResponse.json();
+          window.state.erpApplications = erpData.erps || [];
+          console.log("[UEOS] ERP Ecosystem Federated from API:", window.state.erpApplications.length);
+        }
       }
     } catch (e) {
       console.warn("[UEOS] ERP Federation Deferred:", e.message);
     }
-    
-    // Small pause to let user see "complete"
-    // await new Promise(res => setTimeout(res, 400));
   }
   
   startupDiagnostics.log("SHELL MOUNTED");

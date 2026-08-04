@@ -196,6 +196,62 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (pathname === "/api/ueos/templates" && req.method === "GET") {
+    const { erpEcosystemTemplateRegistry } = await import("./platform/factory/erp/ERPEcosystemTemplateRegistry.js");
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(erpEcosystemTemplateRegistry.listTemplates(), null, 2));
+    return;
+  }
+
+  if (pathname === "/api/ueos/instances" && req.method === "GET") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(erpDiscoveryService.listERPs(), null, 2));
+    return;
+  }
+
+  if (pathname === "/api/ueos/deploy" && req.method === "POST") {
+    let body = "";
+    req.on("data", chunk => { body += chunk; });
+    req.on("end", async () => {
+      try {
+        const { templateId, name } = JSON.parse(body);
+        const { erpEcosystemTemplateRegistry } = await import("./platform/factory/erp/ERPEcosystemTemplateRegistry.js");
+        const template = erpEcosystemTemplateRegistry.getTemplate(templateId) || erpEcosystemTemplateRegistry.getBlueprint(templateId);
+        
+        if (!template) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Template or blueprint not found" }));
+          return;
+        }
+        
+        const instanceId = `inst-${templateId}-${Date.now().toString().slice(-4)}`;
+        const newInstance = {
+          id: instanceId,
+          instanceId: instanceId,
+          templateId: template.id,
+          blueprintId: template.blueprintId || template.id,
+          name: name || `${template.name} Instance`,
+          tenant: `tenant-${Date.now().toString().slice(-6)}`,
+          status: "ACTIVE",
+          lifecycle: "RUNNING",
+          configurationStatus: "CONFIGURED",
+          deploymentStatus: "DEPLOYED",
+          runtimeStatus: "ONLINE"
+        };
+        
+        erpInstanceRegistry.register(newInstance);
+        ueosRegistrySnapshotManager.saveAll();
+        
+        res.writeHead(201, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(newInstance, null, 2));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
   if (pathname.startsWith("/api/ueos/erp/") && pathname !== "/api/ueos/erp/health" && pathname !== "/api/ueos/erp/catalogue" && pathname !== "/api/ueos/erp/ecosystem") {
     const segments = pathname.split("/").filter(Boolean);
     const lastSegment = segments[segments.length - 1];
