@@ -1,3 +1,4 @@
+import { erpRecoveryEngine } from "../../factory/erp/recovery/ERPRecoveryEngine.js";
 /**
  * JUMO UEOS
  * Registry Persistence Bootstrap
@@ -177,52 +178,5 @@ export function restoreAllRegistries() {
 
 export function bootstrapEnterprisePlatform() {
   console.log("[UEOS] Bootstrapping Enterprise Platform Ecosystem...");
-
-  const blueprints = ERPBlueprintRegistry.list();
-  const existingInstances = erpInstanceRegistry.list();
-  let generatedCount = 0;
-
-  blueprints.forEach(blueprint => {
-    blueprint.configurableScope.forEach(scope => {
-      const templateId = `${scope.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}-erp`;
-      const instanceId = `${templateId}-instance`;
-
-      const alreadyRegistered = existingInstances.find(e => e.id === instanceId || e.blueprintId === blueprint.id && e.domain === scope);
-      
-      if (!alreadyRegistered) {
-        console.log(`[UEOS] Auto-generating ERP Instance: ${scope} (${blueprint.name})`);
-        
-        const erpDefinition = {
-          id: instanceId,
-          name: `${scope} ERP`,
-          blueprintId: blueprint.id,
-          templateId: templateId,
-          tenant: "system",
-          domain: scope,
-          portals: [`${scope} Admin Portal`, `Operations Portal`],
-          departments: [`${scope} Directorate`],
-          modules: [`Core ${scope} Management`],
-          workflows: ["Standard Approval", "Audit Workflow", "Governance Workflow"],
-          forms: ["Registry Form", "Operational Form"],
-          components: ["Data Grid", "Analytics Board", "AI Assistant"],
-          status: "ACTIVE"
-        };
-
-        try {
-          const instance = erpFactoryManager.generateERP(erpDefinition);
-          erpActivationService.activate(instance);
-          generatedCount++;
-          console.log(`[UEOS] Successfully auto-recovered ERP: ${instance.name}`);
-        } catch (err) {
-          console.error(`[UEOS] Failed to auto-generate ERP for ${scope}:`, err);
-        }
-      }
-    });
-  });
-
-  return {
-    status: "BOOTSTRAPPED",
-    generatedInstances: generatedCount,
-    totalInstances: erpInstanceRegistry.list().length
-  };
+  return erpRecoveryEngine.auditAndRecover();
 }

@@ -1,3 +1,4 @@
+import { erpRecoveryEngine } from "../factory/erp/recovery/ERPRecoveryEngine.js";
 /**
  * JUMO UEOS
  * ERP Workspace Resolver
@@ -23,9 +24,14 @@ export class ERPWorkspaceResolver {
   }
 
   resolveWorkspace(tenantId, erpId) {
-    const instance = erpInstanceRegistry.get(erpId);
+    let instance = erpInstanceRegistry.get(erpId);
     if (!instance) {
-      throw new Error(`ERP Instance ${erpId} not found or not active.`);
+      console.log(`[UEOS] ERP Instance ${erpId} not found. Triggering recovery...`);
+      erpRecoveryEngine.auditAndRecover();
+      instance = erpInstanceRegistry.get(erpId);
+      if (!instance) {
+        throw new Error(`ERP Instance ${erpId} not found or not active.`);
+      }
     }
 
     const blueprintId = instance.blueprintId || instance.templateId;
