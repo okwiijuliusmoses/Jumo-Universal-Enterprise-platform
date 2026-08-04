@@ -1,84 +1,24 @@
 export class NavigationGenerator {
 
-generate(){
+  generateEnterpriseNavigation(instance, governance, departments, portals = [], modules = [], forms = [], workflows = []) {
+    const defaultNav = [
+      { label: "Overview", type: "workspace" },
+      { label: "Organization", children: ["Governance", "Executive Offices"] },
+      { label: "Departments", children: departments.map(d => d.name || d) },
+      { label: "Portals", children: portals.map(p => p.name || p) },
+      { label: "Modules", children: modules.map(m => m.name || m) },
+      { label: "Forms", children: forms.map(f => f.name || f) },
+      { label: "Workflows", children: workflows.map(w => w.name || w) },
+      { label: "AI Assistant", children: [] },
+      { label: "Configuration", children: [] }
+    ];
+    return defaultNav;
+  }
 
-return [
-{
-label:"Dashboard",
-type:"workspace"
-},
-{
-label:"Applications",
-children:[
-"Admissions",
-"Recruitment",
-"Membership",
-"Service Requests"
-]
-},
-{
-label:"People",
-children:[
-"Students",
-"Employees",
-"Members",
-"Alumni",
-"Citizens"
-]
-},
-{
-label:"Institution",
-children:[
-"Departments",
-"Organizations",
-"Structures"
-]
-},
-{
-label:"Operations",
-children:[
-"Workflows",
-"Approvals",
-"Requests"
-]
-},
-{
-label:"Finance",
-children:[
-"Transactions",
-"Budgets",
-"Treasury"
-]
-},
-{
-label:"Documents",
-children:[
-"Records",
-"Forms",
-"Archives"
-]
-},
-{
-label:"Analytics",
-children:[
-"Reports",
-"AI Insights",
-"Dashboards"
-]
-},
-{
-label:"Administration",
-children:[
-"Roles",
-"Permissions",
-"Configuration"
-]
-}
-];
+  generate(){
+    return this.generateEnterpriseNavigation({}, {}, []);
+  }
 
 }
 
-}
-
-export const navigationGenerator =
-new NavigationGenerator();
+export const navigationGenerator = new NavigationGenerator();

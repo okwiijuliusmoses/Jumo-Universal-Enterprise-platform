@@ -1,18 +1,14 @@
 /**
  * JUMO UEOS
  * Enterprise Module Generator
- *
- * Generates core enterprise modules and sector-specific capabilities,
- * and registers them in the central Module Registry.
  */
 
 import { moduleRegistry } from "../../../registry/ModuleRegistry.js";
 
 export class ModuleGenerator {
-  generate(blueprint, directive = {}) {
-    const erpInstanceId = directive.instanceId || `${blueprint.id}-instance`;
+  generate(instance, portals = []) {
+    const erpInstanceId = instance.id;
 
-    // Production core modules mandated by the consolidation directive
     const coreModules = [
       "Identity Management",
       "Administration",
@@ -28,22 +24,19 @@ export class ModuleGenerator {
       "AI Assistant"
     ];
 
-    // Sector-specific capabilities
-    const sectorModules = blueprint.capabilities || [];
-
-    const allModulesList = [...new Set([...coreModules, ...sectorModules])];
+    const allModulesList = coreModules;
 
     allModulesList.forEach(modName => {
       moduleRegistry.register({
         id: `mod-${erpInstanceId}-${modName.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
         name: modName,
         erpId: erpInstanceId,
-        category: coreModules.includes(modName) ? "CORE" : "SECTOR",
+        category: "CORE",
         status: "ACTIVE"
       });
     });
 
-    return allModulesList;
+    return allModulesList.map(name => ({ id: name.toLowerCase().replace(/[^a-z0-9]/g, "-"), name: name }));
   }
 }
 

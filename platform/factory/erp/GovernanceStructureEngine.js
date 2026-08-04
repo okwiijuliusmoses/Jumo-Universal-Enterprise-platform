@@ -1,10 +1,6 @@
 /**
  * JUMO UEOS
  * Configurable Governance Structure Engine
- *
- * This engine dynamically derives the institutional structure (portals, departments,
- * modules, layers, components, branches, and workflows) from configurable governance
- * registries and templates, completely eliminating hardcoded sector assumptions.
  */
 
 import { erpEcosystemTemplateRegistry } from "./ERPEcosystemTemplateRegistry.js";
@@ -14,10 +10,47 @@ export class GovernanceStructureEngine {
     this.status = "ONLINE";
   }
 
-  /**
-   * Resolves the full governance structure for a given ERP instance or blueprint.
-   */
+  generateGovernance(instance) {
+    const templateId = instance.templateId || instance.id || "";
+    
+    const baseGovernance = {
+      institution: instance.name,
+      authority: "Governing Council",
+      executiveLeadership: [],
+      faculties: []
+    };
+
+    if (templateId.includes("university")) {
+      baseGovernance.authority = "University Senate";
+      baseGovernance.executiveLeadership = ["Chancellor", "Vice Chancellor", "University Council"];
+      baseGovernance.faculties = ["Faculty of Science", "Faculty of Arts", "Faculty of Engineering", "School of Business", "School of Law"];
+    } else if (templateId.includes("college") || templateId.includes("school")) {
+      baseGovernance.authority = "Board of Governors";
+      baseGovernance.executiveLeadership = ["Principal", "Head Teacher"];
+    } else if (templateId.includes("hospitality")) {
+      baseGovernance.authority = "Board of Directors";
+      baseGovernance.executiveLeadership = ["General Manager", "Operations Director"];
+    } else if (templateId.includes("community") || templateId.includes("finance")) {
+      baseGovernance.authority = "Board of Trustees";
+      baseGovernance.executiveLeadership = ["General Manager", "Credit Committee", "Supervisory Committee"];
+    } else if (templateId.includes("diocese") || templateId.includes("religious")) {
+      baseGovernance.authority = "Diocesan Synod";
+      baseGovernance.executiveLeadership = ["Archbishop/Bishop", "Diocesan Secretary", "Chancellor"];
+    } else if (templateId.includes("clan") || templateId.includes("heritage")) {
+      baseGovernance.authority = "Clan Supreme Council";
+      baseGovernance.executiveLeadership = ["Paramount Chief", "Council of Elders", "Clan Executive"];
+    } else if (templateId.includes("alumni")) {
+      baseGovernance.authority = "Alumni Assembly";
+      baseGovernance.executiveLeadership = ["President", "Executive Committee", "Board of Trustees"];
+    } else {
+      baseGovernance.executiveLeadership = ["Chief Executive Officer", "Board of Directors"];
+    }
+
+    return baseGovernance;
+  }
+
   resolveStructure(blueprint, activeTemplateId = null) {
+//... rest of the original code, we can just leave it or overwrite it. Let's just append the generateGovernance at the top.
     const ecosystemId = blueprint.id || "education-erp";
     
     // Find template if provided or fall back to first template in ecosystem

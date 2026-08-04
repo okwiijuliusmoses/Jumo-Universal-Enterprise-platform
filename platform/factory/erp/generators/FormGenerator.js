@@ -1,19 +1,15 @@
 /**
  * JUMO UEOS
  * Enterprise Digital Forms Engine Generator
- *
- * Generates structured, platform-connected forms for registration, approvals, transactions,
- * workflows, compliance, and reporting, and registers them in the Form Registry.
  */
 
 import { formRegistry } from "../../../registry/formRegistry.js";
 
 export class FormGenerator {
-  generate(blueprint, directive = {}) {
-    const erpInstanceId = directive.instanceId || `${blueprint.id}-instance`;
-    const sectorName = blueprint.name || "Enterprise";
+  generate(instance, components = []) {
+    const erpInstanceId = instance.id;
+    const sectorName = instance.name || "Enterprise";
 
-    // Dynamic, connected forms required by production standards
     const formsMetadata = [
       {
         id: `form-${erpInstanceId}-registration`,
@@ -68,7 +64,7 @@ export class FormGenerator {
       });
     });
 
-    return formsMetadata.map(f => f.name);
+    return formsMetadata;
   }
 }
 

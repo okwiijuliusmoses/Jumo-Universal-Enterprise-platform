@@ -1,19 +1,15 @@
 /**
  * JUMO UEOS
  * Enterprise Component Generator
- *
- * Generates reusable enterprise components for each manufactured ERP platform
- * and registers them in the central Component Registry.
  */
 
 import { componentRegistry } from "../../../registry/componentRegistry.js";
 
 export class ComponentGenerator {
-  generate(blueprint, directive = {}) {
-    const erpInstanceId = directive.instanceId || `${blueprint.id}-instance`;
-    const sectorName = blueprint.name || "Enterprise";
+  generate(instance, modules = [], layers = []) {
+    const erpInstanceId = instance.id;
+    const sectorName = instance.name || "Enterprise";
 
-    // Reusable enterprise components mandated by the production directive
     const coreComponents = [
       { id: `comp-${erpInstanceId}-form`, name: `${sectorName} Form Component`, type: "FORM" },
       { id: `comp-${erpInstanceId}-workflow`, name: `${sectorName} Workflow Component`, type: "WORKFLOW" },
@@ -33,18 +29,7 @@ export class ComponentGenerator {
       });
     });
 
-    const results = coreComponents.map(c => c.name);
-
-    // Also support any template components or standard fallback list
-    const fallbackList = [
-      "Dashboard Component",
-      "Data Table Component",
-      "Search Component",
-      "AI Assistant Panel",
-      "Integration Gateway Status Board"
-    ];
-
-    return [...new Set([...results, ...fallbackList])];
+    return coreComponents;
   }
 }
 

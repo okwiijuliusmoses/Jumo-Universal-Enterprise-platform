@@ -1,17 +1,14 @@
 /**
  * JUMO UEOS
  * Enterprise Workflow Generator
- *
- * Manufactures approval chains, authorization matrices, escalation paths, audit trails,
- * and SLA monitoring workflows for each generated ERP instance.
  */
 
 import { workflowRegistry } from "../../../registry/workflowRegistry.js";
 
 export class WorkflowGenerator {
-  generate(blueprint, directive = {}) {
-    const erpInstanceId = directive.instanceId || `${blueprint.id}-instance`;
-    const sectorName = blueprint.name || "Enterprise";
+  generate(instance, forms = []) {
+    const erpInstanceId = instance.id;
+    const sectorName = instance.name || "Enterprise";
 
     const workflows = [
       {
@@ -64,7 +61,7 @@ export class WorkflowGenerator {
       });
     });
 
-    return workflows.map(w => w.name);
+    return workflows;
   }
 }
 
