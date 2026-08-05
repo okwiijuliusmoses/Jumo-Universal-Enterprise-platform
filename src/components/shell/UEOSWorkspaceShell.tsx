@@ -877,7 +877,7 @@ export default function UEOSWorkspaceShell({
                             <div>
                               <span className="font-bold text-slate-700">Portals: </span>
                               <div className="flex flex-wrap gap-1 mt-1">
-                                {inst.configuration.portals.map((p: string, idx: number) => (
+                                {(inst.configuration.portals || []).map((p: string, idx: number) => (
                                   <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
                                     {p}
                                   </span>
@@ -890,7 +890,7 @@ export default function UEOSWorkspaceShell({
                             <div>
                               <span className="font-bold text-slate-700">Configured Modules: </span>
                               <div className="flex flex-wrap gap-1 mt-1">
-                                {inst.configuration.modules.slice(0, 6).map((m: string, idx: number) => (
+                                {(inst.configuration.modules || []).slice(0, 6).map((m: string, idx: number) => (
                                   <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
                                     {m}
                                   </span>
