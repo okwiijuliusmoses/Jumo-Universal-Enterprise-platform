@@ -781,7 +781,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                         UEOS microkernel is uninitialized. Hit the Boot Core button below to register standard services, map FAAP Ledger structures, and open secure tenant scopes.
                       </div>
                     ) : (
-                      terminalLogs.map((log, i) => (
+                      (terminalLogs || []).map((log, i) => (
                         <div key={i} className={
                           log.startsWith("[SUCCESS]") ? "text-emerald-400 font-bold" : 
                           log.startsWith("[FATAL]") ? "text-rose-400 font-bold" : ""
@@ -831,7 +831,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                     </div>
 
                     <div className="space-y-2.5">
-                      {services.map(svc => (
+                      {(services || []).map(svc => (
                         <div key={svc.id} className="bg-slate-950 border border-slate-850/60 p-3 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                           <div className="flex items-center gap-3">
                             <div className={`h-2.5 w-2.5 rounded-full ${svc.state === "Running" ? "bg-emerald-500" : "bg-red-500 animate-pulse"}`}></div>
@@ -1127,7 +1127,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                     {filteredRegistries.length === 0 ? (
                       <div className="text-center py-12 text-xs text-slate-500 italic">No modules registered matching filter parameters.</div>
                     ) : (
-                      filteredRegistries.map((mod, i) => (
+                      (filteredRegistries || []).map((mod, i) => (
                         <div key={i} className="bg-slate-950 border border-slate-850/60 p-3 rounded-xl flex items-center justify-between gap-4 hover:border-slate-800 transition">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-2 w-2 rounded-full bg-emerald-400 shrink-0"></div>
@@ -1209,7 +1209,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                           onChange={(e) => setSelectedAccount(e.target.value)}
                           className="w-full bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 cursor-pointer"
                         >
-                          {accounts.map(acc => (
+                          {(accounts || []).map(acc => (
                             <option key={acc.code} value={acc.code}>{acc.code} ({acc.name})</option>
                           ))}
                         </select>
@@ -1222,7 +1222,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                           onChange={(e) => setSelectedBalancing(e.target.value)}
                           className="w-full bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 cursor-pointer"
                         >
-                          {accounts.map(acc => (
+                          {(accounts || []).map(acc => (
                             <option key={acc.code} value={acc.code}>{acc.code} ({acc.name})</option>
                           ))}
                         </select>
@@ -1313,7 +1313,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                       <div className="text-center py-6 text-xs text-slate-500">Retrieving balances from ledger service...</div>
                     ) : (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                        {accounts.map(acc => (
+                        {(accounts || []).map(acc => (
                           <div key={acc.code} className="bg-slate-950 border border-slate-850 p-2.5 rounded-xl">
                             <div className="text-[9px] font-mono text-slate-500 font-semibold">{acc.code}</div>
                             <div className="text-[10px] font-bold text-slate-200 truncate">{acc.name}</div>
@@ -1330,7 +1330,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                   <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 flex-1 flex flex-col min-h-[180px]">
                     <h5 className="text-[10px] font-mono font-bold text-slate-400 uppercase mb-3">Consolidated General Ledger Journal Activity</h5>
                     <div className="flex-1 overflow-y-auto max-h-[160px] space-y-2 pr-1 font-mono text-[10px]">
-                      {ledgerLogs.map((entry, idx) => (
+                      {(ledgerLogs || []).map((entry, idx) => (
                         <div key={idx} className="bg-slate-950 border border-slate-850 p-2.5 rounded-xl flex flex-col md:flex-row justify-between gap-2">
                           <div>
                             <div className="flex items-center gap-1.5">
@@ -1477,7 +1477,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                         }}
                         className="w-full bg-slate-950 border border-slate-850 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 cursor-pointer"
                       >
-                        {Object.entries(currentUserProfile.tenantMetadata || {}).map(([key, val]: any) => (
+                        {Object.entries(currentUserProfile?.tenantMetadata || {}).map(([key, val]: any) => (
                           <option key={key} value={key}>{val.name} ({val.tier})</option>
                         ))}
                       </select>
@@ -1506,7 +1506,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                 </div>
 
                 <div className="flex-1 overflow-y-auto max-h-[220px] space-y-2 my-4 pr-1 font-mono text-[9px]">
-                  {auditLogs.map((log, i) => (
+                  {(auditLogs || []).map((log, i) => (
                     <div key={i} className="bg-slate-950 border border-slate-850 p-2.5 rounded-xl flex items-start gap-2.5">
                       <div className={`p-1 rounded mt-0.5 ${
                         log.status === "success" ? "bg-emerald-500/15 text-emerald-400" : "bg-rose-500/15 text-rose-400"
@@ -1554,7 +1554,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {workflows.map(wf => (
+                {(workflows || []).map(wf => (
                   <div key={wf.id} className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col justify-between gap-4">
                     <div>
                       <div className="flex justify-between items-center mb-1">
@@ -1677,7 +1677,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                 <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-850">
                   <span className="text-[9px] font-mono text-slate-500 uppercase font-bold">Local cognitive memory stream</span>
                   <div className="space-y-1 mt-1.5 max-h-[80px] overflow-y-auto font-mono text-[8px] text-slate-400 leading-relaxed pr-1">
-                    {aiMemoryPool.map((log, i) => (
+                    {(aiMemoryPool || []).map((log, i) => (
                       <div key={i} className="border-b border-slate-900/60 pb-1 last:border-b-0 truncate">{log}</div>
                     ))}
                   </div>
@@ -1962,7 +1962,7 @@ export default function RuntimeConsole({ blueprintName }: RuntimeConsoleProps) {
                         onChange={(e) => setDonationAccount(e.target.value)}
                         className="w-full bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 cursor-pointer"
                       >
-                        {accounts.filter(a => a.category === "Asset").map(acc => (
+                        {(accounts || []).filter(a => a.category === "Asset").map(acc => (
                           <option key={acc.code} value={acc.code}>{acc.code} ({acc.name})</option>
                         ))}
                       </select>

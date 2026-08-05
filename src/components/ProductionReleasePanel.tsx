@@ -136,7 +136,7 @@ export default function ProductionReleasePanel() {
               ? "ACTIVE: Production-Grade PostgreSQL connected to Cloud SQL database instance."
               : `ACTIVE: Hybrid Mode - Local JSON file backup loaded successfully. Location: ${diag.backupFilePath}`
           );
-          const cols = diag.collections.map((c: any) => `${c.name} (${c.count} recs)`).join(", ");
+          const cols = (diag.collections || []).map((c: any) => `${c.name} (${c.count} recs)`).join(", ");
           setKernelStatus(`PASSED: JUMO UEOS Micro-Kernel bootstrapped. Tables active: ${cols}`);
         } else {
           setDbEngineStatus("ACTIVE: Hybrid local JSON Persistence engine loaded successfully.");

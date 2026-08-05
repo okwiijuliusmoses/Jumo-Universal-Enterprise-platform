@@ -32,10 +32,6 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
   });
   
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
-    const saved = localStorage.getItem(`jumo_pref_${currentUser.email}`);
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
-    }
     const defaultWorkspace = (() => {
       const tenant = currentUser.tenantId ? currentUser.tenantId.toLowerCase() : "";
       if (tenant === "alumni") return "alumni";
@@ -44,7 +40,8 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       if (tenant === "ngo") return "ngo";
       return currentUser.role === "SecOps_Administrator" ? "owner_center" : "sacco";
     })();
-    return {
+
+    const defaults: UserPreferences = {
       theme: "dark",
       currentWorkspace: defaultWorkspace,
       widgetOrder: {
@@ -78,6 +75,24 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       pinnedApps: ["faap-ledger", "sacco-risk"],
       favorites: ["faap"]
     };
+
+    const saved = localStorage.getItem(`jumo_pref_${currentUser.email}`);
+    if (saved) {
+      try { 
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object") {
+          return {
+            ...defaults,
+            ...parsed,
+            widgetOrder: { ...defaults.widgetOrder, ...(parsed.widgetOrder || {}) },
+            enabledWidgets: { ...defaults.enabledWidgets, ...(parsed.enabledWidgets || {}) }
+          };
+        }
+      } catch (e) {
+        console.warn("[ExperienceRuntime] Failed to parse preferences:", e);
+      }
+    }
+    return defaults;
   });
 
   // Global State Managers
@@ -867,7 +882,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         </td>
                       </tr>
                     ) : (
-                      ledgerAccounts.map(acc => (
+                      (ledgerAccounts || []).map(acc => (
                         <tr key={acc.code} className="hover:bg-slate-900/20 transition">
                           <td className="py-3 px-4 text-teal-400 font-extrabold">{acc.code}</td>
                           <td className="py-3 px-4 text-slate-200 font-bold">{acc.name}</td>
@@ -941,7 +956,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         <td colSpan={5} className="py-8 text-center text-slate-600">No transactions recorded. Create one using the form.</td>
                       </tr>
                     ) : (
-                      ledgerTransactions.map(tx => (
+                      (ledgerTransactions || []).map(tx => (
                         <tr key={tx.id} className="hover:bg-slate-900/20 transition">
                           <td className="py-3 px-4 text-teal-400 font-extrabold">{tx.voucherNumber}</td>
                           <td className="py-3 px-4 text-slate-300 max-w-xs truncate">{tx.narration}</td>
@@ -1129,7 +1144,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
               </div>
 
               <div className="space-y-3 font-mono text-xs">
-                {saccoMembers.map(member => (
+                {(saccoMembers || []).map(member => (
                   <div key={member.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-4 rounded-xl hover:bg-slate-900/60 transition">
                     <div className="space-y-1">
                       <span className="text-slate-200 font-extrabold text-sm block">{member.name}</span>
@@ -1204,7 +1219,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     onChange={e => setSelectedMemberId(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
                   >
-                    {saccoMembers.map(m => (
+                    {(saccoMembers || []).map(m => (
                       <option key={m.id} value={m.id}>{m.name} (Shares: ${m.balance.toLocaleString()})</option>
                     ))}
                   </select>
@@ -1331,7 +1346,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-900/60 text-slate-300">
-                    {churchCongregants.map(c => (
+                    {(churchCongregants || []).map(c => (
                       <tr key={c.id} className="hover:bg-slate-900/20 transition">
                         <td className="py-3 px-4 text-teal-400 font-extrabold">{c.id}</td>
                         <td className="py-3 px-4 font-bold text-slate-100">{c.name}</td>
@@ -1506,7 +1521,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 <span>Parish Liturgical & Synod Events</span>
               </h3>
               <div className="space-y-4 font-mono text-xs">
-                {churchEvents.map(e => (
+                {(churchEvents || []).map(e => (
                   <div key={e.id} className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl flex justify-between items-center hover:bg-slate-900/60 transition">
                     <div className="space-y-1.5">
                       <h4 className="text-slate-100 font-extrabold text-sm">{e.title}</h4>
@@ -1591,7 +1606,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 <span>NGO Donor & Grants Pipeline</span>
               </h3>
               <div className="space-y-3 font-mono text-xs">
-                {ngoDonations.map(don => (
+                {(ngoDonations || []).map(don => (
                   <div key={don.id} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-4 rounded-xl hover:bg-slate-900/60 transition">
                     <div className="space-y-1">
                       <span className="text-slate-100 font-extrabold text-sm block">{don.donor}</span>
@@ -1666,7 +1681,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
             animate={{ opacity: 1, y: 0 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {ngoPrograms.map(prog => (
+            {(ngoPrograms || []).map(prog => (
               <div key={prog.id} className="bg-slate-950 border border-slate-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
                 <div>
                   <div className="flex justify-between items-start mb-2">
@@ -1726,7 +1741,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-900/60 text-slate-300">
-                    {alumniMembers.map(a => (
+                    {(alumniMembers || []).map(a => (
                       <tr key={a.id} className="hover:bg-slate-900/20 transition">
                         <td className="py-3 px-4 text-teal-400 font-extrabold">{a.id}</td>
                         <td className="py-3 px-4 font-bold text-slate-100">{a.name}</td>
@@ -1809,7 +1824,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 <span>Alumni Endowment & Class Gift Campaigns</span>
               </h3>
               <div className="space-y-6">
-                {alumniCampaigns.map(camp => {
+                {(alumniCampaigns || []).map(camp => {
                   const pct = Math.min(100, Math.floor((camp.pledged / camp.goal) * 100));
                   return (
                     <div key={camp.id} className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl space-y-3 font-mono text-xs">
@@ -1850,7 +1865,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     onChange={e => setNewCampaignContribution({...newCampaignContribution, campaignId: e.target.value})}
                     className="w-full bg-slate-900 border border-slate-850 p-2.5 rounded-xl text-slate-200 font-bold focus:outline-none focus:border-teal-500"
                   >
-                    {alumniCampaigns.map(c => (
+                    {(alumniCampaigns || []).map(c => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
@@ -2049,7 +2064,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                 {ownerSecrets.length === 0 ? (
                   <div className="py-8 text-center text-slate-600">No active keys registered. Add credentials via the administrator panel.</div>
                 ) : (
-                  ownerSecrets.map(sec => (
+                  (ownerSecrets || []).map(sec => (
                     <div key={sec.key} className="flex justify-between items-center bg-slate-900/40 border border-slate-900 p-3.5 rounded-xl hover:bg-slate-900/60 transition">
                       <div className="space-y-1">
                         <span className="text-slate-200 font-extrabold text-sm block flex items-center gap-1.5">
@@ -2170,7 +2185,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     <span>Intrusion detector idle. Execute a system sweep to generate live telemetry.</span>
                   </div>
                 ) : (
-                  securityThreats.map((threat, idx) => (
+                  (securityThreats || []).map((threat, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
                       <span className="text-rose-500 shrink-0 font-extrabold">[ATTACK-BLOCKED]</span>
                       <div className="space-y-1">
@@ -2793,7 +2808,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
       {/* Toast Stack */}
       <div className="fixed top-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full">
         <AnimatePresence>
-          {toastStack.map(toast => (
+          {(toastStack || []).map(toast => (
             <motion.div
               key={toast.id}
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -2948,7 +2963,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
         <div className="p-4 border-t border-slate-900 bg-slate-950 flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-slate-950 font-mono text-xs">
-              {currentUser.name.split(" ").map(n => n[0]).join("")}
+              {(currentUser?.name || "System User").split(" ").map(n => n[0]).join("")}
             </div>
             <div className="min-w-0 flex-1">
               <h5 className="text-xs font-bold text-slate-200 truncate">{currentUser.name}</h5>
@@ -3171,7 +3186,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
 
             {/* Dashboard grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-6">
-              {preferences.widgetOrder[activeWorkspace]?.map((widgetId, index) => {
+              {(preferences?.widgetOrder?.[activeWorkspace] || []).map((widgetId, index) => {
                 const isEnabled = preferences.enabledWidgets[activeWorkspace]?.includes(widgetId);
                 if (!isEnabled) return null;
 
