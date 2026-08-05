@@ -78,6 +78,11 @@ export interface NormalizedRuntime {
   instances: any[];
   domains: any[];
   services: any[];
+  portals: any[];
+  modules: any[];
+  workflows: any[];
+  notifications: any[];
+  widgets: any[];
   systemHealth?: any;
 }
 
@@ -226,6 +231,11 @@ export function normalizeRuntime(data: any): NormalizedRuntime {
       instances: [],
       domains: [],
       services: [],
+      portals: [],
+      modules: [],
+      workflows: [],
+      notifications: [],
+      widgets: [],
       systemHealth: null
     };
   }
@@ -235,8 +245,16 @@ export function normalizeRuntime(data: any): NormalizedRuntime {
 
   const rawInstances = Array.isArray(data.instances) ? data.instances : [];
   const instances = rawInstances.map((inst: any) => {
-    if (!inst || typeof inst !== "object") return { instanceId: "unknown", status: "SUSPENDED" };
-    const config = inst.configuration || {};
+    if (!inst || typeof inst !== "object") {
+      return {
+        instanceId: "unknown",
+        status: "SUSPENDED",
+        configuration: {
+          portals: []
+        }
+      };
+    }
+    const config = inst.configuration && typeof inst.configuration === "object" ? inst.configuration : {};
     return {
       ...inst,
       status: inst.status || "ACTIVE",
@@ -262,6 +280,17 @@ export function normalizeRuntime(data: any): NormalizedRuntime {
     };
   });
 
+  const rawEcosystems = Array.isArray(data.ecosystems) ? data.ecosystems : [];
+  const ecosystems = rawEcosystems.map((eco: any) => {
+    if (!eco || typeof eco !== "object") {
+      return { id: "unknown", approvedTemplates: [] };
+    }
+    return {
+      ...eco,
+      approvedTemplates: Array.isArray(eco.approvedTemplates) ? eco.approvedTemplates : []
+    };
+  });
+
   const domains = Array.isArray(data.domains)
     ? data.domains.map((d: any) => ({
         id: d?.id || "unknown",
@@ -282,15 +311,26 @@ export function normalizeRuntime(data: any): NormalizedRuntime {
       }))
     : [];
 
+  const portals = Array.isArray(data.portals) ? data.portals : [];
+  const modules = Array.isArray(data.modules) ? data.modules : [];
+  const workflows = Array.isArray(data.workflows) ? data.workflows : [];
+  const notifications = Array.isArray(data.notifications) ? data.notifications : [];
+  const widgets = Array.isArray(data.widgets) ? data.widgets : [];
+
   return {
     connected: Boolean(data.connected),
     status: data.status || "JUMO UEOS Sovereign Runtime Active",
     error: data.error || null,
-    ecosystems: Array.isArray(data.ecosystems) ? data.ecosystems : [],
+    ecosystems,
     templates,
     instances,
     domains,
     services,
+    portals,
+    modules,
+    workflows,
+    notifications,
+    widgets,
     systemHealth: data.systemHealth || null
   };
 }
