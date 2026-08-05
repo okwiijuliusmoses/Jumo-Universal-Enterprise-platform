@@ -1,4 +1,4 @@
-import React, { ErrorInfo, ReactNode, useState, useEffect } from 'react';
+import React, { Component, ErrorInfo, ReactNode, useState, useEffect } from 'react';
 import UEOSWorkspaceShell from './components/shell/UEOSWorkspaceShell';
 import PublicPortal from './components/PublicPortal';
 
@@ -11,7 +11,7 @@ interface ErrorBoundaryState {
   error?: Error;
 }
 
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
