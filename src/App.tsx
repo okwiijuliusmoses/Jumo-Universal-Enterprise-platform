@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { ErrorInfo, ReactNode, useState, useEffect } from 'react';
+import React, { ErrorInfo, ReactNode, useState, useEffect } from 'react';
 import UEOSWorkspaceShell from './components/shell/UEOSWorkspaceShell';
 import PublicPortal from './components/PublicPortal';
 
@@ -15,11 +14,12 @@ interface ErrorBoundaryState {
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    this.state = {
+      hasError: false
+    };
   }
 
-  public state: ErrorBoundaryState = {
-    hasError: false
-  };
+  public state: ErrorBoundaryState;
 
   public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
@@ -54,7 +54,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       );
     }
 
-    return (this as any).props?.children || null;
+    return this.props.children || null;
   }
 }
 
