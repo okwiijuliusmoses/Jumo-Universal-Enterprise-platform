@@ -69,6 +69,13 @@ export function App() {
   });
 
   useEffect(() => {
+    window.onerror = (message, source, lineno, colno, error) => {
+      console.error("[GLOBAL_ERROR_CAPTURE]", { message, source, lineno, colno, error });
+    };
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error("[GLOBAL_REJECTION_CAPTURE]", event.reason);
+    });
+
     const originalFetch = window.fetch;
 
     window.fetch = async function (

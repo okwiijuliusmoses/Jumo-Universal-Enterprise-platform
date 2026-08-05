@@ -3050,7 +3050,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                     {notifications.length === 0 ? (
                       <p className="text-[10px] text-slate-600 text-center py-4">No pending alerts.</p>
                     ) : (
-                      notifications.map(item => (
+                      (notifications || []).map(item => (
                         <div key={item.id} className="p-2 rounded-lg bg-slate-900 border border-slate-850/40 text-[10px] leading-relaxed">
                           <div className="flex justify-between items-start mb-1">
                             <span className={`font-bold uppercase text-[9px] ${
@@ -3669,7 +3669,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                       {widgetId === "owner-audit" && (
                         <div className="space-y-2 font-mono text-xs max-h-40 overflow-y-auto pr-1">
                           {v1SecurityEvents?.logs && v1SecurityEvents.logs.length > 0 ? (
-                            v1SecurityEvents.logs.map((log: any) => (
+                            (v1SecurityEvents.logs || []).map((log: any) => (
                               <div key={log.id} className="p-2 bg-slate-900/40 border border-slate-900 rounded-lg text-[9.5px] leading-relaxed">
                                 <div className="flex justify-between items-center mb-1 text-[8px]">
                                   <span className="text-teal-400 font-bold uppercase">{log.action || "SECURITY_EVENT"}</span>

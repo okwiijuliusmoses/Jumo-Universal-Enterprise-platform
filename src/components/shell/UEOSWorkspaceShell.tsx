@@ -40,6 +40,13 @@ export default function UEOSWorkspaceShell({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
+  // Safe Runtime Collections
+  const domains = runtime?.domains ?? [];
+  const services = runtime?.services ?? [];
+  const ecosystems = runtime?.ecosystems ?? [];
+  const templates = runtime?.templates ?? [];
+  const instances = runtime?.instances ?? [];
+
   // 13 Enterprise Navigation Sections
   type NavSection = 
     | "overview"
@@ -108,6 +115,7 @@ export default function UEOSWorkspaceShell({
   };
 
   useEffect(() => {
+    console.log("[UEOS_RUNTIME_BOOT]", runtime);
     fetchRuntime();
   }, []);
 
@@ -282,7 +290,7 @@ export default function UEOSWorkspaceShell({
                   </div>
 
                   <div className="space-y-2.5">
-                    {(runtime?.domains || []).map((domain, i) => (
+                    {domains.map((domain, i) => (
                       <div key={domain.id || `domain-${i}`} className="p-3 bg-slate-50 border border-slate-200/80 rounded-lg flex items-center justify-between">
                         <div>
                           <div className="font-bold text-xs text-slate-900">{domain.name}</div>
@@ -304,7 +312,7 @@ export default function UEOSWorkspaceShell({
                   </div>
 
                   <div className="space-y-2.5">
-                    {(runtime?.services || []).map((svc, i) => (
+                    {services.map((svc, i) => (
                       <div key={svc.id || `svc-${i}`} className="p-3 bg-slate-50 border border-slate-200/80 rounded-lg flex items-center justify-between">
                         <div>
                           <div className="font-bold text-xs text-slate-900">{svc.name}</div>
@@ -376,7 +384,7 @@ export default function UEOSWorkspaceShell({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {(runtime?.ecosystems || []).map((eco: any, i: number) => (
+                {ecosystems.map((eco: any, i: number) => (
                   <div key={eco.id || `eco-${i}`} className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                       <div className="font-bold text-sm text-slate-900 flex items-center gap-2">
@@ -457,7 +465,7 @@ export default function UEOSWorkspaceShell({
 
                 {/* Template Selection Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto py-1">
-                  {(runtime?.templates || []).map((tpl: any) => {
+                  {templates.map((tpl: any) => {
                     const isSelected = tpl.id === selectedTemplateId || (tpl.aliases && tpl.aliases.includes(selectedTemplateId));
                     return (
                       <button
@@ -788,7 +796,7 @@ export default function UEOSWorkspaceShell({
                         onChange={(e) => setManufactureTemplateId(e.target.value)}
                         className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-slate-800"
                       >
-                        {(runtime?.templates || []).map((tpl: any) => (
+                        {templates.map((tpl: any) => (
                           <option key={tpl.id} value={tpl.id}>
                             {tpl.name}
                           </option>
@@ -848,7 +856,7 @@ export default function UEOSWorkspaceShell({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {(runtime?.instances || []).map((inst: any, i: number) => {
+                {instances.map((inst: any, i: number) => {
                   const instName = inst.institution?.institutionName || inst.name || inst.institutionName || inst.instanceId;
                   const instCountry = inst.institution?.country || inst.country || "Sovereign Jurisdiction";
                   const tplName = inst.templateName || inst.templateId;

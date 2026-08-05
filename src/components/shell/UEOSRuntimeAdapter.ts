@@ -50,16 +50,22 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     if (ecoRes.status === "fulfilled" && Array.isArray(ecoRes.value)) {
       ecosystems = ecoRes.value;
       connected = true;
+    } else {
+      ecosystems = [];
     }
     if (tplRes.status === "fulfilled" && Array.isArray(tplRes.value)) {
       templates = tplRes.value;
       connected = true;
+    } else {
+      templates = [];
     }
     if (instRes.status === "fulfilled" && Array.isArray(instRes.value)) {
       instances = instRes.value;
       connected = true;
+    } else {
+      instances = [];
     }
-    if (domainRes.status === "fulfilled" && domainRes.value?.domains) {
+    if (domainRes.status === "fulfilled" && domainRes.value?.domains && Array.isArray(domainRes.value.domains)) {
       domains = domainRes.value.domains.map((d: any, idx: number) => ({
         id: d.id || `domain-${idx}`,
         name: d.name || "Enterprise Domain",
@@ -68,6 +74,8 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
         description: d.description || "Registry-driven UEOS Domain Module",
       }));
       connected = true;
+    } else {
+      domains = [];
     }
     if (statusRes.status === "fulfilled" && statusRes.value) {
       systemHealth = statusRes.value;
