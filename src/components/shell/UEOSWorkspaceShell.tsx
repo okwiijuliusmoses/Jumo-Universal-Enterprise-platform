@@ -250,7 +250,7 @@ export default function UEOSWorkspaceShell({
                     <Box className="h-4 w-4 text-teal-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900">
-                    {runtime?.ecosystems.length || 7}
+                    {ecosystems.length}
                   </div>
                   <div className="text-[11px] text-slate-500">Domain ERP Families</div>
                 </div>
@@ -261,7 +261,7 @@ export default function UEOSWorkspaceShell({
                     <Factory className="h-4 w-4 text-blue-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900">
-                    {runtime?.templates.length || 10}
+                    {templates.length}
                   </div>
                   <div className="text-[11px] text-slate-500">National Platform Blueprints</div>
                 </div>
@@ -272,7 +272,7 @@ export default function UEOSWorkspaceShell({
                     <Server className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="text-2xl font-black text-slate-900">
-                    {runtime?.instances.length || 2}
+                    {instances.length}
                   </div>
                   <div className="text-[11px] text-slate-500">Manufactured Institutions</div>
                 </div>
@@ -294,7 +294,7 @@ export default function UEOSWorkspaceShell({
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                      Active Enterprise Domains ({runtime?.domains.length || 0})
+                      Active Enterprise Domains ({domains.length})
                     </h3>
                   </div>
 
@@ -316,7 +316,7 @@ export default function UEOSWorkspaceShell({
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                      Platform Kernel Services ({runtime?.services?.length || 0})
+                      Platform Kernel Services ({services.length})
                     </h3>
                   </div>
 
@@ -426,11 +426,11 @@ export default function UEOSWorkspaceShell({
                           <span className="text-slate-600">{eco.securityModel}</span>
                         </div>
                       )}
-                      {eco.approvedTemplates && (
+                      {Array.isArray(eco.approvedTemplates) && (
                         <div>
                           <span className="font-bold text-slate-700">Approved Templates: </span>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {eco.approvedTemplates?.map((tplId: string) => (
+                            {eco.approvedTemplates.map((tplId: string) => (
                               <span key={tplId} className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                                 {tplId}
                               </span>
@@ -541,22 +541,22 @@ export default function UEOSWorkspaceShell({
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
-                          {activeTemplateBlueprint.publicExperience.announcements && (
+                           {Array.isArray(activeTemplateBlueprint.publicExperience.announcements) && (
                             <div className="space-y-1">
                               <span className="font-bold text-slate-400 uppercase text-[10px]">Public Announcements</span>
                               <ul className="list-disc list-inside space-y-1 text-slate-300">
-                                {activeTemplateBlueprint?.publicExperience?.announcements?.map((ann: string, i: number) => (
+                                {activeTemplateBlueprint.publicExperience.announcements.map((ann: string, i: number) => (
                                   <li key={i}>{ann}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
 
-                          {activeTemplateBlueprint.publicExperience.publicServices && (
+                          {Array.isArray(activeTemplateBlueprint.publicExperience.publicServices) && (
                             <div className="space-y-1">
                               <span className="font-bold text-slate-400 uppercase text-[10px]">Public Services Directory</span>
                               <div className="flex flex-wrap gap-1.5 mt-1">
-                                {activeTemplateBlueprint?.publicExperience?.publicServices?.map((srv: string, i: number) => (
+                                {activeTemplateBlueprint.publicExperience.publicServices.map((srv: string, i: number) => (
                                   <span key={i} className="px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-slate-700 text-[11px]">
                                     {srv}
                                   </span>
@@ -566,9 +566,9 @@ export default function UEOSWorkspaceShell({
                           )}
                         </div>
 
-                        {activeTemplateBlueprint.publicExperience.actionButtons && (
+                        {Array.isArray(activeTemplateBlueprint.publicExperience.actionButtons) && (
                           <div className="border-t border-slate-800 pt-3 flex flex-wrap gap-2">
-                            {activeTemplateBlueprint?.publicExperience?.actionButtons?.map((btn: any, i: number) => (
+                            {activeTemplateBlueprint.publicExperience.actionButtons.map((btn: any, i: number) => (
                               <button
                                 key={i}
                                 className={`px-3 py-1.5 rounded text-xs font-bold transition cursor-default ${
@@ -588,21 +588,21 @@ export default function UEOSWorkspaceShell({
                     )}
 
                     {/* B. PORTAL ARCHITECTURE */}
-                    {activeTemplateBlueprint.portals && (
+                    {Array.isArray(activeTemplateBlueprint.portals) && (
                       <div className="space-y-3">
                         <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
                           <Users className="h-4 w-4 text-purple-600" />
                           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                            B. Defined Institutional Portals ({(activeTemplateBlueprint?.portals || []).length})
+                            B. Defined Institutional Portals ({activeTemplateBlueprint.portals.length})
                           </h4>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                          {activeTemplateBlueprint?.portals?.map((portal: any, i: number) => {
+                          {activeTemplateBlueprint.portals.map((portal: any, i: number) => {
                             const pName = typeof portal === "string" ? portal : portal.name;
                             const pRole = typeof portal === "object" ? portal.role : "Role Access";
                             const pDesc = typeof portal === "object" ? portal.description : "";
-                            const pMods = typeof portal === "object" ? portal.modules : [];
+                            const pMods = typeof portal === "object" && Array.isArray(portal.modules) ? portal.modules : [];
 
                             return (
                               <div key={i} className="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
@@ -611,7 +611,7 @@ export default function UEOSWorkspaceShell({
                                 {pDesc && <p className="text-[11px] text-slate-600">{pDesc}</p>}
                                 {pMods && pMods.length > 0 && (
                                   <div className="flex flex-wrap gap-1 pt-1">
-                                    {pMods?.map((m: string, j: number) => (
+                                    {pMods.map((m: string, j: number) => (
                                       <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">
                                         {m}
                                       </span>
@@ -643,16 +643,16 @@ export default function UEOSWorkspaceShell({
                             {activeTemplateBlueprint.governanceStructure.role}
                           </div>
 
-                          {activeTemplateBlueprint.governanceStructure.subNodes && (
+                          {Array.isArray(activeTemplateBlueprint.governanceStructure.subNodes) && activeTemplateBlueprint.governanceStructure.subNodes.length > 0 && (
                             <div className="pl-4 border-l-2 border-slate-300 space-y-3 mt-3">
-                              {activeTemplateBlueprint?.governanceStructure?.subNodes?.map((node1: any, idx1: number) => (
+                              {activeTemplateBlueprint.governanceStructure.subNodes.map((node1: any, idx1: number) => (
                                 <div key={idx1} className="space-y-1">
                                   <div className="font-bold text-slate-800">└─ {node1.title}</div>
                                   <div className="text-[11px] text-slate-500 pl-4">{node1.role}</div>
 
-                                  {node1.subNodes && (
+                                  {Array.isArray(node1.subNodes) && node1.subNodes.length > 0 && (
                                     <div className="pl-6 border-l border-slate-200 space-y-1 mt-1">
-                                      {node1?.subNodes?.map((node2: any, idx2: number) => (
+                                      {node1.subNodes.map((node2: any, idx2: number) => (
                                         <div key={idx2} className="text-[11px]">
                                           <span className="font-semibold text-slate-700">└─ {node2.title}</span>
                                           <span className="text-slate-500 ml-2">({node2.role})</span>
@@ -673,12 +673,12 @@ export default function UEOSWorkspaceShell({
                       <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
                         <Sliders className="h-4 w-4 text-emerald-600" />
                         <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                          D. Configuration-Driven Operational Modules ({(activeTemplateBlueprint?.modules || []).length})
+                          D. Configuration-Driven Operational Modules ({Array.isArray(activeTemplateBlueprint.modules) ? activeTemplateBlueprint.modules.length : 0})
                         </h4>
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {activeTemplateBlueprint?.modules?.map((modName: string, i: number) => (
+                        {Array.isArray(activeTemplateBlueprint.modules) && activeTemplateBlueprint.modules.map((modName: string, i: number) => (
                           <span key={i} className="px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-semibold">
                             ✓ {modName}
                           </span>
@@ -858,7 +858,7 @@ export default function UEOSWorkspaceShell({
           {activeSection === "instances" && (
             <div className="space-y-6">
               <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-2">
-                <h2 className="text-base font-bold text-slate-900">Manufactured Enterprise Instances ({runtime?.instances.length || 0})</h2>
+                <h2 className="text-base font-bold text-slate-900">Manufactured Enterprise Instances ({instances.length})</h2>
                 <p className="text-xs text-slate-600">
                   Active sovereign ERP platforms manufactured by the Universal ERP Factory.
                 </p>

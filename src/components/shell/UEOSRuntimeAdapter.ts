@@ -37,7 +37,7 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
   let domains: RuntimeCard[] = [];
   let services: RuntimeCard[] = [];
   let systemHealth: any = null;
-  let status = "JUMO UEOS Runtime Initializing...";
+  let status = "JUMO UEOS Sovereign Runtime Active";
 
   try {
     const [ecoRes, tplRes, instRes, domainRes, statusRes] = await Promise.allSettled([
@@ -51,33 +51,35 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     if (ecoRes.status === "fulfilled" && Array.isArray(ecoRes.value)) {
       ecosystems = ecoRes.value;
       connected = true;
-    } else {
-      ecosystems = [];
     }
+
     if (tplRes.status === "fulfilled" && Array.isArray(tplRes.value)) {
       templates = tplRes.value;
       connected = true;
-    } else {
-      templates = [];
     }
+
     if (instRes.status === "fulfilled" && Array.isArray(instRes.value)) {
       instances = instRes.value;
       connected = true;
-    } else {
-      instances = [];
     }
-    if (domainRes.status === "fulfilled" && domainRes.value?.domains && Array.isArray(domainRes.value.domains)) {
-      domains = domainRes.value.domains.map((d: any, idx: number) => ({
-        id: d.id || `domain-${idx}`,
-        name: d.name || "Enterprise Domain",
-        version: d.version || "v1.0",
-        status: (d.status === "Active" || d.isActive ? "Active" : "Inactive") as "Active" | "Inactive",
-        description: d.description || "Registry-driven UEOS Domain Module",
-      }));
-      connected = true;
-    } else {
-      domains = [];
+
+    if (domainRes.status === "fulfilled" && domainRes.value && typeof domainRes.value === "object") {
+      const rawDomains = Array.isArray(domainRes.value.domains)
+        ? domainRes.value.domains
+        : (Array.isArray(domainRes.value) ? domainRes.value : []);
+
+      if (rawDomains.length > 0) {
+        domains = rawDomains.map((d: any, idx: number) => ({
+          id: d?.id || `domain-${idx}`,
+          name: d?.name || "Enterprise Domain",
+          version: d?.version || "v1.0",
+          status: (d?.status === "Active" || d?.isActive ? "Active" : "Inactive") as "Active" | "Inactive",
+          description: d?.description || "Registry-driven UEOS Domain Module",
+        }));
+        connected = true;
+      }
     }
+
     if (statusRes.status === "fulfilled" && statusRes.value) {
       systemHealth = statusRes.value;
       connected = true;
@@ -93,8 +95,8 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     status = "JUMO UEOS Runtime Offline - Diagnostics Available";
   }
 
-  // Fallback registry-driven domains if empty
-  if (domains.length === 0) {
+  // Ensure default fallback domains if empty
+  if (!domains || domains.length === 0) {
     domains = [
       { id: "domain-sacco", name: "SACCO ERP Node", version: "v1.0", status: "Active", description: "Credit Union & Microfinance Accounting" },
       { id: "domain-church", name: "Church ERP Platform", version: "v1.0", status: "Active", description: "Congregation & Donations Management" },
@@ -103,8 +105,8 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     ];
   }
 
-  // Fallback platform services if empty
-  if (services.length === 0) {
+  // Ensure default fallback services if empty
+  if (!services || services.length === 0) {
     services = [
       { id: "svc-1", name: "Workflow Engine", version: "v17.x", status: "Active", description: "Automation & Process Pipelines" },
       { id: "svc-2", name: "Security & Zero-Trust Identity", version: "v1.0", status: "Active", description: "RBAC/ABAC Gatekeeper" },
@@ -113,7 +115,7 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     ];
   }
 
-  return normalizeRuntime({
+  const rawNormalized = normalizeRuntime({
     connected,
     status,
     ecosystems,
@@ -123,4 +125,16 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     services,
     systemHealth,
   });
+
+  return {
+    connected: rawNormalized.connected,
+    status: rawNormalized.status,
+    error: rawNormalized.error,
+    ecosystems: rawNormalized.ecosystems || [],
+    templates: rawNormalized.templates || [],
+    instances: rawNormalized.instances || [],
+    domains: Array.isArray(rawNormalized.domains) && rawNormalized.domains.length > 0 ? rawNormalized.domains : domains,
+    services: Array.isArray(rawNormalized.services) && rawNormalized.services.length > 0 ? rawNormalized.services : services,
+    systemHealth: rawNormalized.systemHealth,
+  };
 }
