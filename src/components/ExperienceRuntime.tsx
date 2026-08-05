@@ -2929,7 +2929,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
           {/* Favorites & Pins */}
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-extrabold px-3 block">Recent Logs Discovered</span>
-            {preferences.recentItems.map(item => (
+            {(preferences?.recentItems || []).map(item => (
               <div key={item.id} className="px-3 py-1.5 rounded-lg bg-slate-900/10 border border-slate-900 text-[10px] font-mono flex justify-between items-center text-slate-400">
                 <span>{item.name}</span>
                 <span className="text-[8px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded">{item.type}</span>
@@ -3201,7 +3201,7 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
                         </button>
                         <button
                           onClick={() => handleMoveWidget(activeWorkspace, index, "down")}
-                          disabled={index === preferences.widgetOrder[activeWorkspace].length - 1}
+                          disabled={index === (preferences?.widgetOrder?.[activeWorkspace] || []).length - 1}
                           className="p-1 hover:bg-slate-900 border border-slate-850 rounded text-slate-500 hover:text-slate-300 disabled:opacity-20 transition"
                           title="Move widget down in grid order"
                         >

@@ -168,10 +168,19 @@ export default function UEOSWorkspaceShell({
     { id: "health", label: "Health", icon: Activity },
   ];
 
-  // Helper to find selected template blueprint object
+  // Helper to find selected template blueprint object with absolute safety fallback
   const activeTemplateBlueprint = (runtime?.templates || []).find(
     (t: any) => t.id === selectedTemplateId || (t.aliases && t.aliases.includes(selectedTemplateId))
-  ) || (runtime?.templates || [])[0];
+  ) || (runtime?.templates || [])[0] || {
+    id: "default-blueprint",
+    name: "Sovereign Enterprise Blueprint",
+    version: "v4.0",
+    description: "Enterprise operating platform blueprint.",
+    modules: [],
+    portals: [],
+    governanceStructure: { title: "Executive Directorate", role: "Sovereign Authority", subNodes: [] },
+    publicExperience: { publicDomainSuffix: ".ueos.org", tagline: "Enterprise Public Gateway", announcements: [], publicServices: [], actionButtons: [] }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 font-sans antialiased flex flex-col">
@@ -584,7 +593,7 @@ export default function UEOSWorkspaceShell({
                         <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
                           <Users className="h-4 w-4 text-purple-600" />
                           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                            B. Defined Institutional Portals ({activeTemplateBlueprint.portals.length})
+                            B. Defined Institutional Portals ({(activeTemplateBlueprint?.portals || []).length})
                           </h4>
                         </div>
 
@@ -664,7 +673,7 @@ export default function UEOSWorkspaceShell({
                       <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
                         <Sliders className="h-4 w-4 text-emerald-600" />
                         <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                          D. Configuration-Driven Operational Modules ({activeTemplateBlueprint.modules.length})
+                          D. Configuration-Driven Operational Modules ({(activeTemplateBlueprint?.modules || []).length})
                         </h4>
                       </div>
 
