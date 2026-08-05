@@ -156,18 +156,18 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
         jumoFetch(`${API_BASE_URL}/api/v1/domains`)
       ]);
 
-      setV1PlatformStatus(platData);
-      setV1TreasurySummary(treasData);
-      setV1SecurityEvents(secData);
-      setV1WorkflowStatus(wfData);
-      setV1Domains(domData.domains || []);
+      setV1PlatformStatus(platData || {});
+      setV1TreasurySummary(treasData || {});
+      setV1SecurityEvents(secData && typeof secData === 'object' ? { logs: Array.isArray(secData.logs) ? secData.logs : [] } : { logs: [] });
+      setV1WorkflowStatus(wfData && typeof wfData === 'object' ? { recentWorkflows: Array.isArray(wfData.recentWorkflows) ? wfData.recentWorkflows : [] } : { recentWorkflows: [] });
+      setV1Domains(Array.isArray(domData?.domains) ? domData.domains : (Array.isArray(domData) ? domData : []));
 
       // 2. Fetch legacy and workspace specific profiles
       if (activeWorkspace === "owner_center" && currentUser.role === "SecOps_Administrator") {
         const res = await jumoFetch("/api/dashboard/owner");
         if (res.ok) {
           const data = await res.json();
-          setOwnerData(data);
+          setOwnerData(data && typeof data === 'object' ? { ...data, registeredServices: Array.isArray(data.registeredServices) ? data.registeredServices : [] } : { registeredServices: [] });
         }
       } else if (activeWorkspace === "faap") {
         const [accRes, transRes, tbRes] = await Promise.all([
@@ -175,8 +175,14 @@ export default function ExperienceRuntime({ currentUser, onLogout, onBackToWorkb
           jumoFetch("/api/ueos/faap/transactions"),
           jumoFetch("/api/ueos/ledger/trial-balance")
         ]);
-        if (accRes.ok) setLedgerAccounts(await accRes.json());
-        if (transRes.ok) setLedgerTransactions(await transRes.json());
+        if (accRes.ok) {
+          const accJson = await accRes.json();
+          setLedgerAccounts(Array.isArray(accJson) ? accJson : (accJson?.accounts || []));
+        }
+        if (transRes.ok) {
+          const transJson = await transRes.json();
+          setLedgerTransactions(Array.isArray(transJson) ? transJson : (transJson?.transactions || []));
+        }
         if (tbRes.ok) setTrialBalance(await tbRes.json());
       }
     } catch (e: any) {

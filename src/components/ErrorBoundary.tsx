@@ -23,6 +23,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("UEOS_RUNTIME_EXCEPTION", error, error.stack);
     console.error('[UEOS Workspace Shell ErrorBoundary Caught Error]:', error, errorInfo);
   }
 

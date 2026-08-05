@@ -1,4 +1,5 @@
 import { jumoFetch } from "../../core/config/api";
+import { normalizeRuntime } from "../../core/runtime/runtimeNormalizer";
 
 export interface RuntimeCard {
   id: string;
@@ -112,7 +113,7 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     ];
   }
 
-  return {
+  return normalizeRuntime({
     connected,
     status,
     ecosystems,
@@ -121,5 +122,5 @@ export async function loadUEOSRuntime(): Promise<UEOSRuntimeState> {
     domains,
     services,
     systemHealth,
-  };
+  });
 }
