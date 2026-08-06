@@ -1,5 +1,8 @@
 import { ERPInstanceRegistry } from "./instanceRegistry";
 import { ERPTemplateRegistry } from "./erpTemplateRegistry";
+import { ModuleRegistry } from "./moduleRegistry";
+import { PortalRegistry } from "./portalRegistry";
+import { WorkflowRegistry } from "./workflowRegistry";
 import { EnterpriseInstance, GovernanceNode } from "../../ueos/kernel/GovernanceEngine";
 import { ERPFactoryEngine } from "../factory/ERPFactoryEngine";
 import { InstitutionGenerator } from "../factory/InstitutionGenerator";
@@ -22,6 +25,11 @@ export class UniversalERPFactory {
       branchCount: 4
     });
     
+    // Register all platform components
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any));
+
     return ERPInstanceRegistry.register(bundle.instance);
   }
 
@@ -34,6 +42,11 @@ export class UniversalERPFactory {
       region: input.region,
       branchCount: 1
     });
+    
+    // Register all platform components
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any));
     
     return ERPInstanceRegistry.register(bundle.instance);
   }
