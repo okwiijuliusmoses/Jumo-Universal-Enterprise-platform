@@ -1,30 +1,35 @@
 import { db } from "../../database/db";
 import { EnterpriseEcosystem } from "../../ueos/kernel/GovernanceEngine";
+import { safeJSONParse } from "../../lib/json";
 
 export class EcosystemRegistry {
   static getAll(): EnterpriseEcosystem[] {
     const records = db.select<any>("ecosystems");
-    return records.map(r => ({
-      ...r,
-      supportedCountries: r.config ? JSON.parse(r.config).supportedCountries : [],
-      institutionTypes: r.config ? JSON.parse(r.config).institutionTypes : [],
-      templates: r.config ? JSON.parse(r.config).templates : [],
-      modules: r.config ? JSON.parse(r.config).modules : [],
-      permissions: r.config ? JSON.parse(r.config).permissions : []
-    }));
+    return records.map(r => {
+      const config = safeJSONParse(r.config, {});
+      return {
+        ...r,
+        supportedCountries: config.supportedCountries || [],
+        institutionTypes: config.institutionTypes || [],
+        templates: config.templates || [],
+        modules: config.modules || [],
+        permissions: config.permissions || []
+      };
+    });
   }
 
   static getById(id: string): EnterpriseEcosystem | null {
     const results = db.select<any>("ecosystems", r => r.id === id);
     if (results.length === 0) return null;
     const r = results[0];
+    const config = safeJSONParse(r.config, {});
     return {
       ...r,
-      supportedCountries: r.config ? JSON.parse(r.config).supportedCountries : [],
-      institutionTypes: r.config ? JSON.parse(r.config).institutionTypes : [],
-      templates: r.config ? JSON.parse(r.config).templates : [],
-      modules: r.config ? JSON.parse(r.config).modules : [],
-      permissions: r.config ? JSON.parse(r.config).permissions : []
+      supportedCountries: config.supportedCountries || [],
+      institutionTypes: config.institutionTypes || [],
+      templates: config.templates || [],
+      modules: config.modules || [],
+      permissions: config.permissions || []
     };
   }
 
@@ -38,11 +43,11 @@ export class EcosystemRegistry {
       governanceModel: ecosystem.governanceModel,
       status: ecosystem.status,
       config: JSON.stringify({
-        supportedCountries: ecosystem.supportedCountries,
-        institutionTypes: ecosystem.institutionTypes,
-        templates: ecosystem.templates,
-        modules: ecosystem.modules,
-        permissions: ecosystem.permissions
+        supportedCountries: ecosystem.supportedCountries || [],
+        institutionTypes: ecosystem.institutionTypes || [],
+        templates: ecosystem.templates || [],
+        modules: ecosystem.modules || [],
+        permissions: ecosystem.permissions || []
       })
     };
     const exists = this.getById(ecosystem.id);
