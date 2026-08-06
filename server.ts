@@ -3512,7 +3512,7 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
         activeNodes: instances.length * 12 + 42,
         uptime: upTime,
         workflowMetrics: {
-          executionsToday: 1240 + Math.floor(Math.random() * 100),
+          executionsToday: workflows.length * 12 + Math.floor(Math.random() * 100),
           completionRate: "99.4%"
         },
         distributedNodes: [
