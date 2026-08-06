@@ -18,13 +18,13 @@ import { ERPInstance } from "../runtime/universalERPFactory";
 
 export interface ManufacturedPlatformBundle {
   compiledContract: CompiledPlatformContract;
-  institution: any; 
-  portalSuite: any; 
-  modules: any[]; 
-  workflows: any[]; 
+  institution: any;
+  portalSuite: any;
+  modules: any[];
+  workflows: any[];
   components: any[];
   forms: any[];
-  databaseSchema: any; 
+  databaseSchema: any;
   instance: ERPInstance;
 }
 
@@ -70,7 +70,7 @@ export class ERPFactoryEngine {
     // 9. Generate Database Schema Contract
     const databaseSchema = SchemaDivision.generate(institution.institutionId, compiledContract.modules);
 
-    // 8. Manufacture Runtime ERPInstance
+    // 10. Manufacture Runtime ERPInstance
     const instance: ERPInstance = {
       id: institution.institutionId,
       instanceId: institution.institutionId,
@@ -130,6 +130,8 @@ export class ERPFactoryEngine {
       portalSuite,
       modules,
       workflows,
+      components,
+      forms,
       databaseSchema,
       instance
     };

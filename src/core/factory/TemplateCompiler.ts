@@ -17,6 +17,7 @@ export interface CompiledPlatformContract {
   modules: string[];
   workflows: string[];
   forms: string[];
+  components: string[];
   databaseSchema: {
     tables: string[];
     indexes: string[];
@@ -50,6 +51,7 @@ export class TemplateCompiler {
       modules: blueprint.modules || [],
       workflows: blueprint.workflows || [],
       forms: blueprint.forms || [],
+      components: blueprint.components || [],
       databaseSchema: {
         tables,
         indexes,
