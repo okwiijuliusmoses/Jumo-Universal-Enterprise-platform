@@ -32,9 +32,9 @@ export function UEOSShell({ user, onLogout, activeTab, onTabChange, children }: 
 
   const navItems = [
     { id: "dashboard", label: "Kernel Dashboard", icon: Terminal },
-    { id: "ecosystems", label: "Ecosystem Registry", icon: Globe },
-    { id: "templates", label: "Template Registry", icon: Layers },
-    { id: "factory", label: "Platform Factory", icon: Cpu },
+    { id: "ecosystems", label: "Ecosystem Directory", icon: Globe },
+    { id: "templates", label: "Template Marketplace", icon: Layers },
+    { id: "factory", label: "ERP Factory", icon: Cpu },
     { id: "instances", label: "Instance Registry", icon: Database },
     { id: "security", label: "Sovereign Security", icon: Shield },
     { id: "workflows", label: "Runtime Workflows", icon: Workflow },
