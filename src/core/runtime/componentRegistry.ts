@@ -1,3 +1,4 @@
+
 import { db } from "../../database/db";
 import { EnterpriseComponent } from "../../ueos/kernel/GovernanceEngine";
 
@@ -24,20 +25,20 @@ export class ComponentRegistry {
     };
   }
 
-  static register(comp: EnterpriseComponent): EnterpriseComponent {
+  static register(component: EnterpriseComponent): EnterpriseComponent {
     const record = {
-      id: comp.id,
-      name: comp.name,
-      type: comp.type,
-      description: comp.description
+      id: component.id,
+      name: component.name,
+      type: component.type,
+      description: component.description
     };
-    const exists = this.getById(comp.id);
+    const exists = this.getById(component.id);
     if (exists) {
-      db.update("components", c => c.id === comp.id, () => record);
+      db.update("components", c => c.id === component.id, () => record);
     } else {
       db.insert("components", record);
     }
-    return comp;
+    return component;
   }
 }
 

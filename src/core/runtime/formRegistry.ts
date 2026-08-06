@@ -1,3 +1,4 @@
+
 import { db } from "../../database/db";
 import { EnterpriseForm } from "../../ueos/kernel/GovernanceEngine";
 
@@ -7,7 +8,9 @@ export class FormRegistry {
     return records.map(r => ({
       id: r.id,
       name: r.name,
-      ...JSON.parse(r.definition)
+      fields: JSON.parse(r.fields),
+      validation: JSON.parse(r.validation),
+      workflowBinding: r.workflowBinding
     }));
   }
 
@@ -18,7 +21,9 @@ export class FormRegistry {
     return {
       id: r.id,
       name: r.name,
-      ...JSON.parse(r.definition)
+      fields: JSON.parse(r.fields),
+      validation: JSON.parse(r.validation),
+      workflowBinding: r.workflowBinding
     };
   }
 
@@ -26,11 +31,9 @@ export class FormRegistry {
     const record = {
       id: form.id,
       name: form.name,
-      definition: JSON.stringify({
-        fields: form.fields,
-        validation: form.validation,
-        workflowBinding: form.workflowBinding
-      })
+      fields: JSON.stringify(form.fields),
+      validation: JSON.stringify(form.validation),
+      workflowBinding: form.workflowBinding
     };
     const exists = this.getById(form.id);
     if (exists) {

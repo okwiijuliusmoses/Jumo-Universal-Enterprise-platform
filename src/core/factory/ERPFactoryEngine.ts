@@ -11,16 +11,20 @@ import { PortalDivision } from "./divisions/PortalDivision";
 import { ModuleDivision } from "./divisions/ModuleDivision";
 import { WorkflowDivision } from "./divisions/WorkflowDivision";
 import { SchemaDivision } from "./divisions/SchemaDivision";
+import { ComponentDivision } from "./divisions/ComponentDivision";
+import { FormDivision } from "./divisions/FormDivision";
 import { SynthesizeInstitutionInput } from "../blueprint/BlueprintIntelligenceEngine";
 import { ERPInstance } from "../runtime/universalERPFactory";
 
 export interface ManufacturedPlatformBundle {
   compiledContract: CompiledPlatformContract;
-  institution: any; // Using any for now to align with existing type usage if needed, but should be GeneratedInstitutionMetadata
-  portalSuite: any; // GeneratedPortalSuite
-  modules: any[]; // GeneratedModuleContract[]
-  workflows: any[]; // GeneratedWorkflowContract[]
-  databaseSchema: any; // GeneratedDatabaseSchemaContract
+  institution: any; 
+  portalSuite: any; 
+  modules: any[]; 
+  workflows: any[]; 
+  components: any[];
+  forms: any[];
+  databaseSchema: any; 
   instance: ERPInstance;
 }
 
@@ -57,7 +61,13 @@ export class ERPFactoryEngine {
     // 6. Generate Dynamic Workflow Contracts
     const workflows = WorkflowDivision.generate(compiledContract.workflows);
 
-    // 7. Generate Database Schema Contract
+    // 7. Generate Dynamic Component Contracts
+    const components = ComponentDivision.generate(compiledContract.components || []);
+
+    // 8. Generate Dynamic Form Contracts
+    const forms = FormDivision.generate(compiledContract.forms || []);
+
+    // 9. Generate Database Schema Contract
     const databaseSchema = SchemaDivision.generate(institution.institutionId, compiledContract.modules);
 
     // 8. Manufacture Runtime ERPInstance
