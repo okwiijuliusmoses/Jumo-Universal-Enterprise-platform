@@ -1,5 +1,7 @@
 import { db } from "../../database/db";
 import { safeJSONParse } from "../../lib/json";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export interface EnterprisePortal {
   id: string;
@@ -34,7 +36,24 @@ export class PortalRegistry {
     };
   }
 
-  static register(portal: EnterprisePortal): EnterprisePortal {
+  static register(portal: EnterprisePortal, signature: string): EnterprisePortal {
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "PORTAL-REGISTRY",
+      operatorIdentity: "SYSTEM",
+      action: "REGISTER_PORTAL",
+      affectedEntity: portal.id,
+      securityClassification: 'RESTRICTED',
+      timestamp: Date.now()
+    };
+
+    if (!SecurityGovernor.verifySignature(signature, authRequest)) {
+      AuditSystem.logAction({ action: "REGISTER_PORTAL", operator: "SYSTEM", target: portal.id, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "REGISTER_PORTAL", operator: "SYSTEM", target: portal.id, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM", "REGISTER_PORTAL", 'RESTRICTED');
+
     const record = {
       id: portal.id,
       name: portal.name,

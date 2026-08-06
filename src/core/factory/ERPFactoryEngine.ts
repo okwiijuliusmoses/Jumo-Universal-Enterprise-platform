@@ -15,6 +15,8 @@ import { ComponentDivision } from "./divisions/ComponentDivision";
 import { FormDivision } from "./divisions/FormDivision";
 import { SynthesizeInstitutionInput } from "../blueprint/BlueprintIntelligenceEngine";
 import { ERPInstance } from "../runtime/universalERPFactory";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export interface ManufacturedPlatformBundle {
   compiledContract: CompiledPlatformContract;
@@ -33,6 +35,24 @@ export class ERPFactoryEngine {
    * Manufacture a complete sovereign enterprise platform from an institutional synthesis request
    */
   static manufacturePlatform(input: SynthesizeInstitutionInput): ManufacturedPlatformBundle {
+    // 0. Security Authorization Check
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "ERP-FACTORY-ENG-001",
+      operatorIdentity: "SYSTEM_BOOTSTRAP_ORCHESTRATOR",
+      action: "MANUFACTURE_PLATFORM",
+      affectedEntity: input.institutionName,
+      securityClassification: 'TOP_SECRET',
+      timestamp: Date.now()
+    };
+    
+    if (!SecurityGovernor.verifySignature("JUMO-VALID-SIG-2026", authRequest)) {
+      AuditSystem.logAction({ action: "MANUFACTURE_PLATFORM", operator: "SYSTEM_BOOTSTRAP_ORCHESTRATOR", target: input.institutionName, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "MANUFACTURE_PLATFORM", operator: "SYSTEM_BOOTSTRAP_ORCHESTRATOR", target: input.institutionName, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM_BOOTSTRAP_ORCHESTRATOR", "MANUFACTURE_PLATFORM", 'TOP_SECRET');
+
     // 1. Synthesize Blueprint
     const blueprint = BlueprintDivision.synthesize(input);
 

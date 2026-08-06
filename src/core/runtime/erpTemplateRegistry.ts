@@ -1,5 +1,7 @@
 import { db } from "../../database/db";
 import { EnterpriseTemplate, GovernanceNode } from "../../ueos/kernel/GovernanceEngine";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export type ERPTemplateDefinition = EnterpriseTemplate;
 export type { GovernanceNode };
@@ -25,7 +27,24 @@ export class ERPTemplateRegistry {
     };
   }
 
-  static register(template: EnterpriseTemplate): EnterpriseTemplate {
+  static register(template: EnterpriseTemplate, signature: string): EnterpriseTemplate {
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "TEMPLATE-REGISTRY",
+      operatorIdentity: "SYSTEM",
+      action: "REGISTER_TEMPLATE",
+      affectedEntity: template.id,
+      securityClassification: 'RESTRICTED',
+      timestamp: Date.now()
+    };
+
+    if (!SecurityGovernor.verifySignature(signature, authRequest)) {
+      AuditSystem.logAction({ action: "REGISTER_TEMPLATE", operator: "SYSTEM", target: template.id, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "REGISTER_TEMPLATE", operator: "SYSTEM", target: template.id, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM", "REGISTER_TEMPLATE", 'RESTRICTED');
+
     const record = {
       id: template.id,
       name: template.name,

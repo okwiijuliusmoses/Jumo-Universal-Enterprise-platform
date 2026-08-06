@@ -12,10 +12,12 @@ import {
   EnterpriseComponent,
   EnterpriseWorkflow
 } from "../../ueos/kernel/GovernanceEngine";
+import { AuditSystem } from "../security/AuditSystem";
 
 export class KernelBootstrap {
   static async execute() {
     console.log("[KERNEL] Initializing UEOS v5.1 Bootstrap sequence...");
+    AuditSystem.logAction({ action: "KERNEL_BOOTSTRAP", operator: "SYSTEM_BOOTSTRAP_ORCHESTRATOR", target: "UEOS_KERNEL", timestamp: Date.now(), status: 'APPROVED' });
     
     this.installComponents();
     this.installForms();
@@ -63,7 +65,7 @@ export class KernelBootstrap {
       { id: "mod-inventory", name: "Inventory & Assets", category: "Industry", permissions: ["STORE_MANAGER"], workflows: [], forms: [], reports: [] }
     ];
     modules.forEach(m => {
-      ModuleRegistry.register(m);
+      ModuleRegistry.register(m, "JUMO-VALID-SIG-2026");
     });
   }
 
@@ -75,7 +77,7 @@ export class KernelBootstrap {
       { id: "wf-procurement", name: "Procurement Requisition", trigger: "FORM_SUBMIT", status: "Active", steps: [], approvals: [], roles: ["HOD", "Bursar"] }
     ];
     workflows.forEach(w => {
-      WorkflowRegistry.register(w);
+      WorkflowRegistry.register(w, "JUMO-VALID-SIG-2026");
     });
   }
 
@@ -104,7 +106,7 @@ export class KernelBootstrap {
       { id: "ECO-CORPORATE", name: "Enterprise Corporate Ecosystem", version: "v5.2.0", category: "Corporate", description: "Standard Corporate Platform", governanceModel: "COMPANIES_REGISTRY", supportedCountries: ["Global"], institutionTypes: ["CORPORATION", "SME"], templates: ["TPL-CORP-HQ"], status: "Active", modules: ["mod-ledger"], permissions: ["DIRECTOR"] }
     ];
     ecosystems.forEach(e => {
-      EcosystemRegistry.register(e);
+      EcosystemRegistry.register(e, "JUMO-VALID-SIG-2026");
     });
   }
 
@@ -204,6 +206,21 @@ export class KernelBootstrap {
         directorates: [{ id: "dir-admin", name: "School Admin", governanceHead: "Head Teacher", departments: [{ id: "dept-fees", name: "Bursary Office", directorateId: "dir-admin", modules: ["mod-ledger"], roles: ["BURSAR"] }] }],
         portals: [{ id: "portal-admin", name: "School Admin Portal", roles: ["ADMIN"], modules: ["mod-ledger"], dashboards: ["db-admin"] }],
         availableModules: [{ id: "mod-ledger", name: "FAAP General Ledger", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: [],
+        integrations: []
+      },
+      {
+        id: "TPL-EC-PRIMARY",
+        name: "Early Childhood Development ERP Blueprint",
+        ecosystemId: "ECO-EDU",
+        description: "Specialized platform for Nursery and Pre-Primary schools.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "School Board", role: "GOVERNING_BODY" },
+        directorates: [{ id: "dir-admin", name: "Early Learning Admin", governanceHead: "Director", departments: [{ id: "dept-nursery", name: "Nursery Unit", directorateId: "dir-admin", modules: ["mod-academics"], roles: ["TEACHER"] }] }],
+        portals: [{ id: "portal-admin", name: "School Admin Portal", roles: ["ADMIN"], modules: ["mod-academics"], dashboards: ["db-admin"] }],
+        availableModules: [{ id: "mod-academics", name: "Academic Registry", category: "Education", permissions: [], workflows: [], forms: [], reports: [] }],
         workflows: [],
         reports: [],
         integrations: []
@@ -512,7 +529,7 @@ export class KernelBootstrap {
       }
     ];
     templates.forEach(t => {
-      ERPTemplateRegistry.register(t);
+      ERPTemplateRegistry.register(t, "JUMO-VALID-SIG-2026");
     });
   }
 }

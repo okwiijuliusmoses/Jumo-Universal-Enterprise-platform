@@ -1,6 +1,8 @@
 import { db } from "../../database/db";
 import { EnterpriseEcosystem } from "../../ueos/kernel/GovernanceEngine";
 import { safeJSONParse } from "../../lib/json";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export class EcosystemRegistry {
   static getAll(): EnterpriseEcosystem[] {
@@ -33,7 +35,24 @@ export class EcosystemRegistry {
     };
   }
 
-  static register(ecosystem: EnterpriseEcosystem): EnterpriseEcosystem {
+  static register(ecosystem: EnterpriseEcosystem, signature: string): EnterpriseEcosystem {
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "ECOSYSTEM-REGISTRY",
+      operatorIdentity: "SYSTEM",
+      action: "REGISTER_ECOSYSTEM",
+      affectedEntity: ecosystem.id,
+      securityClassification: 'RESTRICTED',
+      timestamp: Date.now()
+    };
+
+    if (!SecurityGovernor.verifySignature(signature, authRequest)) {
+      AuditSystem.logAction({ action: "REGISTER_ECOSYSTEM", operator: "SYSTEM", target: ecosystem.id, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "REGISTER_ECOSYSTEM", operator: "SYSTEM", target: ecosystem.id, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM", "REGISTER_ECOSYSTEM", 'RESTRICTED');
+
     const record = {
       id: ecosystem.id,
       name: ecosystem.name,

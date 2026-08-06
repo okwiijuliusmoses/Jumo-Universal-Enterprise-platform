@@ -1,6 +1,8 @@
 import { db } from "../../database/db";
 import { EnterpriseWorkflow } from "../../ueos/kernel/GovernanceEngine";
 import { safeJSONParse } from "../../lib/json";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export class WorkflowRegistry {
   static getAll(): EnterpriseWorkflow[] {
@@ -32,7 +34,24 @@ export class WorkflowRegistry {
     };
   }
 
-  static register(workflow: EnterpriseWorkflow): EnterpriseWorkflow {
+  static register(workflow: EnterpriseWorkflow, signature: string): EnterpriseWorkflow {
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "WORKFLOW-REGISTRY",
+      operatorIdentity: "SYSTEM",
+      action: "REGISTER_WORKFLOW",
+      affectedEntity: workflow.id,
+      securityClassification: 'RESTRICTED',
+      timestamp: Date.now()
+    };
+
+    if (!SecurityGovernor.verifySignature(signature, authRequest)) {
+      AuditSystem.logAction({ action: "REGISTER_WORKFLOW", operator: "SYSTEM", target: workflow.id, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "REGISTER_WORKFLOW", operator: "SYSTEM", target: workflow.id, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM", "REGISTER_WORKFLOW", 'RESTRICTED');
+
     const record = {
       id: workflow.id,
       name: workflow.name,

@@ -1,6 +1,8 @@
 import { db } from "../../database/db";
 import { EnterpriseModule } from "../../ueos/kernel/GovernanceEngine";
 import { safeJSONParse } from "../../lib/json";
+import { SecurityGovernor, SecurityAuthorizationRequest } from "../security/SecurityGovernor";
+import { AuditSystem } from "../security/AuditSystem";
 
 export class ModuleRegistry {
   static getAll(): EnterpriseModule[] {
@@ -25,7 +27,24 @@ export class ModuleRegistry {
     };
   }
 
-  static register(mod: EnterpriseModule): EnterpriseModule {
+  static register(mod: EnterpriseModule, signature: string): EnterpriseModule {
+    const authRequest: SecurityAuthorizationRequest = {
+      requestIdentity: "MODULE-REGISTRY",
+      operatorIdentity: "SYSTEM",
+      action: "REGISTER_MODULE",
+      affectedEntity: mod.id,
+      securityClassification: 'RESTRICTED',
+      timestamp: Date.now()
+    };
+
+    if (!SecurityGovernor.verifySignature(signature, authRequest)) {
+      AuditSystem.logAction({ action: "REGISTER_MODULE", operator: "SYSTEM", target: mod.id, timestamp: Date.now(), status: 'REJECTED' });
+      throw new Error("UNAUTHORIZED: SecOps signature verification failed.");
+    }
+
+    AuditSystem.logAction({ action: "REGISTER_MODULE", operator: "SYSTEM", target: mod.id, timestamp: Date.now(), status: 'APPROVED' });
+    SecurityGovernor.authorizeAction("SYSTEM", "REGISTER_MODULE", 'RESTRICTED');
+
     const record = {
       id: mod.id,
       name: mod.name,

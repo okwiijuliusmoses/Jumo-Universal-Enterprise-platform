@@ -26,9 +26,9 @@ export class UniversalERPFactory {
     });
     
     // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any));
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, "JUMO-VALID-SIG-2026"));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, "JUMO-VALID-SIG-2026"));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, "JUMO-VALID-SIG-2026"));
 
     return ERPInstanceRegistry.register(bundle.instance);
   }
@@ -44,9 +44,9 @@ export class UniversalERPFactory {
     });
     
     // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any));
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, "JUMO-VALID-SIG-2026"));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, "JUMO-VALID-SIG-2026"));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, "JUMO-VALID-SIG-2026"));
     
     return ERPInstanceRegistry.register(bundle.instance);
   }
