@@ -5,21 +5,22 @@
  */
 
 import { TemplateCompiler, CompiledPlatformContract } from "./TemplateCompiler";
-import { InstitutionGenerator, GeneratedInstitutionMetadata } from "./InstitutionGenerator";
-import { ModuleGenerator, GeneratedModuleContract } from "./ModuleGenerator";
-import { PortalGenerator, GeneratedPortalSuite } from "./PortalGenerator";
-import { WorkflowGenerator, GeneratedWorkflowContract } from "./WorkflowGenerator";
-import { SchemaGenerator, GeneratedDatabaseSchemaContract } from "./SchemaGenerator";
-import { BlueprintIntelligenceEngine, SynthesizeInstitutionInput } from "../blueprint/BlueprintIntelligenceEngine";
+import { BlueprintDivision } from "./divisions/BlueprintDivision";
+import { GovernanceDivision } from "./divisions/GovernanceDivision";
+import { PortalDivision } from "./divisions/PortalDivision";
+import { ModuleDivision } from "./divisions/ModuleDivision";
+import { WorkflowDivision } from "./divisions/WorkflowDivision";
+import { SchemaDivision } from "./divisions/SchemaDivision";
+import { SynthesizeInstitutionInput } from "../blueprint/BlueprintIntelligenceEngine";
 import { ERPInstance } from "../runtime/universalERPFactory";
 
 export interface ManufacturedPlatformBundle {
   compiledContract: CompiledPlatformContract;
-  institution: GeneratedInstitutionMetadata;
-  portalSuite: GeneratedPortalSuite;
-  modules: GeneratedModuleContract[];
-  workflows: GeneratedWorkflowContract[];
-  databaseSchema: GeneratedDatabaseSchemaContract;
+  institution: any; // Using any for now to align with existing type usage if needed, but should be GeneratedInstitutionMetadata
+  portalSuite: any; // GeneratedPortalSuite
+  modules: any[]; // GeneratedModuleContract[]
+  workflows: any[]; // GeneratedWorkflowContract[]
+  databaseSchema: any; // GeneratedDatabaseSchemaContract
   instance: ERPInstance;
 }
 
@@ -29,13 +30,13 @@ export class ERPFactoryEngine {
    */
   static manufacturePlatform(input: SynthesizeInstitutionInput): ManufacturedPlatformBundle {
     // 1. Synthesize Blueprint
-    const blueprint = BlueprintIntelligenceEngine.synthesizeInstitutionBlueprint(input);
+    const blueprint = BlueprintDivision.synthesize(input);
 
     // 2. Compile Blueprint Contract
     const compiledContract = TemplateCompiler.compile(blueprint);
 
     // 3. Generate Institution Metadata & Governance Hierarchy
-    const institution = InstitutionGenerator.generate(
+    const institution = GovernanceDivision.generate(
       input.institutionName,
       input.country || "Uganda",
       input.region || "National HQ",
@@ -44,20 +45,20 @@ export class ERPFactoryEngine {
     );
 
     // 4. Generate Portal Suite & Auth Gateway
-    const portalSuite = PortalGenerator.generatePortalSuite(
+    const portalSuite = PortalDivision.generate(
       input.institutionName,
       input.country || "Uganda",
       compiledContract.portals
     );
 
     // 5. Generate Dynamic Module Contracts
-    const modules = ModuleGenerator.generateModules(compiledContract.modules, institution.institutionId);
+    const modules = ModuleDivision.generate(compiledContract.modules, institution.institutionId);
 
     // 6. Generate Dynamic Workflow Contracts
-    const workflows = WorkflowGenerator.generateWorkflows(compiledContract.workflows);
+    const workflows = WorkflowDivision.generate(compiledContract.workflows);
 
     // 7. Generate Database Schema Contract
-    const databaseSchema = SchemaGenerator.generateSchema(institution.institutionId, compiledContract.modules);
+    const databaseSchema = SchemaDivision.generate(institution.institutionId, compiledContract.modules);
 
     // 8. Manufacture Runtime ERPInstance
     const instance: ERPInstance = {
