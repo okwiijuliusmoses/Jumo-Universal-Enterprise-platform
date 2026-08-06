@@ -151,6 +151,26 @@ export class KernelBootstrap {
         integrations: ["M-PESA", "NATIONAL-ID-API"]
       },
       {
+        id: "TPL-COLLEGE-CORE",
+        name: "National College Management Blueprint",
+        ecosystemId: "ECO-EDU",
+        description: "Standardized platform for tertiary and vocational colleges.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "College Board of Governors", role: "GOVERNING_BODY" },
+        directorates: [
+          { id: "dir-academics", name: "Instruction & Academics", governanceHead: "Principal", departments: [{ id: "dept-instruction", name: "Vocational Instruction", directorateId: "dir-academics", modules: ["mod-academics"], roles: ["INSTRUCTOR"] }] }
+        ],
+        portals: [
+          { id: "portal-student", name: "Student Hub", roles: ["STUDENT"], modules: ["mod-academics"], dashboards: ["db-student"] },
+          { id: "portal-admin", name: "College Administration", roles: ["ADMIN"], modules: ["mod-ledger"], dashboards: ["db-admin"] }
+        ],
+        availableModules: [{ id: "mod-academics", name: "Academic Registry", category: "Education", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: ["wf-admission"],
+        reports: ["enrolment-summary"],
+        integrations: ["MOBILE-MONEY"]
+      },
+      {
         id: "TPL-HOSP-NATIONAL",
         name: "National Referral Hospital Blueprint",
         ecosystemId: "ECO-HEALTH",
@@ -181,6 +201,25 @@ export class KernelBootstrap {
         integrations: ["LAB-SYSTEM", "PHARMACY-HUB"]
       },
       {
+        id: "TPL-CLINIC-PRO",
+        name: "Private Clinic & Diagnostic Blueprint",
+        ecosystemId: "ECO-HEALTH",
+        description: "Optimized platform for private specialized clinics and diagnostic labs.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "Clinical Management Unit", role: "OPERATIONAL_AUTHORITY" },
+        directorates: [
+          { id: "dir-med", name: "Medical Operations", governanceHead: "Chief Surgeon", departments: [{ id: "dept-diag", name: "Diagnostics", directorateId: "dir-med", modules: ["mod-clinical"], roles: ["LAB_TECH"] }] }
+        ],
+        portals: [
+          { id: "portal-patient", name: "Patient Wellness Portal", roles: ["PATIENT"], modules: ["mod-clinical"], dashboards: ["db-wellness"] }
+        ],
+        availableModules: [{ id: "mod-clinical", name: "Clinical Management", category: "Healthcare", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: ["patient-summary"],
+        integrations: ["INSURANCE-PORTAL"]
+      },
+      {
         id: "TPL-SACCO-PRO",
         name: "SACCO Pro Enterprise Blueprint",
         ecosystemId: "ECO-SACCO",
@@ -208,9 +247,121 @@ export class KernelBootstrap {
         workflows: ["wf-loan-assessment", "wf-payment-approval"],
         reports: ["arrears-report", "trial-balance"],
         integrations: ["INTERSWITCH", "BANK-LINK"]
-      }
-    ];
-    templates.push(
+      },
+      {
+        id: "TPL-MFI-CORE",
+        name: "Microfinance Institution Core Blueprint",
+        ecosystemId: "ECO-BANK",
+        description: "Scaleable platform for microfinance institutions and digital lenders.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "MFI Board", role: "GOVERNING_BODY" },
+        directorates: [{ id: "dir-fin", name: "Financial Services", governanceHead: "CFO", departments: [{ id: "dept-credit", name: "Micro-Credit", directorateId: "dir-fin", modules: ["mod-loans"], roles: ["CREDIT_OFFICER"] }] }],
+        portals: [{ id: "portal-staff", name: "MFI Staff Hub", roles: ["STAFF"], modules: ["mod-loans", "mod-ledger"], dashboards: ["db-staff"] }],
+        availableModules: [{ id: "mod-loans", name: "Loan Portfolio Manager", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: ["wf-loan-assessment"],
+        reports: ["arrears-report"],
+        integrations: ["MTN-MOMO", "STRIPE"]
+      },
+      {
+        id: "TPL-DIOCESE-CORE",
+        name: "Episcopal Diocese OS Blueprint",
+        ecosystemId: "ECO-RELIGIOUS",
+        description: "Comprehensive administration platform for church dioceses and provincial offices.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "Diocesan Council", role: "GOVERNING_BODY" },
+        directorates: [
+          { id: "dir-admin", name: "Diocesan Administration", governanceHead: "Diocesan Secretary", departments: [{ id: "dept-registry", name: "Parish Registry", directorateId: "dir-admin", modules: ["mod-hr"], roles: ["REGISTRAR"] }] }
+        ],
+        portals: [
+          { id: "portal-clergy", name: "Clergy Portal", roles: ["CLERGY"], modules: ["mod-ledger"], dashboards: ["db-clergy"] },
+          { id: "portal-parish", name: "Parish Management", roles: ["PARISH_OFFICER"], modules: ["mod-ledger"], dashboards: ["db-parish"] }
+        ],
+        availableModules: [{ id: "mod-ledger", name: "FAAP General Ledger", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: ["wf-payment-approval"],
+        reports: ["trial-balance"],
+        integrations: ["CELLULAR-MONEY-GATEWAY"]
+      },
+      {
+        id: "TPL-PARISH-MGMT",
+        name: "Parish Institutional Blueprint",
+        ecosystemId: "ECO-RELIGIOUS",
+        description: "Operational platform for individual parishes and mission stations.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "Parish Council", role: "LOCAL_AUTHORITY" },
+        directorates: [{ id: "dir-pastoral", name: "Pastoral Services", governanceHead: "Parish Priest", departments: [{ id: "dept-tithe", name: "Tithe & Collections", directorateId: "dir-pastoral", modules: ["mod-ledger"], roles: ["TREASURER"] }] }],
+        portals: [{ id: "portal-member", name: "Member App", roles: ["MEMBER"], modules: ["mod-ledger"], dashboards: ["db-member"] }],
+        availableModules: [{ id: "mod-ledger", name: "FAAP General Ledger", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: ["trial-balance"],
+        integrations: ["MOBILE-MONEY"]
+      },
+      {
+        id: "TPL-DISTRICT-HOSP",
+        name: "District General Hospital Blueprint",
+        ecosystemId: "ECO-HEALTH",
+        description: "National OS for district-level secondary care hospitals.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "District Health Board", role: "GOVERNING_BODY" },
+        directorates: [{ id: "dir-med", name: "Medical Services", governanceHead: "Medical Superintendent", departments: [{ id: "dept-pharmacy", name: "Central Pharmacy", directorateId: "dir-med", modules: ["mod-clinical"], roles: ["PHARMACIST"] }] }],
+        portals: [{ id: "portal-nurse", name: "Nurse Hub", roles: ["NURSE"], modules: ["mod-clinical"], dashboards: ["db-nurse"] }],
+        availableModules: [{ id: "mod-clinical", name: "Clinical Management", category: "Healthcare", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: ["census-report"],
+        integrations: ["NATIONAL-DRUG-STORE"]
+      },
+      {
+        id: "TPL-SCHOOL-CORE",
+        name: "Secondary School Enterprise Blueprint",
+        ecosystemId: "ECO-EDU",
+        description: "Standardized platform for national secondary and high schools.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "School Board", role: "GOVERNING_BODY" },
+        directorates: [{ id: "dir-edu", name: "Education & Teaching", governanceHead: "Head Teacher", departments: [{ id: "dept-exams", name: "Examination Office", directorateId: "dir-edu", modules: ["mod-academics"], roles: ["EXAM_OFFICER"] }] }],
+        portals: [{ id: "portal-parent", name: "Parent Portal", roles: ["PARENT"], modules: ["mod-academics"], dashboards: ["db-parent"] }],
+        availableModules: [{ id: "mod-academics", name: "Academic Registry", category: "Education", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: ["performance-report"],
+        integrations: ["SMS-GATEWAY"]
+      },
+      {
+        id: "TPL-CREDIT-UNION",
+        name: "National Credit Union Blueprint",
+        ecosystemId: "ECO-SACCO",
+        description: "Sovereign platform for credit unions and savings societies.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "Supervisory Committee", role: "AUDIT_AUTHORITY" },
+        directorates: [{ id: "dir-credit", name: "Credit Services", governanceHead: "Credit Manager", departments: [{ id: "dept-scoring", name: "Loan Assessment", directorateId: "dir-credit", modules: ["mod-loans"], roles: ["CREDIT_OFFICER"] }] }],
+        portals: [{ id: "portal-teller", name: "Teller Station", roles: ["TELLER"], modules: ["mod-ledger"], dashboards: ["db-teller"] }],
+        availableModules: [{ id: "mod-loans", name: "Loan Portfolio Manager", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: ["wf-loan-assessment"],
+        reports: ["trial-balance"],
+        integrations: ["CREDIT-BUREAU-API"]
+      },
+      {
+        id: "TPL-GOVT-DISTRICT",
+        name: "Local Government District Blueprint",
+        ecosystemId: "ECO-GOVT",
+        description: "Operating system for district local governments and municipal councils.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "District Council", role: "LEGISLATIVE_BODY" },
+        directorates: [
+          { id: "dir-tech", name: "Technical Services", governanceHead: "District Engineer", departments: [{ id: "dept-roads", name: "Works & Infrastructure", directorateId: "dir-tech", modules: ["mod-procurement"], roles: ["ENGINEER"] }] }
+        ],
+        portals: [
+          { id: "portal-official", name: "District Official Terminal", roles: ["OFFICIAL"], modules: ["mod-ledger", "mod-procurement"], dashboards: ["db-admin"] }
+        ],
+        availableModules: [{ id: "mod-ledger", name: "FAAP General Ledger", category: "Finance", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: ["wf-procurement"],
+        reports: ["budget-performance"],
+        integrations: ["IFMS-SYNC"]
+      },
       {
         id: "TPL-GOVT-MINISTRY",
         name: "National Ministry OS Blueprint",
@@ -279,8 +430,23 @@ export class KernelBootstrap {
         workflows: ["wf-payment-approval", "wf-procurement"],
         reports: ["grant-utilization", "impact-summary"],
         integrations: ["STRIPE-DONATIONS", "UN-REPORTS-API"]
+      },
+      {
+        id: "TPL-FACTORY-CORE",
+        name: "Industrial Production OS Blueprint",
+        ecosystemId: "ECO-MANUFACTURING",
+        description: "Manufacturing execution system with FAAP inventory integration.",
+        version: "v1.0.0",
+        status: "Active",
+        governance: { title: "Operations Committee", role: "GOVERNING_BODY" },
+        directorates: [{ id: "dir-prod", name: "Production & Supply", governanceHead: "Plant Manager", departments: [{ id: "dept-floor", name: "Production Floor", directorateId: "dir-prod", modules: ["mod-inventory"], roles: ["FLOOR_MANAGER"] }] }],
+        portals: [{ id: "portal-floor", name: "Factory Floor Terminal", roles: ["WORKER"], modules: ["mod-inventory"], dashboards: ["db-floor"] }],
+        availableModules: [{ id: "mod-inventory", name: "Inventory & Assets", category: "Industry", permissions: [], workflows: [], forms: [], reports: [] }],
+        workflows: [],
+        reports: [],
+        integrations: ["IOT-GATEWAY", "SAP-BRIDGE"]
       }
-    );
+    ];
     templates.forEach(t => {
       ERPTemplateRegistry.register(t);
     });

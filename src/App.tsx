@@ -7,6 +7,10 @@ import { RuntimeWorkspaceRenderer } from './experience/renderer/RuntimeWorkspace
 import { TemplateRegistryRenderer } from './experience/renderer/TemplateRegistryRenderer';
 import { EnterpriseFactory } from './experience/renderer/EnterpriseFactory';
 import { PlatformInstanceRenderer } from './experience/renderer/PlatformInstanceRenderer';
+import { WorkflowRegistryRenderer } from './experience/renderer/WorkflowRegistryRenderer';
+import { SecurityRegistryRenderer } from './experience/renderer/SecurityRegistryRenderer';
+import { DiagnosticsRenderer } from './experience/renderer/DiagnosticsRenderer';
+import { SettingsRenderer } from './experience/renderer/SettingsRenderer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 export function App() {
@@ -107,6 +111,14 @@ export function App() {
         return <EnterpriseFactory />;
       case "instances":
         return <PlatformInstanceRenderer />;
+      case "workflows":
+        return <WorkflowRegistryRenderer />;
+      case "security":
+        return <SecurityRegistryRenderer />;
+      case "diagnostics":
+        return <DiagnosticsRenderer />;
+      case "settings":
+        return <SettingsRenderer />;
       default:
         return (
           <div className="bg-white p-12 rounded-3xl border border-slate-100 text-center">

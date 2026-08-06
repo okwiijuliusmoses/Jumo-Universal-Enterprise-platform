@@ -3524,7 +3524,17 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
   // Canonical Registry API Routes
   app.get("/api/ueos/registry/domains", (_req, res) => res.json(domainRegistryService.getAllDomains()));
   app.get("/api/ueos/registry/services", (_req, res) => res.json(serviceRegistry.getAllServices()));
-  app.get("/api/ueos/registry/ecosystems", (_req, res) => res.json(EcosystemRegistry.getAll()));
+  app.get("/api/ueos/registry/ecosystems", (_req, res) => {
+    const ecosystems = EcosystemRegistry.getAll();
+    const templates = ERPTemplateRegistry.getAll();
+    
+    const enriched = ecosystems.map(e => ({
+      ...e,
+      templateCount: templates.filter(t => t.ecosystemId === e.id).length
+    }));
+    
+    res.json(enriched);
+  });
   app.get("/api/ueos/registry/templates", (_req, res) => res.json(ERPTemplateRegistry.getAll()));
   app.get("/api/ueos/registry/instances", (_req, res) => res.json(ERPInstanceRegistry.getAll()));
   app.get("/api/ueos/registry/workflows", (_req, res) => res.json(WorkflowRegistry.getAll()));
