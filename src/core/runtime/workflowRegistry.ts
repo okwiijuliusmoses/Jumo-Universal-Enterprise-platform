@@ -1,5 +1,6 @@
 import { db } from "../../database/db";
 import { EnterpriseWorkflow } from "../../ueos/kernel/GovernanceEngine";
+import { safeJSONParse } from "../../lib/json";
 
 export class WorkflowRegistry {
   static getAll(): EnterpriseWorkflow[] {
@@ -10,9 +11,9 @@ export class WorkflowRegistry {
       name: r.name,
       trigger: r.triggerEvent,
       status: r.status,
-      steps: r.steps ? JSON.parse(r.steps) : [],
-      approvals: r.approvers ? JSON.parse(r.approvers) : [],
-      roles: r.roles ? JSON.parse(r.roles) : []
+      steps: safeJSONParse(r.steps, []),
+      approvals: safeJSONParse(r.approvers, []),
+      roles: safeJSONParse(r.roles, [])
     }));
   }
 
@@ -25,9 +26,9 @@ export class WorkflowRegistry {
       name: r.name,
       trigger: r.triggerEvent,
       status: r.status,
-      steps: r.steps ? JSON.parse(r.steps) : [],
-      approvals: r.approvers ? JSON.parse(r.approvers) : [],
-      roles: r.roles ? JSON.parse(r.roles) : []
+      steps: safeJSONParse(r.steps, []),
+      approvals: safeJSONParse(r.approvers, []),
+      roles: safeJSONParse(r.roles, [])
     };
   }
 
@@ -37,9 +38,9 @@ export class WorkflowRegistry {
       name: workflow.name,
       triggerEvent: workflow.trigger,
       status: workflow.status,
-      steps: JSON.stringify(workflow.steps),
-      approvers: JSON.stringify(workflow.approvals),
-      roles: JSON.stringify(workflow.roles),
+      steps: JSON.stringify(workflow.steps || []),
+      approvers: JSON.stringify(workflow.approvals || []),
+      roles: JSON.stringify(workflow.roles || []),
       lastTriggered: "Never"
     };
     const exists = this.getById(workflow.id);

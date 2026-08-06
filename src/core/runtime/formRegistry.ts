@@ -1,6 +1,7 @@
 
 import { db } from "../../database/db";
 import { EnterpriseForm } from "../../ueos/kernel/GovernanceEngine";
+import { safeJSONParse } from "../../lib/json";
 
 export class FormRegistry {
   static getAll(): EnterpriseForm[] {
@@ -8,8 +9,8 @@ export class FormRegistry {
     return records.map(r => ({
       id: r.id,
       name: r.name,
-      fields: JSON.parse(r.fields),
-      validation: JSON.parse(r.validation),
+      fields: safeJSONParse(r.fields, []),
+      validation: safeJSONParse(r.validation, {}),
       workflowBinding: r.workflowBinding
     }));
   }
@@ -21,8 +22,8 @@ export class FormRegistry {
     return {
       id: r.id,
       name: r.name,
-      fields: JSON.parse(r.fields),
-      validation: JSON.parse(r.validation),
+      fields: safeJSONParse(r.fields, []),
+      validation: safeJSONParse(r.validation, {}),
       workflowBinding: r.workflowBinding
     };
   }
@@ -31,8 +32,8 @@ export class FormRegistry {
     const record = {
       id: form.id,
       name: form.name,
-      fields: JSON.stringify(form.fields),
-      validation: JSON.stringify(form.validation),
+      fields: JSON.stringify(form.fields || []),
+      validation: JSON.stringify(form.validation || {}),
       workflowBinding: form.workflowBinding
     };
     const exists = this.getById(form.id);

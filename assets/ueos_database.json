@@ -281,7 +281,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "APPROVED",
       "approvers": "SecOps_Administrator",
-      "lastTriggered": "2026-08-06T17:03:55.113Z"
+      "lastTriggered": "2026-08-06T17:22:54.207Z"
     },
     {
       "id": "WF-TASK-101",
@@ -289,7 +289,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "PENDING",
       "approvers": "FAAP_Controller,SecOps_Administrator",
-      "lastTriggered": "2026-08-06T17:03:55.113Z"
+      "lastTriggered": "2026-08-06T17:22:54.207Z"
     }
   ],
   "ai_agent_memory": [],
@@ -975,22 +975,28 @@
     {
       "id": "form-encounter",
       "name": "Clinical Encounter Log",
-      "definition": "{\"fields\":[],\"validation\":{}}"
+      "fields": "[]",
+      "validation": "{}"
     },
     {
       "id": "form-loan",
       "name": "Loan Application",
-      "definition": "{\"fields\":[],\"validation\":{},\"workflowBinding\":\"wf-loan-assessment\"}"
+      "fields": "[]",
+      "validation": "{}",
+      "workflowBinding": "wf-loan-assessment"
     },
     {
       "id": "form-voucher",
       "name": "Payment Voucher",
-      "definition": "{\"fields\":[],\"validation\":{},\"workflowBinding\":\"wf-payment-approval\"}"
+      "fields": "[]",
+      "validation": "{}",
+      "workflowBinding": "wf-payment-approval"
     },
     {
       "id": "form-admission",
       "name": "Student Admission Form",
-      "definition": "{\"fields\":[],\"validation\":{}}"
+      "fields": "[]",
+      "validation": "{}"
     }
   ],
   "components": [

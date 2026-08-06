@@ -1,5 +1,6 @@
 import { db } from "../../database/db";
 import { EnterpriseModule } from "../../ueos/kernel/GovernanceEngine";
+import { safeJSONParse } from "../../lib/json";
 
 export class ModuleRegistry {
   static getAll(): EnterpriseModule[] {
@@ -8,7 +9,7 @@ export class ModuleRegistry {
       id: r.id,
       name: r.name,
       category: r.category,
-      ...JSON.parse(r.config)
+      ...safeJSONParse(r.config, {})
     }));
   }
 
@@ -20,7 +21,7 @@ export class ModuleRegistry {
       id: r.id,
       name: r.name,
       category: r.category,
-      ...JSON.parse(r.config)
+      ...safeJSONParse(r.config, {})
     };
   }
 
@@ -30,10 +31,10 @@ export class ModuleRegistry {
       name: mod.name,
       category: mod.category,
       config: JSON.stringify({
-        permissions: mod.permissions,
-        workflows: mod.workflows,
-        forms: mod.forms,
-        reports: mod.reports
+        permissions: mod.permissions || [],
+        workflows: mod.workflows || [],
+        forms: mod.forms || [],
+        reports: mod.reports || []
       })
     };
     const exists = this.getById(mod.id);

@@ -1,4 +1,5 @@
 import { db } from "../../database/db";
+import { safeJSONParse } from "../../lib/json";
 
 export interface EnterprisePortal {
   id: string;
@@ -15,8 +16,8 @@ export class PortalRegistry {
       id: r.id,
       name: r.name,
       description: r.description,
-      roles: JSON.parse(r.roles),
-      navigation: JSON.parse(r.navigation)
+      roles: safeJSONParse(r.roles, []),
+      navigation: safeJSONParse(r.navigation, [])
     }));
   }
 
@@ -28,8 +29,8 @@ export class PortalRegistry {
       id: r.id,
       name: r.name,
       description: r.description,
-      roles: JSON.parse(r.roles),
-      navigation: JSON.parse(r.navigation)
+      roles: safeJSONParse(r.roles, []),
+      navigation: safeJSONParse(r.navigation, [])
     };
   }
 
@@ -38,8 +39,8 @@ export class PortalRegistry {
       id: portal.id,
       name: portal.name,
       description: portal.description,
-      roles: JSON.stringify(portal.roles),
-      navigation: JSON.stringify(portal.navigation)
+      roles: JSON.stringify(portal.roles || []),
+      navigation: JSON.stringify(portal.navigation || [])
     };
     const exists = this.getById(portal.id);
     if (exists) {
