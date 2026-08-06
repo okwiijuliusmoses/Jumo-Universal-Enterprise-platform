@@ -32,7 +32,12 @@ export class FormRegistry {
         workflowBinding: form.workflowBinding
       })
     };
-    db.insert("forms", record);
+    const exists = this.getById(form.id);
+    if (exists) {
+      db.update("forms", f => f.id === form.id, () => record);
+    } else {
+      db.insert("forms", record);
+    }
     return form;
   }
 }

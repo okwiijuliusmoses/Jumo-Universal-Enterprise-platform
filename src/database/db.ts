@@ -14,8 +14,18 @@ export class JUMODBEngine {
   private pool: Pool | null = null;
   private usePostgres = false;
 
+  private readyPromise: Promise<void>;
+  private resolveReady!: () => void;
+
   private constructor() {
+    this.readyPromise = new Promise((resolve) => {
+      this.resolveReady = resolve;
+    });
     this.initializeEngine();
+  }
+
+  public async waitUntilReady(): Promise<void> {
+    return this.readyPromise;
   }
 
   public static getInstance(): JUMODBEngine {
@@ -121,6 +131,7 @@ export class JUMODBEngine {
     // Load backup data or local store
     this.load();
     this.isInitialized = true;
+    this.resolveReady();
     console.log(`[DATABASE] JUMO UEOS Database initialized.`);
   }
 

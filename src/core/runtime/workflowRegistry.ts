@@ -42,7 +42,12 @@ export class WorkflowRegistry {
       roles: JSON.stringify(workflow.roles),
       lastTriggered: "Never"
     };
-    db.insert("workflows", record);
+    const exists = this.getById(workflow.id);
+    if (exists) {
+      db.update("workflows", w => w.id === workflow.id, () => record);
+    } else {
+      db.insert("workflows", record);
+    }
     return workflow;
   }
 }

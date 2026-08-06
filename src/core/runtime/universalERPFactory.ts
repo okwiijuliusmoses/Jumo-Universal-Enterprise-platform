@@ -28,8 +28,8 @@ export class UniversalERPFactory {
         institutionName: config.name
       },
       governance: template.governance,
-      directorates: template.directorates || [],
-      portals: template.portals || [],
+      directorates: template.directorates ? JSON.parse(JSON.stringify(template.directorates)) : [],
+      portals: template.portals ? JSON.parse(JSON.stringify(template.portals)) : [],
       modules: template.modules || template.availableModules.map(m => m.id),
       apps: template.apps || [],
       services: template.services || [],

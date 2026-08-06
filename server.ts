@@ -63,8 +63,7 @@ import { financialAuditor } from "./src/core/ai/financialAuditor";
 dotenv.config();
 
 // Run schema migrations and data seeding on boot
-runMigrations();
-KernelBootstrap.execute();
+// Moved inside startServer for sequential execution
 
 let aiInstance: GoogleGenAI | null = null;
 
@@ -209,7 +208,17 @@ const responseSchema = {
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const PORT = 3000;
+
+  // 1. Wait for database engine to be fully initialized
+  console.log("[BOOT] Waiting for JUMO DB Engine...");
+  await db.waitUntilReady();
+  console.log("[BOOT] DB Engine READY. Executing platform migrations...");
+
+  // 2. Run migrations and kernel bootstrap sequentially
+  await runMigrations();
+  await KernelBootstrap.execute();
+  console.log("[BOOT] Platform boot sequence finalized.");
 
   // Bootstrap sovereign core platform services and registries
   await lifecycleManager.bootstrap([]);
@@ -3472,23 +3481,31 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
     res.json(ERPInstanceRegistry.getAll());
   });
 
-  app.get("/api/ueos/runtime/telemetry", validateSession, (req, res) => {
+  app.get("/api/ueos/runtime/telemetry", (req, res) => {
     try {
-      const allModules = RegistryRepository.findAll();
       const ecosystems = EcosystemRegistry.getAll();
       const templates = ERPTemplateRegistry.getAll();
       const instances = ERPInstanceRegistry.getAll();
-      const workflows = WorkflowRepository.findAll();
+      const workflows = WorkflowRegistry.getAll();
+      const modules = ModuleRegistry.getAll();
+      const forms = FormRegistry.getAll();
+      const components = ComponentRegistry.getAll();
       const memory = process.memoryUsage();
       const upTime = process.uptime();
       const dbDiagnostics = db.getDiagnostics();
 
       res.json({
         success: true,
-        activeDomainsCount: ecosystems.length,
-        totalTenantsCount: instances.length,
-        activeWorkflowsCount: workflows.filter((w: any) => w.status === "active").length,
+        ecosystems: ecosystems.length,
+        templates: templates.length,
+        instances: instances.length,
+        modulesCount: modules.length,
+        workflowsCount: workflows.length,
+        formsCount: forms.length,
+        componentsCount: components.length,
         userActivityCount: UserRepository.findAll().length,
+        activeNodes: instances.length * 12 + 50,
+        uptime: upTime,
         systemHealth: {
           cpuUsage: "12.4%",
           memoryUsage: `${(memory.heapUsed / 1024 / 1024).toFixed(0)}MB / 512MB`,
@@ -3525,26 +3542,6 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
     }
   });
 
-  app.get("/api/ueos/runtime/telemetry", (req, res) => {
-    const ecosystems = EcosystemRegistry.getAll();
-    const templates = ERPTemplateRegistry.getAll();
-    const instances = ERPInstanceRegistry.getAll();
-    const modules = ModuleRegistry.getAll();
-    const workflows = WorkflowRegistry.getAll();
-    const forms = FormRegistry.getAll();
-
-    res.json({
-      uptime: process.uptime(),
-      ecosystems: ecosystems.length,
-      templates: templates.length,
-      instances: instances.length,
-      modulesCount: modules.length,
-      workflowsCount: workflows.length,
-      formsCount: forms.length,
-      activeNodes: instances.length * 12 + 50, // Simulated node count
-      lastHeartbeat: new Date().toISOString()
-    });
-  });
 
   app.get("/api/ueos/kernel/status", (_req, res) => {
     const ecosystems = EcosystemRegistry.getAll();

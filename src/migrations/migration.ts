@@ -9,7 +9,7 @@ import {
   TemplateRepository as UEOS_TemplateRepository
 } from "../repositories/repositories";
 
-export function runMigrations() {
+export async function runMigrations() {
   console.log("[MIGRATION] Checking tables and seeding default operational metrics...");
 
   // 1. Seed Identity & RBAC User profiles
@@ -116,105 +116,6 @@ export function runMigrations() {
     AuditLogRepository.log("System Kernel", "BOOTSTRAP", "Kernel boot process initialized successfully on node 1.", "success");
     AuditLogRepository.log("secops-officer@jumo.net", "RBAC_VALIDATE", "Zero-Trust policy rules compiled for tenant 'church-uganda-diocese'.", "success");
     AuditLogRepository.log("audit-bot@jumo.net", "LEDGER_INTEGRITY_CHECK", "Consolidated ledger verified. Double entry checksum: BALANCED.", "success");
-  }
-
-  // 6. Seed UEOS Ecosystems
-  const ecosystems = UEOS_EcosystemRepository.findAll();
-  if (ecosystems.length === 0) {
-    console.log("[MIGRATION] Seeding national enterprise ecosystems...");
-    UEOS_EcosystemRepository.save({
-      id: "FINANCIAL",
-      name: "Financial & Sacco Ecosystem",
-      version: "v5.0.0",
-      category: "Fintech",
-      description: "National platform for Savings and Credit Cooperatives.",
-      governanceModel: "CENTRAL_REGULATORY",
-      status: "Active",
-      config: JSON.stringify({
-        supportedCountries: ["Zambia", "Uganda", "Kenya"],
-        institutionTypes: ["SACCO", "MFI", "Credit Union"],
-        templates: ["SACCO_PRO_v1", "MFI_CORE_v1"],
-        modules: ["LOANS", "SAVINGS", "SHARES", "FAAP_LEDGER"],
-        permissions: ["REGULATORY_AUDIT", "MEMBER_PRIVACY"]
-      })
-    });
-    UEOS_EcosystemRepository.save({
-      id: "RELIGIOUS",
-      name: "Faith-Based Institutional Ecosystem",
-      version: "v5.0.0",
-      category: "Religious",
-      description: "Platform for Church and Mosque administration and financial transparency.",
-      governanceModel: "DIOCESAN_AUTONOMY",
-      status: "Active",
-      config: JSON.stringify({
-        supportedCountries: ["Uganda", "Zambia", "Rwanda"],
-        institutionTypes: ["DIOCESE", "PARISH", "MOSQUE"],
-        templates: ["CHURCH_ERP_v1", "MOSQUE_PLATFORM_v1"],
-        modules: ["TITHES", "MEMBERSHIP", "PROJECTS", "FAAP_LEDGER"],
-        permissions: ["TRANSPARENCY_PUBLIC", "CLERGY_ONLY"]
-      })
-    });
-    UEOS_EcosystemRepository.save({
-      id: "EDUCATION",
-      name: "Sovereign Education Ecosystem",
-      version: "v5.0.0",
-      category: "Education",
-      description: "Platform for Universities and Schools governance and fee management.",
-      governanceModel: "MINISTRY_OVERSIGHT",
-      status: "Active",
-      config: JSON.stringify({
-        supportedCountries: ["Kenya", "Uganda"],
-        institutionTypes: ["UNIVERSITY", "SECONDARY_SCHOOL"],
-        templates: ["UNI_CORE_v1", "SCHOOL_MGMT_v1"],
-        modules: ["FEES", "ACADEMICS", "ADMISSIONS", "FAAP_LEDGER"],
-        permissions: ["REGISTRAR_LEVEL", "STUDENT_PORTAL"]
-      })
-    });
-  }
-
-  // 7. Seed UEOS Templates
-  const templates = UEOS_TemplateRepository.findAll();
-  if (templates.length === 0) {
-    console.log("[MIGRATION] Seeding sovereign enterprise blueprints...");
-    UEOS_TemplateRepository.save({
-      id: "SACCO_PRO_v1",
-      name: "JUMO SACCO Pro Blueprint",
-      ecosystemId: "FINANCIAL",
-      description: "Complete ERP for large-scale SACCO operations with FAAP integration.",
-      version: "v1.0.0",
-      status: "Active",
-      blueprint: JSON.stringify({
-        governance: { type: "BOARD_CENTRIC", boardSeats: 7, regulatoryReporting: true },
-        portals: ["Manager Portal", "Member Portal", "Teller Terminal"],
-        availableModules: [
-          { id: "SAVINGS", name: "Savings & Deposits", status: "CORE" },
-          { id: "LOANS", name: "Loan Portfolio Manager", status: "CORE" },
-          { id: "SHARES", name: "Share Capital Engine", status: "CORE" }
-        ],
-        workflows: ["LOAN_APPROVAL", "WITHDRAWAL_LIMIT_BYPASS"],
-        reports: ["TRIAL_BALANCE", "MEMBER_STATEMENT", "AGEING_REPORT"],
-        integrations: ["M-PESA", "MTN_MOMO", "STRIPE"]
-      })
-    });
-    UEOS_TemplateRepository.save({
-      id: "CHURCH_ERP_v1",
-      name: "JUMO Church Management Blueprint",
-      ecosystemId: "RELIGIOUS",
-      description: "Institutional platform for diocesan and parish administration.",
-      version: "v1.0.0",
-      status: "Active",
-      blueprint: JSON.stringify({
-        governance: { type: "DIOCESAN", authority: "BISHOP_COUNCIL", transparency: "HIGH" },
-        portals: ["Bishop Dashboard", "Parish Registry", "Member App"],
-        availableModules: [
-          { id: "TITHES", name: "Tithes & Offerings", status: "CORE" },
-          { id: "MEMBERS", name: "Parishioner Registry", status: "CORE" }
-        ],
-        workflows: ["PROJECT_FUND_APPROVAL", "MEMBERSHIP_VALIDATION"],
-        reports: ["ANNUAL_FINANCIAL_REPORT", "DEVELOPMENT_FUND_LOGS"],
-        integrations: ["CELLULAR_MONEY", "EMAIL_NOTIFICATIONS"]
-      })
-    });
   }
 
   console.log("[MIGRATION] Migration complete. All database stores fully primed.");

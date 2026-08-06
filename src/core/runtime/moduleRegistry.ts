@@ -36,7 +36,12 @@ export class ModuleRegistry {
         reports: mod.reports
       })
     };
-    db.insert("modules", record);
+    const exists = this.getById(mod.id);
+    if (exists) {
+      db.update("modules", m => m.id === mod.id, () => record);
+    } else {
+      db.insert("modules", record);
+    }
     return mod;
   }
 }

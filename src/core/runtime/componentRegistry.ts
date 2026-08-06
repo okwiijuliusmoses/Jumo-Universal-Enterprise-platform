@@ -31,7 +31,12 @@ export class ComponentRegistry {
       type: comp.type,
       description: comp.description
     };
-    db.insert("components", record);
+    const exists = this.getById(comp.id);
+    if (exists) {
+      db.update("components", c => c.id === comp.id, () => record);
+    } else {
+      db.insert("components", record);
+    }
     return comp;
   }
 }

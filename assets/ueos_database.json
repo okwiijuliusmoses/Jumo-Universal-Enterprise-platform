@@ -236,6 +236,26 @@
   ],
   "workflows": [
     {
+      "id": "wf-procurement",
+      "name": "Procurement Requisition",
+      "triggerEvent": "FORM_SUBMIT",
+      "status": "Active",
+      "steps": "[]",
+      "approvers": "[]",
+      "roles": "[\"HOD\",\"Bursar\"]",
+      "lastTriggered": "Never"
+    },
+    {
+      "id": "wf-admission",
+      "name": "Academic Admission Cycle",
+      "triggerEvent": "FORM_SUBMIT",
+      "status": "Active",
+      "steps": "[]",
+      "approvers": "[]",
+      "roles": "[\"Registrar\",\"Dean\"]",
+      "lastTriggered": "Never"
+    },
+    {
       "id": "wf-loan-assessment",
       "name": "Loan Credit Scoring",
       "triggerEvent": "FORM_SUBMIT",
@@ -261,7 +281,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "APPROVED",
       "approvers": "SecOps_Administrator",
-      "lastTriggered": "2026-08-06T14:59:53.316Z"
+      "lastTriggered": "2026-08-06T15:24:24.517Z"
     },
     {
       "id": "WF-TASK-101",
@@ -269,7 +289,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "PENDING",
       "approvers": "FAAP_Controller,SecOps_Administrator",
-      "lastTriggered": "2026-08-06T14:59:53.316Z"
+      "lastTriggered": "2026-08-06T15:24:24.517Z"
     }
   ],
   "ai_agent_memory": [],
@@ -337,6 +357,216 @@
   ],
   "ecosystems": [
     {
+      "id": "ECO-CORPORATE",
+      "name": "Enterprise Corporate Ecosystem",
+      "version": "v5.2.0",
+      "category": "Corporate",
+      "description": "Standard Corporate Platform",
+      "governanceModel": "COMPANIES_REGISTRY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"CORPORATION\",\"SME\"],\"templates\":[\"TPL-CORP-HQ\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"DIRECTOR\"]}"
+    },
+    {
+      "id": "ECO-CULTURE",
+      "name": "Family, Clan & Cultural Heritage Ecosystem",
+      "version": "v5.2.0",
+      "category": "Community",
+      "description": "Heritage & Cultural Registry Platform",
+      "governanceModel": "CULTURAL_AUTHORITY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"CLAN\",\"KINGDOM\"],\"templates\":[\"TPL-HERITAGE-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"ELDER\"]}"
+    },
+    {
+      "id": "ECO-RESEARCH",
+      "name": "Research & Innovation Ecosystem",
+      "version": "v5.2.0",
+      "category": "Education",
+      "description": "R&D and Innovation Platform",
+      "governanceModel": "SCIENCE_MINISTRY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"INSTITUTE\",\"LAB\"],\"templates\":[\"TPL-RESEARCH-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"RESEARCHER\"]}"
+    },
+    {
+      "id": "ECO-TELECOM",
+      "name": "Telecommunications Ecosystem",
+      "version": "v5.2.0",
+      "category": "Industry",
+      "description": "Telecom & ISP Platform",
+      "governanceModel": "COMMUNICATIONS_AUTHORITY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"TELCO\",\"ISP\"],\"templates\":[\"TPL-TELCO-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"ADMIN\"]}"
+    },
+    {
+      "id": "ECO-ENERGY",
+      "name": "Utility & Energy Ecosystem",
+      "version": "v5.2.0",
+      "category": "Industry",
+      "description": "Utilities & Energy Grid Platform",
+      "governanceModel": "ENERGY_REGULATORY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"UTILITY\",\"POWER_PLANT\"],\"templates\":[\"TPL-ENERGY-GRID\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"ENGINEER\"]}"
+    },
+    {
+      "id": "ECO-REALESTATE",
+      "name": "Real Estate Ecosystem",
+      "version": "v5.2.0",
+      "category": "Trade",
+      "description": "Property & Land Management Platform",
+      "governanceModel": "LAND_MINISTRY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"AGENCY\",\"DEVELOPER\"],\"templates\":[\"TPL-RE-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"AGENT\"]}"
+    },
+    {
+      "id": "ECO-HR",
+      "name": "Human Resource & Workforce Ecosystem",
+      "version": "v5.2.0",
+      "category": "Corporate",
+      "description": "Workforce Management Platform",
+      "governanceModel": "LABOR_MINISTRY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"HR_AGENCY\",\"CORPORATE_HR\"],\"templates\":[\"TPL-HR-GLOBAL\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"HR_MANAGER\"]}"
+    },
+    {
+      "id": "ECO-LEGAL",
+      "name": "Legal & Justice Ecosystem",
+      "version": "v5.2.0",
+      "category": "Governance",
+      "description": "Justice & Legal Services Platform",
+      "governanceModel": "JUDICIAL_COMMISSION",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"National\"],\"institutionTypes\":[\"COURT\",\"LAW_FIRM\"],\"templates\":[\"TPL-COURT-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"JUDGE\"]}"
+    },
+    {
+      "id": "ECO-INSURANCE",
+      "name": "Insurance Ecosystem",
+      "version": "v5.2.0",
+      "category": "Finance",
+      "description": "Insurance & Actuarial Platform",
+      "governanceModel": "INSURANCE_REGULATORY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"INSURER\",\"BROKER\"],\"templates\":[\"TPL-INSURE-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"ACTUARY\"]}"
+    },
+    {
+      "id": "ECO-LOGISTICS",
+      "name": "Transport & Logistics Ecosystem",
+      "version": "v5.2.0",
+      "category": "Industry",
+      "description": "Logistics & Supply Chain Platform",
+      "governanceModel": "MINISTRY_OF_TRANSPORT",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"LOGISTICS_HUB\",\"FLEET\"],\"templates\":[\"TPL-LOGISTICS-PRO\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"DISPATCHER\"]}"
+    },
+    {
+      "id": "ECO-TRADE",
+      "name": "Trade & Commerce Ecosystem",
+      "version": "v5.2.0",
+      "category": "Trade",
+      "description": "Commercial Enterprise Platform",
+      "governanceModel": "MINISTRY_OF_TRADE",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"ENTERPRISE\",\"WHOLESALER\"],\"templates\":[\"TPL-TRADE-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"MERCHANT\"]}"
+    },
+    {
+      "id": "ECO-AGRIC",
+      "name": "Agriculture Ecosystem",
+      "version": "v5.2.0",
+      "category": "Industry",
+      "description": "Agricultural Value Chain Platform",
+      "governanceModel": "MINISTRY_OF_AGRICULTURE",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"National\"],\"institutionTypes\":[\"FARM\",\"PROCESSING_PLANT\"],\"templates\":[\"TPL-AGRO-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"FARMER\"]}"
+    },
+    {
+      "id": "ECO-MANUFACTURING",
+      "name": "Manufacturing & Industrial Ecosystem",
+      "version": "v5.2.0",
+      "category": "Industry",
+      "description": "Industrial Production Platform",
+      "governanceModel": "MINISTRY_OF_INDUSTRY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"FACTORY\",\"PLANT\"],\"templates\":[\"TPL-FACTORY-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"SUPERVISOR\"]}"
+    },
+    {
+      "id": "ECO-HOSPITALITY",
+      "name": "Hospitality & Tourism Ecosystem",
+      "version": "v5.2.0",
+      "category": "Trade",
+      "description": "Tourism & Hotel Management Platform",
+      "governanceModel": "TOURISM_BOARD",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"HOTEL\",\"RESORT\"],\"templates\":[\"TPL-HOTEL-PRO\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"MANAGER\"]}"
+    },
+    {
+      "id": "ECO-NGO",
+      "name": "NGO & Humanitarian Ecosystem",
+      "version": "v5.2.0",
+      "category": "Community",
+      "description": "International & National NGO Platform",
+      "governanceModel": "NGO_BOARD",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"INGO\",\"NGO\"],\"templates\":[\"TPL-NGO-HQ\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"DIRECTOR\"]}"
+    },
+    {
+      "id": "ECO-GOVT",
+      "name": "Government & Public Administration Ecosystem",
+      "version": "v5.2.0",
+      "category": "Governance",
+      "description": "National Public Service Platform",
+      "governanceModel": "CABINET_OFFICE",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"National\"],\"institutionTypes\":[\"MINISTRY\",\"AUTHORITY\"],\"templates\":[\"TPL-GOVT-MINISTRY\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"PUBLIC_SERVANT\"]}"
+    },
+    {
+      "id": "ECO-RELIGIOUS",
+      "name": "Religious & Diocese Ecosystem",
+      "version": "v5.2.0",
+      "category": "Community",
+      "description": "Church & Diocese Platform",
+      "governanceModel": "EPISCOPAL_CONFERENCE",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"DIOCESE\",\"PARISH\"],\"templates\":[\"TPL-DIOCESE-CORE\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"ADMIN\"]}"
+    },
+    {
+      "id": "ECO-BANK",
+      "name": "Banking & Financial Services Ecosystem",
+      "version": "v5.2.0",
+      "category": "Finance",
+      "description": "Commercial Banking Platform",
+      "governanceModel": "CENTRAL_BANK",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Global\"],\"institutionTypes\":[\"BANK\",\"MFI\"],\"templates\":[\"TPL-BANK-DIGITAL\"],\"modules\":[\"mod-ledger\"],\"permissions\":[\"FINANCE_ADMIN\"]}"
+    },
+    {
+      "id": "ECO-SACCO",
+      "name": "SACCO & Cooperative Ecosystem",
+      "version": "v5.2.0",
+      "category": "Finance",
+      "description": "Community Finance Platform",
+      "governanceModel": "COOPERATIVE_COMMISSION",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Zambia\"],\"institutionTypes\":[\"SACCO\",\"UNION\"],\"templates\":[\"TPL-SACCO-PRO\"],\"modules\":[\"mod-loans\",\"mod-ledger\"],\"permissions\":[\"LOAN_OFFICER\"]}"
+    },
+    {
+      "id": "ECO-HEALTH",
+      "name": "Healthcare Ecosystem",
+      "version": "v5.2.0",
+      "category": "Social",
+      "description": "Universal Healthcare Platform",
+      "governanceModel": "MINISTRY_OF_HEALTH",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Kenya\"],\"institutionTypes\":[\"HOSPITAL\",\"CLINIC\"],\"templates\":[\"TPL-HOSP-NATIONAL\"],\"modules\":[\"mod-clinical\"],\"permissions\":[\"DOCTOR\"]}"
+    },
+    {
+      "id": "ECO-EDU",
+      "name": "Education Ecosystem",
+      "version": "v5.2.0",
+      "category": "Social",
+      "description": "National Education Platform",
+      "governanceModel": "MINISTRY_OF_EDUCATION",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Zambia\"],\"institutionTypes\":[\"UNIVERSITY\",\"SCHOOL\"],\"templates\":[\"TPL-UNI-NATIONAL\"],\"modules\":[\"mod-academics\"],\"permissions\":[\"REGISTRAR\"]}"
+    },
+    {
       "id": "HEALTH-NATIONAL",
       "name": "Universal Healthcare Ecosystem",
       "version": "v5.1.0",
@@ -399,6 +629,51 @@
   ],
   "templates": [
     {
+      "id": "TPL-NGO-HQ",
+      "name": "International NGO Global Blueprint",
+      "ecosystemId": "ECO-NGO",
+      "description": "Standardized platform for global NGO headquarters and country offices.",
+      "version": "v1.2.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"Board of Trustees\",\"role\":\"GOVERNING_BODY\"},\"directorates\":[{\"id\":\"dir-programs\",\"name\":\"Program Management\",\"governanceHead\":\"Program Director\",\"departments\":[{\"id\":\"dept-mne\",\"name\":\"Monitoring & Evaluation\",\"directorateId\":\"dir-programs\",\"modules\":[\"mod-ledger\"],\"roles\":[\"MNE_OFFICER\"]}]}],\"portals\":[{\"id\":\"portal-donor\",\"name\":\"Donor Transparency Portal\",\"roles\":[\"DONOR\"],\"modules\":[\"mod-ledger\"],\"dashboards\":[\"db-donor\"]},{\"id\":\"portal-field\",\"name\":\"Field Operations Hub\",\"roles\":[\"FIELD_OFFICER\"],\"modules\":[\"mod-ledger\",\"mod-procurement\"],\"dashboards\":[\"db-field\"]}],\"availableModules\":[{\"id\":\"mod-ledger\",\"name\":\"FAAP General Ledger\",\"category\":\"Finance\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-voucher\"],\"reports\":[\"trial-balance\"]},{\"id\":\"mod-procurement\",\"name\":\"Procurement & SCM\",\"category\":\"Trade\",\"permissions\":[],\"workflows\":[],\"forms\":[],\"reports\":[]}],\"workflows\":[\"wf-payment-approval\",\"wf-procurement\"],\"reports\":[\"grant-utilization\",\"impact-summary\"],\"integrations\":[\"STRIPE-DONATIONS\",\"UN-REPORTS-API\"]}"
+    },
+    {
+      "id": "TPL-GOVT-MINISTRY",
+      "name": "National Ministry OS Blueprint",
+      "ecosystemId": "ECO-GOVT",
+      "description": "Sovereign operating platform for government ministries and public authorities.",
+      "version": "v1.2.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"Permanent Secretary Office\",\"role\":\"EXECUTIVE_AUTHORITY\"},\"directorates\":[{\"id\":\"dir-admin\",\"name\":\"Finance & Administration\",\"governanceHead\":\"Under Secretary\",\"departments\":[{\"id\":\"dept-finance\",\"name\":\"Accounts & Budget\",\"directorateId\":\"dir-admin\",\"modules\":[\"mod-ledger\"],\"roles\":[\"ACCOUNTANT\"]},{\"id\":\"dept-hr\",\"name\":\"Human Resources\",\"directorateId\":\"dir-admin\",\"modules\":[\"mod-hr\"],\"roles\":[\"HR_ADMIN\"]}]},{\"id\":\"dir-policy\",\"name\":\"Policy & Planning\",\"governanceHead\":\"Director Policy\",\"departments\":[{\"id\":\"dept-planning\",\"name\":\"Strategic Planning\",\"directorateId\":\"dir-policy\",\"modules\":[\"mod-procurement\"],\"roles\":[\"PLANNER\"]}]}],\"portals\":[{\"id\":\"portal-staff\",\"name\":\"Public Servant Terminal\",\"roles\":[\"STAFF\"],\"modules\":[\"mod-ledger\",\"mod-hr\"],\"dashboards\":[\"db-internal\"]},{\"id\":\"portal-citizen\",\"name\":\"Citizen Service Portal\",\"roles\":[\"CITIZEN\"],\"modules\":[\"mod-procurement\"],\"dashboards\":[\"db-citizen\"]}],\"availableModules\":[{\"id\":\"mod-ledger\",\"name\":\"FAAP General Ledger\",\"category\":\"Finance\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-voucher\"],\"reports\":[\"trial-balance\"]},{\"id\":\"mod-hr\",\"name\":\"HR & Payroll\",\"category\":\"Corporate\",\"permissions\":[],\"workflows\":[],\"forms\":[],\"reports\":[]}],\"workflows\":[\"wf-payment-approval\",\"wf-procurement\"],\"reports\":[\"budget-performance\",\"staff-census\"],\"integrations\":[\"CENTRAL-BANK-RTGS\",\"NATIONAL-ID-HUB\"]}"
+    },
+    {
+      "id": "TPL-SACCO-PRO",
+      "name": "SACCO Pro Enterprise Blueprint",
+      "ecosystemId": "ECO-SACCO",
+      "description": "Advanced financial operating system for cooperatives.",
+      "version": "v1.2.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"SACCO Committee\",\"role\":\"GOVERNING_BODY\"},\"directorates\":[{\"id\":\"dir-operations\",\"name\":\"Credit & Operations\",\"governanceHead\":\"General Manager\",\"departments\":[{\"id\":\"dept-loans\",\"name\":\"Credit Department\",\"directorateId\":\"dir-operations\",\"modules\":[\"mod-loans\"],\"roles\":[\"LOAN_OFFICER\"]}]}],\"portals\":[{\"id\":\"portal-officer\",\"name\":\"Officer Terminal\",\"roles\":[\"LOAN_OFFICER\"],\"modules\":[\"mod-loans\",\"mod-ledger\"],\"dashboards\":[\"db-ops\"]},{\"id\":\"portal-member\",\"name\":\"Member Self-Service\",\"roles\":[\"MEMBER\"],\"modules\":[\"mod-loans\"],\"dashboards\":[\"db-member\"]}],\"availableModules\":[{\"id\":\"mod-loans\",\"name\":\"Loan Portfolio Manager\",\"category\":\"Finance\",\"permissions\":[],\"workflows\":[\"wf-loan-assessment\"],\"forms\":[\"form-loan\"],\"reports\":[\"arrears-report\"]}],\"workflows\":[\"wf-loan-assessment\",\"wf-payment-approval\"],\"reports\":[\"arrears-report\",\"trial-balance\"],\"integrations\":[\"INTERSWITCH\",\"BANK-LINK\"]}"
+    },
+    {
+      "id": "TPL-HOSP-NATIONAL",
+      "name": "National Referral Hospital Blueprint",
+      "ecosystemId": "ECO-HEALTH",
+      "description": "Universal health operating system for referral hospitals.",
+      "version": "v1.2.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"Hospital Board\",\"role\":\"GOVERNING_BODY\"},\"directorates\":[{\"id\":\"dir-clinical\",\"name\":\"Clinical Services\",\"governanceHead\":\"Medical Director\",\"departments\":[{\"id\":\"dept-opd\",\"name\":\"Outpatient Department\",\"directorateId\":\"dir-clinical\",\"modules\":[\"mod-clinical\"],\"roles\":[\"DOCTOR\",\"NURSE\"]},{\"id\":\"dept-ipd\",\"name\":\"Inpatient Department\",\"directorateId\":\"dir-clinical\",\"modules\":[\"mod-clinical\"],\"roles\":[\"DOCTOR\",\"NURSE\"]}]}],\"portals\":[{\"id\":\"portal-doctor\",\"name\":\"Doctor Clinical Terminal\",\"roles\":[\"DOCTOR\"],\"modules\":[\"mod-clinical\"],\"dashboards\":[\"db-clinical\"]},{\"id\":\"portal-nurse\",\"name\":\"Nursing Station\",\"roles\":[\"NURSE\"],\"modules\":[\"mod-clinical\"],\"dashboards\":[\"db-nursing\"]}],\"availableModules\":[{\"id\":\"mod-clinical\",\"name\":\"Clinical Management\",\"category\":\"Healthcare\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-encounter\"],\"reports\":[\"patient-summary\"]}],\"workflows\":[\"wf-payment-approval\"],\"reports\":[\"patient-summary\",\"census-report\"],\"integrations\":[\"LAB-SYSTEM\",\"PHARMACY-HUB\"]}"
+    },
+    {
+      "id": "TPL-UNI-NATIONAL",
+      "name": "National University ERP Blueprint",
+      "ecosystemId": "ECO-EDU",
+      "description": "Universal operating system for national universities.",
+      "version": "v1.2.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"University Council\",\"role\":\"GOVERNING_BODY\"},\"directorates\":[{\"id\":\"dir-academic\",\"name\":\"Academic Affairs\",\"governanceHead\":\"Academic Registrar\",\"departments\":[{\"id\":\"dept-registry\",\"name\":\"Academic Registry\",\"directorateId\":\"dir-academic\",\"modules\":[\"mod-academics\"],\"roles\":[\"REGISTRAR\"]},{\"id\":\"dept-admissions\",\"name\":\"Admissions Office\",\"directorateId\":\"dir-academic\",\"modules\":[\"mod-academics\"],\"roles\":[\"ADMISSIONS_OFFICER\"]}]},{\"id\":\"dir-finance\",\"name\":\"Finance & Accounts\",\"governanceHead\":\"University Bursar\",\"departments\":[{\"id\":\"dept-accounts\",\"name\":\"Expenditure & Revenue\",\"directorateId\":\"dir-finance\",\"modules\":[\"mod-ledger\"],\"roles\":[\"ACCOUNTANT\"]}]}],\"portals\":[{\"id\":\"portal-student\",\"name\":\"Student Central\",\"roles\":[\"STUDENT\"],\"modules\":[\"mod-academics\"],\"dashboards\":[\"db-student\"]},{\"id\":\"portal-staff\",\"name\":\"Academic Staff Terminal\",\"roles\":[\"LECTURER\"],\"modules\":[\"mod-academics\"],\"dashboards\":[\"db-academic\"]},{\"id\":\"portal-exec\",\"name\":\"Executive Council Portal\",\"roles\":[\"VC\",\"COUNCIL_MEMBER\"],\"modules\":[\"mod-ledger\",\"mod-academics\"],\"dashboards\":[\"db-executive\"]}],\"availableModules\":[{\"id\":\"mod-academics\",\"name\":\"Academic Registry\",\"category\":\"Education\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-admission\"],\"reports\":[\"enrolment-summary\"]},{\"id\":\"mod-ledger\",\"name\":\"FAAP General Ledger\",\"category\":\"Finance\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-voucher\"],\"reports\":[\"trial-balance\"]}],\"workflows\":[\"wf-payment-approval\"],\"reports\":[\"trial-balance\",\"enrolment-summary\"],\"integrations\":[\"M-PESA\",\"NATIONAL-ID-API\"]}"
+    },
+    {
       "id": "HEALTH-CORE-V1",
       "name": "JUMO Healthcare Core Blueprint",
       "ecosystemId": "HEALTH-NATIONAL",
@@ -437,6 +712,30 @@
   ],
   "instances": [],
   "modules": [
+    {
+      "id": "mod-inventory",
+      "name": "Inventory & Assets",
+      "category": "Industry",
+      "config": "{\"permissions\":[\"STORE_MANAGER\"],\"workflows\":[],\"forms\":[],\"reports\":[]}"
+    },
+    {
+      "id": "mod-hr",
+      "name": "HR & Payroll",
+      "category": "Corporate",
+      "config": "{\"permissions\":[\"HR_ADMIN\"],\"workflows\":[],\"forms\":[],\"reports\":[]}"
+    },
+    {
+      "id": "mod-procurement",
+      "name": "Procurement & SCM",
+      "category": "Trade",
+      "config": "{\"permissions\":[\"PROCUREMENT_OFFICER\"],\"workflows\":[\"wf-payment-approval\"],\"forms\":[],\"reports\":[]}"
+    },
+    {
+      "id": "mod-clinical",
+      "name": "Clinical Management",
+      "category": "Healthcare",
+      "config": "{\"permissions\":[\"DOCTOR\"],\"workflows\":[],\"forms\":[\"form-encounter\"],\"reports\":[\"patient-summary\"]}"
+    },
     {
       "id": "mod-academics",
       "name": "Academic Registry",

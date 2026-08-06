@@ -35,6 +35,7 @@ export class ERPTemplateRegistry {
       status: template.status,
       blueprint: JSON.stringify({
         governance: template.governance,
+        directorates: template.directorates,
         portals: template.portals,
         availableModules: template.availableModules,
         workflows: template.workflows,
@@ -42,7 +43,12 @@ export class ERPTemplateRegistry {
         integrations: template.integrations
       })
     };
-    db.insert("templates", record);
+    const exists = this.getById(template.id);
+    if (exists) {
+      db.update("templates", t => t.id === template.id, () => record);
+    } else {
+      db.insert("templates", record);
+    }
     return template;
   }
 }

@@ -31,6 +31,43 @@ export interface EnterpriseEcosystem {
   permissions: string[];
 }
 
+export interface EnterpriseDirectorate {
+  id: string;
+  name: string;
+  institutionId?: string;
+  templateId?: string;
+  departments: EnterpriseDepartment[];
+  governanceHead: string;
+}
+
+export interface EnterpriseDepartment {
+  id: string;
+  name: string;
+  directorateId: string;
+  modules: string[];
+  roles: string[];
+  units?: EnterpriseUnit[];
+}
+
+export interface EnterpriseUnit {
+  id: string;
+  name: string;
+  departmentId: string;
+  officeId?: string;
+  modules: string[];
+}
+
+export interface EnterprisePortal {
+  id: string;
+  name: string;
+  roles: string[];
+  modules: string[];
+  navigation?: any[];
+  dashboards?: string[];
+  workflows?: string[];
+  reports?: string[];
+}
+
 export interface EnterpriseTemplate {
   [key: string]: any;
   id: string;
@@ -40,28 +77,16 @@ export interface EnterpriseTemplate {
   version: string;
   governance: GovernanceNode;
   governanceStructure?: any;
-  portals: Array<{
-    id: string;
-    name: string;
-    roles: string[];
-    modules: string[];
-  }>;
+  directorates?: EnterpriseDirectorate[];
+  portals: EnterprisePortal[];
   availableModules: EnterpriseModule[];
-  modules?: any[];
+  modules?: string[];
   workflows: string[];
   reports: string[];
   integrations: string[];
   status: "Active" | "Draft";
-  aliases?: string[];
   publicExperience?: any;
   securityProfile?: any;
-  departments?: string[];
-  forms?: string[];
-  components?: string[];
-  apps?: string[];
-  services?: string[];
-  aiProfile?: string;
-  approvalStatus?: string;
 }
 
 export interface EnterpriseInstance {

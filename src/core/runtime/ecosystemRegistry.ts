@@ -45,7 +45,12 @@ export class EcosystemRegistry {
         permissions: ecosystem.permissions
       })
     };
-    db.insert("ecosystems", record);
+    const exists = this.getById(ecosystem.id);
+    if (exists) {
+      db.update("ecosystems", e => e.id === ecosystem.id, () => record);
+    } else {
+      db.insert("ecosystems", record);
+    }
     return ecosystem;
   }
 }
