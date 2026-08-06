@@ -66,7 +66,7 @@ Ensure you verify standard accounting principles:
 
       const ai = this.getAI();
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: prompt,
         config: {
           systemInstruction: sysInfo,

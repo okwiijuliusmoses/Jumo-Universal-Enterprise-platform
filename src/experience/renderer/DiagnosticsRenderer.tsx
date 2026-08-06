@@ -137,12 +137,12 @@ export function DiagnosticsRenderer() {
               Distributed Node Status
            </h3>
            <div className="space-y-6">
-              {[
+              {(metrics?.distributedNodes || [
                 { name: "Central Registry Node", status: "Primary", load: "12%" },
                 { name: "Enterprise Edge Node (EU)", status: "Active", load: "8%" },
                 { name: "Financial Ledger Sync", status: "Active", load: "4%" },
                 { name: "Identity Bridge", status: "Active", load: "2%" }
-              ].map((node) => (
+              ]).map((node: any) => (
                 <div key={node.name} className="flex flex-col gap-2">
                    <div className="flex items-center justify-between text-xs font-bold">
                       <span className="text-slate-300">{node.name}</span>

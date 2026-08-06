@@ -11,6 +11,7 @@ import { WorkflowRegistryRenderer } from './experience/renderer/WorkflowRegistry
 import { SecurityRegistryRenderer } from './experience/renderer/SecurityRegistryRenderer';
 import { DiagnosticsRenderer } from './experience/renderer/DiagnosticsRenderer';
 import { SettingsRenderer } from './experience/renderer/SettingsRenderer';
+import { PortalRenderer } from './experience/renderer/PortalRenderer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 export function App() {
@@ -27,6 +28,7 @@ export function App() {
   });
 
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedInstance, setSelectedInstance] = useState<any>(null);
 
   useEffect(() => {
     window.onerror = (message, source, lineno, colno, error) => {
@@ -76,6 +78,10 @@ export function App() {
     return () => { window.fetch = originalFetch; };
   }, []);
 
+  useEffect(() => {
+    // If instance is selected, we might want to stay in "instances" or "workspace"
+  }, [selectedInstance]);
+
   const logout = () => {
     localStorage.removeItem('jumo_current_user');
     localStorage.removeItem('jumo_session_token');
@@ -100,6 +106,10 @@ export function App() {
   }
 
   const renderContent = () => {
+    if (selectedInstance) {
+      return <PortalRenderer instance={selectedInstance} onBack={() => setSelectedInstance(null)} />;
+    }
+
     switch (activeTab) {
       case "dashboard":
         return <KernelDashboard />;
@@ -110,7 +120,7 @@ export function App() {
       case "factory":
         return <EnterpriseFactory />;
       case "instances":
-        return <PlatformInstanceRenderer />;
+        return <PlatformInstanceRenderer onSelectInstance={setSelectedInstance} />;
       case "workflows":
         return <WorkflowRegistryRenderer />;
       case "security":

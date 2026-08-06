@@ -17,13 +17,18 @@ import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
 
 export function WorkflowRegistryRenderer() {
   const [workflows, setWorkflows] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadWorkflows() {
       try {
-        const data = await UEOSRuntimeClient.fetchWorkflows();
-        setWorkflows(data || []);
+        const [wfData, metricData] = await Promise.all([
+          UEOSRuntimeClient.fetchWorkflows(),
+          UEOSRuntimeClient.fetchDashboardMetrics()
+        ]);
+        setWorkflows(wfData || []);
+        setMetrics(metricData);
       } catch (err) {
         console.error("Workflow loading failed", err);
       } finally {
@@ -62,14 +67,18 @@ export function WorkflowRegistryRenderer() {
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Executions Today</span>
             <Play className="w-4 h-4 text-blue-500" />
           </div>
-          <span className="text-3xl font-black text-slate-900">1,284</span>
+          <span className="text-3xl font-black text-slate-900">
+            {metrics?.workflowMetrics?.executionsToday || "---"}
+          </span>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Completion Rate</span>
             <CheckCircle className="w-4 h-4 text-emerald-500" />
           </div>
-          <span className="text-3xl font-black text-slate-900">99.2%</span>
+          <span className="text-3xl font-black text-slate-900">
+            {metrics?.workflowMetrics?.completionRate || "---"}
+          </span>
         </div>
       </div>
 

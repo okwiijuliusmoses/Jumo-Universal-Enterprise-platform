@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
 
-export function PlatformInstanceRenderer() {
+export function PlatformInstanceRenderer({ onSelectInstance }: { onSelectInstance: (instance: any) => void }) {
   const [instances, setInstances] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,7 +64,12 @@ export function PlatformInstanceRenderer() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {instances.map((instance, i) => (
-            <EnterprisePlatformCard key={instance.id} instance={instance} i={i} />
+            <EnterprisePlatformCard 
+              key={instance.id} 
+              instance={instance} 
+              i={i} 
+              onSelect={() => onSelectInstance(instance)}
+            />
           ))}
         </div>
       )}
@@ -72,7 +77,7 @@ export function PlatformInstanceRenderer() {
   );
 }
 
-function EnterprisePlatformCard({ instance, i }: any) {
+function EnterprisePlatformCard({ instance, i, onSelect }: any) {
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -107,7 +112,7 @@ function EnterprisePlatformCard({ instance, i }: any) {
         </div>
         <div className="bg-slate-50 p-3 rounded-2xl">
           <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Users</span>
-          <span className="text-sm font-black text-slate-700">{instance.userCount || '0'}</span>
+          <span className="text-sm font-black text-slate-700">{instance.userCount || instance.users?.length || '0'}</span>
         </div>
         <div className="bg-slate-50 p-3 rounded-2xl">
           <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Uptime</span>
@@ -120,7 +125,10 @@ function EnterprisePlatformCard({ instance, i }: any) {
           <Activity className="w-4 h-4 text-emerald-500" />
           <span className="text-xs font-bold text-slate-500">Latency: 24ms</span>
         </div>
-        <button className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition-all opacity-0 group-hover:opacity-100">
+        <button 
+          onClick={onSelect}
+          className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition-all opacity-0 group-hover:opacity-100 shadow-lg shadow-slate-200"
+        >
           Enter Platform
           <ChevronRight className="w-4 h-4" />
         </button>

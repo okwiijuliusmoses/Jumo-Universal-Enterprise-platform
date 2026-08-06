@@ -125,14 +125,53 @@ export function SettingsRenderer() {
             </div>
           )}
 
-          {activeCategory !== "platform" && (
+          {activeCategory === "identity" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+               <div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">Identity & Access Settings</h3>
+                <p className="text-sm text-slate-500">Configure global authentication providers and session policies.</p>
+              </div>
+              <div className="space-y-4">
+                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <span className="text-sm font-bold text-slate-700">Enforce Multi-Factor Authentication (MFA)</span>
+                    <div className="w-12 h-6 bg-blue-600 rounded-full relative flex items-center px-1">
+                       <div className="w-4 h-4 bg-white rounded-full ml-auto shadow-sm" />
+                    </div>
+                 </div>
+                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <span className="text-sm font-bold text-slate-700">Session Timeout (Minutes)</span>
+                    <input type="number" defaultValue={60} className="w-20 bg-white border border-slate-200 p-2 rounded-lg text-sm text-right font-bold" />
+                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeCategory === "security" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+               <div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">Security Enforcement Policies</h3>
+                <p className="text-sm text-slate-500">Define sovereign firewall rules and Zero-Trust parameters.</p>
+              </div>
+              <div className="p-6 bg-amber-50 border border-amber-100 rounded-2xl">
+                 <h4 className="text-sm font-bold text-amber-800 mb-2">Administrative Firewall</h4>
+                 <p className="text-xs text-amber-700">Restrict access to the Kernel Control Center to authorized VPC networks only.</p>
+                 <div className="mt-4 flex gap-2">
+                    <input className="flex-1 bg-white border border-amber-200 p-2 rounded-lg text-xs" placeholder="0.0.0.0/0" />
+                    <button className="bg-amber-600 text-white px-3 py-1 rounded-lg text-xs font-bold">Restrict</button>
+                 </div>
+              </div>
+            </div>
+          )}
+
+          {["branding", "notifications", "storage", "localization"].includes(activeCategory) && (
             <div className="h-full flex flex-col items-center justify-center text-center p-20 animate-in fade-in duration-300">
                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
-                  <Settings className="w-10 h-10" />
+                  {React.createElement(categories.find(c => c.id === activeCategory)?.icon || Settings, { className: "w-10 h-10" })}
                </div>
-               <h3 className="text-xl font-bold text-slate-800 mb-2">{categories.find(c => c.id === activeCategory)?.label} Configuration</h3>
+               <h3 className="text-xl font-bold text-slate-800 mb-2">{categories.find(c => c.id === activeCategory)?.label}</h3>
                <p className="text-slate-500 max-w-sm">
-                  The runtime configuration module for this category is currently being synchronized with the registry metadata.
+                  Active configuration parameters for this domain are currently managed by the Kernel registry. 
+                  Modifications are restricted to Sovereign Administrators.
                </p>
             </div>
           )}

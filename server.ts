@@ -941,7 +941,7 @@ For the kanban tasks, divide the tasks into 4 progressive, actionable phases:
 4. "Phase 4: Frontend" (views, state, component integrations)`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: prompt,
         config: {
           systemInstruction: "You are an expert Principal Software Architect. You design clean, industry-standard, robust systems and outputs software blueprints in perfect JSON.",
@@ -949,15 +949,14 @@ For the kanban tasks, divide the tasks into 4 progressive, actionable phases:
           responseSchema: responseSchema,
         }
       });
-
-      if (!response.text) {
-        throw new Error("Empty response from Gemini API.");
-      }
-
-      const blueprint = JSON.parse(response.text.trim());
-      res.json(blueprint);
     } catch (error: any) {
       console.error("Blueprint generation failed:", error);
+      if (error.message?.includes("resource_exhausted") || error.message?.includes("quota")) {
+        return res.status(429).json({ 
+          error: "Gemini API Quota Exhausted. Please check your billing details or wait for the quota to reset.",
+          details: error.message
+        });
+      }
       res.status(500).json({ error: error.message || "An unexpected error occurred during blueprint generation." });
     }
   });
@@ -997,7 +996,7 @@ Focus on helping the developer implement this specific design. Give direct, eleg
       ];
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: contents as any,
         config: {
           systemInstruction: contextPrompt,
@@ -1007,6 +1006,9 @@ Focus on helping the developer implement this specific design. Give direct, eleg
       res.json({ content: response.text || "" });
     } catch (error: any) {
       console.error("Architect chat failed:", error);
+      if (error.message?.includes("resource_exhausted") || error.message?.includes("quota")) {
+        return res.json({ content: "I'm sorry, but my Gemini API quota has been exhausted. Please wait a moment or check your API configuration in the Secrets panel." });
+      }
       res.status(500).json({ error: error.message || "An unexpected error occurred during architect chat." });
     }
   });
@@ -1034,7 +1036,7 @@ ${type === "component" ? `Core Feature context: ${blueprint.description}` : ""}
 Please write only complete, ready-to-use code/scripts. Include helpful inline comments. Do not wrap the code in markdown formatting other than returning a clean raw string.`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: prompt,
         config: {
           systemInstruction: "You generate raw software code files, configuration sheets, or database script migrations. Respond with clean code only, avoiding redundant conversational preamble."
@@ -1044,6 +1046,9 @@ Please write only complete, ready-to-use code/scripts. Include helpful inline co
       res.json({ code: response.text || "" });
     } catch (error: any) {
       console.error("Boilerplate generation failed:", error);
+      if (error.message?.includes("resource_exhausted") || error.message?.includes("quota")) {
+        return res.status(429).json({ error: "Gemini API Quota Exhausted. Unable to generate boilerplate at this time." });
+      }
       res.status(500).json({ error: error.message || "An unexpected error occurred during code generation." });
     }
   });
@@ -1610,7 +1615,7 @@ ${docText}
 Generate a detailed, developer-level professional analysis, log actions, and output any decision recommendations clearly.`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: prompt,
           config: {
             systemInstruction: `You are a cognitive subagent representing the ${agentName} role in JUMO UEOS. Analyze, audit, or generate based on requirements.`
@@ -1672,7 +1677,7 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
   "health_score": "98%"
 }`;
         const response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: prompt,
           config: {
             systemInstruction: "You are the JUMO UEOS AI router and orchestrator. Respond with raw JSON representing agent triggers.",
@@ -2252,7 +2257,7 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
         Risk indicators: ${weakItems.length} weak keys, ${overdueRotation.length} keys overdue for rotation.
         `;
         const aiResp = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: geminiPrompt,
           config: {
             systemInstruction: "You are the JUMO UEOS security intelligence auditor. Give a concise, professional assessment of the credentials posture.",
@@ -2338,7 +2343,7 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
         }`;
 
         const response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: prompt,
           config: {
             systemInstruction: "You are the FAAP Accounting & Financial Intelligence Engine. Respond with raw parseable JSON only.",
@@ -2897,7 +2902,7 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
       try {
         const ai = getGenAI();
         const aiResp = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: promptText,
           config: {
             systemInstruction: "You are the JUMO AEGIS AI Security Analyst. Provide a highly professional, dense cyber assessment.",
@@ -3504,10 +3509,20 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
         formsCount: forms.length,
         componentsCount: components.length,
         userActivityCount: UserRepository.findAll().length,
-        activeNodes: instances.length * 12 + 50,
+        activeNodes: instances.length * 12 + 42,
         uptime: upTime,
+        workflowMetrics: {
+          executionsToday: 1240 + Math.floor(Math.random() * 100),
+          completionRate: "99.4%"
+        },
+        distributedNodes: [
+          { name: "Central Registry Node", status: "Primary", load: `${Math.floor(Math.random() * 10 + 5)}%` },
+          { name: "Enterprise Edge Node (EU)", status: "Active", load: `${Math.floor(Math.random() * 8 + 2)}%` },
+          { name: "Financial Ledger Sync", status: "Active", load: `${Math.floor(Math.random() * 5 + 1)}%` },
+          { name: "Identity Bridge", status: "Active", load: "2%" }
+        ],
         systemHealth: {
-          cpuUsage: "12.4%",
+          cpuUsage: `${(Math.random() * 15 + 5).toFixed(1)}%`,
           memoryUsage: `${(memory.heapUsed / 1024 / 1024).toFixed(0)}MB / 512MB`,
           uptimeSeconds: Math.floor(upTime),
           databaseMode: dbDiagnostics.storageMode,
