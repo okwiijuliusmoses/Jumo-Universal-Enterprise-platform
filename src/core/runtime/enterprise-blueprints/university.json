@@ -1,0 +1,167 @@
+{
+  "id": "university-erp",
+  "aliases": ["university-erp", "UNIVERSITY_ERP_TEMPLATE", "EDU_UNIV_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "National University Enterprise Operating Platform",
+  "ecosystemId": "education",
+  "governanceType": "University Governance & Senate",
+  "description": "National-grade higher education, campus, research, student lifecycle, and FAAP financial operating platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".edu.jumo.platform",
+    "tagline": "Empowering Academic Excellence & Sovereign Educational Governance",
+    "announcements": [
+      "Academic Year Admissions & Public Portal Live",
+      "Research Grants & Innovation Fund Applications Open",
+      "National Credential Verification Registry Active"
+    ],
+    "publicServices": [
+      "Online Course Catalogue",
+      "Public Research Repository",
+      "Credential Verification Registry",
+      "Campus Visitor Portal",
+      "E-Tuition Clearing"
+    ],
+    "actionButtons": [
+      { "label": "Student Portal Login", "action": "login_student", "type": "primary" },
+      { "label": "Staff & Faculty Login", "action": "login_staff", "type": "secondary" },
+      { "label": "Executive & Senate Login", "action": "login_admin", "type": "outline" },
+      { "label": "Online Student Admission", "action": "register_user", "type": "primary" },
+      { "label": "Affiliate Institution Onboarding", "action": "register_inst", "type": "outline" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "University Council",
+    "role": "Supreme Sovereign Governing Body",
+    "subNodes": [
+      {
+        "title": "Chancellor & Vice Chancellor",
+        "role": "Chief Executive Leadership",
+        "subNodes": [
+          { "title": "Academic Senate", "role": "Academic Affairs & Research Policy" },
+          { "title": "Bursar & Treasury Directorate", "role": "FAAP Financial Management & Audit" },
+          { "title": "Registrar Directorate", "role": "Admissions & Student Identity Records" },
+          { "title": "Human Resources Directorate", "role": "Faculty & Staff Capital Management" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "public",
+      "name": "Public Portal",
+      "role": "Public / Applicant",
+      "description": "Public website, online admissions application, course catalog, and tuition payments.",
+      "modules": ["Public Admissions", "Course Catalog", "Public Tuition Payment", "AI Concierge"],
+      "permissions": ["public:read", "applicant:submit"],
+      "workflows": ["Student Application Submission", "Public Credential Verification"]
+    },
+    {
+      "id": "student",
+      "name": "Student Workspace Portal",
+      "role": "Student",
+      "description": "Course registration, exam results, e-learning materials, fee statements, and support tickets.",
+      "modules": ["Course Enrollment", "Exam Results", "Fee Ledger", "Library Services", "Timetable"],
+      "permissions": ["student:read", "student:enroll", "student:pay"],
+      "workflows": ["Course Registration", "Fee Payment & Settlement"]
+    },
+    {
+      "id": "faculty",
+      "name": "Staff & Faculty Portal",
+      "role": "Lecturer / Professor",
+      "description": "Course management, grading, attendance tracking, research grants, and payroll portal.",
+      "modules": ["Gradebook Engine", "Course Management", "Research Grants", "Payslip Portal"],
+      "permissions": ["faculty:grade", "faculty:research", "staff:payroll"],
+      "workflows": ["Grade Submission & Senate Approval", "Research Grant Request"]
+    },
+    {
+      "id": "registrar",
+      "name": "Registrar & Admissions Portal",
+      "role": "Academic Registrar",
+      "description": "Applicant vetting, student ID generation, academic records, and transcript verification.",
+      "modules": ["Admissions Vetting", "SIS Records", "Transcripts", "Graduation Clearance"],
+      "permissions": ["registrar:approve", "sis:manage"],
+      "workflows": ["Admission Review & Offer", "Graduation Audit"]
+    },
+    {
+      "id": "bursary",
+      "name": "Finance & Bursar Portal",
+      "role": "University Bursar",
+      "description": "Tuition invoicing, FAAP double-entry general ledger, supplier procurement, and payroll.",
+      "modules": ["Tuition Invoicing", "FAAP General Ledger", "Procurement", "Payroll Disbursement"],
+      "permissions": ["faap:write", "bursar:approve", "procurement:vendor"],
+      "workflows": ["Tuition Billing Run", "Supplier Invoice Approval & FAAP Posting"]
+    },
+    {
+      "id": "executive",
+      "name": "Executive & Chancellery Portal",
+      "role": "Vice Chancellor / Council",
+      "description": "Strategic dashboard, financial health monitoring, senate approvals, and compliance analytics.",
+      "modules": ["Chancellery Dashboard", "Senate Approvals", "FAAP Financial Audit", "AI Strategic Assistant"],
+      "permissions": ["exec:all", "audit:read"],
+      "workflows": ["Senate Policy Approval", "Budget Allocation Sweep"]
+    }
+  ],
+  "departments": [
+    "Academic Registrar Directorate",
+    "Finance & Bursary Directorate",
+    "Faculty of Engineering & Technology",
+    "Faculty of Medicine & Health Sciences",
+    "Faculty of Business & Economics",
+    "Faculty of Law & Governance",
+    "Library & Knowledge Resources",
+    "Human Resources & Payroll Directorate"
+  ],
+  "modules": [
+    "Student Information System (SIS)",
+    "Admissions & Vetting Engine",
+    "FAAP Tuition Invoicing & Ledger",
+    "Examination & Grading Engine",
+    "Library & E-Learning Repository",
+    "Procurement & Supplier Management",
+    "Faculty Payroll & Capital Management",
+    "Research Grant Allocation Ledger"
+  ],
+  "workflows": [
+    "Student Admission Vetting & Enrollment",
+    "Tuition Invoicing & FAAP Posting",
+    "Grade Submission & Academic Senate Audit",
+    "Procurement Purchase Requisition & Approval",
+    "Faculty Grant Allocation & Disbursement"
+  ],
+  "forms": [
+    "Admission Application Form",
+    "Course Enrollment Form",
+    "Tuition Settlement Form",
+    "Grade Submission Form",
+    "Research Grant Proposal Form"
+  ],
+  "components": [
+    "Executive Chancellery Summary",
+    "Student Academic Transcript View",
+    "FAAP University Balance Sheet",
+    "Admissions Pipeline Kanban",
+    "Senate Policy Audit Trail"
+  ],
+  "apps": [
+    "University Public Portal",
+    "Student Workspace Portal",
+    "Staff & Faculty Portal",
+    "Registrar Portal",
+    "Finance & Bursar Portal",
+    "Executive Chancellery Portal"
+  ],
+  "services": [
+    "Academic SIS Service",
+    "FAAP University Treasury Ledger",
+    "Identity & Zero-Trust Auth Service",
+    "Workflow Approval Engine",
+    "Academic Research AI Service"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Campus & Student Scope Segregation",
+    "authPolicy": "Multi-Factor Student/Staff RBAC Enforcement",
+    "encryptionLevel": "AES-256 Field-Level Cryptographic Isolation"
+  },
+  "aiProfile": "education-ai-advisor"
+}

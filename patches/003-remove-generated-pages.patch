@@ -1,0 +1,14 @@
+# Patch 003: Remove Generated Pages
+Files Changed:
+- experience/gateway/react-app.js (deleted)
+- experience/gateway/index.html (deleted)
+- experience/gateway/react-app.css (deleted)
+
+Reason:
+Legacy static gateway bundles in experience/gateway/ contained hardcoded "JUMO UEOS Runtime Initializing..." strings and duplicated old React entry logic.
+
+Architectural Impact:
+Single canonical entry point `src/main.tsx` now builds the entire application. No secondary generated static bundles compete with the active Vite runtime.
+
+Rollback Information:
+Restore experience/gateway directory from git commit history if legacy fallback route is required.

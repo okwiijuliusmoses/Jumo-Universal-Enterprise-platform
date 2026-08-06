@@ -1,0 +1,138 @@
+{
+  "id": "government-national-platform",
+  "aliases": ["government-national-platform", "government-erp", "GOVT_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "Sovereign Government Ministry & Agency Operating Platform",
+  "ecosystemId": "public-government",
+  "governanceType": "Cabinet & Civil Service Hierarchy",
+  "description": "National ministry, public agency, e-citizen portal, revenue collection, procurement, and civil service operating platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".gov.jumo.platform",
+    "tagline": "Sovereign E-Government, Citizen Services & National Revenue Governance",
+    "announcements": [
+      "E-Citizen Single Sign-On Portal Active",
+      "National Revenue Collection & Tax Clearance Portal Live",
+      "Public Procurement e-Tender Bulletin Released"
+    ],
+    "publicServices": [
+      "E-Citizen Service Desk",
+      "National ID & Passport Status",
+      "Business License Registration",
+      "Public Procurement Tenders",
+      "Tax Clearance Certificate"
+    ],
+    "actionButtons": [
+      { "label": "E-Citizen Portal Login", "action": "login_citizen", "type": "primary" },
+      { "label": "Civil Service Login", "action": "login_civil", "type": "secondary" },
+      { "label": "Ministerial Executive Login", "action": "login_minister", "type": "outline" },
+      { "label": "Register for Citizen Services", "action": "register_citizen", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "Cabinet Office & Ministry Hierarchy",
+    "role": "Supreme Public Governance Authority",
+    "subNodes": [
+      {
+        "title": "Prime Minister & Cabinet Ministers",
+        "role": "Executive Executive Leadership",
+        "subNodes": [
+          { "title": "Permanent Secretaries", "role": "Civil Service Administration" },
+          { "title": "National Revenue & FAAP Treasury", "role": "Consolidated Fund & Taxation" },
+          { "title": "District Local Government Offices", "role": "Decentralized Administration" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "public",
+      "name": "E-Citizen Public Portal",
+      "role": "Citizen / Business Owner",
+      "description": "Public portal for business licensing, tax clearance, civic complaints, and payment clearing.",
+      "modules": ["E-Citizen Desk", "License Application", "Tax Settlement", "Civic Complaints"],
+      "permissions": ["citizen:read", "service:apply"],
+      "workflows": ["Business License Approval", "Tax Clearance Issuance"]
+    },
+    {
+      "id": "civil",
+      "name": "Civil Service Officer Portal",
+      "role": "Civil Servant",
+      "description": "Case processing, citizen application vetting, inspection reports, and internal memo routing.",
+      "modules": ["Application Vetting", "Inspection Logbook", "Registry Archive", "Work Orders"],
+      "permissions": ["civil:process", "registry:write"],
+      "workflows": ["Citizen Case Review", "Site Inspection Approval"]
+    },
+    {
+      "id": "treasury",
+      "name": "National Revenue & Finance Portal",
+      "role": "Accountant General",
+      "description": "FAAP consolidated revenue fund, ministry budget allocations, payroll, and public debt audit.",
+      "modules": ["FAAP Revenue Ledger", "Ministry Budget Allocations", "Civil Service Payroll", "Debt Audit"],
+      "permissions": ["faap:master", "budget:approve"],
+      "workflows": ["Ministry Budget Disbursement", "Payroll Execution Run"]
+    },
+    {
+      "id": "executive",
+      "name": "Ministerial & Cabinet Portal",
+      "role": "Minister / Permanent Secretary",
+      "description": "National dashboard, KPI monitoring, policy approvals, and legislative compliance analytics.",
+      "modules": ["Cabinet Dashboard", "Policy Pipeline", "FAAP Consolidated Overview", "AI Policy Assistant"],
+      "permissions": ["cabinet:all", "audit:master"],
+      "workflows": ["Policy Clearance", "Cabinet Memo Approval"]
+    }
+  ],
+  "departments": [
+    "Cabinet Secretariat",
+    "Ministry of Finance & Treasury",
+    "Ministry of Public Service & HR",
+    "Ministry of Local Government",
+    "National Revenue Authority"
+  ],
+  "modules": [
+    "E-Citizen Single Sign-On & Portal",
+    "FAAP National Consolidated Revenue Ledger",
+    "Civil Service Payroll & Personnel Registry",
+    "Public Procurement & e-Tendering Engine",
+    "Business Licensing & Regulatory Register"
+  ],
+  "workflows": [
+    "E-Citizen License Application & Verification",
+    "Tax Clearance & FAAP Revenue Settlement",
+    "Civil Service Payroll Audit & Disbursement",
+    "Public Tender Evaluation & Award Approval"
+  ],
+  "forms": [
+    "Citizen Service Request Form",
+    "Business License Application",
+    "Tax Clearance Form",
+    "Procurement Requisition",
+    "Cabinet Memorandum"
+  ],
+  "components": [
+    "Cabinet Ministerial Dashboard",
+    "National Revenue Collection Chart",
+    "Civil Service Payroll Summary",
+    "E-Citizen Application Funnel",
+    "FAAP Consolidated Fund Balance Sheet"
+  ],
+  "apps": [
+    "E-Citizen Public Experience Portal",
+    "Civil Service Officer Portal",
+    "National Revenue & Treasury Portal",
+    "Ministerial Executive Portal"
+  ],
+  "services": [
+    "FAAP Consolidated Revenue Treasury",
+    "E-Citizen Single Sign-On Service",
+    "Identity & Zero-Trust Auth Service",
+    "Public Procurement Service",
+    "AI Policy & Revenue Auditor"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Ministry & District Scope Segregation",
+    "authPolicy": "Civil Service & Cabinet Role-Based Access",
+    "encryptionLevel": "AES-256 Sovereign Field Cryptography"
+  },
+  "aiProfile": "government-policy-ai"
+}

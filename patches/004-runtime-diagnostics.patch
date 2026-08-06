@@ -1,0 +1,12 @@
+# Patch 004: Runtime Diagnostics Component
+Files Changed:
+- src/components/UEOSRuntimeDiagnostics.tsx (created)
+
+Reason:
+Provide an engineering diagnostic view for live monitoring of UEOS Platform Kernel, API Gateway connectivity, active domains, security events, and tenant workspace state.
+
+Architectural Impact:
+Enables real-time verification of /api/v1/platform/status, /api/v1/domains, /api/v1/workflow/status, and /api/v1/security/events directly within the React Experience Runtime.
+
+Rollback Information:
+Delete src/components/UEOSRuntimeDiagnostics.tsx.

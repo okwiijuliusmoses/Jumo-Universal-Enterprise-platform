@@ -1,0 +1,149 @@
+{
+  "id": "healthcare-national-platform",
+  "aliases": ["healthcare-national-platform", "health-erp", "HEALTHCARE_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "Sovereign Health System & Hospital Operating Platform",
+  "ecosystemId": "healthcare-medical",
+  "governanceType": "Medical Board & Hospital Management",
+  "description": "National hospital, clinical records (EMR), patient portal, pharmacy inventory, lab diagnostics, and insurance billing platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".health.jumo.platform",
+    "tagline": "Sovereign Healthcare Governance, Clinical Records & Patient Care Excellence",
+    "announcements": [
+      "Patient Online Appointment Booking Active",
+      "National Telemedicine & Consultation Portal Live",
+      "E-Prescription & Pharmacy Delivery Service Onboarded"
+    ],
+    "publicServices": [
+      "Patient Registration & Appointment Desk",
+      "E-Prescription Refill Request",
+      "Lab Results Inquiry",
+      "Hospital Branch Finder"
+    ],
+    "actionButtons": [
+      { "label": "Patient Portal Login", "action": "login_patient", "type": "primary" },
+      { "label": "Doctor & Clinical Login", "action": "login_doctor", "type": "secondary" },
+      { "label": "Hospital Executive Login", "action": "login_exec", "type": "outline" },
+      { "label": "Book Appointment", "action": "book_appointment", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "Hospital Management Board",
+    "role": "Supreme Clinical Governance & Health Authority",
+    "subNodes": [
+      {
+        "title": "Medical Director & Chief Executive",
+        "role": "Clinical Leadership",
+        "subNodes": [
+          { "title": "Clinical Services & Head of Doctors", "role": "Outpatient, Inpatient & Surgery" },
+          { "title": "Pharmacy & Medical Supplies", "role": "Pharmaceuticals & Inventory" },
+          { "title": "Finance & Insurance Billing", "role": "FAAP Healthcare Billing & Claims" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "patient",
+      "name": "Patient Self-Service Portal",
+      "role": "Patient",
+      "description": "Appointment scheduling, medical history, e-prescriptions, lab results, and medical invoices.",
+      "modules": ["Appointments", "Medical History EMR", "E-Prescriptions", "Billing Statements"],
+      "permissions": ["patient:read", "appointment:book"],
+      "workflows": ["Patient Appointment Booking", "Invoice Settlement"]
+    },
+    {
+      "id": "clinical",
+      "name": "Doctor & Clinical EMR Portal",
+      "role": "Physician / Nurse",
+      "description": "Patient consultation, electronic medical records (EMR), lab orders, prescription generation, and ward management.",
+      "modules": ["Clinical EMR", "Lab Orders", "Prescription Generator", "Ward Management"],
+      "permissions": ["clinical:write", "prescription:issue"],
+      "workflows": ["Doctor Consultation & Diagnosis", "Lab Order Dispatch"]
+    },
+    {
+      "id": "pharmacy",
+      "name": "Pharmacy & Lab Diagnostics Portal",
+      "role": "Pharmacist / Lab Tech",
+      "description": "Drug inventory, prescription fulfillment, diagnostic lab results entry, and medical supplies.",
+      "modules": ["Pharmacy Inventory", "Prescription Dispenser", "Lab Diagnostics", "Supply Requisition"],
+      "permissions": ["pharmacy:dispense", "lab:results"],
+      "workflows": ["Prescription Dispensing", "Lab Test Processing"]
+    },
+    {
+      "id": "billing",
+      "name": "Hospital Finance & Insurance Portal",
+      "role": "Billing Manager",
+      "description": "Insurance claims submission, patient billing settlement, FAAP ledger posting, and procurement.",
+      "modules": ["Insurance Claims Engine", "Patient Billing", "FAAP Healthcare Ledger", "Procurement"],
+      "permissions": ["faap:write", "insurance:claim"],
+      "workflows": ["Insurance Claim Approval & Payout", "Patient Invoice Settlement"]
+    },
+    {
+      "id": "executive",
+      "name": "Hospital Executive Board Portal",
+      "role": "Medical Director / CEO",
+      "description": "Clinical analytics, occupancy rates, financial revenue reports, and AI diagnostic assistant.",
+      "modules": ["Executive Dashboard", "Bed Occupancy Monitor", "FAAP Financial Health", "AI Medical Audit"],
+      "permissions": ["exec:all", "audit:master"],
+      "workflows": ["Hospital Budget Approval", "Clinical Quality Audit"]
+    }
+  ],
+  "departments": [
+    "Hospital Board & Executive Office",
+    "Clinical Services & Outpatient Department",
+    "Inpatient Wards & Surgical Directorate",
+    "Pharmacy & Pharmaceutical Inventory",
+    "Diagnostic Radiology & Laboratory",
+    "Finance & Insurance Claims Directorate"
+  ],
+  "modules": [
+    "Electronic Medical Records (EMR) Engine",
+    "Patient Registration & Triage Management",
+    "Pharmacy Inventory & Dispensing Engine",
+    "Diagnostic Lab Orders & Results Engine",
+    "Insurance Claims & Settlement Engine",
+    "FAAP Healthcare Treasury Ledger"
+  ],
+  "workflows": [
+    "Patient Registration, Triage & Doctor Allocation",
+    "Doctor Consultation, Diagnosis & E-Prescription",
+    "Pharmacy Dispensing & Drug Inventory Deduct",
+    "Insurance Claim Vetting & FAAP Settlement"
+  ],
+  "forms": [
+    "Patient Admission Form",
+    "Doctor Consultation Note",
+    "Lab Order Requisition",
+    "E-Prescription Slip",
+    "Insurance Claim Form"
+  ],
+  "components": [
+    "Executive Hospital Dashboard",
+    "Patient EMR Timeline",
+    "Pharmacy Drug Stock Matrix",
+    "Lab Diagnostic Report Viewer",
+    "FAAP Healthcare Balance Sheet"
+  ],
+  "apps": [
+    "Patient Portal",
+    "Doctor & Clinical EMR Portal",
+    "Pharmacy & Lab Portal",
+    "Finance & Insurance Portal",
+    "Hospital Executive Portal"
+  ],
+  "services": [
+    "Clinical EMR Record Service",
+    "FAAP Healthcare Treasury Ledger",
+    "Identity & Zero-Trust Auth Service",
+    "Pharmacy Inventory Service",
+    "Medical AI Diagnostic Assistant"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Patient & Ward Scope Segregation",
+    "authPolicy": "Clinical & HIPAA/Medical Compliance Access",
+    "encryptionLevel": "AES-256 Medical Records Cryptography"
+  },
+  "aiProfile": "health-medical-ai"
+}

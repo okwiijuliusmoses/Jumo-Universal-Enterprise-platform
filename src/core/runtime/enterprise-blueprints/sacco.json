@@ -1,0 +1,138 @@
+{
+  "id": "sacco-national-platform",
+  "aliases": ["sacco-national-platform", "sacco-erp", "community-finance-erp", "SACCO_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "Sovereign Community Finance & SACCO Core Platform",
+  "ecosystemId": "community-finance",
+  "governanceType": "Cooperative Union & Board of Directors",
+  "description": "National SACCO cooperative, credit union, micro-finance, loan appraisal engine, member savings, and dividends platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".sacco.jumo.platform",
+    "tagline": "Sovereign Cooperative Banking, Member Savings & Micro-Loan Clearing",
+    "announcements": [
+      "Annual General Meeting (AGM) & Dividends Payout Date Set",
+      "Mobile Micro-Loans & Instant Emergency Advance Active",
+      "Share Capital Capitalization Drive Launched"
+    ],
+    "publicServices": [
+      "Member Self-Service Registration",
+      "Loan Calculator & Eligibility Check",
+      "Mobile Money Savings Deposit Clearing",
+      "Guarantor Portal & Notification"
+    ],
+    "actionButtons": [
+      { "label": "Member Self-Service Login", "action": "login_member", "type": "primary" },
+      { "label": "Credit Officer Login", "action": "login_credit", "type": "secondary" },
+      { "label": "Board & Executive Treasury", "action": "login_board", "type": "outline" },
+      { "label": "Apply for Membership", "action": "register_member", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "Cooperative Board of Directors",
+    "role": "Supreme Member Assembly & Fiduciary Board",
+    "subNodes": [
+      {
+        "title": "Chief Executive Officer & General Manager",
+        "role": "Executive Management",
+        "subNodes": [
+          { "title": "Credit & Risk Assessment Committee", "role": "Loan Appraisal & Collateral Vetting" },
+          { "title": "FAAP Core Banking Treasury", "role": "Member Savings, Fixed Deposits & Shares" },
+          { "title": "Supervisory Committee & Audit", "role": "Regulatory & Internal Audit" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "member",
+      "name": "Member Self-Service Portal",
+      "role": "SACCO Member",
+      "description": "Savings balance, loan status, share capital statement, guarantor requests, and dividends payout.",
+      "modules": ["Savings Balance", "Loan Request Engine", "Guarantor Management", "Dividends Tracker"],
+      "permissions": ["member:read", "loan:apply"],
+      "workflows": ["Loan Application Submission", "Guarantor Request Approval"]
+    },
+    {
+      "id": "credit",
+      "name": "Credit Officer & Risk Portal",
+      "role": "Credit Officer",
+      "description": "Loan appraisal, credit scoring AI review, collateral verification, and repayment tracking.",
+      "modules": ["Loan Appraisal", "Credit Scoring AI", "Collateral Vault", "Repayment Schedule"],
+      "permissions": ["credit:appraise", "loan:vet"],
+      "workflows": ["Credit Risk Vetting", "Loan Recommendation"]
+    },
+    {
+      "id": "treasury",
+      "name": "FAAP Core Banking & Cashier Portal",
+      "role": "Teller / Treasury Officer",
+      "description": "Over-the-counter deposits, loan disbursement, mobile money gateway settlement, and share capital ledger.",
+      "modules": ["Teller Counter", "Disbursement Engine", "FAAP Core Banking Ledger", "Mobile Money Bridge"],
+      "permissions": ["faap:write", "teller:transact"],
+      "workflows": ["Member Deposit Clearing", "Loan Disbursement & FAAP Posting"]
+    },
+    {
+      "id": "board",
+      "name": "Board Executive & Supervisory Portal",
+      "role": "Board Chairman / CEO",
+      "description": "Cooperative financial dashboard, dividend calculation sweep, regulatory compliance, and audit.",
+      "modules": ["Board Dashboard", "Dividends Calculation Engine", "Regulatory Compliance", "Audit Vault"],
+      "permissions": ["board:all", "audit:master"],
+      "workflows": ["Dividends Distribution Sweep", "Regulatory Annual Report"]
+    }
+  ],
+  "departments": [
+    "Board of Directors & Executive Management",
+    "Credit & Risk Assessment Department",
+    "FAAP Treasury & Banking Operations",
+    "Member Services & Business Development",
+    "Supervisory & Internal Audit Committee"
+  ],
+  "modules": [
+    "Member Savings & Fixed Deposit Engine",
+    "Loan Appraisal & Credit Scoring Engine",
+    "Share Capital & Dividends Calculation Ledger",
+    "FAAP Core Banking Ledger",
+    "M-Pesa / Mobile Money Settlement Bridge",
+    "Guarantor Vetting & Risk Management"
+  ],
+  "workflows": [
+    "Member Onboarding & KYC Verification",
+    "Loan Application, Guarantor Sign-off & Credit Vetting",
+    "Loan Disbursement & FAAP Core Ledger Posting",
+    "Dividends Annual Calculation & Member Ledger Payout"
+  ],
+  "forms": [
+    "Member Registration Form",
+    "Loan Application Form",
+    "Guarantor Request Form",
+    "Fixed Deposit Slip",
+    "Dividend Payout Claim"
+  ],
+  "components": [
+    "Board Executive Financial Overview",
+    "Member Savings & Loan Statement",
+    "Credit Scoring Risk Matrix",
+    "Teller Daily Cash Balance Sheet",
+    "FAAP SACCO Balance Sheet"
+  ],
+  "apps": [
+    "Member Self-Service Portal",
+    "Credit Officer Portal",
+    "FAAP Core Banking Portal",
+    "Board & Supervisory Portal"
+  ],
+  "services": [
+    "FAAP SACCO Banking Treasury",
+    "Credit Scoring AI Engine",
+    "Identity & Zero-Trust Auth Service",
+    "Mobile Money Settlement Service",
+    "Cooperative AI Financial Auditor"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Branch & Member Scope Segregation",
+    "authPolicy": "Teller & Credit Role-Based Access",
+    "encryptionLevel": "AES-256 Field-Level Cryptography"
+  },
+  "aiProfile": "finance-credit-ai"
+}

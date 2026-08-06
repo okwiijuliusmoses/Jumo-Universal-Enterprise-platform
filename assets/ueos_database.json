@@ -1,0 +1,513 @@
+{
+  "users": [
+    {
+      "email": "ngo@jumo.net",
+      "name": "NGO Global Program Lead",
+      "role": "NGO_Project_Lead",
+      "tenantId": "ngo-global-node",
+      "trustLevel": "Strict Sandbox"
+    },
+    {
+      "email": "church@jumo.net",
+      "name": "Kampala Diocese Registrar",
+      "role": "Church_Rector",
+      "tenantId": "church-uganda-diocese",
+      "trustLevel": "Strict Sandbox"
+    },
+    {
+      "email": "sacco@jumo.net",
+      "name": "Zambia Sacco Operator",
+      "role": "SACCO_Manager",
+      "tenantId": "sacco-zambia-hq",
+      "trustLevel": "Strict Sandbox"
+    },
+    {
+      "email": "compliance-bot@jumo.net",
+      "name": "AI Compliance Officer",
+      "role": "FAAP_Controller",
+      "tenantId": "Global",
+      "trustLevel": "Strict Sandbox"
+    },
+    {
+      "email": "okwiijuliusmoses@gmail.com",
+      "name": "Julius Moses Okwi",
+      "role": "SecOps_Administrator",
+      "tenantId": "Global",
+      "trustLevel": "L4_High_Trust"
+    },
+    {
+      "email": "owner@jumo.net",
+      "name": "System Owner",
+      "role": "SecOps_Administrator",
+      "tenantId": "Global",
+      "trustLevel": "L4_High_Trust"
+    },
+    {
+      "email": "admin@jumo.net",
+      "name": "SecOps Administrator",
+      "role": "SecOps_Administrator",
+      "tenantId": "Global",
+      "trustLevel": "L4_High_Trust"
+    }
+  ],
+  "ledger_accounts": [
+    {
+      "code": "4030-RECONCILIATION-RESERVE",
+      "name": "JUMO Ledger Discrepancy Reserve Offset",
+      "category": "Equity",
+      "balance": 0
+    },
+    {
+      "code": "1030-CLEARING-TRANSIT",
+      "name": "JUMO Fintech Transit Clearing Pool",
+      "category": "Asset",
+      "balance": 50000
+    },
+    {
+      "code": "4020-JUMO-FEES",
+      "name": "JUMO Master Treasury Platform Service Fees",
+      "category": "Revenue",
+      "balance": 12450
+    },
+    {
+      "code": "1020-JUMO-TREASURY",
+      "name": "JUMO Master Treasury Cash Reserves",
+      "category": "Asset",
+      "balance": 250000
+    },
+    {
+      "code": "5010-SALARIES",
+      "name": "Staff Payroll Expense",
+      "category": "Expense",
+      "balance": 6250
+    },
+    {
+      "code": "4010-INTEREST",
+      "name": "Loan Interest Revenue",
+      "category": "Revenue",
+      "balance": 12500.25
+    },
+    {
+      "code": "3010-SHARES",
+      "name": "Cooperative Capital Shares",
+      "category": "Equity",
+      "balance": 275000
+    },
+    {
+      "code": "2010-SAVINGS",
+      "name": "Member Savings Deposits",
+      "category": "Liability",
+      "balance": 350450
+    },
+    {
+      "code": "1200-LOANS",
+      "name": "Outstanding Member Loans",
+      "category": "Asset",
+      "balance": 489200
+    },
+    {
+      "code": "1010-CASH",
+      "name": "Cooperative Vault Cash",
+      "category": "Asset",
+      "balance": 142500.5
+    }
+  ],
+  "registries": [
+    {
+      "name": "DOMAIN_KERNEL_CORE",
+      "type": "Enterprise_Domain",
+      "status": "Active",
+      "tenant": "ueos-system",
+      "version": "Phase 5.0.0-PROD",
+      "permissions": "Identity,FAAP,Notification,AI_Gateway",
+      "updatedBy": "Kernel_Operator"
+    },
+    {
+      "name": "DOMAIN_ENTERPRISE",
+      "type": "Enterprise_Domain",
+      "status": "Active",
+      "tenant": "jumo-conglomerate-holding",
+      "version": "Phase 1.0.0-PROD",
+      "permissions": "Identity,FAAP,Notification,AI_Gateway",
+      "updatedBy": "Kernel_Operator"
+    },
+    {
+      "name": "DOMAIN_NGO",
+      "type": "Enterprise_Domain",
+      "status": "Inactive",
+      "tenant": "ngo-un-affiliate-east-africa",
+      "version": "Phase 1.0.0-PROD",
+      "permissions": "Identity,FAAP,Notification",
+      "updatedBy": "Kernel_Operator"
+    },
+    {
+      "name": "DOMAIN_CHURCH",
+      "type": "Enterprise_Domain",
+      "status": "Active",
+      "tenant": "church-uganda-diocese",
+      "version": "Phase 1.0.0-PROD",
+      "permissions": "Identity,FAAP,Notification",
+      "updatedBy": "Kernel_Operator"
+    },
+    {
+      "name": "DOMAIN_SACCO",
+      "type": "Enterprise_Domain",
+      "status": "Active",
+      "tenant": "sacco-zambia-hq",
+      "version": "Phase 1.0.0-PROD",
+      "permissions": "Identity,FAAP,Notification",
+      "updatedBy": "Kernel_Operator"
+    },
+    {
+      "name": "DOMAIN_ALUMNI",
+      "type": "Enterprise_Domain",
+      "status": "Active",
+      "tenant": "alumni-global-network",
+      "version": "Phase 1.0.0-PROD",
+      "permissions": "Identity,Notification",
+      "updatedBy": "Kernel_Operator"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "AUD-991036",
+      "timestamp": "2026-07-22T07:07:59.394Z",
+      "actor": "System Boot bootstrap",
+      "action": "SECRET_REGISTER",
+      "status": "success",
+      "details": "Registered new sensitive credential key: STRIPE_SECRET_KEY in category Payments"
+    },
+    {
+      "id": "AUD-252670",
+      "timestamp": "2026-07-22T07:07:59.394Z",
+      "actor": "System Boot bootstrap",
+      "action": "SECRET_REGISTER",
+      "status": "success",
+      "details": "Registered new sensitive credential key: JWT_SECRET in category Security"
+    },
+    {
+      "id": "AUD-728409",
+      "timestamp": "2026-07-22T07:07:59.393Z",
+      "actor": "System Boot bootstrap",
+      "action": "SECRET_REGISTER",
+      "status": "success",
+      "details": "Registered new sensitive credential key: FIREBASE_API_KEY in category Firebase"
+    },
+    {
+      "id": "AUD-200964",
+      "timestamp": "2026-07-22T07:07:59.393Z",
+      "actor": "System Boot bootstrap",
+      "action": "SECRET_REGISTER",
+      "status": "success",
+      "details": "Registered new sensitive credential key: DATABASE_URL in category Database"
+    },
+    {
+      "id": "AUD-330658",
+      "timestamp": "2026-07-22T07:07:59.393Z",
+      "actor": "System Boot bootstrap",
+      "action": "SECRET_REGISTER",
+      "status": "success",
+      "details": "Registered new sensitive credential key: GEMINI_API_KEY in category AI Providers"
+    },
+    {
+      "id": "AUD-682817",
+      "timestamp": "2026-07-22T07:07:59.384Z",
+      "actor": "audit-bot@jumo.net",
+      "action": "LEDGER_INTEGRITY_CHECK",
+      "status": "success",
+      "details": "Consolidated ledger verified. Double entry checksum: BALANCED."
+    },
+    {
+      "id": "AUD-959926",
+      "timestamp": "2026-07-22T07:07:59.383Z",
+      "actor": "secops-officer@jumo.net",
+      "action": "RBAC_VALIDATE",
+      "status": "success",
+      "details": "Zero-Trust policy rules compiled for tenant 'church-uganda-diocese'."
+    },
+    {
+      "id": "AUD-471900",
+      "timestamp": "2026-07-22T07:07:59.383Z",
+      "actor": "System Kernel",
+      "action": "BOOTSTRAP",
+      "status": "success",
+      "details": "Kernel boot process initialized successfully on node 1."
+    }
+  ],
+  "workflows": [
+    {
+      "id": "wf-loan-assessment",
+      "name": "Loan Credit Scoring",
+      "triggerEvent": "FORM_SUBMIT",
+      "status": "Active",
+      "steps": "[]",
+      "approvers": "[]",
+      "roles": "[\"Loan Officer\",\"Credit Committee\"]",
+      "lastTriggered": "Never"
+    },
+    {
+      "id": "wf-payment-approval",
+      "name": "Standard Payment Workflow",
+      "triggerEvent": "FORM_SUBMIT",
+      "status": "Active",
+      "steps": "[]",
+      "approvers": "[]",
+      "roles": "[\"Accountant\",\"Finance Director\"]",
+      "lastTriggered": "Never"
+    },
+    {
+      "id": "WF-TASK-102",
+      "name": "Security Token Key Rotation - AWS KMS",
+      "triggerEvent": "APPROVAL_CHAIN",
+      "status": "APPROVED",
+      "approvers": "SecOps_Administrator",
+      "lastTriggered": "2026-08-06T14:59:53.316Z"
+    },
+    {
+      "id": "WF-TASK-101",
+      "name": "Enterprise Treasury Disbursal (ZMK 150,000)",
+      "triggerEvent": "APPROVAL_CHAIN",
+      "status": "PENDING",
+      "approvers": "FAAP_Controller,SecOps_Administrator",
+      "lastTriggered": "2026-08-06T14:59:53.316Z"
+    }
+  ],
+  "ai_agent_memory": [],
+  "secrets_vault": [
+    {
+      "key": "STRIPE_SECRET_KEY",
+      "value": "8c4bdff86d82a4027134d4ce5513bf57:5e22121850552e26cab6f39f890d4eedb008bbc8f3f9de98fb7d8e04e8b735f15980d629cba7d1b59a281f7f1e7c1c10537a817141aea102853775b7a2a33c52",
+      "category": "Payments",
+      "description": "FAAP Merchant Settlements ledger sync.",
+      "status": "Active",
+      "versionHistory": "[]",
+      "lastRotated": "2026-07-22",
+      "expiresAt": "2027-01-18",
+      "createdBy": "System Boot bootstrap",
+      "updatedBy": "System Boot bootstrap"
+    },
+    {
+      "key": "JWT_SECRET",
+      "value": "7d84632d1b3afd313dae78b44cccc471:d8f085ee3510013c2dbb6b7e15e25f367b13e9f528676a92cc153783f666293619db767b6c2a8b0ef36a9a971b0c393d446093d801f46462e3b2f7a31ca21c92",
+      "category": "Security",
+      "description": "Zero-Trust RBAC Identity Platform signature token.",
+      "status": "Active",
+      "versionHistory": "[]",
+      "lastRotated": "2026-07-22",
+      "expiresAt": "2027-01-18",
+      "createdBy": "System Boot bootstrap",
+      "updatedBy": "System Boot bootstrap"
+    },
+    {
+      "key": "FIREBASE_API_KEY",
+      "value": "26d694ba542a54cddbe379475118218b:6dd36a233aa52bbef03772123aa92653eab775f79bdd6261a25836e73243db876469d8254099771c39f211e4e2d342da5c3ef4e1f19226740c64f12045bfeb032747efce59151303525ab6a7bd949f2d",
+      "category": "Firebase",
+      "description": "Dynamic authentication sync credential.",
+      "status": "Active",
+      "versionHistory": "[]",
+      "lastRotated": "2026-07-22",
+      "expiresAt": "2027-01-18",
+      "createdBy": "System Boot bootstrap",
+      "updatedBy": "System Boot bootstrap"
+    },
+    {
+      "key": "DATABASE_URL",
+      "value": "1ca1945a97de9c9216cf7cebbc5c7a3b:687132af8b9e977d88b779e7d97297457cc55dc7b927c5dbcea3fe0290447c8dcd61b0b6518f57689c6756c44675e3ee31139a6dc1afbd1a0b31bfd4ce5ac6359acc012134ad960ff514fb9d034ba6dbea877f7189ffa93601f7a5b4dd995aed4a6c564b93c44aa88e577f0a117109b315c049cb76f7795bdeead0ae75d3a128b7dd555fe102dfc426c70750b91d33fa06cb9f869bf27ba7487017f9389020fd7f50059aaa372df282ba9355571706f8b1e73a8e1a53967e6cf7c01200fd4e0491a564d93e4329bf33bace6aade62c95816766a03df7f2bf47684f80c732ba612d47dc715cddb85099e3db050b9e54bef3d8930a3ef7d43106de9825849b1c3909578875de2743a5ffb9dc2041413f0ce68f6f4eb67bad96fb8eb16c8f3f3ccd5c5231e1937cdbaab8561ae89b1d07f63f75c733c6c59d284164340bac0859a2a7018dad82540e44fcaadc7e2bed82566b27bf29f1165eb97f8a6f2440202eff2d87396bb3c8d45489a8ae1e36db9db54e1604363cbcdcf6e8d60d38b2cef17b0a8d683d04c63a2e76877e6717710a32",
+      "category": "Database",
+      "description": "Production PostgreSQL database connection string.",
+      "status": "Active",
+      "versionHistory": "[]",
+      "lastRotated": "2026-07-22",
+      "expiresAt": "2027-01-18",
+      "createdBy": "System Boot bootstrap",
+      "updatedBy": "System Boot bootstrap"
+    },
+    {
+      "key": "GEMINI_API_KEY",
+      "value": "ee852912c85363b8a9238c486bf239cb:3548906c622c1bde212203fa26041a13ecbbafcb538776a409d550d9c4572fd29079d5a39aa4ed7bc3e2a9a6e21b213b173fb6eec78c795e7df16e81cc70f40e",
+      "category": "AI Providers",
+      "description": "Default server-side Google Gemini platform key.",
+      "status": "Active",
+      "versionHistory": "[]",
+      "lastRotated": "2026-07-22",
+      "expiresAt": "2027-01-18",
+      "createdBy": "System Boot bootstrap",
+      "updatedBy": "System Boot bootstrap"
+    }
+  ],
+  "ecosystems": [
+    {
+      "id": "HEALTH-NATIONAL",
+      "name": "Universal Healthcare Ecosystem",
+      "version": "v5.1.0",
+      "category": "Healthcare",
+      "description": "National health data and hospital governance platform.",
+      "governanceModel": "MINISTRY_OF_HEALTH",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Kenya\",\"Rwanda\"],\"institutionTypes\":[\"REFERRAL_HOSPITAL\",\"CLINIC\",\"HEALTH_CENTER\"],\"templates\":[\"HEALTH-CORE-V1\"],\"modules\":[\"mod-clinical\",\"mod-ledger\"],\"permissions\":[\"DOCTOR\",\"NURSE\",\"ADMIN\"]}"
+    },
+    {
+      "id": "FIN-NATIONAL",
+      "name": "Sovereign Financial Ecosystem",
+      "version": "v5.1.0",
+      "category": "Finance",
+      "description": "National platform for SACCOs and Microfinance.",
+      "governanceModel": "CENTRAL_REGULATORY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Zambia\"],\"institutionTypes\":[\"SACCO\",\"MFI\",\"CREDIT_UNION\"],\"templates\":[\"SACCO-PRO-V1\"],\"modules\":[\"mod-loans\",\"mod-ledger\"],\"permissions\":[\"LOAN_OFFICER\",\"FINANCE_ADMIN\"]}"
+    },
+    {
+      "id": "EDU-NATIONAL",
+      "name": "National Education Ecosystem",
+      "version": "v5.1.0",
+      "category": "Education",
+      "description": "National platform for Universities and Schools.",
+      "governanceModel": "MINISTRY_OVERSIGHT",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Zambia\",\"Uganda\",\"Kenya\"],\"institutionTypes\":[\"UNIVERSITY\",\"COLLEGE\",\"SECONDARY_SCHOOL\"],\"templates\":[\"UNI-CORE-V1\",\"SCHOOL-MGMT-V1\"],\"modules\":[\"mod-academics\",\"mod-ledger\"],\"permissions\":[\"REGISTRAR\",\"FINANCE_ADMIN\"]}"
+    },
+    {
+      "id": "EDUCATION",
+      "name": "Sovereign Education Ecosystem",
+      "version": "v5.0.0",
+      "category": "Education",
+      "description": "Platform for Universities and Schools governance and fee management.",
+      "governanceModel": "MINISTRY_OVERSIGHT",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Kenya\",\"Uganda\"],\"institutionTypes\":[\"UNIVERSITY\",\"SECONDARY_SCHOOL\"],\"templates\":[\"UNI_CORE_v1\",\"SCHOOL_MGMT_v1\"],\"modules\":[\"FEES\",\"ACADEMICS\",\"ADMISSIONS\",\"FAAP_LEDGER\"],\"permissions\":[\"REGISTRAR_LEVEL\",\"STUDENT_PORTAL\"]}"
+    },
+    {
+      "id": "RELIGIOUS",
+      "name": "Faith-Based Institutional Ecosystem",
+      "version": "v5.0.0",
+      "category": "Religious",
+      "description": "Platform for Church and Mosque administration and financial transparency.",
+      "governanceModel": "DIOCESAN_AUTONOMY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Uganda\",\"Zambia\",\"Rwanda\"],\"institutionTypes\":[\"DIOCESE\",\"PARISH\",\"MOSQUE\"],\"templates\":[\"CHURCH_ERP_v1\",\"MOSQUE_PLATFORM_v1\"],\"modules\":[\"TITHES\",\"MEMBERSHIP\",\"PROJECTS\",\"FAAP_LEDGER\"],\"permissions\":[\"TRANSPARENCY_PUBLIC\",\"CLERGY_ONLY\"]}"
+    },
+    {
+      "id": "FINANCIAL",
+      "name": "Financial & Sacco Ecosystem",
+      "version": "v5.0.0",
+      "category": "Fintech",
+      "description": "National platform for Savings and Credit Cooperatives.",
+      "governanceModel": "CENTRAL_REGULATORY",
+      "status": "Active",
+      "config": "{\"supportedCountries\":[\"Zambia\",\"Uganda\",\"Kenya\"],\"institutionTypes\":[\"SACCO\",\"MFI\",\"Credit Union\"],\"templates\":[\"SACCO_PRO_v1\",\"MFI_CORE_v1\"],\"modules\":[\"LOANS\",\"SAVINGS\",\"SHARES\",\"FAAP_LEDGER\"],\"permissions\":[\"REGULATORY_AUDIT\",\"MEMBER_PRIVACY\"]}"
+    }
+  ],
+  "templates": [
+    {
+      "id": "HEALTH-CORE-V1",
+      "name": "JUMO Healthcare Core Blueprint",
+      "ecosystemId": "HEALTH-NATIONAL",
+      "description": "Universal health operating system for hospitals.",
+      "version": "v1.0.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"Medical Board\",\"role\":\"REGULATORY_BODY\"},\"portals\":[{\"id\":\"portal-doctor\",\"name\":\"Doctor Terminal\",\"roles\":[\"DOCTOR\"],\"modules\":[\"mod-clinical\"]},{\"id\":\"portal-patient\",\"name\":\"Patient Portal\",\"roles\":[\"PATIENT\"],\"modules\":[\"mod-clinical\"]}],\"availableModules\":[{\"id\":\"mod-clinical\",\"name\":\"Clinical Management\",\"category\":\"Healthcare\",\"permissions\":[],\"workflows\":[],\"forms\":[\"form-encounter\"],\"reports\":[]}],\"workflows\":[\"wf-payment-approval\"],\"reports\":[\"patient-summary\"],\"integrations\":[\"LAB-SYSTEM\"]}"
+    },
+    {
+      "id": "UNI-CORE-V1",
+      "name": "JUMO University Core Blueprint",
+      "ecosystemId": "EDU-NATIONAL",
+      "description": "Complete ERP for national universities.",
+      "version": "v1.0.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"University Council\",\"role\":\"GOVERNING_BODY\"},\"portals\":[{\"id\":\"portal-student\",\"name\":\"Student Self-Service\",\"roles\":[\"STUDENT\"],\"modules\":[\"mod-academics\"]},{\"id\":\"portal-admin\",\"name\":\"Executive Dashboard\",\"roles\":[\"ADMINISTRATOR\"],\"modules\":[\"mod-academics\",\"mod-ledger\"]}],\"availableModules\":[{\"id\":\"mod-academics\",\"name\":\"Academic Registry\",\"category\":\"Education\",\"permissions\":[],\"workflows\":[],\"forms\":[],\"reports\":[]}],\"workflows\":[\"wf-payment-approval\"],\"reports\":[\"trial-balance\"],\"integrations\":[\"M-PESA\"]}"
+    },
+    {
+      "id": "CHURCH_ERP_v1",
+      "name": "JUMO Church Management Blueprint",
+      "ecosystemId": "RELIGIOUS",
+      "description": "Institutional platform for diocesan and parish administration.",
+      "version": "v1.0.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"type\":\"DIOCESAN\",\"authority\":\"BISHOP_COUNCIL\",\"transparency\":\"HIGH\"},\"portals\":[\"Bishop Dashboard\",\"Parish Registry\",\"Member App\"],\"availableModules\":[{\"id\":\"TITHES\",\"name\":\"Tithes & Offerings\",\"status\":\"CORE\"},{\"id\":\"MEMBERS\",\"name\":\"Parishioner Registry\",\"status\":\"CORE\"}],\"workflows\":[\"PROJECT_FUND_APPROVAL\",\"MEMBERSHIP_VALIDATION\"],\"reports\":[\"ANNUAL_FINANCIAL_REPORT\",\"DEVELOPMENT_FUND_LOGS\"],\"integrations\":[\"CELLULAR_MONEY\",\"EMAIL_NOTIFICATIONS\"]}"
+    },
+    {
+      "id": "SACCO_PRO_v1",
+      "name": "JUMO SACCO Pro Blueprint",
+      "ecosystemId": "FINANCIAL",
+      "description": "Complete ERP for large-scale SACCO operations with FAAP integration.",
+      "version": "v1.0.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"type\":\"BOARD_CENTRIC\",\"boardSeats\":7,\"regulatoryReporting\":true},\"portals\":[\"Manager Portal\",\"Member Portal\",\"Teller Terminal\"],\"availableModules\":[{\"id\":\"SAVINGS\",\"name\":\"Savings & Deposits\",\"status\":\"CORE\"},{\"id\":\"LOANS\",\"name\":\"Loan Portfolio Manager\",\"status\":\"CORE\"},{\"id\":\"SHARES\",\"name\":\"Share Capital Engine\",\"status\":\"CORE\"}],\"workflows\":[\"LOAN_APPROVAL\",\"WITHDRAWAL_LIMIT_BYPASS\"],\"reports\":[\"TRIAL_BALANCE\",\"MEMBER_STATEMENT\",\"AGEING_REPORT\"],\"integrations\":[\"M-PESA\",\"MTN_MOMO\",\"STRIPE\"]}"
+    }
+  ],
+  "instances": [],
+  "modules": [
+    {
+      "id": "mod-academics",
+      "name": "Academic Registry",
+      "category": "Education",
+      "config": "{\"permissions\":[\"REGISTRAR\"],\"workflows\":[],\"forms\":[\"form-admission\"],\"reports\":[\"enrolment-summary\"]}"
+    },
+    {
+      "id": "mod-loans",
+      "name": "Loan Portfolio Manager",
+      "category": "Finance",
+      "config": "{\"permissions\":[\"LOAN_OFFICER\"],\"workflows\":[\"wf-loan-assessment\"],\"forms\":[\"form-loan\"],\"reports\":[\"arrears-report\"]}"
+    },
+    {
+      "id": "mod-ledger",
+      "name": "FAAP General Ledger",
+      "category": "Finance",
+      "config": "{\"permissions\":[\"FINANCE_ADMIN\"],\"workflows\":[],\"forms\":[\"form-voucher\"],\"reports\":[\"trial-balance\"]}"
+    }
+  ],
+  "forms": [
+    {
+      "id": "form-encounter",
+      "name": "Clinical Encounter Log",
+      "definition": "{\"fields\":[],\"validation\":{}}"
+    },
+    {
+      "id": "form-loan",
+      "name": "Loan Application",
+      "definition": "{\"fields\":[],\"validation\":{},\"workflowBinding\":\"wf-loan-assessment\"}"
+    },
+    {
+      "id": "form-voucher",
+      "name": "Payment Voucher",
+      "definition": "{\"fields\":[],\"validation\":{},\"workflowBinding\":\"wf-payment-approval\"}"
+    },
+    {
+      "id": "form-admission",
+      "name": "Student Admission Form",
+      "definition": "{\"fields\":[],\"validation\":{}}"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-doc",
+      "name": "Sovereign Document Viewer",
+      "type": "UI",
+      "description": "Secure document indexing and rendering."
+    },
+    {
+      "id": "comp-chart",
+      "name": "Analytics Dashboard Widget",
+      "type": "UI",
+      "description": "Dynamic Recharts-based data visualizer."
+    },
+    {
+      "id": "comp-workflow",
+      "name": "Workflow Timeline",
+      "type": "UI",
+      "description": "Interactive approval state tracking."
+    },
+    {
+      "id": "comp-ledger",
+      "name": "FAAP Ledger Viewer",
+      "type": "UI",
+      "description": "Real-time double-entry ledger visualization."
+    },
+    {
+      "id": "comp-grid",
+      "name": "Enterprise Data Grid",
+      "type": "UI",
+      "description": "Advanced data table with filtering and export."
+    }
+  ]
+}

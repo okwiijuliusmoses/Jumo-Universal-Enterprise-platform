@@ -1,0 +1,148 @@
+{
+  "id": "ngo-national-platform",
+  "aliases": ["ngo-national-platform", "ngo-erp", "NGO_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "National NGO & Humanitarian Program Platform",
+  "ecosystemId": "humanitarian-ngo",
+  "governanceType": "Board of Trustees & Donor Governance",
+  "description": "Multi-country NGO, grant management, field project tracking, beneficiary registry, and donor audit operating platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".ngo.jumo.platform",
+    "tagline": "Transparent Humanitarian Action & Sovereign Grant Governance",
+    "announcements": [
+      "Annual Humanitarian Impact Report Published",
+      "Global Innovation Fund Grant Call for Proposals",
+      "Emergency Disaster Relief Fund Active"
+    ],
+    "publicServices": [
+      "Public Grant Transparency Portal",
+      "Field Program Impact Tracker",
+      "Donor Verification Registry",
+      "Volunteer Application Gateway"
+    ],
+    "actionButtons": [
+      { "label": "Donor & Partner Portal", "action": "login_donor", "type": "primary" },
+      { "label": "Field Worker Login", "action": "login_field", "type": "secondary" },
+      { "label": "Executive Board Login", "action": "login_board", "type": "outline" },
+      { "label": "Apply for Project Funding", "action": "apply_funding", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "Board of Trustees",
+    "role": "Supreme Fiduciary Assembly",
+    "subNodes": [
+      {
+        "title": "Executive Director & Country Directors",
+        "role": "Global & Regional Management",
+        "subNodes": [
+          { "title": "Program & Monitoring Directorate", "role": "Field Execution & M&E" },
+          { "title": "Grants & Donor Treasury", "role": "FAAP Multi-Currency Grant Auditing" },
+          { "title": "Procurement & Logistics", "role": "Humanitarian Supply Chain" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "public",
+      "name": "Humanitarian Public Experience Portal",
+      "role": "Public / Donor",
+      "description": "Public transparency portal, project impact maps, donation gateway, and annual reports.",
+      "modules": ["Public Impact Map", "Donation Gateway", "Annual Reports", "Volunteer Portal"],
+      "permissions": ["public:read", "donate:submit"],
+      "workflows": ["Public Donation Processing", "Volunteer Application"]
+    },
+    {
+      "id": "field",
+      "name": "Field Worker & Operations Portal",
+      "role": "Field Officer",
+      "description": "Beneficiary enrollment, offline field data logging, relief distribution, and progress photos.",
+      "modules": ["Beneficiary Registry", "Relief Distribution", "Field Logbook", "Expense Claims"],
+      "permissions": ["field:write", "beneficiary:enroll"],
+      "workflows": ["Beneficiary Verification & Aid Distribution", "Field Expense Claim"]
+    },
+    {
+      "id": "donor",
+      "name": "Donor & Partner Portal",
+      "role": "Institutional Donor",
+      "description": "Real-time grant tracking, financial audit reports, milestone verification, and compliance certificates.",
+      "modules": ["Grant Balance Ledger", "Milestone Auditor", "Financial Statements", "Compliance Vault"],
+      "permissions": ["donor:read", "grant:audit"],
+      "workflows": ["Grant Milestone Sign-off", "Tranche Release Request"]
+    },
+    {
+      "id": "finance",
+      "name": "Grants & Treasury Finance Portal",
+      "role": "Finance Director",
+      "description": "Multi-currency FAAP ledger, grant allocation tracking, procurement, and payroll.",
+      "modules": ["FAAP Multi-Currency Ledger", "Grant Allocation Matrix", "Procurement", "Payroll"],
+      "permissions": ["faap:write", "grant:allocate"],
+      "workflows": ["Grant Allocation & FAAP Posting", "Procurement Tender Approval"]
+    },
+    {
+      "id": "board",
+      "name": "Executive Board & Trustee Portal",
+      "role": "Board Trustee / Country Director",
+      "description": "Strategic oversight, audit committee reports, ESG metrics, and AI compliance assistant.",
+      "modules": ["Executive Dashboard", "Global Program Map", "FAAP Audit Vault", "AI Grant Advisor"],
+      "permissions": ["board:all", "audit:master"],
+      "workflows": ["Annual Budget Approval", "Risk Mitigation Audit"]
+    }
+  ],
+  "departments": [
+    "Executive Director & Board Office",
+    "Grants & Financial Compliance Directorate",
+    "Humanitarian Programs & M&E Directorate",
+    "Field Logistics & Procurement",
+    "Donor Relations & Communications"
+  ],
+  "modules": [
+    "Grant Allocation & Compliance Engine",
+    "FAAP Multi-Currency Treasury Ledger",
+    "Beneficiary Identification & Aid Registry",
+    "Monitoring & Evaluation (M&E) Engine",
+    "Humanitarian Logistics & Relief Supply Chain",
+    "Donor Reporting & Milestone Auditor"
+  ],
+  "workflows": [
+    "Grant Proposal Review & Allocation",
+    "Beneficiary Enrollment & Aid Distribution",
+    "Field Expense Claim Approval & FAAP Post",
+    "Milestone Completion & Donor Tranche Release"
+  ],
+  "forms": [
+    "Grant Proposal Application",
+    "Beneficiary Enrollment Form",
+    "Field Expense Claim Form",
+    "Milestone Verification Report",
+    "Donor Audit Requisition"
+  ],
+  "components": [
+    "Board Executive Impact Matrix",
+    "Donor Grant Allocation Chart",
+    "Field Beneficiary Distribution Map",
+    "M&E Indicator Progress Meter",
+    "FAAP Multi-Currency Balance Sheet"
+  ],
+  "apps": [
+    "NGO Public Experience Portal",
+    "Field Worker Mobile Portal",
+    "Donor & Partner Portal",
+    "Grants & Finance Portal",
+    "Executive Board Portal"
+  ],
+  "services": [
+    "FAAP Grant Treasury Ledger",
+    "Beneficiary Verification Service",
+    "Identity & Zero-Trust Auth Service",
+    "Field Offline Sync Engine",
+    "AI Grant & Compliance Officer"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Grant & Country Scope Segregation",
+    "authPolicy": "Donor & Field Multi-Tier Auth",
+    "encryptionLevel": "AES-256 Field Cryptography"
+  },
+  "aiProfile": "ngo-compliance-ai"
+}

@@ -1,0 +1,15 @@
+# Patch 005: API Boundary Validation & Defensive Runtime Hardening
+Files Changed:
+- src/core/config/api.ts
+- src/components/OwnerControlCenter.tsx
+- src/components/ExperienceRuntime.tsx
+- src/components/ueos/*
+
+Reason:
+Ensure all frontend API calls pass through the UEOS API Gateway (/api/v1/* and /api/ueos/*) and that all array maps across rendering paths feature defensive `(array || []).map()` guards to prevent `undefined.map()` crashes.
+
+Architectural Impact:
+Guarantees robust Zero-Trust API isolation between client UI and backend database/kernel services, while eliminating client runtime exceptions.
+
+Rollback Information:
+Revert edits in src/core/config/api.ts and component files.

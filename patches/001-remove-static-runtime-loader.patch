@@ -1,0 +1,13 @@
+# Patch 001: Remove Static Runtime Loader
+Files Changed:
+- index.html
+- experience/public/index.html
+
+Reason:
+Static embedded HTML loading cards ("JUMO UEOS Runtime Initializing...") persisted on screen if React mount took time or if static assets loaded out of order.
+
+Architectural Impact:
+HTML files now serve as pure DOM mounting points (<div id="root"></div>). React components and UEOS Workspace Shell handle all runtime initialization, loading states, and error boundaries cleanly.
+
+Rollback Information:
+Re-insert static loading HTML card inside <div id="root"></div> in index.html and experience/public/index.html.

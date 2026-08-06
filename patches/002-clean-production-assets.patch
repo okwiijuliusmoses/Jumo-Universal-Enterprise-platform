@@ -1,0 +1,13 @@
+# Patch 002: Clean Production Assets
+Files Changed:
+- experience/public/index.html
+- experience/public/assets/*
+
+Reason:
+Ensure Vite build outputs directly to experience/public/assets/ with active fingerprinted bundle references, removing any orphaned legacy CSS/JS files.
+
+Architectural Impact:
+Server serves single-source compiled production SPA assets directly via Express static middleware from experience/public.
+
+Rollback Information:
+Re-run `npm run build` or restore prior asset files in experience/public/assets/.

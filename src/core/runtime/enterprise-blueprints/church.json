@@ -1,0 +1,151 @@
+{
+  "id": "church-national-platform",
+  "aliases": ["church-national-platform", "church-erp", "CHURCH_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "National Church & Diocese Operating Platform",
+  "ecosystemId": "church-governance",
+  "governanceType": "Synod & Episcopal Hierarchy",
+  "description": "National episcopal church, diocese, parish, member registry, tithes, and community outreach operating platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".church.jumo.platform",
+    "tagline": "Sovereign Faith Governance, Stewardship & Diocesan Management",
+    "announcements": [
+      "Annual National Synod Assembly Registrations Open",
+      "Diocesan Development Fund Campaign Active",
+      "Community Outreach & Welfare Drive Launched"
+    ],
+    "publicServices": [
+      "Parish & Church Locator",
+      "Online Tithes & Offering Clearing",
+      "Sacramental Certificate Verification",
+      "Clergy & Ministry Directory"
+    ],
+    "actionButtons": [
+      { "label": "Member Portal Login", "action": "login_member", "type": "primary" },
+      { "label": "Clergy & Parish Login", "action": "login_clergy", "type": "secondary" },
+      { "label": "Bishop & Synod Login", "action": "login_synod", "type": "outline" },
+      { "label": "New Member Registration", "action": "register_member", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "National Episcopal Synod",
+    "role": "Supreme Sovereign Assembly",
+    "subNodes": [
+      {
+        "title": "Archbishop & House of Bishops",
+        "role": "Episcopal Leadership",
+        "subNodes": [
+          { "title": "Diocesan Offices (40 Dioceses)", "role": "Regional Administration & Treasuries" },
+          { "title": "Archdeaconries & Deaneries", "role": "District Pastoral Oversight" },
+          { "title": "Parishes & Missions (2,000 Parishes)", "role": "Local Congregation Leadership" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "public",
+      "name": "Church Public Experience Portal",
+      "role": "Public / Worshipper",
+      "description": "Public website, parish directory, online giving, live stream, and prayer request portal.",
+      "modules": ["Public Directory", "Online Giving Clearing", "Prayer Requests", "Sacramental Inquiry"],
+      "permissions": ["public:read", "giving:submit"],
+      "workflows": ["Online Offering Settlement", "Sacramental Record Request"]
+    },
+    {
+      "id": "member",
+      "name": "Congregant & Member Portal",
+      "role": "Church Member",
+      "description": "Giving statements, small group enrollment, ministry involvement, and event registration.",
+      "modules": ["Member Giving Ledger", "Ministry Groups", "Events & Retreats", "Welfare Assistance"],
+      "permissions": ["member:read", "member:give"],
+      "workflows": ["Tithes Auto-Posting", "Welfare Request Submission"]
+    },
+    {
+      "id": "parish",
+      "name": "Parish & Clergy Administration Portal",
+      "role": "Parish Priest / Vicar",
+      "description": "Member census, parish tithes collection, baptism/wedding registry, and local committee management.",
+      "modules": ["Parish Member Census", "Sacramental Register", "Parish Treasury Ledger", "Sunday Attendance"],
+      "permissions": ["parish:manage", "sacrament:write"],
+      "workflows": ["Parish Sunday Collections Reconciliation", "Sacramental Certificate Issue"]
+    },
+    {
+      "id": "diocese",
+      "name": "Diocese Treasury & Bishop Portal",
+      "role": "Bishop / Diocesan Secretary",
+      "description": "Diocesan quota consolidation, clergy payroll, school & health institution oversight, and development funds.",
+      "modules": ["Diocesan Consolidation Ledger", "Clergy Payroll", "Development Projects", "Parish Quota Auditing"],
+      "permissions": ["diocese:all", "faap:consolidate"],
+      "workflows": ["Parish Quota Audit & Clearance", "Clergy Stipend Disbursement"]
+    },
+    {
+      "id": "synod",
+      "name": "National Synod & Archbishop Executive Portal",
+      "role": "Archbishop / Provincial Secretary",
+      "description": "National platform analytics, provincial assets, disaster relief fund, and national assembly voting.",
+      "modules": ["Provincial Executive Dashboard", "National Asset Register", "FAAP Provincial Treasury", "Synod Voting Engine"],
+      "permissions": ["provincial:all", "audit:master"],
+      "workflows": ["National Synod Resolution Approval", "Provincial Audit Clearing"]
+    }
+  ],
+  "departments": [
+    "Provincial Secretariat & Chancellery",
+    "Diocesan Financial Directorate",
+    "Mission, Evangelism & Outreach",
+    "Clergy Capital & Welfare Directorate",
+    "Diocesan Education & Health Secretariat",
+    "Parish Development Committee"
+  ],
+  "modules": [
+    "National Member & Family Registry",
+    "FAAP Tithes & Offering Ledger",
+    "Sacramental Certificate Register",
+    "Diocesan Quota & Assessment Engine",
+    "Clergy Payroll & Welfare Fund",
+    "Church Asset & Property Management",
+    "Community Welfare & Relief Engine"
+  ],
+  "workflows": [
+    "Parish Weekly Offering Reconciliation & FAAP Post",
+    "Diocesan Assessment Quota Settlement",
+    "Sacramental Marriage & Baptism Audit",
+    "Clergy Stipend Disbursement Sweep",
+    "Church Property Development Approval"
+  ],
+  "forms": [
+    "Member Registration Form",
+    "Online Tithe & Pledge Form",
+    "Sacramental Certificate Request",
+    "Parish Financial Return Form",
+    "Diocesan Grant Request"
+  ],
+  "components": [
+    "Provincial Synod Executive Summary",
+    "Diocesan Quota Compliance Matrix",
+    "Parish Attendance & Tithes Graph",
+    "Sacramental Verification Inspector",
+    "FAAP Provincial Balance Sheet"
+  ],
+  "apps": [
+    "Church Public Portal",
+    "Congregant Member Portal",
+    "Parish Priest Portal",
+    "Diocesan Bishop Portal",
+    "National Synod Portal"
+  ],
+  "services": [
+    "FAAP Faith Treasury Ledger",
+    "Diocesan Quota Audit Service",
+    "Identity & Zero-Trust Auth Service",
+    "Sacramental Registry Service",
+    "Faith AI Pastoral Assistant"
+  ],
+  "securityProfile": {
+    "dataSegregation": "Diocese & Parish Scope Segregation",
+    "authPolicy": "Clergy & Synod Role-Based Access",
+    "encryptionLevel": "AES-256 Field Cryptography"
+  },
+  "aiProfile": "church-pastoral-ai"
+}
