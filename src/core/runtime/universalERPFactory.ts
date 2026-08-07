@@ -10,7 +10,7 @@ import { InstitutionGenerator } from "../factory/InstitutionGenerator";
 export type ERPInstance = EnterpriseInstance;
 
 export class UniversalERPFactory {
-  static manufacture(templateId: string, config: { name: string; country: string; region: string; operator: string }): EnterpriseInstance {
+  static manufacture(templateId: string, config: { name: string; country: string; region: string; operator: string }, signature: string): EnterpriseInstance {
     const template = ERPTemplateRegistry.getById(templateId);
     if (!template) {
       throw new Error(`Manufacturing failure: Template blueprint '${templateId}' not found in registry.`);
@@ -26,9 +26,9 @@ export class UniversalERPFactory {
     });
     
     // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, "JUMO-VALID-SIG-2026"));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, "JUMO-VALID-SIG-2026"));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, "JUMO-VALID-SIG-2026"));
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, signature));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
 
     return ERPInstanceRegistry.register(bundle.instance);
   }
@@ -44,9 +44,9 @@ export class UniversalERPFactory {
     });
     
     // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, "JUMO-VALID-SIG-2026"));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, "JUMO-VALID-SIG-2026"));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, "JUMO-VALID-SIG-2026"));
+    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
+    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, signature));
+    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
     
     return ERPInstanceRegistry.register(bundle.instance);
   }

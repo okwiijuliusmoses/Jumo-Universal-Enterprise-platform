@@ -3558,9 +3558,9 @@ Return ONLY a raw JSON block with this schema (no markdown formatting, just pure
   app.get("/api/ueos/registry/components", (_req, res) => res.json(ComponentRegistry.getAll()));
   
   app.post("/api/ueos/registry/factory/provision", (req, res) => {
-    const { templateId, config } = req.body;
+    const { templateId, config, signature } = req.body;
     try {
-      const instance = UniversalERPFactory.manufacture(templateId, config);
+      const instance = UniversalERPFactory.manufacture(templateId, config, signature);
       res.json({ success: true, instance });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

@@ -54,11 +54,11 @@ export class UEOSRuntimeClient {
     return response.json();
   }
 
-  static async provisionPlatform(templateId: string, config: any) {
+  static async provisionPlatform(templateId: string, config: any, signature: string) {
     const response = await fetch(`${this.BASE_URL}/factory/provision`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ templateId, config })
+      body: JSON.stringify({ templateId, config, signature })
     });
     if (!response.ok) throw new Error("Platform provisioning failed");
     return response.json();

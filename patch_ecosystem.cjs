@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+const fs = require('fs');
+
+const content = `import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Plus, 
@@ -69,13 +71,13 @@ export function RuntimeWorkspaceRenderer() {
            <div className="bg-white border border-slate-200 rounded-xl p-1 flex items-center shadow-sm">
              <button
                onClick={() => setViewMode("grid")}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === "grid" ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+              className={\`p-1.5 rounded-lg transition-colors \${viewMode === "grid" ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-600"}\`}
              >
                <Grid className="w-4 h-4" />
              </button>
              <button
                onClick={() => setViewMode("list")}
-              className={`p-1.5 rounded-lg transition-colors ${viewMode === "list" ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-600"}`}
+              className={\`p-1.5 rounded-lg transition-colors \${viewMode === "list" ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-600"}\`}
              >
                <ListIcon className="w-4 h-4" />
              </button>
@@ -142,11 +144,11 @@ function EnterpriseEcosystemCard({ ecosystem, i, viewMode, templatesCount, onCli
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: i * 0.1 }}
-      className={`bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200 transition-all overflow-hidden flex flex-col ${
+      className={\`bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200 transition-all overflow-hidden flex flex-col \${
         viewMode === "grid" ? "rounded-3xl h-full" : "rounded-2xl p-4 flex-row items-center gap-6"
-      }`}
+      }\`}
     >
-      <div className={`${viewMode === "grid" ? "p-6 border-b border-slate-100" : "flex items-center gap-4 flex-1"}`}>
+      <div className={\`\${viewMode === "grid" ? "p-6 border-b border-slate-100" : "flex items-center gap-4 flex-1"}\`}>
         <div className="flex items-center gap-4 mb-4">
           <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 border border-slate-200">
             <Globe className="w-6 h-6" />
@@ -161,12 +163,12 @@ function EnterpriseEcosystemCard({ ecosystem, i, viewMode, templatesCount, onCli
             </div>
           </div>
         </div>
-        <p className={`text-slate-600 text-sm leading-relaxed ${viewMode === "grid" ? "line-clamp-2" : "line-clamp-1"}`}>
+        <p className={\`text-slate-600 text-sm leading-relaxed \${viewMode === "grid" ? "line-clamp-2" : "line-clamp-1"}\`}>
           {ecosystem.description}
         </p>
       </div>
 
-      <div className={`${viewMode === "grid" ? "p-6 bg-slate-50 flex-1 flex flex-col justify-between gap-6" : "flex items-center gap-6 pr-4"}`}>
+      <div className={\`\${viewMode === "grid" ? "p-6 bg-slate-50 flex-1 flex flex-col justify-between gap-6" : "flex items-center gap-6 pr-4"}\`}>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Templates</span>
@@ -308,3 +310,5 @@ function EcosystemWorkspace({ ecosystem, templates, onBack }: any) {
     </div>
   );
 }
+`;
+fs.writeFileSync('src/experience/renderer/RuntimeWorkspaceRenderer.tsx', content);

@@ -281,7 +281,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "APPROVED",
       "approvers": "SecOps_Administrator",
-      "lastTriggered": "2026-08-06T19:11:16.938Z"
+      "lastTriggered": "2026-08-07T06:50:18.720Z"
     },
     {
       "id": "WF-TASK-101",
@@ -289,7 +289,7 @@
       "triggerEvent": "APPROVAL_CHAIN",
       "status": "PENDING",
       "approvers": "FAAP_Controller,SecOps_Administrator",
-      "lastTriggered": "2026-08-06T19:11:16.938Z"
+      "lastTriggered": "2026-08-07T06:50:18.720Z"
     }
   ],
   "ai_agent_memory": [],
@@ -628,6 +628,15 @@
     }
   ],
   "templates": [
+    {
+      "id": "TPL-EC-PRIMARY",
+      "name": "Early Childhood Development ERP Blueprint",
+      "ecosystemId": "ECO-EDU",
+      "description": "Specialized platform for Nursery and Pre-Primary schools.",
+      "version": "v1.0.0",
+      "status": "Active",
+      "blueprint": "{\"governance\":{\"title\":\"School Board\",\"role\":\"GOVERNING_BODY\"},\"directorates\":[{\"id\":\"dir-admin\",\"name\":\"Early Learning Admin\",\"governanceHead\":\"Director\",\"departments\":[{\"id\":\"dept-nursery\",\"name\":\"Nursery Unit\",\"directorateId\":\"dir-admin\",\"modules\":[\"mod-academics\"],\"roles\":[\"TEACHER\"]}]}],\"portals\":[{\"id\":\"portal-admin\",\"name\":\"School Admin Portal\",\"roles\":[\"ADMIN\"],\"modules\":[\"mod-academics\"],\"dashboards\":[\"db-admin\"]}],\"availableModules\":[{\"id\":\"mod-academics\",\"name\":\"Academic Registry\",\"category\":\"Education\",\"permissions\":[],\"workflows\":[],\"forms\":[],\"reports\":[]}],\"workflows\":[],\"reports\":[],\"integrations\":[]}"
+    },
     {
       "id": "TPL-CATHEDRAL-CORE",
       "name": "Cathedral ERP Blueprint",

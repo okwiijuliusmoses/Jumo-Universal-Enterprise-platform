@@ -5,7 +5,7 @@ import {
   Plus, 
   Settings, 
   Shield, 
-  ChevronRight, 
+  ChevronRight, AlertCircle, 
   Layers, 
   Database, 
   CheckCircle2,
@@ -43,7 +43,12 @@ export function EnterpriseFactory() {
   const handleProvision = async () => {
     setIsProvisioning(true);
     try {
-      const data = await UEOSRuntimeClient.provisionPlatform(selectedTemplate.id, config);
+      // In a real implementation this would pass the signature to the backend for verification.
+      // For now we enforce it strictly on the client side according to the directive.
+      if (secOpsSignature !== "JUMO-VALID-SIG-2026") {
+        throw new Error("UNAUTHORIZED: SecOps signature verification failed. Action blocked.");
+      }
+      const data = await UEOSRuntimeClient.provisionPlatform(selectedTemplate.id, config, secOpsSignature);
       setResult(data.instance);
       setStep(4);
     } catch (err) {
@@ -187,6 +192,30 @@ export function EnterpriseFactory() {
                   onChange={e => setConfig({...config, operator: e.target.value})}
                 />
               </div>
+            </div>
+            
+            {provisionError && (
+              <div className="mt-4 p-4 bg-red-100 text-red-700 font-bold rounded-xl flex items-center gap-2">
+                <AlertCircle className="w-5 h-5" />
+                {provisionError}
+              </div>
+            )}
+            
+            <div className="mt-8 bg-red-50 border border-red-200 p-6 rounded-2xl space-y-4">
+               <div className="flex items-center gap-3 text-red-700">
+                  <Shield className="w-6 h-6" />
+                  <h4 className="font-bold uppercase tracking-wider text-sm">SecOps Authorization Required</h4>
+               </div>
+               <p className="text-sm text-red-800/80 font-medium">
+                 Manufacturing an ERP instance requires a valid SecOps signature (Use: JUMO-VALID-SIG-2026).
+               </p>
+               <input 
+                  type="password"
+                  className="w-full p-4 bg-white border border-red-200 rounded-xl outline-none focus:ring-2 focus:ring-red-400 text-red-900 font-mono"
+                  placeholder="Enter SecOps Signature..."
+                  value={secOpsSignature}
+                  onChange={e => setSecOpsSignature(e.target.value)}
+                />
             </div>
 
             <div className="pt-8 border-t border-slate-50 flex items-center justify-between">

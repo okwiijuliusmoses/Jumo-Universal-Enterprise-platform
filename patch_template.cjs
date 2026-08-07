@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+const fs = require('fs');
+const content = `import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { 
   Layers, 
@@ -107,3 +108,5 @@ export function TemplateRegistryRenderer() {
     </div>
   );
 }
+`;
+fs.writeFileSync('src/experience/renderer/TemplateRegistryRenderer.tsx', content);

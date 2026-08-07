@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+const fs = require('fs');
+
+let content = `import React, { useState } from "react";
 import { motion } from "motion/react";
 import { 
   Save, 
@@ -40,9 +42,9 @@ export function SettingsRenderer() {
         </div>
         <button 
           onClick={handleSave}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg ${
+          className={\`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg \${
             isSaved ? "bg-emerald-500 text-white shadow-emerald-100" : "bg-slate-900 text-white shadow-slate-200 hover:bg-slate-800"
-          }`}
+          }\`}
         >
           {isSaved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
           {isSaved ? "Settings Applied" : "Save Configurations"}
@@ -55,14 +57,14 @@ export function SettingsRenderer() {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
+              className={\`w-full flex items-center justify-between p-4 rounded-2xl transition-all \${
                 activeCategory === cat.id 
                   ? "bg-white border border-slate-100 text-slate-900 font-bold shadow-sm ring-1 ring-slate-50" 
                   : "text-slate-500 hover:bg-white/50 hover:text-slate-700"
-              }`}
+              }\`}
             >
               <div className="flex items-center gap-3">
-                <cat.icon className={`w-4 h-4 ${activeCategory === cat.id ? "text-blue-600" : "text-slate-400"}`} />
+                <cat.icon className={\`w-4 h-4 \${activeCategory === cat.id ? "text-blue-600" : "text-slate-400"}\`} />
                 <span className="text-sm truncate">{cat.label}</span>
               </div>
             </button>
@@ -127,3 +129,5 @@ export function SettingsRenderer() {
     </div>
   );
 }
+`;
+fs.writeFileSync('src/experience/renderer/SettingsRenderer.tsx', content);

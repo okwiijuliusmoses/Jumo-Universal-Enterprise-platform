@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+const fs = require('fs');
+
+const content = `import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { 
   Terminal, 
@@ -84,7 +86,7 @@ export function KernelDashboard() {
             transition={{ delay: i * 0.1 }}
             className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm"
           >
-            <div className={`w-12 h-12 bg-${stat.color}-50 rounded-xl flex items-center justify-center text-${stat.color}-600 mb-4`}>
+            <div className={\`w-12 h-12 bg-\${stat.color}-50 rounded-xl flex items-center justify-center text-\${stat.color}-600 mb-4\`}>
               <stat.icon className="w-6 h-6" />
             </div>
             <div className="flex flex-col">
@@ -105,7 +107,7 @@ export function KernelDashboard() {
             <div className="divide-y divide-slate-50 max-h-96 overflow-y-auto">
               {metrics?.recentAuditEvents?.map((log: any) => (
                 <div key={log.id} className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                  <div className={`w-2 h-2 rounded-full ${log.status === 'APPROVED' ? 'bg-emerald-400' : 'bg-red-500'}`} />
+                  <div className={\`w-2 h-2 rounded-full \${log.status === 'APPROVED' ? 'bg-emerald-400' : 'bg-red-500'}\`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-slate-800 truncate">{log.action}</p>
                     <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -116,7 +118,7 @@ export function KernelDashboard() {
                       <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
                     </div>
                   </div>
-                  <span className={`text-xs font-bold px-2 py-1 rounded ${log.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+                  <span className={\`text-xs font-bold px-2 py-1 rounded \${log.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}\`}>
                     {log.status}
                   </span>
                 </div>
@@ -142,7 +144,7 @@ export function KernelDashboard() {
                   <span className="text-blue-600">{metrics?.workflowsCount || 0}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(100, (metrics?.workflowsCount || 0) * 20)}%` }} />
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: \`\${Math.min(100, (metrics?.workflowsCount || 0) * 20)}%\` }} />
                 </div>
               </div>
               <div className="space-y-1">
@@ -151,7 +153,7 @@ export function KernelDashboard() {
                   <span className="text-emerald-600">{metrics?.formsCount || 0}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(100, (metrics?.formsCount || 0) * 15)}%` }} />
+                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: \`\${Math.min(100, (metrics?.formsCount || 0) * 15)}%\` }} />
                 </div>
               </div>
               <div className="pt-4 grid grid-cols-2 gap-4">
@@ -171,3 +173,5 @@ export function KernelDashboard() {
     </div>
   );
 }
+`;
+fs.writeFileSync('src/experience/renderer/KernelDashboard.tsx', content);

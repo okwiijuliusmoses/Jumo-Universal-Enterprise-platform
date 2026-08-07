@@ -31,15 +31,15 @@ export function UEOSShell({ user, onLogout, activeTab, onTabChange, children }: 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const navItems = [
-    { id: "dashboard", label: "Kernel Dashboard", icon: Terminal },
-    { id: "ecosystems", label: "Ecosystem Directory", icon: Globe },
-    { id: "templates", label: "Template Marketplace", icon: Layers },
+    { id: "dashboard", label: "Command Center", icon: Terminal },
+    { id: "ecosystems", label: "Ecosystem Factory", icon: Globe },
     { id: "factory", label: "ERP Factory", icon: Cpu },
-    { id: "instances", label: "Instance Registry", icon: Database },
-    { id: "security", label: "Sovereign Security", icon: Shield },
-    { id: "workflows", label: "Runtime Workflows", icon: Workflow },
-    { id: "diagnostics", label: "Kernel Diagnostics", icon: Activity },
-    { id: "settings", label: "System Settings", icon: Settings },
+    { id: "templates", label: "Template Marketplace", icon: Layers },
+    { id: "instances", label: "Institution Management", icon: Database },
+    { id: "workflows", label: "Runtime Operations", icon: Workflow },
+    { id: "security", label: "Security Operations", icon: Shield },
+    { id: "settings", label: "AI Platform", icon: Cpu },
+    { id: "diagnostics", label: "Analytics", icon: Activity },
   ];
 
   return (
@@ -60,7 +60,7 @@ export function UEOSShell({ user, onLogout, activeTab, onTabChange, children }: 
               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">
                 J
               </div>
-              <span className="font-bold text-lg tracking-tight text-slate-800">JUMO UEOS</span>
+              <span className="font-bold text-lg tracking-tight text-slate-800">JUMO UEOS CONTROL CENTER</span>
             </motion.div>
           ) : (
             <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold mx-auto">
