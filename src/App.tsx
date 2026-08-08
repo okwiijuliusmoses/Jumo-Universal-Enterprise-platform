@@ -1075,27 +1075,43 @@ export default function App() {
             </button>
           </div>
 
-          {/* Authentication Badge */}
-          <div className="flex items-center bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1.5 gap-2 text-xs" id="auth-passport">
-            <Shield className="w-4 h-4 text-indigo-600" />
-            <div>
-              <span className="font-semibold text-indigo-950">Operator Julius</span>
-              <span className="text-indigo-400 mx-1.5">|</span>
-              <select 
-                id="role-select"
-                value={userRole} 
-                onChange={(e) => {
-                  const role = e.target.value as any;
-                  setUserRole(role);
-                  appendAuditLog('blueprint_core', 'ROLE_ELEVATED', `Elevated authority level to [${role}]`, 'WARNING');
-                }}
-                className="bg-transparent font-bold text-indigo-700 focus:outline-none cursor-pointer"
-              >
-                <option value="OPERATOR">OPERATOR</option>
-                <option value="SUPER_ADMIN">SUPER ADMIN</option>
-                <option value="GOVERNOR">GOVERNOR</option>
-              </select>
+          {/* Authentication Badge & Re-auth control */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1.5 gap-2 text-xs" id="auth-passport">
+              <Shield className="w-4 h-4 text-indigo-600" />
+              <div>
+                <span className="font-semibold text-indigo-950">Operator Julius</span>
+                <span className="text-indigo-400 mx-1.5">|</span>
+                <select 
+                  id="role-select"
+                  value={userRole} 
+                  onChange={(e) => {
+                    const role = e.target.value as any;
+                    setUserRole(role);
+                    appendAuditLog('blueprint_core', 'ROLE_ELEVATED', `Elevated authority level to [${role}]`, 'WARNING');
+                  }}
+                  className="bg-transparent font-bold text-indigo-700 focus:outline-none cursor-pointer"
+                >
+                  <option value="OPERATOR">OPERATOR</option>
+                  <option value="SUPER_ADMIN">SUPER ADMIN</option>
+                  <option value="GOVERNOR">GOVERNOR</option>
+                </select>
+              </div>
             </div>
+
+            <button
+              type="button"
+              id="btn-reauth-gateway"
+              onClick={() => {
+                setBootState('PUBLIC_GATEWAY');
+                appendAuditLog('blueprint_core', 'SESSION_TERMINATED', 'Operator requested Identity Gateway re-authentication.', 'INFO');
+              }}
+              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+              title="Return to Public Ingress / Identity Gateway"
+            >
+              <Key className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Gateway</span>
+            </button>
           </div>
         </div>
       </header>
