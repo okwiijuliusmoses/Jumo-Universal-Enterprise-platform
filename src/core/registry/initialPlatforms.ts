@@ -1,0 +1,684 @@
+import { Platform } from '../../types';
+
+export const initialPlatforms: Platform[] = [
+  {
+    id: 'faap',
+    name: 'JUMO FAAP',
+    version: 'v4.12.0',
+    description: 'Federal Assets & Accounting Platform. Orchestrates charts of accounts, sovereign ledgers, real-time posting controls, asset depreciation, and public sector reconciliations.',
+    status: 'ACTIVE',
+    health: 98,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 95,
+      workflows: 92,
+      ai: 88,
+      integrations: 94,
+      digitalHybrid: 90,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.98,
+      requests: 1250,
+      nodeCount: 24,
+      errorRate: 0.01
+    },
+    aiProfile: {
+      name: 'Finance Audit AI',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 3,
+      tools: ['Ledger Auditor', 'Tax Classifier', 'Forecasting Engine']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'faap.sovereign.gov',
+    instanceId: 'inst-faap-772'
+  },
+  {
+    id: 'pay',
+    name: 'JUMO DIGITAL PAY',
+    version: 'v3.8.1',
+    description: 'Sovereign Digital Payments Gateway. High-throughput routing, interbank connector rails, real-time settlement queues, fraud filtering, and offline ledger sync.',
+    status: 'ACTIVE',
+    health: 99,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 98,
+      workflows: 95,
+      ai: 90,
+      integrations: 96,
+      digitalHybrid: 92,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.99,
+      requests: 3580,
+      nodeCount: 42,
+      errorRate: 0.005
+    },
+    aiProfile: {
+      name: 'PayGuard Anti-Fraud',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 2,
+      tools: ['Risk Scorer', 'Payment Router', 'Merchant Validator']
+    },
+    isActivated: true,
+    tenantId: 'tn-bank-02',
+    domain: 'pay.sovereign.gov',
+    instanceId: 'inst-pay-901'
+  },
+  {
+    id: 'treasury',
+    name: 'JUMO TREASURY',
+    version: 'v3.2.0',
+    description: 'National Reserve Liquidity & Reserves Management Platform. Sweeps national liquid assets, manages yield allocation rules, forex reserves, and forecasting swarms.',
+    status: 'ACTIVE',
+    health: 95,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 90,
+      workflows: 88,
+      ai: 85,
+      integrations: 92,
+      digitalHybrid: 80,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.95,
+      requests: 420,
+      nodeCount: 16,
+      errorRate: 0.02
+    },
+    aiProfile: {
+      name: 'Reserve Sovereign AI',
+      model: 'Gemini 2.0 Pro',
+      activeAgentsCount: 1,
+      tools: ['Liquidity Sweeper', 'Yield Predictor', 'Risk Evaluator']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'treasury.sovereign.gov',
+    instanceId: 'inst-treas-103'
+  },
+  {
+    id: 'auditor',
+    name: 'JUMO DIGITAL AUDITOR',
+    version: 'v2.9.4',
+    description: 'Continuous Cryptographic Compliance & Audit Service. Real-time transaction validation, discrepancy scanning, policy rule checkers, and immutable logs.',
+    status: 'ACTIVE',
+    health: 100,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 92,
+      workflows: 94,
+      ai: 90,
+      integrations: 95,
+      digitalHybrid: 85,
+      security: 100
+    },
+    telemetry: {
+      uptime: 100.0,
+      requests: 890,
+      nodeCount: 12,
+      errorRate: 0.0
+    },
+    aiProfile: {
+      name: 'Compliance Overseer',
+      model: 'Gemini 1.5 Pro',
+      activeAgentsCount: 2,
+      tools: ['Signature Verifier', 'Hash Chain Inspector']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'auditor.sovereign.gov',
+    instanceId: 'inst-audit-442'
+  },
+  {
+    id: 'aegis',
+    name: 'JUMO AEGIS',
+    version: 'v5.0.1',
+    description: 'Sovereign Cybersecurity & Threats Center. Intrusion detection systems, threat analytics, policy propagation, security keys, and reactive orchestration layers.',
+    status: 'ACTIVE',
+    health: 97,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 94,
+      workflows: 90,
+      ai: 95,
+      integrations: 90,
+      digitalHybrid: 88,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.97,
+      requests: 18900,
+      nodeCount: 64,
+      errorRate: 0.03
+    },
+    aiProfile: {
+      name: 'SecOps Sentinel',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 4,
+      tools: ['Packet Analyzer', 'IPS Orchestrator', 'Credential Guard']
+    },
+    isActivated: true,
+    tenantId: 'tn-defense-03',
+    domain: 'aegis.sovereign.gov',
+    instanceId: 'inst-aegis-111'
+  },
+  {
+    id: 'cloud',
+    name: 'JUMO CLOUD',
+    version: 'v4.0.0',
+    description: 'Sovereign Hyperconverged Infrastructure Orchestrator. Provisions nodes, aggregates server clusters, monitors hypervisors, and coordinates network switches.',
+    status: 'ACTIVE',
+    health: 96,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 91,
+      workflows: 85,
+      ai: 75,
+      integrations: 93,
+      digitalHybrid: 70,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.96,
+      requests: 42500,
+      nodeCount: 128,
+      errorRate: 0.015
+    },
+    aiProfile: {
+      name: 'Hypervisor Guard',
+      model: 'Gemini 1.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Node Balancing Optimizer', 'Resource Allocator']
+    },
+    isActivated: true,
+    tenantId: 'tn-infra-04',
+    domain: 'cloud.sovereign.gov',
+    instanceId: 'inst-cloud-200'
+  },
+  {
+    id: 'factory',
+    name: 'JUMO SOFTWARE MANUFACTURING FACTORY',
+    version: 'v3.5.0',
+    description: 'Enterprise Code Factory. Builds, compiles, provisions, and handles life cycle deployments of sovereign platform instances based on template blueprints.',
+    status: 'ACTIVE',
+    health: 94,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 88,
+      workflows: 92,
+      ai: 80,
+      integrations: 91,
+      digitalHybrid: 85,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.92,
+      requests: 120,
+      nodeCount: 8,
+      errorRate: 0.04
+    },
+    aiProfile: {
+      name: 'Build Assistant',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Blueprint Compiler', 'Validation Engine']
+    },
+    isActivated: true,
+    tenantId: 'tn-dev-05',
+    domain: 'factory.sovereign.gov',
+    instanceId: 'inst-fact-303'
+  },
+  {
+    id: 'research',
+    name: 'JUMO INNOVATION & RESEARCH CENTER',
+    version: 'v1.1.0',
+    description: 'Deep Science Research Hub. Coordinates experimental blueprints, research modeling logs, advanced materials simulations, and national academic collaboration logs.',
+    status: 'PARTIALLY IMPLEMENTED',
+    health: 80,
+    scores: {
+      identity: 100,
+      runtime: 50,
+      modules: 40,
+      workflows: 35,
+      ai: 50,
+      integrations: 30,
+      digitalHybrid: 20,
+      security: 90
+    },
+    telemetry: {
+      uptime: 95.5,
+      requests: 15,
+      nodeCount: 2,
+      errorRate: 2.1
+    },
+    aiProfile: {
+      name: 'Research Explorer',
+      model: 'Gemini 1.5 Pro',
+      activeAgentsCount: 1,
+      tools: ['Hypothesis Validator', 'Data Miner']
+    },
+    isActivated: false,
+    tenantId: 'tn-research-08',
+    domain: 'research.sovereign.gov',
+    instanceId: 'inst-res-099'
+  },
+  {
+    id: 'ai_platform',
+    name: 'JUMO AI PLATFORM',
+    version: 'v2.10.0',
+    description: 'National Intelligence Portal & Swarm Coordinator. Registers cognitive agents, establishes swarm parameters, monitors prompt boundaries, and guides tool executions.',
+    status: 'ACTIVE',
+    health: 99,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 97,
+      workflows: 94,
+      ai: 100,
+      integrations: 95,
+      digitalHybrid: 90,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.99,
+      requests: 15400,
+      nodeCount: 32,
+      errorRate: 0.002
+    },
+    aiProfile: {
+      name: 'Sovereign Coordinator',
+      model: 'Gemini 2.0 Pro',
+      activeAgentsCount: 5,
+      tools: ['Swarm Arbitrator', 'Safety Evaluator', 'Vector Store Router']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'ai.sovereign.gov',
+    instanceId: 'inst-ai-800'
+  },
+  {
+    id: 'app_builder',
+    name: 'JUMO WEB & MOBILE APPLICATION BUILDER',
+    version: 'v1.4.2',
+    description: 'Sovereign low-code visual IDE. Drag-and-drop web interfaces, layout editors, mock compiler runs, and single-click deployment to Sovereign Cloud.',
+    status: 'PARTIALLY IMPLEMENTED',
+    health: 85,
+    scores: {
+      identity: 100,
+      runtime: 70,
+      modules: 60,
+      workflows: 50,
+      ai: 45,
+      integrations: 55,
+      digitalHybrid: 30,
+      security: 95
+    },
+    telemetry: {
+      uptime: 98.4,
+      requests: 45,
+      nodeCount: 3,
+      errorRate: 0.45
+    },
+    aiProfile: {
+      name: 'Design Synthesizer',
+      model: 'Gemini 1.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Layout Parser', 'Component Generator']
+    },
+    isActivated: false,
+    tenantId: 'tn-dev-05',
+    domain: 'builder.sovereign.gov',
+    instanceId: 'inst-bld-512'
+  },
+  {
+    id: 'data_platform',
+    name: 'JUMO DATA PLATFORM',
+    version: 'v2.5.1',
+    description: 'National Enterprise Lakehouse & Streams Aggregator. Schema governance mapping tools, active ingest queues, real-time data ingestion, and analytic data pipelines.',
+    status: 'PARTIALLY IMPLEMENTED',
+    health: 88,
+    scores: {
+      identity: 100,
+      runtime: 80,
+      modules: 75,
+      workflows: 70,
+      ai: 65,
+      integrations: 82,
+      digitalHybrid: 50,
+      security: 98
+    },
+    telemetry: {
+      uptime: 99.1,
+      requests: 1840,
+      nodeCount: 14,
+      errorRate: 0.12
+    },
+    aiProfile: {
+      name: 'Data Integrity Bot',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Schema Mapper', 'Stream Verifier']
+    },
+    isActivated: false,
+    tenantId: 'tn-gov-01',
+    domain: 'data.sovereign.gov',
+    instanceId: 'inst-data-620'
+  },
+  {
+    id: 'integration',
+    name: 'JUMO INTEGRATION PLATFORM',
+    version: 'v3.1.2',
+    description: 'Sovereign Enterprise Service Bus (ESB). Manages SOAP/JSON transforms, messaging queues, enterprise endpoints, active event hubs, and microservices links.',
+    status: 'ACTIVE',
+    health: 95,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 90,
+      workflows: 85,
+      ai: 70,
+      integrations: 100,
+      digitalHybrid: 80,
+      security: 98
+    },
+    telemetry: {
+      uptime: 99.94,
+      requests: 8400,
+      nodeCount: 18,
+      errorRate: 0.02
+    },
+    aiProfile: {
+      name: 'Orchestration Router',
+      model: 'Gemini 1.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Mapping Resolver', 'Retry Arbitrator']
+    },
+    isActivated: true,
+    tenantId: 'tn-infra-04',
+    domain: 'integration.sovereign.gov',
+    instanceId: 'inst-esb-455'
+  },
+  {
+    id: 'identity',
+    name: 'JUMO IDENTITY PLATFORM',
+    version: 'v4.2.0',
+    description: 'National Single Sign-On and Sovereign Credentials Vault. Cryptographic multi-factor authentication, digital identity passports, biometric tokenizers, and active sessions ledger.',
+    status: 'ACTIVE',
+    health: 100,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 96,
+      workflows: 94,
+      ai: 85,
+      integrations: 95,
+      digitalHybrid: 90,
+      security: 100
+    },
+    telemetry: {
+      uptime: 100.0,
+      requests: 12500,
+      nodeCount: 20,
+      errorRate: 0.0
+    },
+    aiProfile: {
+      name: 'Identity Guard',
+      model: 'Gemini 2.0 Pro',
+      activeAgentsCount: 2,
+      tools: ['Anomaly Login Scorer', 'Biometric Validator']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'identity.sovereign.gov',
+    instanceId: 'inst-id-100'
+  },
+  {
+    id: 'workflow',
+    name: 'JUMO WORKFLOW AUTOMATION PLATFORM',
+    version: 'v2.8.0',
+    description: 'Sovereign State Machine Engine. Parses visual blueprint paths, schedules timed triggers, checks workflow escalation parameters, and processes approvals logs.',
+    status: 'ACTIVE',
+    health: 96,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 92,
+      workflows: 100,
+      ai: 82,
+      integrations: 94,
+      digitalHybrid: 85,
+      security: 98
+    },
+    telemetry: {
+      uptime: 99.96,
+      requests: 3100,
+      nodeCount: 10,
+      errorRate: 0.01
+    },
+    aiProfile: {
+      name: 'Automation Scheduler',
+      model: 'Gemini 1.5 Pro',
+      activeAgentsCount: 1,
+      tools: ['Path Optimizer', 'Conflict Classifier']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'workflow.sovereign.gov',
+    instanceId: 'inst-wf-339'
+  },
+  {
+    id: 'documents',
+    name: 'JUMO DIGITAL DOCUMENT & RECORDS PLATFORM',
+    version: 'v3.0.1',
+    description: 'Immutable Records Storage & Archive. Encrypts PDF payloads, tracks metadata hash chains on ledger, retains cryptographic e-signatures, and guides retrieval.',
+    status: 'ACTIVE',
+    health: 98,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 94,
+      workflows: 90,
+      ai: 80,
+      integrations: 88,
+      digitalHybrid: 85,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.98,
+      requests: 1950,
+      nodeCount: 15,
+      errorRate: 0.005
+    },
+    aiProfile: {
+      name: 'DocuCrypt Scanner',
+      model: 'Gemini 1.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['PII Masking Filter', 'E-Signature Auditor']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'docs.sovereign.gov',
+    instanceId: 'inst-doc-700'
+  },
+  {
+    id: 'communications',
+    name: 'JUMO COMMUNICATIONS PLATFORM',
+    version: 'v2.3.0',
+    description: 'Sovereign Multi-channel Communications Router. Relays secure mass broadcasts, handles inter-departmental secure chats, operates SMS routing, and manages alerts.',
+    status: 'ACTIVE',
+    health: 94,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 88,
+      workflows: 85,
+      ai: 75,
+      integrations: 90,
+      digitalHybrid: 80,
+      security: 97
+    },
+    telemetry: {
+      uptime: 99.93,
+      requests: 4800,
+      nodeCount: 8,
+      errorRate: 0.03
+    },
+    aiProfile: {
+      name: 'Relay Dispatcher',
+      model: 'Gemini 1.5 Flash',
+      activeAgentsCount: 1,
+      tools: ['Broadcast Scheduler', 'Filter Watchdog']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'comms.sovereign.gov',
+    instanceId: 'inst-com-212'
+  },
+  {
+    id: 'analytics',
+    name: 'JUMO ANALYTICS & INTELLIGENCE PLATFORM',
+    version: 'v2.6.0',
+    description: 'Enterprise Business Intelligence & OLAP Engine. Computes dynamic trends from public data pools, drives reports compilers, and aggregates charts telemetry.',
+    status: 'ACTIVE',
+    health: 96,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 91,
+      workflows: 88,
+      ai: 90,
+      integrations: 92,
+      digitalHybrid: 82,
+      security: 98
+    },
+    telemetry: {
+      uptime: 99.95,
+      requests: 3200,
+      nodeCount: 12,
+      errorRate: 0.01
+    },
+    aiProfile: {
+      name: 'Trend Analyst Swarm',
+      model: 'Gemini 2.0 Pro',
+      activeAgentsCount: 2,
+      tools: ['OLAP Cube Drill', 'Anomaly Curve Detector']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'analytics.sovereign.gov',
+    instanceId: 'inst-an-616'
+  },
+  {
+    id: 'governance',
+    name: 'JUMO TRUST, COMPLIANCE & GOVERNANCE PLATFORM',
+    version: 'v1.8.0',
+    description: 'National Enterprise Regulatory Enforcer. Holds state charters, manages whistleblowing lockbox, conducts governance audits, and propagates legal instructions.',
+    status: 'PARTIALLY IMPLEMENTED',
+    health: 82,
+    scores: {
+      identity: 100,
+      runtime: 60,
+      modules: 55,
+      workflows: 65,
+      ai: 60,
+      integrations: 40,
+      digitalHybrid: 30,
+      security: 100
+    },
+    telemetry: {
+      uptime: 97.5,
+      requests: 8,
+      nodeCount: 2,
+      errorRate: 0.8
+    },
+    aiProfile: {
+      name: 'Charter Watchdog',
+      model: 'Gemini 1.5 Pro',
+      activeAgentsCount: 1,
+      tools: ['Compliance Legal Matcher', 'Redact Filter']
+    },
+    isActivated: false,
+    tenantId: 'tn-gov-01',
+    domain: 'governance.sovereign.gov',
+    instanceId: 'inst-gov-399'
+  },
+  {
+    id: 'developer',
+    name: 'JUMO DEVELOPER & API PLATFORM',
+    version: 'v3.0.0',
+    description: 'Open Sovereign API Hub & Sandbox. Issues developer credentials, provides interactive Swagger documentation sandbox, coordinates webhooks, and measures rate-limits.',
+    status: 'ACTIVE',
+    health: 97,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 93,
+      workflows: 88,
+      ai: 85,
+      integrations: 95,
+      digitalHybrid: 85,
+      security: 99
+    },
+    telemetry: {
+      uptime: 99.97,
+      requests: 5200,
+      nodeCount: 16,
+      errorRate: 0.015
+    },
+    aiProfile: {
+      name: 'API Codegen Assistant',
+      model: 'Gemini 2.5 Flash',
+      activeAgentsCount: 2,
+      tools: ['Swagger Schema Parser', 'SDK Synthesizer']
+    },
+    isActivated: true,
+    tenantId: 'tn-dev-05',
+    domain: 'developer.sovereign.gov',
+    instanceId: 'inst-dev-120'
+  },
+  {
+    id: 'blueprint_core',
+    name: 'JUMO SOVEREIGN CORE BLUEPRINT PLATFORM',
+    version: 'v4.5.1',
+    description: 'National Blueprint Core Platform. Coordinates master blueprints of Sovereign ERP configurations, kernel configurations, domain registries, and core synchronizers.',
+    status: 'ACTIVE',
+    health: 99,
+    scores: {
+      identity: 100,
+      runtime: 100,
+      modules: 98,
+      workflows: 95,
+      ai: 90,
+      integrations: 98,
+      digitalHybrid: 95,
+      security: 100
+    },
+    telemetry: {
+      uptime: 99.99,
+      requests: 8000,
+      nodeCount: 24,
+      errorRate: 0.001
+    },
+    aiProfile: {
+      name: 'Blueprint Architect',
+      model: 'Gemini 2.0 Pro',
+      activeAgentsCount: 2,
+      tools: ['Blueprint Validator', 'Conflict Arbiter']
+    },
+    isActivated: true,
+    tenantId: 'tn-gov-01',
+    domain: 'core.sovereign.gov',
+    instanceId: 'inst-core-001'
+  }
+];
