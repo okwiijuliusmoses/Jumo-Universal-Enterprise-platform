@@ -27,7 +27,8 @@ import {
   WifiOff, 
   AlertOctagon,
   Search,
-  BookOpen
+  BookOpen,
+  Fingerprint
 } from 'lucide-react';
 import { initialPlatforms } from './core/registry/initialPlatforms';
 import { 
@@ -45,10 +46,43 @@ import {
   SyncItem 
 } from './types';
 
+// Authoritative Centralized Integration-Health Calculation (Section 8)
+export function computePlatformScore(platform: Platform): number {
+  const baseAvg = (
+    platform.scores.identity +
+    platform.scores.runtime +
+    platform.scores.modules +
+    platform.scores.workflows +
+    platform.scores.ai +
+    platform.scores.integrations +
+    platform.scores.digitalHybrid +
+    platform.scores.security
+  ) / 8;
+  
+  if (platform.status === 'PARTIALLY IMPLEMENTED') {
+    // Partially implemented platforms remain capped under 60%
+    return Math.min(58, Math.round(baseAvg));
+  }
+  
+  return Math.min(100, Math.max(10, Math.round(baseAvg)));
+}
+
 export default function App() {
   // Connection and Session States
   const [connectionMode, setConnectionMode] = useState<'ONLINE' | 'OFFLINE' | 'HYBRID'>('ONLINE');
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [bootState, setBootState] = useState<'INITIAL_BOOT' | 'PUBLIC_GATEWAY' | 'RESOLVING' | 'SHELL'>('INITIAL_BOOT');
+  const [bootProgress, setBootProgress] = useState<number>(0);
+  const [activeBootStepIndex, setActiveBootStepIndex] = useState<number>(0);
+  const [selectedIdentity, setSelectedIdentity] = useState<'OPERATOR' | 'SUPER_ADMIN' | 'GOVERNOR'>('OPERATOR');
+  const [biometricAuthenticated, setBiometricAuthenticated] = useState<boolean>(false);
+  const [workspaceResolutionProgress, setWorkspaceResolutionProgress] = useState<number>(0);
+  const [workspaceLogs, setWorkspaceLogs] = useState<string[]>([]);
+  
+  // Controlled Activation Lifecycle States (Section 6)
+  const [activatingPlatformId, setActivatingPlatformId] = useState<string | null>(null);
+  const [activationProgress, setActivationProgress] = useState<number>(0);
+  const [activationLogs, setActivationLogs] = useState<string[]>([]);
+
   const [userRole, setUserRole] = useState<'OPERATOR' | 'SUPER_ADMIN' | 'GOVERNOR'>('OPERATOR');
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'OPERATIONS' | 'AI' | 'HYBRID_SYNC' | 'SECURITY' | 'CONFIG'>('OVERVIEW');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -230,6 +264,22 @@ export default function App() {
     setAuditLogs(prev => [newLog, ...prev]);
   };
 
+  // Missing capabilities definitions (Section 7)
+  const getMissingCapabilitiesForPlatform = (platformId: string): string[] => {
+    switch (platformId) {
+      case 'research':
+        return ['Deep Science Simulation Engine', 'Academic Collaboration Ledger', 'High-Performance Computing Ingress'];
+      case 'builder':
+        return ['Visual Layout Compiler', 'Widget Deployment Node', 'Live Hot Module Replacement Daemon'];
+      case 'data_platform':
+        return ['Sovereign Hadoop Cluster Bindings', 'Hyper-secure Partitioning Daemon', 'Cryptographic Schema Registry'];
+      case 'trust':
+        return ['Constitutional Audit Smart Parser', 'Charter Compliance Evaluator', 'Sovereign Policy Regulator Node'];
+      default:
+        return [];
+    }
+  };
+
   // Automated Platform Activation Engine (P0 Directive 30)
   const runPlatformAuditAndActivation = () => {
     if (isAuditing) return;
@@ -243,15 +293,115 @@ export default function App() {
           clearInterval(interval);
           setIsAuditing(false);
           
-          // Actually upgrade all JUMO platforms that are PARTIALLY IMPLEMENTED to ACTIVE!
+          // Actually update only the 16 fully implemented platforms to ACTIVE!
+          // Maintain PARTIALLY IMPLEMENTED status on the other 4.
           setPlatforms(prevPlats => 
             prevPlats.map(p => {
-              if (p.status === 'PARTIALLY IMPLEMENTED') {
+              const isPartiallyImplemented = ['research', 'builder', 'data_platform', 'trust'].includes(p.id);
+              if (isPartiallyImplemented) {
                 return {
                   ...p,
-                  status: 'ACTIVE',
-                  health: 100,
                   isActivated: true,
+                  status: 'PARTIALLY IMPLEMENTED' as any,
+                  activationState: 'INACTIVE' as any,
+                  runtimeState: 'PARTIAL' as any,
+                  lifecycleState: 'DEGRADED' as any
+                };
+              }
+              return {
+                ...p,
+                status: 'ACTIVE',
+                health: 100,
+                isActivated: true,
+                activationState: 'ACTIVE' as any,
+                runtimeState: 'ACTIVE' as any,
+                lifecycleState: 'RUNNING' as any,
+                scores: {
+                  identity: 100,
+                  runtime: 100,
+                  modules: 100,
+                  workflows: 100,
+                  ai: 100,
+                  integrations: 100,
+                  digitalHybrid: 100,
+                  security: 100
+                },
+                telemetry: {
+                  ...p.telemetry,
+                  uptime: 99.99,
+                  requests: p.telemetry.requests + 200,
+                  nodeCount: p.telemetry.nodeCount + 5
+                }
+              };
+            })
+          );
+
+          appendAuditLog('blueprint_core', 'PLATFORM_ACTIVATION_COMPLETE', 'Platform Activation Engine resolved fully-implemented runtimes and flagged 4 partially-implemented platforms with missing capabilities.', 'INFO');
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 300);
+  };
+
+  // Handle single platform activation / upgrade node with Controlled Activation Lifecycle (Section 6)
+  const handlePlatformActivation = (pId: string) => {
+    if (activatingPlatformId) return;
+    setActivatingPlatformId(pId);
+    setActivationProgress(0);
+    
+    const targetPlat = platforms.find(p => p.id === pId);
+    if (!targetPlat) return;
+    
+    const logs = [
+      `[DISCOVER] Scanning template repositories for product identifier: ${pId}...`,
+      `[VALIDATE] Package checksum matched. SHA-256 payload integrity: OK.`,
+      `[DEPENDENCY CHECK] Verifying dependencies (Platform Kernel, Identity Gateway, Service Registry)...`,
+      `[CONFIGURATION CHECK] Reading tenant boundary configuration files...`,
+      `[IDENTITY CHECK] Checking cryptographic clearance level...`,
+      `[DATABASE CHECK] Verifying SQL/ledger relational schemas database integrity...`,
+      `[AI_SERVICE_CHECK] Allocating cognitive model space on model ${targetPlat.aiProfile.model}...`,
+      `[CRYPTOGRAPHIC_CONFIGURATION_CHECK] Injecting 256-bit AES cryptographic session key to chassis node...`,
+      `[OFFLINE_HYBRID_CHECK] Enqueuing digital hybrid synchronization channels...`,
+      `[REGISTER] Mounting node ${targetPlat.instanceId} into central DNS registry...`,
+      `[INITIALIZE] Initializing virtual machine runtime container...`,
+      `[HEALTH CHECK] Pinging loopback connection... SLA status: 100% health verified.`,
+      `[TELEMETRY] Piping live instrumentation to Sovereign Command Center...`,
+      `[ACTIVE] Activation lifecycle complete.`
+    ];
+
+    setActivationLogs([logs[0]]);
+    let currentStepIndex = 1;
+    
+    const interval = setInterval(() => {
+      setActivationProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setActivatingPlatformId(null);
+          
+          setPlatforms(prevPlats => prevPlats.map(p => {
+            if (p.id === pId) {
+              const isPartiallyImplemented = ['research', 'builder', 'data_platform', 'trust'].includes(pId);
+              
+              if (isPartiallyImplemented) {
+                appendAuditLog(pId, 'NODE_PARTIAL_ACTIVE', `Platform initialized but stopped in PARTIAL mode due to missing capabilities.`, 'WARNING');
+                return {
+                  ...p,
+                  isActivated: true,
+                  status: 'PARTIALLY IMPLEMENTED' as any,
+                  activationState: 'INACTIVE' as any,
+                  runtimeState: 'PARTIAL' as any,
+                  lifecycleState: 'DEGRADED' as any
+                };
+              } else {
+                appendAuditLog(pId, 'PROVISION_NODE_SUCCESS', `Successfully provisioned and fully activated platform ${p.name} on domain ${p.domain}.`, 'INFO');
+                return {
+                  ...p,
+                  status: 'ACTIVE' as any,
+                  isActivated: true,
+                  activationState: 'ACTIVE' as any,
+                  runtimeState: 'ACTIVE' as any,
+                  lifecycleState: 'RUNNING' as any,
                   scores: {
                     identity: 100,
                     runtime: 100,
@@ -261,51 +411,24 @@ export default function App() {
                     integrations: 100,
                     digitalHybrid: 100,
                     security: 100
-                  },
-                  telemetry: {
-                    ...p.telemetry,
-                    uptime: 99.99,
-                    requests: p.telemetry.requests + 200,
-                    nodeCount: p.telemetry.nodeCount + 5
                   }
                 };
               }
-              return p;
-            })
-          );
-
-          appendAuditLog('blueprint_core', 'PLATFORM_ACTIVATION_COMPLETE', 'Platform Activation Engine resolved missing dependencies, updated state matrices, and activated all 20 platforms as real Digital Hybrid Operational Runtimes.', 'INFO');
+            }
+            return p;
+          }));
           return 100;
         }
-        return prev + 10;
+        
+        const nextProg = prev + 8;
+        const logIndex = Math.min(logs.length - 1, Math.floor((nextProg / 100) * logs.length));
+        if (logIndex >= currentStepIndex) {
+          setActivationLogs(p => [...p, logs[logIndex]]);
+          currentStepIndex = logIndex + 1;
+        }
+        return nextProg;
       });
-    }, 300);
-  };
-
-  // Handle single platform activation / upgrade node
-  const handlePlatformActivation = (pId: string) => {
-    setPlatforms(prev => prev.map(p => {
-      if (p.id === pId) {
-        appendAuditLog(pId, 'PROVISION_NODE_SUCCESS', `Successfully provisioned instance ${p.instanceId} in tenant domain ${p.domain}. Active hybrid sync initialized.`, 'INFO');
-        return {
-          ...p,
-          status: 'ACTIVE',
-          isActivated: true,
-          health: 100,
-          scores: {
-            identity: 100,
-            runtime: 100,
-            modules: 100,
-            workflows: 100,
-            ai: 100,
-            integrations: 100,
-            digitalHybrid: 100,
-            security: 100
-          }
-        };
-      }
-      return p;
-    }));
+    }, 150);
   };
 
   // Core Sync Engine: Trigger offline-to-online sync replay (Directive 8)
@@ -568,11 +691,87 @@ export default function App() {
     appendAuditLog('developer', 'API_SANDBOX_CALL', `API Sandboxed command execution received for: ${apiSandboxCommand}`, 'INFO');
   };
 
+  // 10 Services in Order (Section 3)
+  const kernelServices = [
+    { name: 'Platform Kernel', fallback: false, reg: '0x00F0-KERNEL', logs: ['Initializing virtual machines boundary paging...', 'Binding POSIX signals. Virtual core allocated.'] },
+    { name: 'Identity Gateway', fallback: false, reg: '0x01A2-IDENTITY', logs: ['Mounting cryptographic certificate directories...', 'Establishing Secure Biometric SSP channels. Ready.'] },
+    { name: 'Service Registry', fallback: false, reg: '0x02B4-REGISTRY', logs: ['Loading 20 commercial platforms metadata registry...', 'Registry integrity check: 20/20 validated. Ready.'] },
+    { name: 'Domain Registry', fallback: true, reg: '0x03C6-DOMAIN', logs: ['Propagating sovereign name services *.sovereign.gov...', 'DNS mapping complete. Loopback binding: Active.'] },
+    { name: 'Template Registry', fallback: true, reg: '0x04D8-TEMPLATES', logs: ['Caching platform static schema specifications...', 'Template system loaded. Blueprints inventory ready.'] },
+    { name: 'Configuration Engine', fallback: false, reg: '0x05E0-CONFIG', logs: ['Checking .env and metadata variables from vault...', 'Vault mounted. Environment secure (Port 3000 mapped).'] },
+    { name: 'Workflow Engine', fallback: true, reg: '0x06F2-WORKFLOW', logs: ['Spawning cron scheduler for offline cache polling...', 'Timers initialized. Reconciler active.'] },
+    { name: 'AI Gateway', fallback: true, reg: '0x07A4-AIGW', logs: ['Binding server-side Gemini 2.5 Flash cognitive core...', 'AIGW online. Cognitive swarm orchestration active.'] },
+    { name: 'FAAP Financial Engine', fallback: false, reg: '0x08B6-FAAP', logs: ['Validating national double-entry ledger database...', 'Clearing balances. FAAP Ledger synced.'] },
+    { name: 'Experience Workspace Shell', fallback: false, reg: '0x09C8-SHELL', logs: ['Mounting Sovereign Command Control experience layer...', 'User Interface initialized. All units green.'] }
+  ];
+
+  useEffect(() => {
+    if (bootState !== 'INITIAL_BOOT') return;
+    
+    setBootProgress(0);
+    setActiveBootStepIndex(0);
+    
+    const interval = setInterval(() => {
+      setBootProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setBootState('PUBLIC_GATEWAY');
+          return 100;
+        }
+        const nextProg = prev + 5;
+        const stepIndex = Math.min(9, Math.floor(nextProg / 10));
+        setActiveBootStepIndex(stepIndex);
+        return nextProg;
+      });
+    }, 120);
+    
+    return () => clearInterval(interval);
+  }, [bootState]);
+
+  const handleAuthorizePassport = () => {
+    setBootState('RESOLVING');
+    setWorkspaceResolutionProgress(0);
+    setWorkspaceLogs(['[INFO] Querying Public Gateway ingress node...', '[INFO] Routing to SSO Authentication Gateway...']);
+    
+    const logs = [
+      '[INFO] Connection established via secure SSL TLS tunnel.',
+      '[INFO] Forwarding biometric certificate payload...',
+      `[INFO] SHA-256 Operator Verification key: 0xEE7F4-PASSPORT-${selectedIdentity}`,
+      '[INFO] Identity Resolved. Access Token generated.',
+      '[INFO] Invoking Workspace Resolution daemon...',
+      `[INFO] Mapping Tenant-ID boundary to: ${selectedIdentity === 'OPERATOR' ? 'tn-gov-01' : selectedIdentity === 'SUPER_ADMIN' ? 'tn-infra-04' : 'tn-bank-02'}`,
+      `[INFO] Mapping Domain Namespace to: ${selectedIdentity === 'OPERATOR' ? 'faap.sovereign.gov' : selectedIdentity === 'SUPER_ADMIN' ? 'cloud.sovereign.gov' : 'pay.sovereign.gov'}`,
+      '[INFO] Initializing sandboxed local cache vault...',
+      '[INFO] Securing Experience Workspace container frame...',
+      '[INFO] UEOS Shell successfully loaded.'
+    ];
+
+    let currentLogIndex = 0;
+    const interval = setInterval(() => {
+      setWorkspaceResolutionProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setUserRole(selectedIdentity);
+          setBootState('SHELL');
+          appendAuditLog('blueprint_core', 'SESSION_RESOLVED', `Sovereign passport verified. Logged in as ${selectedIdentity} for workspace.`, 'INFO');
+          return 100;
+        }
+        
+        if (currentLogIndex < logs.length) {
+          setWorkspaceLogs(p => [...p, logs[currentLogIndex]]);
+          currentLogIndex++;
+        }
+        
+        return prev + 10;
+      });
+    }, 150);
+  };
+
   // Trigger automated background updates to prove real operational metrics
   useEffect(() => {
     const interval = setInterval(() => {
       // Background traffic simulation updates requests counts & threats
-      if (connectionMode === 'ONLINE' || connectionMode === 'HYBRID') {
+      if (bootState === 'SHELL' && (connectionMode === 'ONLINE' || connectionMode === 'HYBRID')) {
         setPlatforms(prev => prev.map(p => {
           if (p.isActivated) {
             const extraReqs = Math.floor(Math.random() * 15) - 5;
@@ -590,7 +789,7 @@ export default function App() {
       }
     }, 4000);
     return () => clearInterval(interval);
-  }, [connectionMode]);
+  }, [connectionMode, bootState]);
 
   // Compute live aggregates across our registers to replace static placeholders (Directive 13 / 14)
   const totalActivatedPlatforms = platforms.filter(p => p.isActivated).length;
@@ -609,8 +808,172 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800" id="ueos-container">
-      {/* Sovereign Applet Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm" id="ueos-header">
+      {bootState !== 'SHELL' ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 text-slate-100 min-h-screen font-mono selection:bg-indigo-500 selection:text-white w-full" id="boot-wrapper">
+          {/* INITIAL_BOOT SCREEN */}
+          {bootState === 'INITIAL_BOOT' && (
+            <div className="max-w-2xl w-full bg-slate-950 border border-slate-800 rounded-xl p-8 flex flex-col gap-6 shadow-2xl" id="boot-kernel-screen">
+              <div className="flex justify-between items-start border-b border-slate-800 pb-4">
+                <div>
+                  <h1 className="text-sm font-black text-white tracking-widest uppercase flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
+                    JUMO UEOS // SOVEREIGN KERNEL BOOT
+                  </h1>
+                  <p className="text-[10px] text-slate-500 font-bold mt-1">SLA ASSURED FIRMWARE SECURE-INIT PROTOCOL V4.0.8</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-mono font-bold text-indigo-400">{bootProgress}% LOADED</span>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                <div className="h-full bg-indigo-500 transition-all duration-100" style={{ width: `${bootProgress}%` }}></div>
+              </div>
+
+              {/* Services List (Section 3 Order) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" id="boot-services-grid">
+                {kernelServices.map((service, index) => {
+                  const isDone = index < activeBootStepIndex;
+                  const isCurrent = index === activeBootStepIndex;
+                  return (
+                    <div 
+                      key={service.name} 
+                      className={`p-3 rounded-lg border text-xs flex flex-col gap-1 transition ${
+                        isDone 
+                          ? 'bg-slate-950 border-emerald-900/40 text-slate-300' 
+                          : isCurrent 
+                          ? 'bg-slate-900/50 border-indigo-500/50 text-white shadow-[0_0_15px_rgba(99,102,241,0.1)]' 
+                          : 'bg-slate-950/20 border-slate-900 text-slate-600'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold tracking-tight">{index + 1}. {service.name}</span>
+                        {isDone ? (
+                          <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-900/30">OK</span>
+                        ) : isCurrent ? (
+                          <span className="text-[10px] text-indigo-400 font-bold bg-indigo-950/40 px-1.5 py-0.5 rounded border border-indigo-500/30 animate-pulse">BOOTING</span>
+                        ) : (
+                          <span className="text-[10px] text-slate-600 font-bold">STANDBY</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-mono tracking-tight">{service.reg}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Real-time Logger Terminal */}
+              <div className="bg-slate-950 border border-slate-900 rounded-lg p-4 font-mono text-[10px] text-slate-400 leading-relaxed min-h-[80px]">
+                <div className="text-indigo-400 font-bold mb-1">// LIVE LOG RECONCILER STREAM</div>
+                <div>{kernelServices[activeBootStepIndex]?.logs?.[0]}</div>
+                <div>{kernelServices[activeBootStepIndex]?.logs?.[1]}</div>
+              </div>
+            </div>
+          )}
+
+          {/* PUBLIC_GATEWAY SCREEN (Section 2 - Authentication Gateway) */}
+          {bootState === 'PUBLIC_GATEWAY' && (
+            <div className="max-w-md w-full bg-slate-950 border border-slate-800 rounded-xl p-8 flex flex-col gap-6 shadow-2xl" id="boot-gateway-screen">
+              <div className="text-center border-b border-slate-800 pb-6">
+                <div className="mx-auto w-12 h-12 bg-indigo-950/50 border border-indigo-500/40 text-indigo-400 rounded-xl flex items-center justify-center shadow-lg mb-3">
+                  <Shield className="w-6 h-6 animate-pulse" />
+                </div>
+                <h1 className="text-sm font-black text-white tracking-widest uppercase">IDENTITY GATEWAY</h1>
+                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Public Gateway Ingress Verification</p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wide">Select Sovereign Operator Identity</label>
+                <div className="grid grid-cols-1 gap-2">
+                  <button 
+                    onClick={() => { setSelectedIdentity('OPERATOR'); setBiometricAuthenticated(false); }}
+                    className={`p-3 rounded-lg border text-left flex items-center justify-between transition ${selectedIdentity === 'OPERATOR' ? 'bg-indigo-950/40 border-indigo-500 text-white' : 'bg-slate-900/30 border-slate-800 text-slate-400 hover:border-slate-700'}`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">Operator Julius</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">SOVEREIGN CORE OPERATOR</div>
+                    </div>
+                    <User className="w-4 h-4 text-slate-500" />
+                  </button>
+                  <button 
+                    onClick={() => { setSelectedIdentity('SUPER_ADMIN'); setBiometricAuthenticated(false); }}
+                    className={`p-3 rounded-lg border text-left flex items-center justify-between transition ${selectedIdentity === 'SUPER_ADMIN' ? 'bg-indigo-950/40 border-indigo-500 text-white' : 'bg-slate-900/30 border-slate-800 text-slate-400 hover:border-slate-700'}`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">Infrastructure Command (Super Admin)</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">FULL CHASSIS ROOT CONTROL</div>
+                    </div>
+                    <Lock className="w-4 h-4 text-slate-500" />
+                  </button>
+                  <button 
+                    onClick={() => { setSelectedIdentity('GOVERNOR'); setBiometricAuthenticated(false); }}
+                    className={`p-3 rounded-lg border text-left flex items-center justify-between transition ${selectedIdentity === 'GOVERNOR' ? 'bg-indigo-950/40 border-indigo-500 text-white' : 'bg-slate-900/30 border-slate-800 text-slate-400 hover:border-slate-700'}`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">Sovereign Audit Governor</div>
+                      <div className="text-[9px] text-slate-500 mt-0.5">CONSTITUTIONAL COMPLIANCE SIGN-OFF</div>
+                    </div>
+                    <Server className="w-4 h-4 text-slate-500" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Biometrics Scan simulation */}
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Secure Biometric Verification</span>
+                <button
+                  type="button"
+                  onClick={() => setBiometricAuthenticated(true)}
+                  className={`w-full py-4 border rounded-lg text-xs font-bold tracking-widest uppercase transition flex items-center justify-center gap-2 ${biometricAuthenticated ? 'bg-emerald-950/40 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 text-slate-400'}`}
+                >
+                  <Fingerprint className={`w-5 h-5 ${biometricAuthenticated ? 'text-emerald-400' : 'text-slate-500'}`} />
+                  {biometricAuthenticated ? 'Biometric Signature Captured // PASSED' : 'Initialize Biometric Fingerprint Scan'}
+                </button>
+              </div>
+
+              {/* Authorize button */}
+              <button
+                type="button"
+                disabled={!biometricAuthenticated}
+                onClick={handleAuthorizePassport}
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-800 disabled:text-slate-600 text-white rounded-lg text-xs font-bold tracking-widest uppercase transition shadow-lg flex items-center justify-center gap-2"
+              >
+                <Key className="w-4 h-4" />
+                Authorize Sovereign Passport
+              </button>
+            </div>
+          )}
+
+          {/* RESOLVING SCREEN */}
+          {bootState === 'RESOLVING' && (
+            <div className="max-w-md w-full bg-slate-950 border border-slate-800 rounded-xl p-8 flex flex-col gap-6 shadow-2xl" id="boot-resolving-screen">
+              <div className="border-b border-slate-800 pb-4 flex justify-between items-center">
+                <div>
+                  <h1 className="text-xs font-black text-indigo-400 tracking-widest uppercase">RESOLVING WORKSPACE CONTEXT</h1>
+                  <p className="text-[9px] text-slate-500 font-bold mt-0.5 uppercase tracking-wider">Identity & Space Resolution Gateway active</p>
+                </div>
+                <span className="text-xs text-indigo-400 font-bold">{workspaceResolutionProgress}%</span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                <div className="h-full bg-indigo-500 transition-all duration-150" style={{ width: `${workspaceResolutionProgress}%` }}></div>
+              </div>
+
+              {/* Step Logs Console */}
+              <div className="bg-slate-950 border border-slate-900 rounded-lg p-4 font-mono text-[10px] text-slate-400 leading-relaxed min-h-[200px] max-h-[300px] overflow-y-auto flex flex-col gap-1.5">
+                {workspaceLogs.map((log, logIdx) => (
+                  <div key={logIdx} className={log.includes('successfully') ? 'text-emerald-400' : log.includes('Verification') ? 'text-indigo-400 font-bold' : ''}>{log}</div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Sovereign Applet Header */}
+          <header className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm" id="ueos-header">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-600 text-white rounded-lg shadow-sm">
             <Layers className="w-6 h-6" />
@@ -808,16 +1171,7 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="platform-grid">
               {filteredPlatforms.map((platform) => {
                 const isActivated = platform.isActivated;
-                const scoresAvg = Math.round(
-                  (platform.scores.identity + 
-                   platform.scores.runtime + 
-                   platform.scores.modules + 
-                   platform.scores.workflows + 
-                   platform.scores.ai + 
-                   platform.scores.integrations + 
-                   platform.scores.digitalHybrid + 
-                   platform.scores.security) / 8
-                );
+                const scoresAvg = computePlatformScore(platform);
 
                 return (
                   <div 
@@ -957,7 +1311,12 @@ export default function App() {
 
                 {/* Score Indicators Matrix (Directive 32 - Calculated, NO Fabricated Values) */}
                 <div className="border-t border-slate-100 pt-4 mt-4">
-                  <h4 className="text-xs font-black text-slate-900 mb-2 uppercase tracking-wide">Verification Matrix Score</h4>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-xs font-black text-slate-900 uppercase tracking-wide">Verification Matrix Score</h4>
+                    <span className="text-xs font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                      {selectedPlatform && computePlatformScore(selectedPlatform)}% OVERALL
+                    </span>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
                     <div className="bg-slate-50 p-2 rounded border border-slate-100 flex justify-between">
                       <span className="text-slate-500">Identity</span>
@@ -1004,6 +1363,27 @@ export default function App() {
                   </div>
                 </div>
               </div>
+
+              {/* Missing Capabilities Warning Block (Section 7) */}
+              {selectedPlatform?.status === 'PARTIALLY IMPLEMENTED' && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col gap-2 shadow-sm" id="missing-capabilities-warning">
+                  <div className="flex items-center gap-2 text-amber-800 font-black text-xs uppercase tracking-wider">
+                    <AlertTriangle className="w-4.5 h-4.5 text-amber-600 shrink-0" />
+                    PARTIALLY IMPLEMENTED DESCRIPTOR
+                  </div>
+                  <p className="text-[11px] text-amber-700 leading-normal">
+                    This platform lacks compiled runtime components. The following capability modules are missing:
+                  </p>
+                  <ul className="list-disc list-inside text-[11px] text-amber-800 font-semibold flex flex-col gap-1 pl-1">
+                    {getMissingCapabilitiesForPlatform(selectedPlatform.id).map(cap => (
+                      <li key={cap}>{cap}</li>
+                    ))}
+                  </ul>
+                  <div className="text-[10px] text-amber-600 font-bold mt-1 bg-amber-100/50 p-2 rounded border border-amber-200/50">
+                    ⚠️ COMPILER ACTION REQUIRED: Provide code compiler blueprints inside Manufacturing Operations tab to elevate node.
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Tabs Container and Detail Surface */}
@@ -1979,6 +2359,7 @@ export default function App() {
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 font-semibold uppercase tracking-wider" id="ueos-footer">
         &copy; 2026 JUMO UNIVERSAL ENTERPRISE OPERATING SYSTEM (UEOS). ALL RIGHTS CONTROLLED.
       </footer>
+      </>)}
     </div>
   );
 }

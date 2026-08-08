@@ -48,6 +48,19 @@ export interface Platform {
   tenantId: string;
   domain: string;
   instanceId: string;
+  // Locked Architecture Properties (Section 5)
+  capabilities: string[];
+  runtimeState: 'ACTIVE' | 'DEGRADED' | 'STANDBY' | 'STOPPED' | 'PARTIAL';
+  activationState: 'DISCOVER' | 'VALIDATE' | 'DEPENDENCY_CHECK' | 'CONFIGURATION_CHECK' | 'IDENTITY_CHECK' | 'DATABASE_CHECK' | 'AI_SERVICE_CHECK' | 'CRYPTOGRAPHIC_CONFIGURATION_CHECK' | 'OFFLINE_HYBRID_CHECK' | 'REGISTER' | 'INITIALIZE' | 'HEALTH_CHECK' | 'TELEMETRY' | 'ACTIVE' | 'INACTIVE';
+  lifecycleState: 'DISCOVERED' | 'PROVISIONED' | 'INITIALIZED' | 'RUNNING' | 'DEGRADED' | 'OFFLINE' | 'SUSPENDED';
+  dependencies: string[];
+  requiredServices: string[];
+  configuration: Record<string, any>;
+  permissions: string[];
+  routes: string[];
+  apiBindings: string[];
+  offlineCapability: boolean;
+  hybridSyncState: 'RECONCILED' | 'PENDING_SYNC' | 'CONFLICT' | 'DISABLED';
 }
 
 // Domain-Specific Data Models
