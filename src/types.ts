@@ -1,167 +1,198 @@
-export type PlatformStatus =
-  | 'REGISTERED'
-  | 'PROVISIONING'
-  | 'ACTIVATING'
-  | 'ACTIVE'
-  | 'UPGRADING'
-  | 'DEGRADED'
-  | 'OFFLINE'
-  | 'SYNCING'
-  | 'SUSPENDED'
-  | 'FAILED'
-  | 'PARTIALLY IMPLEMENTED';
-
-export interface PlatformScores {
-  identity: number;
-  runtime: number;
-  modules: number;
-  workflows: number;
-  ai: number;
-  integrations: number;
-  digitalHybrid: number;
-  security: number;
+export interface TechStackItem {
+  category: string; // e.g., "Frontend", "Backend", "Database", "Hosting"
+  technology: string;
+  reasoning: string;
 }
 
-export interface PlatformTelemetry {
-  uptime: number; // in %
-  requests: number; // in requests/sec
-  nodeCount: number;
-  errorRate: number; // in %
-}
-
-export interface Platform {
-  id: string;
-  name: string;
-  version: string;
-  description: string;
-  status: PlatformStatus;
-  health: number; // 0 - 100
-  scores: PlatformScores;
-  telemetry: PlatformTelemetry;
-  aiProfile: {
-    name: string;
-    model: string;
-    activeAgentsCount: number;
-    tools: string[];
-  };
-  isActivated: boolean;
-  tenantId: string;
-  domain: string;
-  instanceId: string;
-  // Locked Architecture Properties (Section 5)
-  capabilities: string[];
-  runtimeState: 'ACTIVE' | 'DEGRADED' | 'STANDBY' | 'STOPPED' | 'PARTIAL';
-  activationState: 'DISCOVER' | 'VALIDATE' | 'DEPENDENCY_CHECK' | 'CONFIGURATION_CHECK' | 'IDENTITY_CHECK' | 'DATABASE_CHECK' | 'AI_SERVICE_CHECK' | 'CRYPTOGRAPHIC_CONFIGURATION_CHECK' | 'OFFLINE_HYBRID_CHECK' | 'REGISTER' | 'INITIALIZE' | 'HEALTH_CHECK' | 'TELEMETRY' | 'ACTIVE' | 'INACTIVE';
-  lifecycleState: 'DISCOVERED' | 'PROVISIONED' | 'INITIALIZED' | 'RUNNING' | 'DEGRADED' | 'OFFLINE' | 'SUSPENDED';
-  dependencies: string[];
-  requiredServices: string[];
-  configuration: Record<string, any>;
-  permissions: string[];
-  routes: string[];
-  apiBindings: string[];
-  offlineCapability: boolean;
-  hybridSyncState: 'RECONCILED' | 'PENDING_SYNC' | 'CONFLICT' | 'DISABLED';
-}
-
-// Domain-Specific Data Models
-
-// 01. JUMO FAAP
-export interface FAAPAccount {
-  id: string;
-  code: string;
-  name: string;
-  type: 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE';
-  balance: number;
-}
-
-export interface FAAPTransaction {
-  id: string;
-  timestamp: string;
-  accountCode: string;
-  type: 'DEBIT' | 'CREDIT';
-  amount: number;
-  reference: string;
-  approvedBy: string;
-  isSynced: boolean;
-}
-
-// 02. JUMO DIGITAL PAY
-export interface PaymentIntent {
-  id: string;
-  amount: number;
-  currency: string;
-  customer: string;
-  status: 'SUCCEEDED' | 'PENDING' | 'REFUNDED' | 'FAILED';
-  gateway: string;
-  timestamp: string;
-}
-
-// 03. JUMO TREASURY
-export interface LiquidityPool {
-  id: string;
-  name: string;
-  balance: number;
-  currency: string;
-  allocation: number; // %
-}
-
-// 05. JUMO AEGIS
-export interface SecurityThreat {
-  id: string;
-  timestamp: string;
-  source: string;
-  type: 'DDOS_ATTACK' | 'SPOOFING_ATTEMPT' | 'EXFILTRATION_ALERT' | 'PORT_SCAN';
-  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  status: 'MITIGATED' | 'QUARANTINED' | 'UNDER_INVESTIGATION';
-}
-
-// 09. JUMO AI PLATFORM
-export interface AIAgent {
-  id: string;
-  name: string;
-  role: string;
-  model: string;
-  tools: string[];
-  status: 'IDLE' | 'ANALYZING' | 'EXECUTING' | 'OFFLINE';
-  lastActive: string;
-}
-
-// 07. JUMO SOFTWARE MANUFACTURING FACTORY
-export interface SoftwareBlueprint {
-  id: string;
+export interface SchemaField {
   name: string;
   type: string;
-  version: string;
-  lastBuildStatus: 'SUCCESS' | 'FAILED' | 'BUILDING' | 'IDLE';
-  lastBuildTime: string;
+  description: string;
+  primaryKey: boolean;
+  nullable: boolean;
 }
 
-// 19. JUMO DEVELOPER & API PLATFORM
-export interface APIKey {
+export interface DatabaseTable {
+  tableName: string;
+  type: "Relational" | "Document" | "Key-Value";
+  fields: SchemaField[];
+  description: string;
+}
+
+export interface APIEndpoint {
+  path: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  description: string;
+  requestBody?: string; // stringified JSON or description
+  responseBody: string; // stringified JSON
+}
+
+export interface ArchitectureNode {
   id: string;
-  key: string;
   label: string;
-  permissions: 'READ' | 'WRITE' | 'ADMIN';
+  type: "Client" | "Server" | "Database" | "Cache" | "ExternalService";
+  x: number;
+  y: number;
+}
+
+export interface ArchitectureConnection {
+  from: string;
+  to: string;
+  label: string;
+}
+
+export interface ArchitectureDiagram {
+  nodes: ArchitectureNode[];
+  connections: ArchitectureConnection[];
+}
+
+export interface KanbanTask {
+  id: string;
+  title: string;
+  description: string;
+  phase: string; // e.g., "Phase 1: DB Setup", "Phase 2: Core APIs", etc.
+  status: "todo" | "doing" | "done";
+}
+
+export interface SoftwareBlueprint {
+  name: string;
+  description: string;
+  coreFeatures: string[];
+  techStack: TechStackItem[];
+  databaseSchema: DatabaseTable[];
+  apiContract: APIEndpoint[];
+  architectureDiagram: ArchitectureDiagram;
+  kanbanTasks: KanbanTask[];
+}
+
+export interface ChatMessage {
+  role: "user" | "model";
+  content: string;
+  timestamp: string;
+}
+
+export interface SavedProject {
+  id: string;
+  title: string;
+  description: string;
   createdAt: string;
-  requestsCount: number;
+  blueprint: SoftwareBlueprint;
+  chatHistory: ChatMessage[];
 }
 
-// Global Audit Log and Sync Queue
-export interface AuditLogEntry {
+export type WorkspaceId = "faap" | "church" | "sacco" | "ngo" | "alumni" | "owner_center" | "treasury" | "workflow" | "security" | "ai";
+
+export interface WorkspaceNavRoute {
   id: string;
-  timestamp: string;
-  platformId: string;
-  actor: string;
-  action: string;
-  details: string;
-  severity: 'INFO' | 'WARNING' | 'CRITICAL';
+  label: string;
+  iconName: string;
 }
 
-export interface SyncItem {
-  id: string;
-  platformId: string;
-  actionType: 'CREATE_TRANSACTION' | 'CREATE_PAYMENT' | 'TRANSFER_LIQUIDITY' | 'ADD_AGENT' | 'CREATE_API_KEY';
-  payload: any;
-  timestamp: string;
-  status: 'PENDING' | 'RESOLVED' | 'CONFLICT_DETECTED';
+export interface Workspace {
+  id: WorkspaceId;
+  name: string;
+  iconName: string;
+  description: string;
+  routes: WorkspaceNavRoute[];
+  defaultWidgets: string[];
 }
+
+export interface Widget {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  defaultSize: "sm" | "md" | "lg" | "full";
+}
+
+export interface UserPreferences {
+  theme: "dark" | "light";
+  currentWorkspace: WorkspaceId;
+  widgetOrder: Record<WorkspaceId, string[]>;
+  enabledWidgets: Record<WorkspaceId, string[]>;
+  recentItems: Array<{ id: string; name: string; type: string; timestamp: string }>;
+  pinnedApps: string[];
+  favorites: string[];
+}
+
+export interface NotificationItem {
+  id: string;
+  type: "info" | "success" | "warning" | "alert";
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
+// JUMO UEOS Operational & Manufacturing Types
+export interface OperationalNode {
+  id: string;
+  name: string;
+  status: "active" | "standby" | "maintenance" | "offline";
+  load: number;
+  region: string;
+  type: "compute" | "storage" | "edge" | "network";
+}
+
+export interface FinancialModule {
+  id: string;
+  name: string;
+  type: "GL" | "AP" | "AR" | "Budget" | "Assets" | "Payroll" | "Tax";
+  status: "active" | "pending" | "auditing";
+  balance?: string;
+  lastSync: string;
+}
+
+export interface PaymentChannel {
+  id: string;
+  provider: string;
+  type: "MobileMoney" | "Bank" | "Card" | "QR" | "Wallet";
+  status: "active" | "maintenance";
+  volume24h: string;
+}
+
+export interface SecurityLayer {
+  id: string;
+  name: string;
+  type: "Identity" | "Threat" | "Compliance" | "DataProtection";
+  status: "enforced" | "monitoring" | "alert";
+  config: Record<string, any>;
+}
+
+export interface CloudService {
+  id: string;
+  name: string;
+  category: "Compute" | "Storage" | "Database" | "AI_Ops" | "Integration";
+  load: number;
+  health: number;
+  autoScaling: boolean;
+}
+
+export interface ManufacturingModule {
+  id: string;
+  name: string;
+  category: "generator" | "validator" | "deployer" | "monitor";
+  status: "idle" | "running" | "completed" | "error";
+  progress: number;
+  lastAction: string;
+}
+
+export interface AIAgent {
+  id: string;
+  role: string;
+  specialization: string;
+  status: "active" | "idle" | "thinking";
+  capabilities: string[];
+  lastInsight?: string;
+}
+
+export interface PlatformGovernanceRecord {
+  id: string;
+  platformName: string;
+  version: string;
+  status: "draft" | "review" | "approved" | "certified" | "retired";
+  complianceScore: number;
+  lastAudit: string;
+  signatures: string[];
+}
+
