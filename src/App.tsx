@@ -755,24 +755,39 @@ export default function App() {
       '[INFO] UEOS Shell successfully loaded.'
     ];
 
-    let currentLogIndex = 0;
+    let progressVal = 0;
     const interval = setInterval(() => {
-      setWorkspaceResolutionProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setUserRole(selectedIdentity);
-          setBootState('SHELL');
-          appendAuditLog('blueprint_core', 'SESSION_RESOLVED', `Sovereign passport verified. Logged in as ${selectedIdentity} for workspace.`, 'INFO');
-          return 100;
-        }
-        
-        if (currentLogIndex < logs.length) {
-          setWorkspaceLogs(p => [...p, logs[currentLogIndex]]);
-          currentLogIndex++;
-        }
-        
-        return prev + 20;
-      });
+      progressVal += 20;
+      if (progressVal >= 100) {
+        clearInterval(interval);
+        setWorkspaceResolutionProgress(100);
+        setWorkspaceLogs(prevLogs => {
+          const newLogs = [...prevLogs];
+          logs.forEach(l => {
+            if (!newLogs.includes(l)) {
+              newLogs.push(l);
+            }
+          });
+          return newLogs;
+        });
+        setUserRole(selectedIdentity);
+        setBootState('SHELL');
+        appendAuditLog('blueprint_core', 'SESSION_RESOLVED', `Sovereign passport verified. Logged in as ${selectedIdentity} for workspace.`, 'INFO');
+      } else {
+        setWorkspaceResolutionProgress(progressVal);
+        const logIdx1 = Math.floor(progressVal / 10) - 2;
+        const logIdx2 = Math.floor(progressVal / 10) - 1;
+        setWorkspaceLogs(prevLogs => {
+          const newLogs = [...prevLogs];
+          if (logIdx1 >= 0 && logIdx1 < logs.length && !newLogs.includes(logs[logIdx1])) {
+            newLogs.push(logs[logIdx1]);
+          }
+          if (logIdx2 >= 0 && logIdx2 < logs.length && !newLogs.includes(logs[logIdx2])) {
+            newLogs.push(logs[logIdx2]);
+          }
+          return newLogs;
+        });
+      }
     }, 50); // Fast workspace resolution: 250ms total
   };
 
@@ -809,11 +824,17 @@ export default function App() {
   const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
 
   // Search filter
-  const filteredPlatforms = platforms.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.description.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPlatforms = platforms.filter(p => {
+    const name = p?.name || '';
+    const desc = p?.description || '';
+    const id = p?.id || '';
+    const query = searchQuery || '';
+    return (
+      name.toLowerCase().includes(query.toLowerCase()) || 
+      desc.toLowerCase().includes(query.toLowerCase()) || 
+      id.toLowerCase().includes(query.toLowerCase())
+    );
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800" id="ueos-container">
@@ -998,9 +1019,14 @@ export default function App() {
 
               {/* Step Logs Console */}
               <div className="bg-slate-950 border border-slate-900 rounded-lg p-4 font-mono text-[10px] text-slate-400 leading-relaxed min-h-[200px] max-h-[300px] overflow-y-auto flex flex-col gap-1.5">
-                {workspaceLogs.map((log, logIdx) => (
-                  <div key={logIdx} className={log.includes('successfully') ? 'text-emerald-400' : log.includes('Verification') ? 'text-indigo-400 font-bold' : ''}>{log}</div>
-                ))}
+                {workspaceLogs.map((log, logIdx) => {
+                  if (!log) return null;
+                  return (
+                    <div key={logIdx} className={log.includes('successfully') ? 'text-emerald-400' : log.includes('Verification') ? 'text-indigo-400 font-bold' : ''}>
+                      {log}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
