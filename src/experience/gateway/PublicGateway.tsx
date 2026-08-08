@@ -1,4 +1,4 @@
-import jumoNewLogo from "../branding/JUMO NEW LOGO.png";
+import { JUMOLogo } from "../branding";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
@@ -302,12 +302,10 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
         <header className="fixed top-0 left-0 right-0 h-24 bg-slate-950 border-b border-slate-900 z-50 flex items-center justify-between px-6 md:px-16 text-white shadow-xl" id="ueos-fixed-header">
           {/* Logo & Platform Name */}
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => { setView("landing"); setSelectedInstKey("jumo"); }} id="ueos-header-logo-container">
-            <img
-              src={jumoNewLogo}
+            <JUMOLogo
+              size="lg"
+              background="blue"
               alt="JUMO UNIVERSAL ENTERPRISE PLATFORM"
-              className="w-12 h-12 md:w-14 md:h-14 object-contain shrink-0"
-              width={56}
-              height={56}
             />
             <div>
               <span className="font-black text-xs md:text-sm tracking-tight text-white block uppercase">JUMO UNIVERSAL ENTERPRISE PLATFORM</span>
@@ -461,12 +459,10 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
                       </div>
 
                       <div className="space-y-6">
-                        <img
-                          src={jumoNewLogo}
+                        <JUMOLogo
+                          size="hero"
+                          background="blue"
                           alt="JUMO UNIVERSAL ENTERPRISE PLATFORM"
-                          width={100}
-                          height={100}
-                          className="w-[100px] h-[100px] object-contain shrink-0"
                         />
 
                         <div className="space-y-1">

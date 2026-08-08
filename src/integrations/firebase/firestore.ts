@@ -14,7 +14,7 @@ import {
   QueryConstraint
 } from "firebase/firestore";
 import { auth } from "./auth";
-import firebaseConfig from "../../../firebase-applet-config.json";
+import firebaseConfig from "./firebaseConfig";
 
 // Initialize Firebase App if not already done
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();

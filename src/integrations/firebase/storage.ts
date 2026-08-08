@@ -7,7 +7,7 @@ import {
   deleteObject,
   UploadResult
 } from "firebase/storage";
-import firebaseConfig from "../../../firebase-applet-config.json";
+import firebaseConfig from "./firebaseConfig";
 
 // Initialize Firebase App if not already done
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();

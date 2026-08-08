@@ -1,4 +1,4 @@
-import jumoNewLogo from "../branding/JUMO NEW LOGO.png";
+import { JUMOLogo } from "../branding";
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import {
@@ -101,12 +101,10 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
         {/* Brand Header with JUMO Sovereign Enterprise Mark */}
         <div className="p-5 flex items-center justify-between border-b border-slate-800/80 h-20 bg-slate-950/50">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab("dashboard")}>
-            <img
-              src={jumoNewLogo}
+            <JUMOLogo
+              size="sm"
+              background="blue"
               alt="JUMO UEOS"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain shrink-0"
             />
 
             {isSidebarOpen && (

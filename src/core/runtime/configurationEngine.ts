@@ -61,7 +61,7 @@ export class ConfigurationEngine {
 
     const navigation: RuntimeNavigationItem[] = [];
 
-    portals.forEach(portal => {
+    portals.forEach((portal: string) => {
       navigation.push({
         id: portal.toLowerCase().replace(/\s+/g, "-"),
         name: portal,
@@ -69,7 +69,7 @@ export class ConfigurationEngine {
       });
     });
 
-    modules.forEach(module => {
+    modules.forEach((module: string) => {
       navigation.push({
         id: module.toLowerCase().replace(/\s+/g, "-"),
         name: module,
@@ -77,7 +77,7 @@ export class ConfigurationEngine {
       });
     });
 
-    departments.forEach(department => {
+    departments.forEach((department: string) => {
       navigation.push({
         id: department.toLowerCase().replace(/\s+/g, "-"),
         name: department,
@@ -85,7 +85,7 @@ export class ConfigurationEngine {
       });
     });
 
-    workflows.forEach(workflow => {
+    workflows.forEach((workflow: string) => {
       navigation.push({
         id: workflow.toLowerCase().replace(/\s+/g, "-"),
         name: workflow,
@@ -93,7 +93,7 @@ export class ConfigurationEngine {
       });
     });
 
-    services.forEach(service => {
+    services.forEach((service: string) => {
       navigation.push({
         id: service.toLowerCase().replace(/\s+/g, "-"),
         name: service,

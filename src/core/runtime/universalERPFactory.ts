@@ -25,7 +25,7 @@ export class UniversalERPFactory {
     
     // Register all platform components
     bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, signature));
+    bundle.portalSuite.portals.forEach((portal: unknown) => PortalRegistry.register(portal as any, signature));
     bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
 
     return ERPInstanceRegistry.register(bundle.instance);
@@ -43,7 +43,7 @@ export class UniversalERPFactory {
     
     // Register all platform components
     bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
-    bundle.portalSuite.portals.forEach(portal => PortalRegistry.register(portal as any, signature));
+    bundle.portalSuite.portals.forEach((portal: unknown) => PortalRegistry.register(portal as any, signature));
     bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
     
     return ERPInstanceRegistry.register(bundle.instance);
