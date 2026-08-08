@@ -718,15 +718,24 @@ export default function App() {
           setBootState('PUBLIC_GATEWAY');
           return 100;
         }
-        const nextProg = prev + 5;
+        const nextProg = prev + 10;
         const stepIndex = Math.min(9, Math.floor(nextProg / 10));
         setActiveBootStepIndex(stepIndex);
         return nextProg;
       });
-    }, 120);
+    }, 40); // Fast kernel boot: 400ms total
     
     return () => clearInterval(interval);
   }, [bootState]);
+
+  // Non-blocking auto-ingress effect to ensure the operator is never trapped (Section 2 / Rule 8)
+  useEffect(() => {
+    if (bootState !== 'PUBLIC_GATEWAY') return;
+    const timer = setTimeout(() => {
+      handleAuthorizePassport();
+    }, 1200); // Fast auto-bypass after 1.2s to land on C&C Surface automatically
+    return () => clearTimeout(timer);
+  }, [bootState, selectedIdentity]);
 
   const handleAuthorizePassport = () => {
     setBootState('RESOLVING');
@@ -735,7 +744,7 @@ export default function App() {
     
     const logs = [
       '[INFO] Connection established via secure SSL TLS tunnel.',
-      '[INFO] Forwarding biometric certificate payload...',
+      '[INFO] Bypassing manual biometric checks for rapid SSO resolution...',
       `[INFO] SHA-256 Operator Verification key: 0xEE7F4-PASSPORT-${selectedIdentity}`,
       '[INFO] Identity Resolved. Access Token generated.',
       '[INFO] Invoking Workspace Resolution daemon...',
@@ -762,9 +771,9 @@ export default function App() {
           currentLogIndex++;
         }
         
-        return prev + 10;
+        return prev + 20;
       });
-    }, 150);
+    }, 50); // Fast workspace resolution: 250ms total
   };
 
   // Trigger automated background updates to prove real operational metrics
@@ -919,15 +928,29 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Dev Info / Auto-ingress notice */}
+              <div className="bg-indigo-950/40 border border-indigo-900/50 p-3 rounded-lg text-[11px] text-indigo-300 flex flex-col gap-1">
+                <div className="font-bold uppercase tracking-wider flex items-center gap-1.5 text-indigo-200">
+                  <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+                  SSO INGRESS DAEMON RUNNING
+                </div>
+                <p className="leading-relaxed text-indigo-400 font-medium">
+                  Sovereign Workspace SSO is verifying credentials. Resolving automatically in <strong className="text-white">1.2 seconds</strong>, or select an identity and click Authorize immediately.
+                </p>
+              </div>
+
               {/* Biometrics Scan simulation */}
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Secure Biometric Verification</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide flex justify-between items-center">
+                  <span>Secure Biometric Verification</span>
+                  <span className="text-[9px] font-extrabold text-indigo-400 uppercase tracking-wider bg-indigo-950/50 border border-indigo-800/40 px-1.5 py-0.5 rounded">OPTIONAL MULTI-FACTOR</span>
+                </span>
                 <button
                   type="button"
                   onClick={() => setBiometricAuthenticated(true)}
-                  className={`w-full py-4 border rounded-lg text-xs font-bold tracking-widest uppercase transition flex items-center justify-center gap-2 ${biometricAuthenticated ? 'bg-emerald-950/40 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 text-slate-400'}`}
+                  className={`w-full py-3.5 border rounded-lg text-xs font-bold tracking-widest uppercase transition flex items-center justify-center gap-2 ${biometricAuthenticated ? 'bg-emerald-950/40 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-slate-900/50 border-slate-800 hover:border-slate-700 text-slate-400'}`}
                 >
-                  <Fingerprint className={`w-5 h-5 ${biometricAuthenticated ? 'text-emerald-400' : 'text-slate-500'}`} />
+                  <Fingerprint className={`w-4 h-4 ${biometricAuthenticated ? 'text-emerald-400' : 'text-slate-500'}`} />
                   {biometricAuthenticated ? 'Biometric Signature Captured // PASSED' : 'Initialize Biometric Fingerprint Scan'}
                 </button>
               </div>
@@ -935,12 +958,24 @@ export default function App() {
               {/* Authorize button */}
               <button
                 type="button"
-                disabled={!biometricAuthenticated}
                 onClick={handleAuthorizePassport}
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-800 disabled:text-slate-600 text-white rounded-lg text-xs font-bold tracking-widest uppercase transition shadow-lg flex items-center justify-center gap-2"
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold tracking-widest uppercase transition shadow-lg flex items-center justify-center gap-2"
               >
                 <Key className="w-4 h-4" />
                 Authorize Sovereign Passport
+              </button>
+
+              {/* Instant Bypass Button for Devs */}
+              <button
+                type="button"
+                onClick={() => {
+                  setUserRole('SUPER_ADMIN');
+                  setBootState('SHELL');
+                  appendAuditLog('blueprint_core', 'SESSION_RESOLVED_BYPASS', 'Bypassed authentication ceremony to load Sovereign command center directly.', 'INFO');
+                }}
+                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 hover:border-slate-700 rounded-lg text-[10px] font-extrabold tracking-widest uppercase transition"
+              >
+                ⚡ Instant Shell Access (Bypass)
               </button>
             </div>
           )}
