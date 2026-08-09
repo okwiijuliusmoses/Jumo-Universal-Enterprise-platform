@@ -9,200 +9,150 @@ export interface JumoStudioDefinition {
   id: string;
   name: string;
   description: string;
-  family: string;
   status: JumoStudioStatus;
+  families: string[];
+  capabilities: string[];
   humanFacing: boolean;
   executable: boolean;
-  configurable: boolean;
-  verificationLayers: string[];
-  dependencies: string[];
 }
+
+const INITIAL_STUDIOS: JumoStudioDefinition[] = [
+  {
+    id: 'reasoning',
+    name: 'JUMO General-Purpose Reasoning Studio',
+    description: 'Human-facing planning, reasoning and instruction interpretation.',
+    status: 'FOUNDATION',
+    families: ['REASONING', 'PLANNING'],
+    capabilities: ['Conversation', 'Planning', 'Requirement Analysis', 'Decision Support'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'intelligence',
+    name: 'JUMO Intelligence Studio',
+    description: 'External AI-provider integration, routing, context and model governance.',
+    status: 'ACTIVE',
+    families: ['AI'],
+    capabilities: ['Provider Routing', 'Model Registry', 'Context', 'Evaluation'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'agent-workforce',
+    name: 'JUMO Agent Workforce Studio',
+    description: 'Specialized AI-agent registration, delegation, supervision and lifecycle.',
+    status: 'ACTIVE',
+    families: ['AGENTS'],
+    capabilities: ['Agent Registry', 'Delegation', 'Scheduling', 'Supervision'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'architecture',
+    name: 'JUMO Architecture & Systems Studio',
+    description: 'Architecture modelling, contracts, dependencies and validation.',
+    status: 'ACTIVE',
+    families: ['ARCHITECTURE'],
+    capabilities: ['System Models', 'Component Models', 'Contracts', 'Dependency Graphs'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'product-ecosystem',
+    name: 'JUMO Product & Ecosystem Studio',
+    description: 'Products, ecosystems, ERP templates, modules and product packaging.',
+    status: 'ACTIVE',
+    families: ['PRODUCT'],
+    capabilities: ['Product Registry', 'Ecosystem Registry', 'ERP Factory', 'Module Factory'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'data-knowledge',
+    name: 'JUMO Data & Knowledge Studio',
+    description: 'Enterprise data, schemas, ontology, knowledge and governance.',
+    status: 'ACTIVE',
+    families: ['DATA'],
+    capabilities: ['Schema Registry', 'Knowledge Graph', 'Lineage', 'Data Governance'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'software-engineering',
+    name: 'JUMO Software Engineering Studio',
+    description: 'Source, components, APIs, testing, builds and release engineering.',
+    status: 'ACTIVE',
+    families: ['ENGINEERING'],
+    capabilities: ['Source Registry', 'API Engineering', 'Testing', 'Build Pipeline'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'manufacturing',
+    name: 'JUMO Manufacturing Studio',
+    description: 'Production planning, jobs, engineering workforce and production evidence.',
+    status: 'ACTIVE',
+    families: ['MANUFACTURING'],
+    capabilities: ['Production Planning', 'Jobs', 'Scheduling', 'Quality'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'hybrid-runtime',
+    name: 'JUMO Infrastructure & Hybrid Runtime Studio',
+    description: 'Local, sovereign, cloud, offline and synchronization runtime orchestration.',
+    status: 'FOUNDATION',
+    families: ['HYBRID'],
+    capabilities: ['Local Runtime', 'Sovereign Runtime', 'Cloud Runtime', 'Offline Runtime'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'verification',
+    name: 'JUMO Verification Studio',
+    description: 'Configurable architecture, product and deployment verification.',
+    status: 'ACTIVE',
+    families: ['VERIFICATION', 'COMPLIANCE'],
+    capabilities: ['Verification Layers', 'Quality Gates', 'Evidence', 'Certification'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'deployment',
+    name: 'JUMO Deployment Studio',
+    description: 'Release, deployment, environment and rollback orchestration.',
+    status: 'ACTIVE',
+    families: ['DEPLOYMENT'],
+    capabilities: ['Environment Management', 'Release', 'Rollback', 'Health'],
+    humanFacing: true,
+    executable: true
+  },
+  {
+    id: 'registry',
+    name: 'JUMO Registry Studio',
+    description: 'Authoritative registries for architecture, products, ecosystems and runtime.',
+    status: 'ACTIVE',
+    families: ['REGISTRY'],
+    capabilities: ['Registry Management', 'Discovery', 'Lifecycle', 'Authority'],
+    humanFacing: true,
+    executable: true
+  }
+];
 
 class JumoStudioRegistry {
   private readonly studios = new Map<string, JumoStudioDefinition>();
 
   constructor() {
-    this.seed();
-  }
-
-  private seed(): void {
-    const definitions: JumoStudioDefinition[] = [
-      {
-        id: 'architecture',
-        name: 'JUMO Architecture & Systems Studio',
-        description: 'Architecture design, system modelling, contracts and dependency planning.',
-        family: 'ARCHITECTURE',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['ARCHITECTURE', 'DEPENDENCY', 'CONTRACT', 'VALIDATION'],
-        dependencies: []
-      },
-      {
-        id: 'intelligence',
-        name: 'JUMO Intelligence Studio',
-        description: 'JUMO Open AI integration, model routing, AI governance and reasoning orchestration.',
-        family: 'AI',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['AI', 'MODEL', 'PROVIDER', 'SAFETY', 'EVALUATION'],
-        dependencies: ['architecture']
-      },
-      {
-        id: 'conversational-reasoning',
-        name: 'JUMO Conversational Reasoning Studio',
-        description: 'Human instruction interpretation, planning and enterprise reasoning.',
-        family: 'REASONING',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['REASONING', 'PLANNING', 'CONTEXT', 'APPROVAL'],
-        dependencies: ['intelligence']
-      },
-      {
-        id: 'agent-workforce',
-        name: 'JUMO Agent Workforce Studio',
-        description: 'Agent registration, skills, delegation, supervision and lifecycle management.',
-        family: 'AGENTS',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['AGENT', 'IDENTITY', 'DELEGATION', 'SUPERVISION'],
-        dependencies: ['intelligence']
-      },
-      {
-        id: 'product-ecosystem',
-        name: 'JUMO Product & Ecosystem Studio',
-        description: 'Products, ecosystems, ERP templates, modules, workflows and product packaging.',
-        family: 'PRODUCT',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['PRODUCT', 'ECOSYSTEM', 'ERP', 'MODULE', 'WORKFLOW'],
-        dependencies: ['architecture']
-      },
-      {
-        id: 'data-knowledge',
-        name: 'JUMO Data & Knowledge Studio',
-        description: 'Data, schemas, ontology, knowledge graph, lineage and governance.',
-        family: 'DATA',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['DATA', 'SCHEMA', 'KNOWLEDGE', 'LINEAGE', 'GOVERNANCE'],
-        dependencies: ['architecture']
-      },
-      {
-        id: 'software-engineering',
-        name: 'JUMO Software Engineering Studio',
-        description: 'Source, components, APIs, tests, builds, dependencies and releases.',
-        family: 'ENGINEERING',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['SOURCE', 'API', 'TEST', 'BUILD', 'ARTIFACT', 'RELEASE'],
-        dependencies: ['architecture', 'product-ecosystem']
-      },
-      {
-        id: 'manufacturing',
-        name: 'JUMO Manufacturing Studio',
-        description: 'Manufacturing planning, production jobs, resources, workforce and quality.',
-        family: 'MANUFACTURING',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['PRODUCTION', 'RESOURCE', 'SCHEDULING', 'QUALITY'],
-        dependencies: ['product-ecosystem', 'software-engineering']
-      },
-      {
-        id: 'build',
-        name: 'JUMO Build Studio',
-        description: 'Artifact compilation, packaging, validation and build orchestration.',
-        family: 'BUILD',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['BUILD', 'COMPILE', 'PACKAGE', 'ARTIFACT'],
-        dependencies: ['software-engineering']
-      },
-      {
-        id: 'deployment',
-        name: 'JUMO Deployment Studio',
-        description: 'Environment provisioning, deployment, health checks and rollback.',
-        family: 'DEPLOYMENT',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['ENVIRONMENT', 'CONFIG', 'HEALTH', 'ROLLBACK'],
-        dependencies: ['build']
-      },
-      {
-        id: 'verification',
-        name: 'JUMO Verification Studio',
-        description: 'Configurable architecture, product and runtime verification layers.',
-        family: 'VERIFICATION',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['ALL_REGISTERED_LAYERS'],
-        dependencies: ['architecture', 'deployment']
-      },
-      {
-        id: 'registry',
-        name: 'JUMO Registries Studio',
-        description: 'Authoritative registration and discovery of architectures, products, ecosystems, agents and runtimes.',
-        family: 'REGISTRY',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['REGISTRY', 'IDENTITY', 'VERSION', 'LIFECYCLE'],
-        dependencies: ['architecture']
-      },
-      {
-        id: 'infrastructure-hybrid',
-        name: 'JUMO Infrastructure & Hybrid Runtime Studio',
-        description: 'Local, sovereign, cloud, offline and hybrid runtime orchestration.',
-        family: 'HYBRID',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['LOCAL', 'SOVEREIGN', 'CLOUD', 'OFFLINE', 'SYNC'],
-        dependencies: ['architecture']
-      },
-      {
-        id: 'planning',
-        name: 'JUMO Planning Studio',
-        description: 'Enterprise planning, architectural planning, implementation planning and execution roadmaps.',
-        family: 'PLANNING',
-        status: 'ACTIVE',
-        humanFacing: true,
-        executable: true,
-        configurable: true,
-        verificationLayers: ['PLANNING', 'DEPENDENCY', 'RISK', 'MILESTONE'],
-        dependencies: ['conversational-reasoning', 'architecture']
-      }
-    ];
-
-    for (const studio of definitions) {
-      this.studios.set(studio.id, studio);
+    for (const studio of INITIAL_STUDIOS) {
+      this.upsert(studio);
     }
   }
 
   register(studio: JumoStudioDefinition): void {
+    if (this.studios.has(studio.id)) {
+      throw new Error(`JUMO studio already registered: ${studio.id}`);
+    }
+
     this.studios.set(studio.id, studio);
   }
 
@@ -219,22 +169,41 @@ class JumoStudioRegistry {
   }
 
   active(): JumoStudioDefinition[] {
-    return this.list().filter(s => s.status === 'ACTIVE');
+    return this.list().filter(
+      studio =>
+        studio.status === 'ACTIVE' ||
+        studio.status === 'FOUNDATION' ||
+        studio.status === 'INTEGRATION'
+    );
   }
 
   executable(): JumoStudioDefinition[] {
-    return this.list().filter(s => s.executable);
+    return this.list().filter(studio => studio.executable);
   }
 
   humanFacing(): JumoStudioDefinition[] {
-    return this.list().filter(s => s.humanFacing);
+    return this.list().filter(studio => studio.humanFacing);
   }
 
-  configurable(): JumoStudioDefinition[] {
-    return this.list().filter(s => s.configurable);
+  families(): string[] {
+    return Array.from(
+      new Set(this.list().flatMap(studio => studio.families))
+    );
   }
 
-  size(): number {
+  has(id: string): boolean {
+    return this.studios.has(id);
+  }
+
+  remove(id: string): boolean {
+    return this.studios.delete(id);
+  }
+
+  clear(): void {
+    this.studios.clear();
+  }
+
+  count(): number {
     return this.studios.size;
   }
 }
