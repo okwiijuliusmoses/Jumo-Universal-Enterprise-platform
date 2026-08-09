@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { JUMO_STUDIO_REGISTRY } from '../../core/hub/architecture/JumoStudioRegistry';
+import { JUMO_HYBRID_ARCHITECTURE_REGISTRY } from '../../core/hub/architecture/JumoHybridArchitectureLayers';
 import { motion, AnimatePresence } from "motion/react";
 import { 
-  Cpu, Shield, Database, Activity, Server, Settings, Layers, Terminal, Globe, Sparkles, 
+  Cpu, Shield, Database, Activity, Server, Settings, Layers, Terminal, Globe, Sparkles, MessageSquare, 
   Box, FileText, CheckCircle2, AlertCircle, Play, Pause, RefreshCw, Plus, Search, 
   ChevronRight, X, ArrowRight, Check, Sliders, AlertTriangle, FileCheck, Trash2, Send, 
   History, RefreshCcw, Command, Zap, ExternalLink, HardDrive, Key, Network, Users, Cloud,
@@ -20,6 +22,7 @@ import { EngineeringStudio } from './studios/EngineeringStudio';
 import { BuildStudio } from './studios/BuildStudio';
 import { DeploymentStudio } from './studios/DeploymentStudio';
 import { VerificationStudio } from './studios/VerificationStudio';
+import ArchitectureVerificationCommandCenter from "./studios/ArchitectureVerificationCommandCenter";
 import { RegistryStudio } from './studios/RegistryStudio';
 
 
@@ -280,6 +283,239 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   useEffect(() => {
     fetchSovereignState();
     const interval = setInterval(fetchSovereignState, 5000);
+
+
+      {/* =========================================================
+           JUMO_VISIBLE_STUDIO_CONTROL_CENTER
+           Authoritative visible Studio + Architecture surface
+         ========================================================= */}
+      <section
+        data-jumo-section="JUMO_VISIBLE_STUDIO_CONTROL_CENTER"
+        className="mb-8 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+      >
+        <div className="px-6 py-5 border-b border-slate-200 bg-slate-50">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                  <Layers className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">
+                    JUMO Digital Hybrid Studios
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    Architecture, engineering, verification and enterprise orchestration
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                  Layers
+                </div>
+                <div className="text-lg font-bold text-slate-900">
+                  {JUMO_HYBRID_ARCHITECTURE_REGISTRY.listLayers().length}
+                </div>
+              </div>
+
+              <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                  Families
+                </div>
+                <div className="text-lg font-bold text-slate-900">
+                  {JUMO_HYBRID_ARCHITECTURE_REGISTRY.families().length}
+                </div>
+              </div>
+
+              <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                  Studios
+                </div>
+                <div className="text-lg font-bold text-slate-900">
+                  {JUMO_STUDIO_REGISTRY.list().length}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+            {JUMO_STUDIO_REGISTRY.list().map((studio) => (
+              <div
+                key={studio.id}
+                className="rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-300 hover:shadow-sm transition"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                    <Layers className="h-5 w-5 text-slate-700" />
+                  </div>
+
+                  <span className="text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+                    {studio.status}
+                  </span>
+                </div>
+
+                <h3 className="mt-4 font-semibold text-slate-900">
+                  {studio.name}
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-500 leading-5">
+                  {studio.description}
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {studio.families.map((family) => (
+                    <span
+                      key={family}
+                      className="text-[10px] px-2 py-1 rounded-md bg-slate-100 text-slate-600"
+                    >
+                      {family}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-xs text-slate-500">
+                    {studio.capabilities.length} capabilities
+                  </span>
+
+                  <span className="text-xs font-medium text-slate-700">
+                    {studio.executable ? 'Executable' : 'Governed'}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+           JUMO_EXTERNAL_AI_SURFACE
+         ========================================================= */}
+      <section
+        data-jumo-section="JUMO_EXTERNAL_AI_SURFACE"
+        className="mb-8 grid grid-cols-1 xl:grid-cols-3 gap-4"
+      >
+
+        <div className="xl:col-span-2 rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+          <div className="flex items-start gap-4">
+            <div className="h-11 w-11 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+              <Sparkles className="h-5 w-5" />
+            </div>
+
+            <div className="flex-1">
+              <h2 className="font-bold text-slate-900">
+                JUMO Open AI
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                External AI-provider integration through the JUMO AI Gateway.
+                The model remains outside the UEOS kernel.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-xs text-slate-700">
+                  External Provider
+                </span>
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-xs text-slate-700">
+                  AI Gateway
+                </span>
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-xs text-slate-700">
+                  Governed Context
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+          <div className="h-11 w-11 rounded-xl bg-slate-100 flex items-center justify-center">
+            <CheckSquare className="h-5 w-5 text-slate-700" />
+          </div>
+
+          <h3 className="mt-4 font-semibold text-slate-900">
+            Verification
+          </h3>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Configurable verification layers are registered independently
+            from the visual interface.
+          </p>
+
+          <div className="mt-4 text-sm font-semibold text-slate-900">
+            {JUMO_HYBRID_ARCHITECTURE_REGISTRY.listLayers().length} registered layers
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+           JUMO_PLANNING_AND_ENTERPRISE_CHAT
+         ========================================================= */}
+      <section
+        data-jumo-section="JUMO_PLANNING_AND_ENTERPRISE_CHAT"
+        className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-4"
+      >
+
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center">
+              <Compass className="h-5 w-5 text-slate-700" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900">
+                Enterprise Planning
+              </h3>
+              <p className="text-xs text-slate-500">
+                Architecture and implementation planning workspace
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-xl bg-slate-50 border border-slate-200 p-4">
+            <div className="text-sm font-medium text-slate-800">
+              Planning is connected to the JUMO reasoning runtime.
+            </div>
+            <div className="mt-1 text-xs text-slate-500">
+              Instructions can be converted into requirements, dependencies,
+              implementation steps and verification requirements.
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center">
+              <MessageSquare className="h-5 w-5 text-slate-700" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900">
+                Enterprise Chat
+              </h3>
+              <p className="text-xs text-slate-500">
+                Conversational interface for the external AI provider
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <span className="h-2 w-2 rounded-full bg-amber-500" />
+              Provider connection governed by JUMO AI Gateway
+            </div>
+            <p className="mt-2 text-xs text-slate-500">
+              This surface does not embed or replace the external AI model.
+            </p>
+          </div>
+        </div>
+
+      </section>
+
     return () => clearInterval(interval);
   }, []);
 
@@ -991,6 +1227,9 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
             <DigitalEcosystemSpecificationForm onSubmit={handleGenerateArchitectureContract} />
           </div>
         )}
+
+        {/* JUMO Dynamic Architecture & AI Command Center */}
+        <ArchitectureVerificationCommandCenter />
 
         {/* Workspace 2: Architecture Studio */}
         {activeWorkspace === "architecture" && (
