@@ -198,7 +198,16 @@ export class UniversalPaymentOrchestrator {
             command.description,
         },
 
-        command.paymentType
+        (
+          command.paymentType === "AGENT" ||
+          command.paymentType === "MERCHANT" ||
+          command.paymentType === "SCHOOL" ||
+          command.paymentType === "INSTITUTION" ||
+          command.paymentType === "ERP" ||
+          command.paymentType === "SERVICE"
+            ? command.paymentType
+            : "SERVICE"
+        )
       );
 
     const receipt:
@@ -224,6 +233,21 @@ export class UniversalPaymentOrchestrator {
 
       status:
         "PENDING",
+
+      domain:
+        runtimeResult.domain,
+
+      feeAmount:
+        runtimeResult.feeAmount,
+
+      netAmount:
+        runtimeResult.netAmount,
+
+      duplicate:
+        runtimeResult.duplicate,
+
+      offlineQueued:
+        runtimeResult.offlineQueued,
     };
 
     this.processed.set(

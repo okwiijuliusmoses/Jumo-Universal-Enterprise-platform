@@ -199,8 +199,8 @@ class SettlementOrchestrator {
     transaction: PaymentTransaction,
     destination: SettlementDestination,
     destinationReference: string,
-    debitAccount = "DIGITAL_PAY_CLEARING",
-    creditAccount = "FAAP_SETTLEMENT"
+    debitAccount: string,
+    creditAccount: string
   ): SettlementResult {
     if (transaction.status !== "SETTLED") {
       throw new Error(
