@@ -4,6 +4,7 @@ import {
   Edit3, Hexagon, Cpu, CheckSquare, Layers, FileText
 } from 'lucide-react';
 import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from '../specification/DigitalEcosystemSpecificationForm';
+import { useSovereignState } from '../../../hooks/useSovereignState';
 
 interface EcosystemWorkspaceProps {
   ecosystemId: 'eco-erp' | 'eco-cloud' | 'eco-software' | 'eco-commercial' | 'eco-research';
@@ -13,18 +14,22 @@ interface EcosystemWorkspaceProps {
 
 export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosystemId, onNavigate, onGenerateArchitectureContract }) => {
   const [activeTab, setActiveTab] = useState<'registry' | 'queue' | 'specifications' | 'architecture' | 'qa' | 'audit'>('registry');
+  const { state } = useSovereignState();
 
   const getEcoData = () => {
     switch (ecosystemId) {
-      case 'eco-erp': return { label: 'ERP Ecosystem', icon: Box, color: 'text-blue-600', bg: 'bg-blue-100' };
-      case 'eco-cloud': return { label: 'JUMO Cloud Ecosystem', icon: Cloud, color: 'text-cyan-600', bg: 'bg-cyan-100' };
-      case 'eco-software': return { label: 'Software Ecosystem', icon: Terminal, color: 'text-purple-600', bg: 'bg-purple-100' };
-      case 'eco-commercial': return { label: 'Commercial Products Ecosystem', icon: Briefcase, color: 'text-orange-600', bg: 'bg-orange-100' };
-      case 'eco-research': return { label: 'Research & Innovation Ecosystem', icon: FlaskConical, color: 'text-pink-600', bg: 'bg-pink-100' };
+      case 'eco-erp': return { label: 'ERP Ecosystem', icon: Box, color: 'text-blue-600', bg: 'bg-blue-100', category: 'ERP_ECOSYSTEM' };
+      case 'eco-cloud': return { label: 'JUMO Cloud Ecosystem', icon: Cloud, color: 'text-cyan-600', bg: 'bg-cyan-100', category: 'JUMO_CLOUD_ECOSYSTEM' };
+      case 'eco-software': return { label: 'Software Ecosystem', icon: Terminal, color: 'text-purple-600', bg: 'bg-purple-100', category: 'SOFTWARE_ECOSYSTEM' };
+      case 'eco-commercial': return { label: 'Commercial Products Ecosystem', icon: Briefcase, color: 'text-orange-600', bg: 'bg-orange-100', category: 'COMMERCIAL_PRODUCTS_ECOSYSTEM' };
+      case 'eco-research': return { label: 'Research & Innovation Ecosystem', icon: FlaskConical, color: 'text-pink-600', bg: 'bg-pink-100', category: 'RESEARCH_INNOVATION_ECOSYSTEM' };
     }
   };
 
-  const { label, icon: Icon, color, bg } = getEcoData();
+  const { label, icon: Icon, color, bg, category } = getEcoData();
+
+  // Registry Filter
+  const registryRecords = state?.assets.filter(a => a.type === category) || [];
 
   return (
     <div className="space-y-6" id={`workspace-${ecosystemId}`}>
@@ -66,6 +71,23 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
 
       {/* Tab Content */}
       <div className="pt-2">
+        {activeTab === 'registry' && (
+          <div className="space-y-4">
+            {registryRecords.length === 0 && <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No products manufactured in this ecosystem.</div>}
+            {registryRecords.map((asset, i) => (
+              <div key={i} className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-slate-900">{asset.name}</h4>
+                  <p className="text-sm text-slate-500">Status: {asset.status} | Step: {asset.step}</p>
+                </div>
+                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${asset.status === 'OPERATIONAL' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'}`}>
+                  {asset.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {activeTab === 'specifications' && (
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <DigitalEcosystemSpecificationForm 
@@ -90,7 +112,7 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
         )}
 
         {/* Placeholders for other tabs for now */}
-        {['registry', 'queue', 'qa', 'audit'].includes(activeTab) && (
+        {['queue', 'qa', 'audit'].includes(activeTab) && (
           <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center">
             <h3 className="text-lg font-bold text-slate-700 capitalize">{activeTab}</h3>
             <p className="text-slate-500 mt-2 max-w-md mx-auto">
