@@ -312,6 +312,10 @@ class JumoHybridArchitectureRegistry {
     );
   }
 
+  listLayers(): JumoArchitectureLayer[] {
+    return Array.from(this.layers.values());
+  }
+
   active(): JumoArchitectureLayer[] {
     return this.all().filter(
       layer =>
