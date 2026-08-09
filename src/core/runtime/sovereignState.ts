@@ -602,15 +602,26 @@ export class SovereignOperatingStateService {
         try {
             const newRecord = {
                 registryId: "reg-" + job.id,
+                name: job.name,
                 domainName: job.name,
-                category: job.type === 'COMMERCIAL_PRODUCTS_ECOSYSTEM' ? 'COMMERCIAL_PRODUCTS_ECOSYSTEM' : job.type,
+                type: job.type,
+                category: job.type === 'COMMERCIAL_PRODUCTS_ECOSYSTEM' ? 'COMMERCIAL_PRODUCTS_ECOSYSTEM' : job.type as any,
+                version: "1.0.0",
+                implementationVersion: "1.0.0",
+                architectureBaseline: "Generated Architecture Contract v1",
                 lifecycleState: 'PRODUCTION',
                 deploymentEnvironment: 'JUMO_CLOUD',
                 ownerInstitution: 'JUMO',
                 technicalCustodian: 'Sovereign Command',
-                lastAuditTimestamp: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                lastAuditTimestamp: new Date().toISOString(),
+                securityClearance: 'LEVEL_3',
+                dataClassification: 'CONFIDENTIAL',
+                slaTier: 'TIER_1',
+                activeNodes: 3,
+                healthStatus: 'HEALTHY'
             };
-            UniversalHubRegistry.registerRecord(newRecord);
+            UniversalHubRegistry.registerRecord(newRecord as any);
             stageLog += ` Automatically registered ${job.name} into ${newRecord.category} registry.`;
         } catch (e) {
             console.error("Auto-registration failed:", e);
