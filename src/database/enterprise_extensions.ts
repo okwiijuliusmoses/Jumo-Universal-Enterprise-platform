@@ -1,8 +1,6 @@
 // JUMO UEOS Enterprise & JDHP Hybrid Platform Upgrade Extensions
 // Authoritative data controllers and generators for Fintech, AI Workforce, RAG, and Security
 
-import crypto from "crypto";
-
 // ==========================================
 // 1. ADVANCED FINTECH REVENUE & SERVICE FEE ENGINE
 // ==========================================

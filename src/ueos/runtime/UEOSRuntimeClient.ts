@@ -6,6 +6,10 @@
 export class UEOSRuntimeClient {
   private static BASE_URL = "/api/ueos/registry";
 
+  static {
+    console.log('[JUMO BOOT 10] UEOS runtime initialized');
+  }
+
   static async fetchDashboardMetrics() {
     const response = await fetch("/api/ueos/runtime/telemetry");
     if (!response.ok) throw new Error("Failed to fetch runtime telemetry");

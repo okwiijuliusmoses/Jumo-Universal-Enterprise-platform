@@ -1,4 +1,9 @@
-import crypto from "crypto";
+const generateUUID = () => {
+  if (typeof globalThis !== "undefined" && globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
+    return globalThis.crypto.randomUUID();
+  }
+  return "sec-" + Math.random().toString(36).substring(2, 11) + "-" + Date.now();
+};
 
 export interface SecurityAuthorizationRequest {
   requestIdentity: string;
@@ -14,7 +19,7 @@ export class SecurityGovernor {
 
   static logAuditEvent(action: string, actor: string, target: string, details?: string) {
     const event = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       action,
       actor,
       target,

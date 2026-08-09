@@ -2,12 +2,23 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Cpu, Server, Activity, Shield, ArrowRight, Settings, Database, BrainCircuit, Network, Fingerprint, Lock, CheckCircle2, RefreshCw, BarChart3, Zap, Globe, MessageSquare, Terminal, X, Loader2 } from "lucide-react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
+import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
+import { AIAgentRecord, AIWorkforceDivision } from "../../core/ai/types/JumoAITypes";
+import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 
 export function AIGatewayRenderer() {
   const [activeTab, setActiveTab] = useState<"gateway" | "agents" | "models" | "memory" | "governance">("gateway");
+  const [selectedDivision, setSelectedDivision] = useState<string>("ALL");
   const [metrics, setMetrics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedAgent, setSelectedAgent] = useState<any>(null);
+  const [selectedAgent, setSelectedAgent] = useState<AIAgentRecord | null>(null);
+
+  const stats = JumoAIAgentRegistry.getWorkforceStats();
+  const allAgents = JumoAIAgentRegistry.getAllAgents();
+
+  const filteredAgents = selectedDivision === "ALL" 
+    ? allAgents 
+    : allAgents.filter(a => a.division === selectedDivision);
 
   useEffect(() => {
     async function loadData() {
@@ -24,21 +35,12 @@ export function AIGatewayRenderer() {
   }, []);
 
   const commandModules = [
-    { id: "models", title: "200+ Model Registry", icon: BrainCircuit, detail: "Gemini, Omni, Lyria", status: "Certified" },
-    { id: "agents", title: "AI Workforce Registry", icon: Cpu, detail: "247 Autonomous Agents", status: "Active Swarm" },
-    { id: "memory", title: "Semantic Memory Centre", icon: Database, detail: "Vector RAG Mesh", status: "Synchronized" },
-    { id: "governance", title: "AI Governance & Audit", icon: Shield, detail: "Ethics & Compliance", status: "Enforced" },
-    { id: "manufacturing", title: "AI ERP Factory", icon: Zap, detail: "Automated Blueprinting", status: "Ready" },
-    { id: "eval", title: "Inference Evaluation", icon: BarChart3, detail: "Performance & Drift", status: "Monitoring" },
-  ];
-
-
-  const agentSwarm = [
-    { name: "Sovereign AI Engineer", role: "Blueprint Architecture", status: "Processing", load: 85 },
-    { name: "Governance Auditor", role: "RBAC Matrix Validation", status: "Idle", load: 0 },
-    { name: "FAAP Ledger AI", role: "Financial Parity Check", status: "Processing", load: 42 },
-    { name: "Security Perimeter AI", role: "Zero-Trust Auditing", status: "Monitoring", load: 12 },
-    { name: "Portal UX Designer", role: "UI Scaffolding", status: "Idle", load: 0 },
+    { id: "agents", title: "JUMO AI Workforce Registry", icon: Cpu, detail: `${stats.totalRegisteredAgents} Native JUMO Agents Registered`, status: "Active Swarm" },
+    { id: "models", title: "JUMO Model Gateway", icon: BrainCircuit, detail: "Gemini 2.5 Pro / Flash & Sovereign Local Runtime", status: "Operational" },
+    { id: "memory", title: "Semantic Memory & RAG", icon: Database, detail: "Tenant-Isolated Knowledge Scopes", status: "Enforced" },
+    { id: "governance", title: "JUMO AEGIS Security & Audit", icon: Shield, detail: "Zero Trust & Anti-Deletion Guardian", status: "Active" },
+    { id: "manufacturing", title: "JUMO National Manufacturing Hub", icon: Zap, detail: `${UniversalHubRegistry.getERPEcosystems().length} ERP Ecosystems Configured`, status: "Ready" },
+    { id: "eval", title: "Reasoning & Cognitive Telemetry", icon: BarChart3, detail: "Model Policy & Pipeline Gates", status: "100% Passed" },
   ];
 
   if (isLoading) {
@@ -49,19 +51,36 @@ export function AIGatewayRenderer() {
     <div className="space-y-10 animate-in fade-in duration-500">
        <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-3xl font-black text-slate-900 tracking-tight italic">Multi-Agent <span className="text-rose-600">Swarm</span></h3>
-          <p className="text-slate-500 font-bold mt-1">Real-time orchestration of specialized AI engineers across the national ecosystem.</p>
+          <h3 className="text-3xl font-black text-slate-900 tracking-tight italic">JUMO Native <span className="text-rose-600">AI Workforce</span></h3>
+          <p className="text-slate-500 font-bold mt-1">Sovereign 250+ JUMO AI Agent workforce across 9 governed engineering divisions.</p>
         </div>
         <button onClick={() => setActiveTab("gateway")} className="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-all">
           ← Back to Gateway
         </button>
       </div>
 
+      {/* Division Selector Filter */}
+      <div className="flex flex-wrap gap-3">
+        {["ALL", "ARCHITECTURE", "ERP_ENGINEERING", "COMMERCIAL_PRODUCT_ENGINEERING", "SOFTWARE_ENGINEERING", "INTELLIGENCE", "SECURITY_AEGIS", "TESTING_VERIFICATION", "GUARDIAN_GOVERNANCE", "MANUFACTURING_ORCHESTRATION"].map(div => (
+          <button
+            key={div}
+            onClick={() => setSelectedDivision(div)}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${
+              selectedDivision === div
+                ? "bg-rose-600 text-white shadow-lg shadow-rose-600/30"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            {div.replace(/_/g, " ")}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
-          {agentSwarm.map((agent, i) => (
+          {filteredAgents.map((agent) => (
             <motion.div 
-              key={i}
+              key={agent.agentId}
               onClick={() => setSelectedAgent(agent)}
               className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:border-rose-400 transition-all cursor-pointer flex items-center justify-between group"
             >
@@ -70,45 +89,42 @@ export function AIGatewayRenderer() {
                   <BrainCircuit className="w-8 h-8" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-black text-slate-900 tracking-tight mb-1">{agent.name}</h4>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{agent.role}</span>
+                  <h4 className="text-xl font-black text-slate-900 tracking-tight mb-1">{agent.jumoName}</h4>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-100">{agent.division.replace(/_/g, " ")}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{agent.role}</span>
+                  </div>
                 </div>
               </div>
               <div className="text-right">
                 <div className="flex items-center justify-end gap-2 mb-2">
-                  <div className={`w-2 h-2 rounded-full ${agent.status === 'Processing' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                  <div className={`w-2.5 h-2.5 rounded-full ${agent.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{agent.status}</span>
                 </div>
-                <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${agent.load}%` }}
-                    className="h-full bg-rose-600"
-                  />
-                </div>
+                <span className="text-[10px] font-bold text-slate-400">{agent.modelPolicy.modelAlias}</span>
               </div>
             </motion.div>
           ))}
         </div>
 
         <div className="bg-slate-900 rounded-[3rem] p-10 text-white space-y-8">
-          <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em]">Cognitive Telemetry</h4>
+          <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em]">Workforce Telemetry</h4>
           <div className="space-y-6">
             {[
-              { label: "Token Processing", val: "1.2M / min" },
-              { label: "Active Threads", val: "842" },
-              { label: "Inference Latency", val: "142ms" },
-              { label: "Memory Recall", val: "99.4%" }
+              { label: "Registered JUMO Agents", val: stats.totalRegisteredAgents.toString() },
+              { label: "Active Operational Swarm", val: stats.activeAgentsCount.toString() },
+              { label: "Virtual Capacity Ceiling", val: `${stats.virtualCapacitySlots} Slots` },
+              { label: "Architecture Guardian", val: stats.guardianStatus }
             ].map((stat, i) => (
               <div key={i} className="flex justify-between items-center border-b border-white/10 pb-4">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</span>
-                <span className="text-sm font-black text-white italic">{stat.val}</span>
+                <span className="text-xs font-black text-white italic">{stat.val}</span>
               </div>
             ))}
           </div>
           <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
             <p className="text-[10px] font-bold text-slate-400 leading-relaxed italic">
-              "AI engineers are currently manufacturing 8 platforms simultaneously across the Uganda National Cloud."
+              "JUMO AI workforce operates with sovereign local ownership. Model gateway provides fallback routing and strict AEGIS zero-trust governance."
             </p>
           </div>
         </div>
@@ -193,16 +209,27 @@ export function AIGatewayRenderer() {
                   </button>
                 </div>
                 <div>
-                  <h3 className="text-4xl font-black text-slate-900 tracking-tighter italic mb-2">{selectedAgent.name}</h3>
-                  <span className="text-xs font-black text-rose-600 uppercase tracking-widest">{selectedAgent.role}</span>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tighter italic mb-1">{selectedAgent.jumoName}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2 py-0.5 rounded border border-rose-100">{selectedAgent.division.replace(/_/g, " ")}</span>
+                    <span className="text-xs font-bold text-slate-500">{selectedAgent.role}</span>
+                  </div>
                 </div>
-                <p className="text-slate-500 font-bold leading-relaxed italic">
-                  Autonomous cognitive worker responsible for high-fidelity enterprise manufacturing. Grounded in national legislative blueprints and JUMO security protocols.
+                <p className="text-slate-500 font-bold leading-relaxed italic text-xs">
+                  {selectedAgent.description}
                 </p>
                 <div className="space-y-4">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Active Task Context</h5>
-                  <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 italic text-sm text-slate-700 font-medium">
-                    "Analyzing 14-stage blueprint for Makerere University ERP. Validating RBAC matrix against NCHE higher education standards..."
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Capabilities & Authorized Tools</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAgent.capabilities.map((c, idx) => (
+                      <span key={idx} className="bg-slate-100 text-slate-700 text-[10px] font-black uppercase px-2.5 py-1 rounded-md">{c}</span>
+                    ))}
+                  </div>
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-4">Architecture Constraints</h5>
+                  <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-[11px] font-bold text-rose-800 space-y-1">
+                    {selectedAgent.architectureConstraints.map((ac, idx) => (
+                      <div key={idx}>• {ac}</div>
+                    ))}
                   </div>
                 </div>
               </div>

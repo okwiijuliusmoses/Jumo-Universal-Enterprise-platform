@@ -3,6 +3,10 @@ import { PublicGateway } from "./experience/gateway/PublicGateway";
 import { UEOSShell } from "./experience/shell/UEOSShell";
 
 export default function App() {
+  useEffect(() => {
+    console.log('[JUMO BOOT 06] UEOS App render requested');
+  }, []);
+
   const [currentUser, setCurrentUser] = useState<any>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("ueos_user");

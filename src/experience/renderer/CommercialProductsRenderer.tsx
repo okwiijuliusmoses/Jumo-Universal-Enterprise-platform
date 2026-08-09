@@ -42,7 +42,7 @@ type Product = {
 const products: Product[] = [
   {
     id: "prod-factory",
-    name: "JUMO Universal Manufacturing Factory",
+    name: "JUMO National Manufacturing Hub",
     category: "Platform Creation",
     icon: Cpu,
     color: "indigo",

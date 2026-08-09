@@ -1,17 +1,41 @@
 // JUMO UEOS Durable Local/Cloud Persistent Database Engine
 // Hybrid PostgreSQL & Local Backup Persistence
-import fs from "fs";
-import path from "path";
-import { Pool } from "pg";
 import { UEOS_SCHEMAS } from "../schema/schema";
 
-const DB_FILE_PATH = path.join(process.cwd(), "assets", "ueos_database.json");
+const isBrowser = typeof window !== "undefined";
+
+let nodeFs: any = null;
+let nodePath: any = null;
+let PgPool: any = null;
+
+if (!isBrowser) {
+  try {
+    nodeFs = require("fs");
+    nodePath = require("path");
+    PgPool = require("pg").Pool;
+  } catch {
+    // Node modules unavailable
+  }
+}
+
+const getDBFilePath = () => {
+  try {
+    if (!isBrowser && typeof process !== "undefined" && typeof process.cwd === "function" && nodePath) {
+      return nodePath.join(process.cwd(), "assets", "ueos_database.json");
+    }
+  } catch {
+    // fallback
+  }
+  return "assets/ueos_database.json";
+};
+
+const DB_FILE_PATH = getDBFilePath();
 
 export class JUMODBEngine {
   private static instance: JUMODBEngine;
   private data: Record<string, any[]> = {};
   private isInitialized = false;
-  private pool: Pool | null = null;
+  private pool: any = null;
   private usePostgres = false;
 
   private readyPromise: Promise<void>;
@@ -83,10 +107,16 @@ export class JUMODBEngine {
   private async initializeEngine() {
     if (this.isInitialized) return;
 
-    // 1. Ensure assets directory exists for backup
-    const dir = path.dirname(DB_FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    // 1. Ensure assets directory exists for backup (Node environment only)
+    try {
+      if (!isBrowser && nodeFs && nodePath && typeof nodeFs.existsSync === "function") {
+        const dir = nodePath.dirname(DB_FILE_PATH);
+        if (!nodeFs.existsSync(dir)) {
+          nodeFs.mkdirSync(dir, { recursive: true });
+        }
+      }
+    } catch (err: any) {
+      console.warn("[DATABASE_WARN] Directory initialization skipped:", err.message);
     }
 
     // 2. Initialize collections in memory
@@ -94,38 +124,40 @@ export class JUMODBEngine {
       this.data[key] = [];
     }
 
-    // 3. Detect and establish PostgreSQL connection if variables exist
-    const host = process.env.SQL_HOST;
-    const dbName = process.env.SQL_DB_NAME;
-    const user = process.env.SQL_USER || process.env.SQL_ADMIN_USER;
-    const password = process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD;
+    // 3. Detect and establish PostgreSQL connection if variables exist (Node environment only)
+    if (!isBrowser && typeof process !== "undefined" && process.env && PgPool) {
+      const host = process.env.SQL_HOST;
+      const dbName = process.env.SQL_DB_NAME;
+      const user = process.env.SQL_USER || process.env.SQL_ADMIN_USER;
+      const password = process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD;
 
-    if (host && dbName && user) {
-      console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
-      try {
-        this.pool = new Pool({
-          host,
-          database: dbName,
-          user,
-          password,
-          connectionTimeoutMillis: 5000,
-        });
+      if (host && dbName && user) {
+        console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
+        try {
+          this.pool = new PgPool({
+            host,
+            database: dbName,
+            user,
+            password,
+            connectionTimeoutMillis: 5000,
+          });
 
-        // Test connection
-        const client = await this.pool.connect();
-        client.release();
+          // Test connection
+          const client = await this.pool.connect();
+          client.release();
 
-        this.usePostgres = true;
-        console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
+          this.usePostgres = true;
+          console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
 
-        // Initialize Postgres tables and load data
-        await this.bootstrapPostgresTables();
-      } catch (err: any) {
-        console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
-        this.usePostgres = false;
+          // Initialize Postgres tables and load data
+          await this.bootstrapPostgresTables();
+        } catch (err: any) {
+          console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
+          this.usePostgres = false;
+        }
+      } else {
+        console.log("[DATABASE] No PostgreSQL variables. Running on secure local JSON storage mode.");
       }
-    } else {
-      console.log("[DATABASE] No PostgreSQL variables. Running on secure local JSON storage mode.");
     }
 
     // Load backup data or local store
@@ -263,12 +295,22 @@ export class JUMODBEngine {
     }
   }
 
-  // Load database from file / Postgres with error recovery
+  // Load database from file / Postgres / localStorage with error recovery
   public async load() {
-    // Read from local JSON first to verify schema and local baseline
+    // Read from local storage (browser) or JSON file (Node)
     try {
-      if (fs.existsSync(DB_FILE_PATH)) {
-        const raw = fs.readFileSync(DB_FILE_PATH, "utf-8");
+      if (isBrowser && typeof localStorage !== "undefined") {
+        const stored = localStorage.getItem("ueos_db_backup");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          for (const key of Object.keys(UEOS_SCHEMAS)) {
+            if (Array.isArray(parsed[key])) {
+              this.data[key] = parsed[key];
+            }
+          }
+        }
+      } else if (!isBrowser && nodeFs && typeof nodeFs.existsSync === "function" && nodeFs.existsSync(DB_FILE_PATH)) {
+        const raw = nodeFs.readFileSync(DB_FILE_PATH, "utf-8");
         const parsed = JSON.parse(raw);
         for (const key of Object.keys(UEOS_SCHEMAS)) {
           if (Array.isArray(parsed[key])) {
@@ -277,7 +319,7 @@ export class JUMODBEngine {
         }
       }
     } catch (err: any) {
-      console.error("[DATABASE_ERROR] Local JSON read failed:", err.message);
+      console.error("[DATABASE_ERROR] Local storage/JSON read failed:", err.message);
     }
 
     // Overwrite cache from PostgreSQL if active
@@ -287,7 +329,7 @@ export class JUMODBEngine {
         
         const rUsers = await this.pool.query("SELECT * FROM ueos_users");
         if (rUsers.rows.length > 0) {
-          this.data["users"] = rUsers.rows.map(r => ({
+          this.data["users"] = rUsers.rows.map((r: any) => ({
             email: r.email,
             name: r.name,
             role: r.role,
@@ -298,7 +340,7 @@ export class JUMODBEngine {
 
         const rAccounts = await this.pool.query("SELECT * FROM ueos_ledger_accounts");
         if (rAccounts.rows.length > 0) {
-          this.data["ledger_accounts"] = rAccounts.rows.map(r => ({
+          this.data["ledger_accounts"] = rAccounts.rows.map((r: any) => ({
             code: r.code,
             name: r.name,
             category: r.category,
@@ -308,7 +350,7 @@ export class JUMODBEngine {
 
         const rRegistries = await this.pool.query("SELECT * FROM ueos_registries");
         if (rRegistries.rows.length > 0) {
-          this.data["registries"] = rRegistries.rows.map(r => ({
+          this.data["registries"] = rRegistries.rows.map((r: any) => ({
             name: r.name,
             type: r.type,
             status: r.status,
@@ -321,7 +363,7 @@ export class JUMODBEngine {
 
         const rLogs = await this.pool.query("SELECT * FROM ueos_audit_logs");
         if (rLogs.rows.length > 0) {
-          this.data["audit_logs"] = rLogs.rows.map(r => ({
+          this.data["audit_logs"] = rLogs.rows.map((r: any) => ({
             id: r.id,
             timestamp: r.timestamp,
             actor: r.actor,
@@ -333,7 +375,7 @@ export class JUMODBEngine {
 
         const rWorkflows = await this.pool.query("SELECT * FROM ueos_workflows");
         if (rWorkflows.rows.length > 0) {
-          this.data["workflows"] = rWorkflows.rows.map(r => ({
+          this.data["workflows"] = rWorkflows.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             triggerEvent: r.trigger_event,
@@ -345,7 +387,7 @@ export class JUMODBEngine {
 
         const rMemories = await this.pool.query("SELECT * FROM ueos_ai_agent_memory");
         if (rMemories.rows.length > 0) {
-          this.data["ai_agent_memory"] = rMemories.rows.map(r => ({
+          this.data["ai_agent_memory"] = rMemories.rows.map((r: any) => ({
             id: r.id,
             agentName: r.agent_name,
             contextId: r.context_id,
@@ -356,7 +398,7 @@ export class JUMODBEngine {
 
         const rSecrets = await this.pool.query("SELECT * FROM ueos_secrets_vault");
         if (rSecrets.rows.length > 0) {
-          this.data["secrets_vault"] = rSecrets.rows.map(r => ({
+          this.data["secrets_vault"] = rSecrets.rows.map((r: any) => ({
             key: r.key,
             value: r.value,
             category: r.category,
@@ -372,7 +414,7 @@ export class JUMODBEngine {
 
         const rEcosystems = await this.pool.query("SELECT * FROM ueos_ecosystems");
         if (rEcosystems.rows.length > 0) {
-          this.data["ecosystems"] = rEcosystems.rows.map(r => ({
+          this.data["ecosystems"] = rEcosystems.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             version: r.version,
@@ -386,7 +428,7 @@ export class JUMODBEngine {
 
         const rTemplates = await this.pool.query("SELECT * FROM ueos_templates");
         if (rTemplates.rows.length > 0) {
-          this.data["templates"] = rTemplates.rows.map(r => ({
+          this.data["templates"] = rTemplates.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             ecosystemId: r.ecosystem_id,
@@ -399,7 +441,7 @@ export class JUMODBEngine {
 
         const rInstances = await this.pool.query("SELECT * FROM ueos_instances");
         if (rInstances.rows.length > 0) {
-          this.data["instances"] = rInstances.rows.map(r => ({
+          this.data["instances"] = rInstances.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             templateId: r.template_id,
@@ -412,7 +454,7 @@ export class JUMODBEngine {
 
         const rModules = await this.pool.query("SELECT * FROM ueos_modules");
         if (rModules.rows.length > 0) {
-          this.data["modules"] = rModules.rows.map(r => ({
+          this.data["modules"] = rModules.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             category: r.category,
@@ -422,7 +464,7 @@ export class JUMODBEngine {
 
         const rForms = await this.pool.query("SELECT * FROM ueos_forms");
         if (rForms.rows.length > 0) {
-          this.data["forms"] = rForms.rows.map(r => ({
+          this.data["forms"] = rForms.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             definition: r.definition
@@ -431,7 +473,7 @@ export class JUMODBEngine {
 
         const rComponents = await this.pool.query("SELECT * FROM ueos_components");
         if (rComponents.rows.length > 0) {
-          this.data["components"] = rComponents.rows.map(r => ({
+          this.data["components"] = rComponents.rows.map((r: any) => ({
             id: r.id,
             name: r.name,
             type: r.type,
@@ -446,11 +488,15 @@ export class JUMODBEngine {
     }
   }
 
-  // Synchronize memory state to disk (always runs as backup)
+  // Synchronize memory state to disk / localStorage (always runs as backup)
   public save() {
     try {
       const payload = JSON.stringify(this.data, null, 2);
-      fs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
+      if (isBrowser && typeof localStorage !== "undefined") {
+        localStorage.setItem("ueos_db_backup", payload);
+      } else if (!isBrowser && nodeFs && typeof nodeFs.writeFileSync === "function") {
+        nodeFs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
+      }
     } catch (err: any) {
       console.error("[DATABASE_ERROR] Write backup failed:", err.message);
     }
@@ -739,7 +785,7 @@ export class JUMODBEngine {
                         tableName === "ai_agent_memory" ? "ueos_ai_agent_memory" :
                         tableName === "secrets_vault" ? "ueos_secrets_vault" : null;
         if (pgTable) {
-          this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch(err => {
+          this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch((err: any) => {
             console.error(`[DATABASE_ERROR] Async PostgreSQL truncate failed for ${tableName}:`, err.message);
           });
         }
