@@ -185,7 +185,8 @@ async function startServer() {
   app.post("/api/v1/ueos/verification/run-suite", (req, res) => {
     try {
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const results = SovereignOperatingStateService.runVerificationSuite(actor);
+      const architectureContract = SovereignOperatingStateService.getState().architectureRequests[SovereignOperatingStateService.getState().architectureRequests.length - 1];
+      const results = SovereignOperatingStateService.runVerificationSuite(actor, architectureContract ? architectureContract.detailedSpecification : null);
       res.json({ success: true, results });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

@@ -376,21 +376,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     {
       id: "NATIONAL DIGITAL MANUFACTURING HUB",
       items: [
-        { id: "overview" as HubWorkspace, label: "Overview", icon: Home, color: "text-slate-600" },
-        { id: "specification" as HubWorkspace, label: "Specification", icon: Edit3, color: "text-slate-600" },
-        { id: "architecture" as HubWorkspace, label: "Architecture Studio", icon: Hexagon, color: "text-slate-600" },
-        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Pipeline", icon: Cpu, color: "text-indigo-600" },
-        { id: "engineering" as HubWorkspace, label: "Engineering", icon: Code, color: "text-slate-600" },
-        { id: "cloud" as HubWorkspace, label: "JUMO Cloud", icon: Server, color: "text-sky-600" },
-        { id: "verification" as HubWorkspace, label: "Verification Center", icon: CheckSquare, color: "text-emerald-500" },
-        { id: "certification" as HubWorkspace, label: "Certification", icon: Award, color: "text-slate-600" },
-        { id: "registries" as HubWorkspace, label: "Product Registries", icon: Layers, color: "text-teal-600" },
-        { id: "templates" as HubWorkspace, label: "Template Manufacturing", icon: Copy, color: "text-slate-600" },
-        { id: "workforce" as HubWorkspace, label: "AI Workforce", icon: Users, color: "text-violet-600" },
-        { id: "security" as HubWorkspace, label: "Security", icon: Shield, color: "text-rose-600" },
-        { id: "audit" as HubWorkspace, label: "Audit", icon: FileText, color: "text-slate-600" },
-        { id: "hybrid" as HubWorkspace, label: "Hybrid Operations", icon: RefreshCw, color: "text-amber-600" },
-        { id: "settings" as HubWorkspace, label: "Settings", icon: Settings, color: "text-slate-600" }
+        { id: "overview" as HubWorkspace, label: "Factory Overview", icon: Home, color: "text-slate-600" }
       ]
     },
     {
@@ -401,6 +387,12 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
         { id: "eco-software" as HubWorkspace, label: "Software Ecosystem", icon: Terminal, color: "text-purple-600" },
         { id: "eco-commercial" as HubWorkspace, label: "Commercial Products Ecosystem", icon: Briefcase, color: "text-orange-600" },
         { id: "eco-research" as HubWorkspace, label: "Research & Innovation Ecosystem", icon: FlaskConical, color: "text-pink-600" }
+      ]
+    },
+    {
+      id: "GLOBAL OPERATIONS",
+      items: [
+        { id: "settings" as HubWorkspace, label: "Settings", icon: Settings, color: "text-slate-600" }
       ]
     }
   ];

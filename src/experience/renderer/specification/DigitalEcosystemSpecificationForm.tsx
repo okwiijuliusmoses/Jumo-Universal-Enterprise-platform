@@ -11,9 +11,13 @@ export interface EcosystemSpecification {
     productType: string;
     productName: string;
     purpose: string;
+    problemBeingSolved: string;
     sector: 'Public' | 'Private';
     targetOrganization: string;
-    targetUsers: string[];
+    organizationType: string;
+    countryRegion: string;
+    targetUsers: string;
+    operatingModel: string;
     geographicScope: string;
     deploymentModel: string;
     customization: string;
@@ -34,12 +38,16 @@ const defaultSpec: EcosystemSpecification = {
   product: {
     ecosystem: 'ERP_ECOSYSTEM',
     productCategory: '',
-    productType: '',
+    productType: 'Enterprise System',
     productName: '',
     purpose: '',
+    problemBeingSolved: '',
     sector: 'Public',
     targetOrganization: '',
-    targetUsers: [],
+    organizationType: 'Government',
+    countryRegion: '',
+    targetUsers: 'All',
+    operatingModel: 'Centralized',
     geographicScope: '',
     deploymentModel: 'JUMO Cloud',
     customization: ''
@@ -169,14 +177,14 @@ export const DigitalEcosystemSpecificationForm = ({ onSubmit }: { onSubmit: (spe
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
             />
           </div>
-          <div className="space-y-1.5 md:col-span-2">
-            <label className="text-[10px] font-black uppercase text-slate-600">Purpose</label>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase text-slate-600">Product Type</label>
             <input
               type="text"
               required
-              value={spec.product.purpose}
-              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, purpose: e.target.value } })}
-              placeholder="Describe the primary objective..."
+              value={spec.product.productType}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, productType: e.target.value } })}
+              placeholder="e.g. Enterprise System"
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -191,6 +199,38 @@ export const DigitalEcosystemSpecificationForm = ({ onSubmit }: { onSubmit: (spe
               <option value="Private">Private Sector</option>
             </select>
           </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <label className="text-[10px] font-black uppercase text-slate-600">Business Purpose</label>
+            <input
+              type="text"
+              required
+              value={spec.product.purpose}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, purpose: e.target.value } })}
+              placeholder="Describe the primary objective..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <label className="text-[10px] font-black uppercase text-slate-600">Problem Being Solved</label>
+            <input
+              type="text"
+              required
+              value={spec.product.problemBeingSolved}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, problemBeingSolved: e.target.value } })}
+              placeholder="Describe the problem being solved..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase text-slate-600">Organization Type</label>
+            <input
+              type="text"
+              value={spec.product.organizationType}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, organizationType: e.target.value } })}
+              placeholder="e.g. Government, Enterprise, Startup"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
           <div className="space-y-1.5">
             <label className="text-[10px] font-black uppercase text-slate-600">Target Organization</label>
             <input
@@ -198,6 +238,36 @@ export const DigitalEcosystemSpecificationForm = ({ onSubmit }: { onSubmit: (spe
               value={spec.product.targetOrganization}
               onChange={(e) => setSpec({ ...spec, product: { ...spec.product, targetOrganization: e.target.value } })}
               placeholder="e.g. Ministry of Health"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase text-slate-600">Country / Region</label>
+            <input
+              type="text"
+              value={spec.product.countryRegion}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, countryRegion: e.target.value } })}
+              placeholder="e.g. Uganda, East Africa, Global"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase text-slate-600">Target Users</label>
+            <input
+              type="text"
+              value={spec.product.targetUsers}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, targetUsers: e.target.value } })}
+              placeholder="e.g. Citizens, Students, Medical Staff"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase text-slate-600">Operating Model</label>
+            <input
+              type="text"
+              value={spec.product.operatingModel}
+              onChange={(e) => setSpec({ ...spec, product: { ...spec.product, operatingModel: e.target.value } })}
+              placeholder="e.g. Centralized, Decentralized, Hybrid"
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500"
             />
           </div>

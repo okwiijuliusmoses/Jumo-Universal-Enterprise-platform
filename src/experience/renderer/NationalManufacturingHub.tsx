@@ -11,6 +11,7 @@ import {
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from "./specification/DigitalEcosystemSpecificationForm";
+import { EcosystemWorkspace } from "./ecosystem/EcosystemWorkspace";
 
 // === TYPES ===
 export type HubWorkspace = 
@@ -1953,8 +1954,17 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
+        {/* Ecosystem Workspaces */}
+        {["eco-erp", "eco-cloud", "eco-software", "eco-commercial", "eco-research"].includes(activeWorkspace) && (
+          <EcosystemWorkspace 
+            ecosystemId={activeWorkspace as any} 
+            onNavigate={onNavigate} 
+            onGenerateArchitectureContract={handleGenerateArchitectureContract}
+          />
+        )}
+
         {/* Other Missing Workspaces (Placeholder for Phase 6 completeness) */}
-        {["engineering", "certification", "security", "hybrid", "eco-erp", "eco-cloud", "eco-software", "eco-commercial", "eco-research"].includes(activeWorkspace) && (
+        {["engineering", "certification", "security", "hybrid"].includes(activeWorkspace) && (
           <div className="space-y-6" id={`workspace-${activeWorkspace}`}>
             <div className="bg-white p-10 rounded-xl border border-slate-200 shadow-sm text-center">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
