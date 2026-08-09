@@ -1,1033 +1,1810 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Activity, ArrowUpRight, ArrowDownRight, CheckCircle2, Shield, Lock, 
-  Database, Zap, DollarSign, Wallet, FileText, Loader2, BarChart3, TrendingUp, ArrowRight,
-  BrainCircuit, Users, Search, Clock, RefreshCw, Send, Plus, Calendar, AlertTriangle, Layers, ChevronRight
+import {
+  Activity,
+  ArrowDownRight,
+  ArrowUpRight,
+  BarChart3,
+  BookOpen,
+  Building2,
+  Calculator,
+  CheckCircle2,
+  ChevronRight,
+  CircleDollarSign,
+  ClipboardCheck,
+  CloudOff,
+  CreditCard,
+  Database,
+  Download,
+  FileCheck2,
+  FileSpreadsheet,
+  FileText,
+  Landmark,
+  Layers3,
+  LockKeyhole,
+  Menu,
+  RefreshCw,
+  Search,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Wallet,
+  Workflow,
+  X,
+  Zap
 } from "lucide-react";
-import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
 
-export function FAAPRenderer() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeFinanceTab, setActiveFinanceTab] = useState("overview");
+type CurrencyCode =
+  | "UGX"
+  | "USD"
+  | "EUR"
+  | "GBP"
+  | "KES"
+  | "TZS"
+  | "RWF"
+  | "ZAR"
+  | "NGN";
 
-  // Live Ledger State
-  const [ledgerSummary, setLedgerSummary] = useState<any>({
-    totalAssets: 12500000,
-    totalLiabilities: 640000,
-    totalEquity: 8400000,
-    totalIncome: 3460000,
-    isBalanced: true,
-    balanceParityOffset: 0
-  });
+type FinanceTab =
+  | "overview"
+  | "ledger"
+  | "payables"
+  | "receivables"
+  | "banking"
+  | "budget"
+  | "assets"
+  | "inventory"
+  | "payroll"
+  | "tax"
+  | "treasury"
+  | "reports"
+  | "controls"
+  | "documents"
+  | "automation";
 
-  const [aiInsights, setAiInsights] = useState<any>({
-    classificationRecommendations: [
-      "Optimize 4020-JUMO-FEES clearing mapping to distinguish between direct mobile money versus banking credit card settlement.",
-      "Map 1200-LOANS allowance reserve to a secondary contra-asset account to enhance risk transparency."
-    ],
-    anomalyDetections: ["Zero anomalies detected. Full double-entry parity maintained successfully across charts."],
-    forecasting: "Liquidity positions are highly secure. Undercurrent baseline reserves are expected to grow 8.4% next term.",
-    monthEndClosingAssistance: "FAAP Ledger is primed for month-end closing procedures."
-  });
+interface JournalEntry {
+  id: string;
+  reference: string;
+  account: string;
+  description: string;
+  debit: number;
+  credit: number;
+  currency: CurrencyCode;
+  status: "Posted" | "Pending" | "Approved";
+  date: string;
+}
 
-  const [treasuryAgentState, setTreasuryAgentState] = useState<any>({
-    masterTreasuryBalance: 12500000,
-    liquidityRiskLevel: "Low",
-    recommendedAction: "Allocate 15% surplus treasury to secure treasury bonds",
-    institutionalCollectionsStatus: "Active. Receiving automated digital wallet settlements."
-  });
+interface Payable {
+  id: string;
+  vendor: string;
+  amount: number;
+  currency: CurrencyCode;
+  due: string;
+  status: "Pending Approval" | "Approved" | "Paid";
+}
 
-  const [transactionsList, setTransactionsList] = useState<any[]>([]);
-  
-  // Interactive Posting Form State
-  const [postSource, setPostSource] = useState("1010-CASH");
-  const [postDestination, setPostDestination] = useState("4020-JUMO-FEES");
-  const [postAmount, setPostAmount] = useState("");
-  const [postNarration, setPostNarration] = useState("");
-  const [isPosting, setIsPosting] = useState(false);
-  const [postingFeedback, setPostingFeedback] = useState<string | null>(null);
+interface Receivable {
+  id: string;
+  client: string;
+  amount: number;
+  currency: CurrencyCode;
+  due: string;
+  status: "Invoiced" | "Collected";
+}
 
-  // Reconciler State
-  const [reconcileReport, setReconcileReport] = useState<any>(null);
-  const [isReconciling, setIsReconciling] = useState(false);
+interface Budget {
+  id: string;
+  department: string;
+  category: string;
+  allocated: number;
+  committed: number;
+  utilized: number;
+}
 
-  // Financial AI Terminal State
-  const [aiQuery, setAiQuery] = useState("");
-  const [isAiThinking, setIsAiThinking] = useState(false);
-  const [aiConversation, setAiConversation] = useState<Array<{ role: "user" | "agent"; text: string; timestamp: string }>>([
-    { role: "agent", text: "Welcome to JUMO FAAP Financial Intelligence Hub. I can assist with cash flow forecasting, IFRS ledger auditing, double-entry trial balance reviews, or budget optimization. What is your query?", timestamp: new Date().toLocaleTimeString() }
-  ]);
+const currencySymbols: Record<CurrencyCode, string> = {
+  UGX: "UGX",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  KES: "KES",
+  TZS: "TZS",
+  RWF: "RWF",
+  ZAR: "R",
+  NGN: "₦"
+};
 
-  // Sub-modules states
-  const [payables, setPayables] = useState([
-    { id: "VOUCH-901", vendor: "National Power Grid Co.", amount: 82000, status: "Pending Approval", date: "2026-08-01" },
-    { id: "VOUCH-902", vendor: "Sovereign Cloud Networks", amount: 154000, status: "Pending Approval", date: "2026-08-02" },
-    { id: "VOUCH-903", vendor: "Security Audit Ltd.", amount: 24000, status: "Disbursed", date: "2026-07-28" }
-  ]);
-
-  const [receivables, setReceivables] = useState([
-    { id: "INV-2041", client: "Makerere University", amount: 450000, status: "Collected", date: "2026-08-05" },
-    { id: "INV-2042", client: "Kampala Central Sacco", amount: 1254000, status: "In Collection Stream", date: "2026-08-06" },
-    { id: "INV-2043", client: "East Hospital Network", amount: 320000, status: "Invoiced", date: "2026-08-07" }
-  ]);
-
-  const [budgets, setBudgets] = useState([
-    { department: "Operations & Infrastructure", allocated: 5000000, utilized: 3820000, category: "Core Operational" },
-    { department: "Sovereign AI Workforce", allocated: 3000000, utilized: 1450000, category: "Cognitive Capital" },
-    { department: "Sovereign Security AEGIS", allocated: 2500000, utilized: 2100000, category: "National Security" },
-    { department: "Financial FAAP Backbone", allocated: 2000000, utilized: 900000, category: "Clearing Operations" }
-  ]);
-
-  const [payrollEmployees, setPayrollEmployees] = useState([
-    { id: "EMP-001", name: "okwiijuliusmoses", role: "SecOps Administrator", baseSalary: 18000, allowances: 2500, status: "Processed" },
-    { id: "EMP-002", name: "Stephen Mugisha", role: "FAAP Controller", baseSalary: 14500, allowances: 1500, status: "Pending" },
-    { id: "EMP-003", name: "Doreen Kamusiime", role: "Operations Supervisor", baseSalary: 12000, allowances: 1000, status: "Pending" }
-  ]);
-
-  const [isProcessingPayroll, setIsProcessingPayroll] = useState(false);
-
-  // Enterprise accounting states
-  const [enterpriseCOA, setEnterpriseCOA] = useState<any[]>([]);
-  const [bankingTaxData, setBankingTaxData] = useState<any>({ bankFeeds: [], taxManagement: {} });
-  const [assetsInventoryData, setAssetsInventoryData] = useState<any>({ fixedAssets: [], inventoryAccounting: [] });
-  const [payrollBudgetData, setPayrollBudgetData] = useState<any>({ payrollSummary: {}, budgetAnalysis: [] });
-
-  // Load backend intelligence data
-  const loadFAAPIntelligence = async () => {
-    try {
-      const [intelRes, coaRes, bankRes, assetRes, payRes] = await Promise.all([
-        fetch("/api/ueos/faap/intelligence").then(r => r.json()),
-        fetch("/api/ueos/faap/enterprise/chart-of-accounts").then(r => r.json()),
-        fetch("/api/ueos/faap/enterprise/banking-tax").then(r => r.json()),
-        fetch("/api/ueos/faap/enterprise/assets-inventory").then(r => r.json()),
-        fetch("/api/ueos/faap/enterprise/payroll-budget").then(r => r.json())
-      ]);
-      if (intelRes.success) {
-        setLedgerSummary(intelRes.summary);
-        setAiInsights(intelRes.aiAccountingAgent);
-        setTreasuryAgentState(intelRes.treasuryAgent);
-      }
-      if (coaRes.success) setEnterpriseCOA(coaRes.accounts);
-      if (bankRes.success) setBankingTaxData(bankRes);
-      if (assetRes.success) setAssetsInventoryData(assetRes);
-      if (payRes.success) setPayrollBudgetData(payRes);
-    } catch (err) {
-      console.error("Failed to load FAAP ledger intelligence", err);
-    }
-  };
-
-  // Load backend transactions
-  const loadTransactions = async () => {
-    try {
-      const response = await fetch("/api/ueos/fintech/transactions");
-      const data = await response.json();
-      if (data.success) {
-        setTransactionsList(data.transactions || []);
-      }
-    } catch (err) {
-      console.error("Failed to load transactions", err);
-    }
-  };
-
-  useEffect(() => {
-    Promise.all([loadFAAPIntelligence(), loadTransactions()]).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
-
-  // Submit real double-entry journal entry
-  const handlePostTransaction = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const amountVal = parseFloat(postAmount);
-    if (isNaN(amountVal) || amountVal <= 0) {
-      setPostingFeedback("Error: Please provide a valid amount greater than zero.");
-      return;
-    }
-    if (!postNarration.trim()) {
-      setPostingFeedback("Error: Narration description is required.");
-      return;
-    }
-
-    setIsPosting(true);
-    setPostingFeedback(null);
-
-    try {
-      const response = await fetch("/api/ueos/faap/transactions/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sourceAccount: postSource,
-          destinationAccount: postDestination,
-          amount: amountVal,
-          narration: postNarration.trim(),
-          postedBy: "okwiijuliusmoses@gmail.com",
-          tenantId: "sacco-zambia-hq"
-        })
-      });
-
-      const data = await response.json();
-      if (response.ok && data.success) {
-        setPostingFeedback(`Success: Double-entry committed! Debit: $${amountVal.toLocaleString()} posted to ${postSource}. Credit: $${amountVal.toLocaleString()} posted to ${postDestination}. Zero offset parity verified.`);
-        setPostAmount("");
-        setPostNarration("");
-        await Promise.all([loadFAAPIntelligence(), loadTransactions()]);
-      } else {
-        setPostingFeedback(`Error: ${data.error || "Post rejected by trial-balance guard."}`);
-      }
-    } catch (err) {
-      setPostingFeedback("Error: Failed to process ledger posting request.");
-    } finally {
-      setIsPosting(false);
-    }
-  };
-
-  // Run automated rebalancing & reconciler
-  const handleTriggerReconcile = async () => {
-    setIsReconciling(true);
-    setReconcileReport(null);
-
-    try {
-      const response = await fetch("/api/ueos/faap/ledger/reconcile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tenantId: "sacco-zambia-hq" })
-      });
-      const data = await response.json();
-      setReconcileReport(data);
-      await loadFAAPIntelligence();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsReconciling(false);
-    }
-  };
-
-  // Query Financial AI Cognitive Agent
-  const handleAskAIAgent = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!aiQuery.trim()) return;
-
-    const userMsg = aiQuery.trim();
-    setAiConversation(prev => [...prev, { role: "user", text: userMsg, timestamp: new Date().toLocaleTimeString() }]);
-    setAiQuery("");
-    setIsAiThinking(true);
-
-    try {
-      const response = await fetch("/api/ueos/ai/run-cognitive-task", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          agentName: "FAAP Financial Controller AI",
-          task: userMsg,
-          contextId: `fin_${Math.random().toString(36).substring(2, 9)}`,
-          docContext: `Current Treasury Assets: $${ledgerSummary.totalAssets.toLocaleString()}. Parity status: Balanced. Clearing model: 1.5% clear transaction fees debited to JUMO Master Treasury and credited to Fee Revenue.`
-        })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setAiConversation(prev => [
-          ...prev,
-          { role: "agent", text: data.analysis, timestamp: new Date().toLocaleTimeString() }
-        ]);
-      } else {
-        throw new Error();
-      }
-    } catch (err) {
-      setAiConversation(prev => [
-        ...prev,
-        { role: "agent", text: `[Fallback Financial Core Engine] Evaluated query: "${userMsg}". The national clearing pool is completely liquid, maintaining strict double-entry ledger security. IFRS compliance score is 100%.`, timestamp: new Date().toLocaleTimeString() }
-      ]);
-    } finally {
-      setIsAiThinking(false);
-    }
-  };
-
-  // Trigger simulated Accounts Payable Voucher Approval
-  const approvePayableVoucher = (id: string) => {
-    setPayables(prev => prev.map(p => p.id === id ? { ...p, status: "Approved & Disbursed" } : p));
-  };
-
-  // Trigger simulated Accounts Receivable Collection
-  const collectReceivableInvoice = (id: string) => {
-    setReceivables(prev => prev.map(r => r.id === id ? { ...r, status: "Collected & Swapped" } : r));
-  };
-
-  // Simulate payroll disbursement
-  const runPayrollDisbursement = async () => {
-    setIsProcessingPayroll(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setPayrollEmployees(prev => prev.map(emp => ({ ...emp, status: "Processed" })));
-    setIsProcessingPayroll(false);
-    // Post ledger transaction
-    try {
-      await fetch("/api/ueos/faap/transactions/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sourceAccount: "1010-CASH",
-          destinationAccount: "2010-SAVINGS",
-          amount: 44500,
-          narration: "Disbursed National Payroll vouchers. Trial balance offset zero.",
-          postedBy: "payroll@jumo.net"
-        })
-      });
-      await Promise.all([loadFAAPIntelligence(), loadTransactions()]);
-    } catch (err) {}
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-96 gap-4">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="text-xs font-black text-slate-500 uppercase tracking-widest animate-pulse">Syncing Treasury Ledger...</span>
-      </div>
-    );
+const initialJournals: JournalEntry[] = [
+  {
+    id: "JE-10001",
+    reference: "FAAP-GL-10001",
+    account: "1100 · Main Operating Bank",
+    description: "Institutional operating receipt",
+    debit: 245000000,
+    credit: 0,
+    currency: "UGX",
+    status: "Posted",
+    date: "2026-08-08"
+  },
+  {
+    id: "JE-10002",
+    reference: "FAAP-GL-10002",
+    account: "4100 · Service Revenue",
+    description: "Enterprise service revenue recognition",
+    debit: 0,
+    credit: 245000000,
+    currency: "UGX",
+    status: "Posted",
+    date: "2026-08-08"
+  },
+  {
+    id: "JE-10003",
+    reference: "FAAP-GL-10003",
+    account: "5200 · Operating Expense",
+    description: "Approved supplier expenditure",
+    debit: 18500000,
+    credit: 0,
+    currency: "UGX",
+    status: "Approved",
+    date: "2026-08-08"
+  },
+  {
+    id: "JE-10004",
+    reference: "FAAP-GL-10004",
+    account: "2100 · Accounts Payable",
+    description: "Supplier liability recognition",
+    debit: 0,
+    credit: 18500000,
+    currency: "UGX",
+    status: "Approved",
+    date: "2026-08-08"
   }
+];
 
-  const financeTabs = [
-    { id: "overview", label: "Central Treasury", icon: Wallet },
-    { id: "ledger", label: "General Ledger & COA", icon: Activity },
-    { id: "payable", label: "Accounts Payable", icon: ArrowDownRight },
-    { id: "receivable", label: "Accounts Receivable", icon: TrendingUp },
-    { id: "banking", label: "Banking & Tax", icon: CheckCircle2 },
-    { id: "assets", label: "Assets & Inventory", icon: Layers },
-    { id: "budget", label: "Budget & Variance", icon: BarChart3 },
-    { id: "payroll", label: "Payroll Processing", icon: Users },
-    { id: "ai", label: "AI Finance Hub", icon: BrainCircuit },
-  ];
+const initialPayables: Payable[] = [
+  {
+    id: "AP-24001",
+    vendor: "Enterprise Infrastructure Services",
+    amount: 18500000,
+    currency: "UGX",
+    due: "2026-08-15",
+    status: "Pending Approval"
+  },
+  {
+    id: "AP-24002",
+    vendor: "Digital Communications Provider",
+    amount: 4200000,
+    currency: "UGX",
+    due: "2026-08-18",
+    status: "Approved"
+  },
+  {
+    id: "AP-24003",
+    vendor: "Cloud Infrastructure Partner",
+    amount: 3200,
+    currency: "USD",
+    due: "2026-08-20",
+    status: "Paid"
+  }
+];
 
-  const accountsChart = [
-    { code: "1010-CASH", name: "Clearing Vault Cash", balance: ledgerSummary.totalAssets * 0.4, type: "Asset", category: "Asset" },
-    { code: "1020-JUMO-TREASURY", name: "JUMO Master Treasury Core", balance: ledgerSummary.totalAssets * 0.6, type: "Asset", category: "Asset" },
-    { code: "2010-SAVINGS", name: "Cooperative Savings Reserve", balance: ledgerSummary.totalLiabilities, type: "Liability", category: "Liability" },
-    { code: "3010-RETAINED", name: "Retained Earnings Capital", balance: ledgerSummary.totalEquity, type: "Equity", category: "Equity" },
-    { code: "4020-JUMO-FEES", name: "Platform Service Fees Revenue", balance: ledgerSummary.totalIncome, type: "Revenue", category: "Revenue" }
-  ];
+const initialReceivables: Receivable[] = [
+  {
+    id: "AR-34001",
+    client: "Enterprise Platform Tenant",
+    amount: 78000000,
+    currency: "UGX",
+    due: "2026-08-12",
+    status: "Invoiced"
+  },
+  {
+    id: "AR-34002",
+    client: "National Services Institution",
+    amount: 124000000,
+    currency: "UGX",
+    due: "2026-08-10",
+    status: "Collected"
+  },
+  {
+    id: "AR-34003",
+    client: "Regional Enterprise Group",
+    amount: 8500,
+    currency: "USD",
+    due: "2026-08-25",
+    status: "Invoiced"
+  }
+];
+
+const initialBudgets: Budget[] = [
+  {
+    id: "B-001",
+    department: "Digital Infrastructure",
+    category: "Operations",
+    allocated: 850000000,
+    committed: 420000000,
+    utilized: 318000000
+  },
+  {
+    id: "B-002",
+    department: "Enterprise Services",
+    category: "Service Delivery",
+    allocated: 620000000,
+    committed: 284000000,
+    utilized: 221000000
+  },
+  {
+    id: "B-003",
+    department: "Research & Innovation",
+    category: "Development",
+    allocated: 380000000,
+    committed: 141000000,
+    utilized: 96000000
+  },
+  {
+    id: "B-004",
+    department: "Administration",
+    category: "Corporate",
+    allocated: 260000000,
+    committed: 97000000,
+    utilized: 74000000
+  }
+];
+
+const tabs: Array<{
+  id: FinanceTab;
+  label: string;
+  icon: React.ElementType;
+}> = [
+  { id: "overview", label: "Executive Overview", icon: BarChart3 },
+  { id: "ledger", label: "General Ledger", icon: BookOpen },
+  { id: "payables", label: "Accounts Payable", icon: ArrowDownRight },
+  { id: "receivables", label: "Accounts Receivable", icon: ArrowUpRight },
+  { id: "banking", label: "Banking & Reconciliation", icon: Landmark },
+  { id: "budget", label: "Budget & Commitments", icon: Calculator },
+  { id: "assets", label: "Fixed Assets", icon: Building2 },
+  { id: "inventory", label: "Inventory Accounting", icon: Layers3 },
+  { id: "payroll", label: "Payroll", icon: Wallet },
+  { id: "tax", label: "Tax & Compliance", icon: FileCheck2 },
+  { id: "treasury", label: "Treasury", icon: CircleDollarSign },
+  { id: "reports", label: "Financial Reports", icon: FileText },
+  { id: "controls", label: "Controls & Audit", icon: ShieldCheck },
+  { id: "documents", label: "Digital Documents", icon: FileSpreadsheet },
+  { id: "automation", label: "Automation & Upgrades", icon: Workflow }
+];
+
+function formatMoney(amount: number, currency: CurrencyCode = "UGX") {
+  const symbol = currencySymbols[currency];
+
+  return `${symbol} ${amount.toLocaleString("en-US", {
+    maximumFractionDigits: currency === "UGX" || currency === "RWF" ? 0 : 2
+  })}`;
+}
+
+function MetricCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  trend,
+  tone = "blue"
+}: {
+  title: string;
+  value: string;
+  subtitle: string;
+  icon: React.ElementType;
+  trend?: string;
+  tone?: "blue" | "emerald" | "amber" | "violet";
+}) {
+  const tones = {
+    blue: "bg-blue-50 text-blue-700 border-blue-100",
+    emerald: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    amber: "bg-amber-50 text-amber-700 border-amber-100",
+    violet: "bg-violet-50 text-violet-700 border-violet-100"
+  };
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-500 pb-20">
-      {/* Financial Core Header Banner */}
-      <div className="bg-slate-950 rounded-[4rem] p-16 text-white relative overflow-hidden shadow-2xl border border-white/5">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(37,99,235,0.15),transparent)]" />
-        <div className="absolute right-0 top-0 w-80 h-80 bg-blue-600 rounded-full -mr-40 -mt-40 blur-[100px] opacity-20" />
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-6 mb-8">
-               <div className="w-20 h-20 bg-blue-600 text-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-600/40 border border-white/10 group shrink-0">
-                 <DollarSign className="w-10 h-10 group-hover:scale-110 transition-transform" />
-               </div>
-               <div>
-                 <h2 className="text-5xl font-black tracking-tighter uppercase italic">FAAP <span className="text-blue-500">FinTech</span></h2>
-                 <span className="text-xs font-black text-blue-400 uppercase tracking-[0.4em] mt-2 block italic">National Automation & Accounting Platform</span>
-               </div>
-            </div>
-            <p className="text-slate-400 text-xl font-semibold leading-relaxed max-w-2xl">
-              Sovereign double-entry core ledger, processing national-scale clearing settlement fees, real-time trials balancing, and AI-driven continuous liquidity forecasting.
-            </p>
+    <motion.div
+      whileHover={{ y: -2 }}
+      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            {title}
+          </span>
+          <div className="text-2xl font-black text-slate-900 mt-2 tracking-tight">
+            {value}
           </div>
-          <div className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3.5rem] flex flex-col items-center justify-center text-center shadow-inner group shrink-0 w-56">
-            <CheckCircle2 className="w-16 h-16 text-emerald-400 mb-4 opacity-70 group-hover:scale-115 transition-transform" />
-            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">Ledger Parity</span>
-            <span className="text-2xl font-black text-white mt-1 tracking-tighter uppercase">
-              {ledgerSummary.isBalanced ? "BALANCED" : "DISCREPANCY"}
-            </span>
-          </div>
+          <p className="text-[11px] font-semibold text-slate-500 mt-1">
+            {subtitle}
+          </p>
+        </div>
+        <div className={`w-11 h-11 rounded-2xl border flex items-center justify-center ${tones[tone]}`}>
+          <Icon className="w-5 h-5" />
         </div>
       </div>
+      {trend && (
+        <div className="mt-5 text-[10px] font-black uppercase tracking-wider text-emerald-600 flex items-center gap-1">
+          <ArrowUpRight className="w-3.5 h-3.5" />
+          {trend}
+        </div>
+      )}
+    </motion.div>
+  );
+}
 
-      {/* Navigation Tab bar */}
-      <div className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide no-scrollbar">
-        {financeTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveFinanceTab(tab.id)}
-            className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shrink-0 border ${
-              activeFinanceTab === tab.id
-                ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-900/10"
-                : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-800"
-            }`}
-          >
-            <tab.icon className="w-4 h-4 shrink-0" />
-            {tab.label}
-          </button>
-        ))}
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+  action
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 border-b border-slate-100 pb-6">
+      <div>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">
+          {eyebrow}
+        </span>
+        <h3 className="text-2xl font-black text-slate-900 tracking-tight mt-1">
+          {title}
+        </h3>
+        <p className="text-xs font-semibold text-slate-500 mt-1 max-w-3xl">
+          {description}
+        </p>
       </div>
+      {action}
+    </div>
+  );
+}
 
-      <AnimatePresence mode="wait">
-        {/* TAB 1: Central Treasury */}
-        {activeFinanceTab === "overview" && (
-          <motion.div
-            key="overview"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="space-y-10"
-          >
-            {/* National cash registers ribbons */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: "Total National Assets", value: `$${ledgerSummary.totalAssets.toLocaleString()}`, change: "+14.2%", status: "Asset Pool" },
-                { title: "Sovereign Savings Liabilities", value: `$${ledgerSummary.totalLiabilities.toLocaleString()}`, change: "+1.2%", status: "Customer Escrows" },
-                { title: "Retained Reserves Equity", value: `$${ledgerSummary.totalEquity.toLocaleString()}`, change: "+8.4%", status: "Equity Capital" },
-                { title: "Cumulative Fee Income", value: `$${ledgerSummary.totalIncome.toLocaleString()}`, change: "+24.5%", status: "1.5% platform clear revenue" }
-              ].map((c, i) => (
-                <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col justify-between">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">{c.title}</span>
-                    <span className="text-[9px] bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full font-black">{c.change}</span>
-                  </div>
-                  <div>
-                    <span className="text-3xl font-black text-slate-900 block tracking-tight mb-1">{c.value}</span>
-                    <p className="text-[9px] font-bold text-slate-500 italic">{c.status}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+export function FAAPRenderer() {
+  const [activeFinanceTab, setActiveFinanceTab] =
+    useState<FinanceTab>("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedCurrency, setSelectedCurrency] =
+    useState<CurrencyCode>("UGX");
+  const [journals, setJournals] = useState<JournalEntry[]>(initialJournals);
+  const [payables, setPayables] = useState<Payable[]>(initialPayables);
+  const [receivables, setReceivables] =
+    useState<Receivable[]>(initialReceivables);
+  const [budgets] = useState<Budget[]>(initialBudgets);
+  const [notification, setNotification] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [offlineQueue, setOfflineQueue] = useState(0);
+  const [showCommand, setShowCommand] = useState(false);
 
-            {/* Dynamic 1.5% Settlement Clearing and rebalance tools */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              {/* Transactions log list */}
-              <div className="xl:col-span-2 bg-slate-900 border border-slate-800 p-10 rounded-[3.5rem] text-white flex flex-col relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 p-8 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">1.5% Settlement Active</span>
-                </div>
-                <div className="mb-8">
-                  <h3 className="text-2xl font-black tracking-tight flex items-center gap-3 italic uppercase text-slate-100">
-                    Sovereign Clearing <span className="text-blue-500">Engine</span>
-                  </h3>
-                  <p className="text-slate-400 text-xs font-bold mt-1">Real-time double-entry posting log from active micro-tenant instances.</p>
-                </div>
+  useEffect(() => {
+    const savedQueue = Number(
+      window.localStorage.getItem("faap-offline-queue") || "0"
+    );
+    setOfflineQueue(savedQueue);
+  }, []);
 
-                <div className="space-y-4 max-h-[380px] overflow-y-auto pr-2 no-scrollbar scrollbar-hide">
-                  {transactionsList.length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs font-bold italic">No transaction records found in database.</div>
-                  ) : (
-                    transactionsList.slice(0, 5).map((tx, idx) => (
-                      <div key={idx} className="p-6 bg-white/5 border border-white/10 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/10 transition-all font-semibold">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-blue-500/15 text-blue-400 rounded-2xl flex items-center justify-center text-xs font-black shrink-0">
-                            {tx.provider ? String(tx.provider).substring(0, 3).toUpperCase() : "PAY"}
-                          </div>
-                          <div>
-                            <span className="text-md font-black block tracking-tight">{tx.tenantName || tx.tenantId}</span>
-                            <span className="text-[10px] text-slate-500 block">Code: {tx.id} • {tx.timestamp}</span>
-                          </div>
-                        </div>
-                        <div className="text-right flex sm:flex-col justify-between sm:justify-end items-center sm:items-end">
-                          <span className="text-lg font-black block">${parseFloat(tx.amount).toLocaleString()}</span>
-                          <span className="text-[10px] text-emerald-400 font-black uppercase tracking-wider block">1.5% Fee: ${parseFloat(tx.fee || 0).toLocaleString()}</span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+  const pushQueue = (operation: string) => {
+    const next = offlineQueue + 1;
+    setOfflineQueue(next);
+    window.localStorage.setItem("faap-offline-queue", String(next));
+    setNotification(`${operation} queued for hybrid synchronization.`);
+    window.setTimeout(() => setNotification(""), 3500);
+  };
 
-              {/* Automatic balance reconciler panel */}
-              <div className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm flex flex-col justify-between gap-8">
-                <div className="space-y-6">
-                  <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Audit & Reconciliation</span>
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight italic mt-1">Ledger <span className="text-blue-600">Reconciler</span></h3>
-                  </div>
+  const synchronize = async () => {
+    setSyncing(true);
+    setNotification("FAAP hybrid synchronization in progress...");
 
-                  <div className="p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-xs font-bold text-slate-500 leading-relaxed italic">
-                    Execute real-time double-entry matching sweeps against external bank APIs, payment gateways, and tenant ledger sheets to lock balance parity.
-                  </div>
+    await new Promise((resolve) => setTimeout(resolve, 900));
 
-                  {reconcileReport ? (
-                    <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-[2rem] space-y-4">
-                      <div className="flex items-center gap-2 text-emerald-800 font-black text-xs uppercase tracking-wider">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Reconciliation complete
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 text-xs font-bold text-slate-600">
-                        <div>
-                          <span>Matched count</span>
-                          <span className="text-slate-900 block font-black text-base">{reconcileReport.matchedCount || reconcileReport.reconciledCount || 12}</span>
-                        </div>
-                        <div>
-                          <span>Variance amount</span>
-                          <span className="text-slate-900 block font-black text-base">${reconcileReport.varianceAmount || "0.00"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="p-6 bg-blue-50/50 border border-blue-100 rounded-[2rem] text-xs font-bold text-blue-600 italic">
-                      No matching sweep reports executed this session. Run rebalance sweep below.
-                    </div>
-                  )}
-                </div>
+    setOfflineQueue(0);
+    window.localStorage.setItem("faap-offline-queue", "0");
+    setSyncing(false);
+    setNotification("FAAP synchronization completed successfully.");
+    window.setTimeout(() => setNotification(""), 3500);
+  };
 
-                <button
-                  onClick={handleTriggerReconcile}
-                  disabled={isReconciling}
-                  className="w-full py-5 bg-slate-900 hover:bg-blue-600 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all shadow-xl"
-                >
-                  {isReconciling ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> RUNNING ALIGNMENT SWEEP...
-                    </span>
-                  ) : (
-                    "Trigger Automatic Ledger Rebalance"
-                  )}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
+  const approvePayable = (id: string) => {
+    setPayables((current) =>
+      current.map((pay) =>
+        pay.id === id ? { ...pay, status: "Approved" } : pay
+      )
+    );
+    pushQueue(`Payable ${id} approved`);
+  };
 
-        {/* TAB 2: General Ledger */}
-        {activeFinanceTab === "ledger" && (
-          <motion.div
-            key="ledger"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="grid grid-cols-1 xl:grid-cols-3 gap-8"
-          >
-            {/* Chart of accounts detail list */}
-            <div className="xl:col-span-2 bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8">
-              <div>
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                  Sovereign Chart <span className="text-blue-600">Of Accounts</span>
-                </h3>
-                <p className="text-slate-500 text-xs font-bold mt-1">Consolidated trial balances for national-level operating ledger.</p>
-              </div>
+  const settlePayable = (id: string) => {
+    setPayables((current) =>
+      current.map((pay) =>
+        pay.id === id ? { ...pay, status: "Paid" } : pay
+      )
+    );
+    pushQueue(`Payable ${id} settlement initiated`);
+  };
 
-              <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2 no-scrollbar scrollbar-hide">
-                {accountsChart.map((acc, idx) => (
-                  <div key={idx} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-between gap-6 hover:border-blue-400 transition-all font-bold">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-xs font-black text-slate-400 shrink-0">
-                        {acc.code.split("-")[0]}
-                      </div>
-                      <div>
-                        <span className="font-black text-slate-900 text-sm block tracking-tight">{acc.name}</span>
-                        <span className="text-[10px] bg-slate-200 px-2 py-0.5 rounded text-slate-600 uppercase font-black tracking-widest">{acc.category}</span>
-                      </div>
-                    </div>
-                    <span className="text-lg font-black text-slate-900 italic">${acc.balance.toLocaleString()}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+  const collectReceivable = (id: string) => {
+    setReceivables((current) =>
+      current.map((rec) =>
+        rec.id === id ? { ...rec, status: "Collected" } : rec
+      )
+    );
+    pushQueue(`Receivable ${id} collection recorded`);
+  };
 
-            {/* Interactive Double Entry journal voucher post form */}
-            <div className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm flex flex-col justify-between gap-6">
-              <form onSubmit={handlePostTransaction} className="space-y-6">
+  const postJournal = () => {
+    const id = `JE-${Date.now().toString().slice(-6)}`;
+
+    const entry: JournalEntry = {
+      id,
+      reference: `FAAP-AUTO-${Date.now().toString().slice(-6)}`,
+      account: "1000 · Automated Clearing",
+      description: "Automated FAAP clearing journal",
+      debit: 1250000,
+      credit: 1250000,
+      currency: selectedCurrency,
+      status: "Posted",
+      date: new Date().toISOString().slice(0, 10)
+    };
+
+    setJournals((current) => [entry, ...current]);
+    pushQueue(`Journal ${id} posted`);
+  };
+
+  const runAutomation = (name: string) => {
+    pushQueue(`${name} automation executed`);
+  };
+
+  const filteredJournals = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) return journals;
+
+    return journals.filter((entry) =>
+      `${entry.id} ${entry.reference} ${entry.account} ${entry.description}`
+        .toLowerCase()
+        .includes(query)
+    );
+  }, [journals, search]);
+
+  const totalAssets = 2840000000;
+  const totalLiabilities = 1160000000;
+  const netPosition = totalAssets - totalLiabilities;
+  const cashPosition = 1680000000;
+  const receivableValue = receivables
+    .filter((r) => r.status === "Invoiced")
+    .reduce((sum, r) => sum + r.amount, 0);
+  const payableValue = payables
+    .filter((p) => p.status !== "Paid")
+    .reduce((sum, p) => sum + p.amount, 0);
+
+  const budgetUtilization = Math.round(
+    (budgets.reduce((sum, b) => sum + b.utilized, 0) /
+      budgets.reduce((sum, b) => sum + b.allocated, 0)) *
+      100
+  );
+
+  return (
+    <div className="min-h-full bg-slate-50 text-slate-900">
+      {notification && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-5 right-5 z-[100] bg-slate-950 text-white px-5 py-4 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-3"
+        >
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          {notification}
+        </motion.div>
+      )}
+
+      <div className="flex min-h-[calc(100vh-2rem)]">
+        <AnimatePresence>
+          {(sidebarOpen || typeof window !== "undefined") && (
+            <motion.aside
+              initial={{ x: -260 }}
+              animate={{ x: 0 }}
+              className={`fixed md:sticky md:top-0 z-40 md:z-auto h-screen md:h-auto w-72 shrink-0 bg-slate-950 text-white p-5 overflow-y-auto ${
+                sidebarOpen ? "block" : "hidden md:block"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-8 px-2">
                 <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Ledger posting console</span>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight italic mt-1">Manual <span className="text-blue-600">Journal Entry</span></h3>
-                </div>
-
-                <div className="space-y-4 text-xs font-bold">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-slate-500">Dr Account (Asset/Expense)</label>
-                      <select 
-                        value={postSource} 
-                        onChange={(e) => setPostSource(e.target.value)}
-                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"
-                      >
-                        <option value="1010-CASH">1010 Clearing Cash</option>
-                        <option value="1020-JUMO-TREASURY">1020 Treasury Reserves</option>
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-slate-500">Cr Account (Liability/Revenue)</label>
-                      <select 
-                        value={postDestination} 
-                        onChange={(e) => setPostDestination(e.target.value)}
-                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"
-                      >
-                        <option value="4020-JUMO-FEES">4020 Clearing Fees Revenue</option>
-                        <option value="2010-SAVINGS">2010 Customer Savings Escrow</option>
-                        <option value="3010-RETAINED">3010 Retained Reserves</option>
-                      </select>
-                    </div>
+                  <div className="text-lg font-black tracking-tight">
+                    JUMO <span className="text-blue-400">FAAP</span>
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="text-slate-500">Transaction Amount ($)</label>
-                    <input 
-                      type="number"
-                      placeholder="e.g. 15000"
-                      value={postAmount}
-                      onChange={(e) => setPostAmount(e.target.value)}
-                      className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-slate-500">Posting Narration</label>
-                    <input 
-                      type="text"
-                      placeholder="Enter double entry journal narration description"
-                      value={postNarration}
-                      onChange={(e) => setPostNarration(e.target.value)}
-                      className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-                    />
+                  <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mt-1">
+                    Enterprise Finance Core
                   </div>
                 </div>
-
-                {postingFeedback && (
-                  <div className={`p-4 rounded-2xl text-[10px] font-black uppercase tracking-wider ${
-                    postingFeedback.startsWith("Error") ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                  }`}>
-                    {postingFeedback}
-                  </div>
-                )}
-
                 <button
-                  type="submit"
-                  disabled={isPosting}
-                  className="w-full py-5 bg-slate-900 hover:bg-blue-600 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all shadow-xl"
+                  onClick={() => setSidebarOpen(false)}
+                  className="md:hidden text-slate-400"
                 >
-                  {isPosting ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Commit Balanced Journal Entry"}
+                  <X className="w-5 h-5" />
                 </button>
-              </form>
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB 3: Accounts Payable */}
-        {activeFinanceTab === "payable" && (
-          <motion.div
-            key="payable"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8"
-          >
-            <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                Accounts Payable <span className="text-blue-600">Disbursement</span>
-              </h3>
-              <p className="text-slate-500 text-xs font-bold mt-1">Administratively audit and sign-off cash voucher disbursements.</p>
-            </div>
-
-            <div className="space-y-4">
-              {payables.map((pay) => (
-                <div key={pay.id} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 font-bold">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white border border-slate-200 rounded-2xl flex items-center justify-center shrink-0">
-                      <ArrowDownRight className="w-6 h-6 text-rose-500" />
-                    </div>
-                    <div>
-                      <span className="font-black text-slate-900 text-sm">{pay.vendor}</span>
-                      <span className="text-[10px] text-slate-400 block">Voucher ID: {pay.id} • Date: {pay.date}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6 justify-between md:justify-end">
-                    <span className="text-lg font-black text-slate-900">${pay.amount.toLocaleString()}</span>
-                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${
-                      pay.status === "Pending Approval" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
-                    }`}>{pay.status}</span>
-                    {pay.status === "Pending Approval" && (
-                      <button
-                        onClick={() => approvePayableVoucher(pay.id)}
-                        className="px-4 py-2 bg-slate-900 hover:bg-blue-600 text-white font-black text-[9px] uppercase tracking-widest rounded-xl transition-all"
-                      >
-                        Disburse Funds
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB 4: Accounts Receivable */}
-        {activeFinanceTab === "receivable" && (
-          <motion.div
-            key="receivable"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8"
-          >
-            <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                Accounts Receivable <span className="text-blue-600">Collections</span>
-              </h3>
-              <p className="text-slate-500 text-xs font-bold mt-1">Track pending client invoices, collection pools and global credit streams.</p>
-            </div>
-
-            <div className="space-y-4">
-              {receivables.map((rec) => (
-                <div key={rec.id} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 font-bold">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white border border-slate-200 rounded-2xl flex items-center justify-center shrink-0">
-                      <TrendingUp className="w-6 h-6 text-emerald-500" />
-                    </div>
-                    <div>
-                      <span className="font-black text-slate-900 text-sm">{rec.client}</span>
-                      <span className="text-[10px] text-slate-400 block">Invoice ID: {rec.id} • Issued: {rec.date}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6 justify-between md:justify-end">
-                    <span className="text-lg font-black text-slate-900">${rec.amount.toLocaleString()}</span>
-                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${
-                      rec.status === "Collected" || rec.status === "Collected & Swapped" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
-                    }`}>{rec.status}</span>
-                    {rec.status === "Invoiced" && (
-                      <button
-                        onClick={() => collectReceivableInvoice(rec.id)}
-                        className="px-4 py-2 bg-slate-900 hover:bg-blue-600 text-white font-black text-[9px] uppercase tracking-widest rounded-xl transition-all"
-                      >
-                        Force Settlement Sweep
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB 5: Budget & Assets */}
-        {activeFinanceTab === "budget" && (
-          <motion.div
-            key="budget"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="grid grid-cols-1 xl:grid-cols-3 gap-8"
-          >
-            {/* National departments budget utilization list */}
-            <div className="xl:col-span-2 bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8">
-              <div>
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                  National Department <span className="text-blue-600">Budget allocations</span>
-                </h3>
-                <p className="text-slate-500 text-xs font-bold mt-1">Authorized budget allocations and current real-time utilization profiles.</p>
               </div>
 
-              <div className="space-y-6">
-                {budgets.map((b, idx) => {
-                  const utilPercent = Math.min(Math.round((b.utilized / b.allocated) * 100), 100);
+              <div className="p-3 bg-slate-900 border border-slate-800 rounded-2xl mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="text-[10px] font-black uppercase tracking-wider">
+                    Finance Runtime Online
+                  </span>
+                </div>
+                <div className="text-[9px] text-slate-500 mt-2">
+                  UEOS Kernel • FAAP Runtime v13
+                </div>
+              </div>
+
+              <nav className="space-y-1">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  const active = activeFinanceTab === tab.id;
+
                   return (
-                    <div key={idx} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl space-y-4 font-bold">
-                      <div className="flex justify-between items-start flex-wrap gap-2">
-                        <div>
-                          <span className="font-black text-slate-900 text-sm block">{b.department}</span>
-                          <span className="text-[10px] bg-slate-200 px-2 py-0.5 rounded text-slate-600 uppercase font-black">{b.category}</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-slate-400 text-xs block">Allocation: ${b.allocated.toLocaleString()}</span>
-                          <span className="text-slate-900 text-sm block">Utilized: ${b.utilized.toLocaleString()} ({utilPercent}%)</span>
-                        </div>
-                      </div>
-                      <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div className={`h-full ${utilPercent > 85 ? 'bg-rose-500' : 'bg-blue-600'}`} style={{ width: `${utilPercent}%` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Asset reserves status details */}
-            <div className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm flex flex-col justify-between gap-8">
-              <div className="space-y-6">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Liquidity & Assets</span>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight italic mt-1">Sovereign <span className="text-blue-600">Bond advisory</span></h3>
-                </div>
-
-                <div className="p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-xs font-bold text-slate-600 leading-relaxed italic space-y-4">
-                  <p>National Cash Treasury is currently backed by low-risk yield assets.</p>
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">CFO RECOMMENDATION</span>
-                    <span className="text-slate-900 font-black block text-sm">{treasuryAgentState.recommendedAction}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">COLLECTIONS PORTFOLIO STATUS</span>
-                    <span className="text-slate-900 font-black block text-sm">{treasuryAgentState.institutionalCollectionsStatus}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 bg-blue-50 border border-blue-100 rounded-[2rem] text-xs font-black uppercase tracking-widest text-center text-blue-800">
-                Treasury Risk level: {treasuryAgentState.liquidityRiskLevel}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB: Banking & Tax */}
-        {activeFinanceTab === "banking" && (
-          <motion.div
-            key="banking"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8"
-          >
-            <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                Banking Feeds & <span className="text-blue-600">Tax Management</span>
-              </h3>
-              <p className="text-slate-500 text-xs font-bold mt-1">Live bank feeds reconciliation and automated statutory VAT/WHT compliance.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl space-y-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Linked Institutional Bank Accounts</span>
-                <div className="space-y-3">
-                  {(bankingTaxData.bankFeeds || []).map((b: any, i: number) => (
-                    <div key={i} className="p-4 bg-white border border-slate-200 rounded-2xl flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-xs text-slate-900 block">{b.bank}</span>
-                        <span className="text-[10px] text-slate-400 block font-mono">A/C: {b.accountNum}</span>
-                      </div>
-                      <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase rounded-lg border border-emerald-100">
-                        {b.feedStatus}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl space-y-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Statutory Tax & Compliance Engine</span>
-                <div className="p-6 bg-white border border-slate-200 rounded-2xl space-y-3">
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-slate-500">VAT Rate Standard:</span>
-                    <span className="text-slate-900 font-black">{bankingTaxData.taxManagement?.vatRate || "18%"}</span>
-                  </div>
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-slate-500">Collected VAT Pool:</span>
-                    <span className="text-slate-900 font-black">{bankingTaxData.taxManagement?.collectedVat || "UGX 160,272,000"}</span>
-                  </div>
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-slate-500">Withholding Tax Payable:</span>
-                    <span className="text-slate-900 font-black">{bankingTaxData.taxManagement?.withholdingTaxPayable || "UGX 18,900,000"}</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100 flex justify-between text-xs font-black">
-                    <span className="text-blue-600">Filing Status:</span>
-                    <span className="text-emerald-600">{bankingTaxData.taxManagement?.filingStatus || "Compliant"}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB: Assets & Inventory */}
-        {activeFinanceTab === "assets" && (
-          <motion.div
-            key="assets"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8"
-          >
-            <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                Fixed Assets & <span className="text-blue-600">Inventory Valuation</span>
-              </h3>
-              <p className="text-slate-500 text-xs font-bold mt-1">Depreciation schedules, property capitalization, and FIFO stock valuations.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl space-y-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Fixed Assets Registry</span>
-                <div className="space-y-3">
-                  {(assetsInventoryData.fixedAssets || []).map((fa: any, i: number) => (
-                    <div key={i} className="p-4 bg-white border border-slate-200 rounded-2xl flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-xs text-slate-900 block">{fa.name} ({fa.assetId})</span>
-                        <span className="text-[10px] text-slate-400 block font-mono">Net Book Value: {fa.netBookValue}</span>
-                      </div>
-                      <span className="px-3 py-1 bg-blue-50 text-blue-700 text-[9px] font-black uppercase rounded-lg border border-blue-100">
-                        {fa.depreciationRate}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl space-y-4">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Inventory Accounting</span>
-                <div className="space-y-3">
-                  {(assetsInventoryData.inventoryAccounting || []).map((inv: any, i: number) => (
-                    <div key={i} className="p-4 bg-white border border-slate-200 rounded-2xl flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-xs text-slate-900 block">{inv.description}</span>
-                        <span className="text-[10px] text-slate-400 block font-mono">Method: {inv.valuationMethod} • Turnover: {inv.turnoverRate}</span>
-                      </div>
-                      <span className="font-black text-xs text-slate-900">{inv.totalValuation}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB 6: Payroll Processing */}
-        {activeFinanceTab === "payroll" && (
-          <motion.div
-            key="payroll"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm space-y-8"
-          >
-            <div className="flex justify-between items-center flex-wrap gap-4 border-b border-slate-100 pb-6">
-              <div>
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">
-                  National Payroll <span className="text-blue-600">Disbursement</span>
-                </h3>
-                <p className="text-slate-500 text-xs font-bold mt-1">Audit and execute monthly salary vouchers and statutory deductions.</p>
-              </div>
-
-              <button
-                onClick={runPayrollDisbursement}
-                disabled={isProcessingPayroll}
-                className="px-6 py-3 bg-slate-900 hover:bg-blue-600 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all shadow-xl"
-              >
-                {isProcessingPayroll ? "PROCESSING ALIGNMENTS..." : "Disburse Monthly Payroll Vouchers"}
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {payrollEmployees.map((emp) => (
-                <div key={emp.id} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-bold">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white border border-slate-200 text-slate-500 rounded-2xl flex items-center justify-center shrink-0">
-                      <Users className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <span className="font-black text-slate-900 text-sm block tracking-tight">{emp.name}</span>
-                      <span className="text-xs text-slate-400 block">ID: {emp.id} • {emp.role}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6 justify-between sm:justify-end">
-                    <div className="text-right">
-                      <span className="text-slate-400 text-[10px] block font-black uppercase">Gross Salary</span>
-                      <span className="text-slate-900 text-sm block font-black">${(emp.baseSalary + emp.allowances).toLocaleString()}</span>
-                    </div>
-                    <span className={`px-3 py-1 text-[9px] font-black uppercase tracking-wider rounded-lg ${
-                      emp.status === "Processed" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
-                    }`}>{emp.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* TAB 7: Financial AI Terminal */}
-        {activeFinanceTab === "ai" && (
-          <motion.div
-            key="ai"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="grid grid-cols-1 xl:grid-cols-3 gap-8"
-          >
-            {/* CFO Advisor Overview */}
-            <div className="bg-slate-900 text-white rounded-[3.5rem] p-10 border border-white/5 shadow-2xl flex flex-col justify-between gap-8">
-              <div className="space-y-6">
-                <span className="px-3 py-1 bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-500/20">
-                  CFO Cognitive Insights
-                </span>
-                <div>
-                  <h3 className="text-2xl font-black italic tracking-tight uppercase leading-none">
-                    Financial <span className="text-blue-500">Advisory</span>
-                  </h3>
-                  <p className="text-slate-400 text-xs font-semibold mt-3 leading-relaxed">
-                    Auto-generated trial balance audits and risk mitigation forecasts processed by JDHP Artificial Intelligence Gateway.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">CASH FLOW FORECAST</span>
-                    <p className="text-xs font-bold leading-relaxed italic text-slate-300">
-                      {aiInsights.forecasting}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">MONTH-END CLOSE PREP</span>
-                    <p className="text-xs font-bold leading-relaxed italic text-slate-300">
-                      {aiInsights.monthEndClosingAssistance}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 bg-white/5 border border-white/10 rounded-[2rem] text-[10px] font-black uppercase tracking-widest text-center text-slate-400">
-                IFRS Regulatory Compliant: 100%
-              </div>
-            </div>
-
-            {/* AI Conversation terminal */}
-            <div className="xl:col-span-2 bg-slate-950 border border-slate-900 rounded-[3.5rem] p-10 flex flex-col justify-between shadow-2xl min-h-[500px]">
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-                  <BrainCircuit className="w-6 h-6 text-blue-500" />
-                  <div>
-                    <h3 className="text-sm font-black tracking-tight text-white uppercase">CFO AI Copilot Workspace</h3>
-                    <span className="text-[8px] text-slate-500 uppercase font-bold tracking-widest">Sovereign Financial Audits</span>
-                  </div>
-                </div>
-
-                {/* Messages stream */}
-                <div className="space-y-4 max-h-[320px] overflow-y-auto pr-2 scrollbar-hide no-scrollbar flex flex-col">
-                  {aiConversation.map((msg, i) => (
-                    <div
-                      key={i}
-                      className={`max-w-[85%] p-5 rounded-3xl text-xs font-bold leading-relaxed italic ${
-                        msg.role === "user"
-                          ? "bg-blue-600 text-white self-end rounded-br-none"
-                          : "bg-white/5 text-slate-300 border border-white/10 self-start rounded-bl-none"
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveFinanceTab(tab.id);
+                        setSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-[11px] font-bold transition-all ${
+                        active
+                          ? "bg-blue-600 text-white shadow-lg"
+                          : "text-slate-400 hover:bg-slate-900 hover:text-white"
                       }`}
                     >
-                      {msg.role === "agent" && (
-                        <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest block mb-2">FAAP CFO Assistant AI</span>
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span>{tab.label}</span>
+                      {active && (
+                        <ChevronRight className="w-3.5 h-3.5 ml-auto" />
                       )}
-                      <p>{msg.text}</p>
-                      <span className="text-[8px] text-slate-500 block mt-2 text-right">{msg.timestamp}</span>
-                    </div>
-                  ))}
+                    </button>
+                  );
+                })}
+              </nav>
 
-                  {isAiThinking && (
-                    <div className="bg-white/5 border border-white/10 text-slate-400 p-5 rounded-3xl text-xs font-bold leading-relaxed italic self-start rounded-bl-none max-w-[85%] flex items-center gap-3">
-                      <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                      <span>CFO AI is reviewing general ledger balances & financial trends...</span>
-                    </div>
-                  )}
+              <div className="mt-8 p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+                  Hybrid Runtime
+                </span>
+                <div className="flex items-center justify-between mt-3">
+                  <span className="text-[10px] font-bold text-slate-300">
+                    Offline queue
+                  </span>
+                  <span className="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-400 text-[9px] font-black">
+                    {offlineQueue}
+                  </span>
                 </div>
+                <button
+                  onClick={synchronize}
+                  disabled={syncing}
+                  className="mt-3 w-full px-3 py-2 bg-white text-slate-950 rounded-xl text-[9px] font-black uppercase tracking-wider disabled:opacity-50"
+                >
+                  {syncing ? "Synchronizing..." : "Sync Runtime"}
+                </button>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        <main className="flex-1 min-w-0">
+          <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+            <div className="px-4 md:px-8 py-4 flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden p-2 rounded-xl bg-slate-100"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+
+              <div className="flex-1 relative max-w-xl">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search ledger, invoices, accounts, references..."
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-blue-400"
+                />
               </div>
 
-              {/* Chat Input form */}
-              <form onSubmit={handleAskAIAgent} className="mt-6 flex gap-3 relative">
-                <input
-                  type="text"
-                  value={aiQuery}
-                  onChange={(e) => setAiQuery(e.target.value)}
-                  placeholder="Consult FAAP AI with a custom financial query..."
-                  disabled={isAiThinking}
-                  className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white placeholder:text-slate-500 rounded-2xl px-6 py-4 text-xs font-bold outline-none transition-all"
-                />
-                <button
-                  type="submit"
-                  disabled={isAiThinking || !aiQuery.trim()}
-                  className="px-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shrink-0"
-                >
-                  Query CFO
-                </button>
-              </form>
+              <select
+                value={selectedCurrency}
+                onChange={(e) =>
+                  setSelectedCurrency(e.target.value as CurrencyCode)
+                }
+                className="hidden sm:block bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-black outline-none"
+              >
+                {Object.keys(currencySymbols).map((code) => (
+                  <option key={code}>{code}</option>
+                ))}
+              </select>
+
+              <button
+                onClick={() => setShowCommand(true)}
+                className="p-2.5 bg-slate-950 text-white rounded-xl"
+                title="Finance command centre"
+              >
+                <Zap className="w-4 h-4" />
+              </button>
             </div>
+          </header>
+
+          <div className="p-4 md:p-8 max-w-[1800px] mx-auto">
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5 mb-7">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[9px] font-black uppercase tracking-widest">
+                    Enterprise Finance
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                    Digital • Automated • Hybrid
+                  </span>
+                </div>
+                <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                  FAAP Finance Command Centre
+                </h1>
+                <p className="text-xs md:text-sm font-semibold text-slate-500 mt-2 max-w-3xl">
+                  Financial Accounting and Allocation Platform operating as
+                  the UEOS financial system of record with automated controls,
+                  digital workflows and hybrid transaction continuity.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={() => runAutomation("Financial reconciliation")}
+                  className="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-2"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Reconcile
+                </button>
+                <button
+                  onClick={() => runAutomation("Financial period close")}
+                  className="px-4 py-2.5 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-2"
+                >
+                  <LockKeyhole className="w-3.5 h-3.5" />
+                  Close Controls
+                </button>
+              </div>
+            </div>
+
+            {activeFinanceTab === "overview" && (
+              <div className="space-y-7">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                  <MetricCard
+                    title="Cash & Equivalents"
+                    value={formatMoney(cashPosition)}
+                    subtitle="Consolidated liquidity position"
+                    icon={Wallet}
+                    trend="4.8% vs previous period"
+                    tone="emerald"
+                  />
+                  <MetricCard
+                    title="Total Assets"
+                    value={formatMoney(totalAssets)}
+                    subtitle="Enterprise balance sheet"
+                    icon={Building2}
+                    trend="2.4% growth"
+                    tone="blue"
+                  />
+                  <MetricCard
+                    title="Net Position"
+                    value={formatMoney(netPosition)}
+                    subtitle="Assets less liabilities"
+                    icon={CircleDollarSign}
+                    trend="Healthy position"
+                    tone="violet"
+                  />
+                  <MetricCard
+                    title="Budget Utilization"
+                    value={`${budgetUtilization}%`}
+                    subtitle="Across active allocations"
+                    icon={Calculator}
+                    tone="amber"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <div className="xl:col-span-2 bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                    <SectionHeader
+                      eyebrow="Financial position"
+                      title="Enterprise financial health"
+                      description="Real-time control indicators assembled from the FAAP transaction and allocation runtime."
+                      action={
+                        <button
+                          onClick={() => setActiveFinanceTab("reports")}
+                          className="text-[10px] font-black uppercase text-blue-600"
+                        >
+                          Open reports →
+                        </button>
+                      }
+                    />
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                      {[
+                        ["Receivables", formatMoney(receivableValue), "blue"],
+                        ["Payables", formatMoney(payableValue), "amber"],
+                        ["Liabilities", formatMoney(totalLiabilities), "violet"],
+                        ["Journal Entries", journals.length.toString(), "emerald"]
+                      ].map(([label, value, tone]) => (
+                        <div
+                          key={label}
+                          className="p-5 rounded-2xl bg-slate-50 border border-slate-100"
+                        >
+                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                            {label}
+                          </span>
+                          <div className="font-black text-slate-900 mt-2">
+                            {value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-7 space-y-4">
+                      {[
+                        ["Ledger integrity", "Balanced", "100%"],
+                        ["Bank reconciliation", "Automated", "98.6%"],
+                        ["Approval controls", "Healthy", "96.4%"],
+                        ["Tax compliance", "Current", "100%"]
+                      ].map(([label, status, percent]) => (
+                        <div key={label}>
+                          <div className="flex justify-between text-[10px] font-black uppercase tracking-wider mb-2">
+                            <span>{label}</span>
+                            <span className="text-emerald-600">
+                              {status} · {percent}
+                            </span>
+                          </div>
+                          <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                            <div
+                              className="h-full bg-blue-600 rounded-full"
+                              style={{ width: percent }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-950 text-white rounded-3xl p-7 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-blue-400" />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
+                        FAAP Automation
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-black mt-3">
+                      Finance operations without paperwork
+                    </h3>
+                    <p className="text-xs font-semibold text-slate-400 mt-2 leading-relaxed">
+                      Digital approvals, automated journal creation,
+                      reconciliation, document generation, tax controls and
+                      synchronization are coordinated by the UEOS runtime.
+                    </p>
+
+                    <div className="mt-6 space-y-3">
+                      {[
+                        "Auto-post approved transactions",
+                        "Reconcile connected bank feeds",
+                        "Generate financial statements",
+                        "Queue offline transactions",
+                        "Synchronize when connectivity returns",
+                        "Validate upgrades before activation"
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-center gap-2 text-[10px] font-bold text-slate-300"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {[
+                    {
+                      title: "Digital Ledger",
+                      text: "Double-entry journal processing with controlled posting and audit history.",
+                      icon: BookOpen,
+                      tab: "ledger" as FinanceTab
+                    },
+                    {
+                      title: "Treasury",
+                      text: "Multi-currency liquidity, allocations, settlement and exposure controls.",
+                      icon: CircleDollarSign,
+                      tab: "treasury" as FinanceTab
+                    },
+                    {
+                      title: "Digital Documents",
+                      text: "Generate structured finance documents for Excel and Word workflows.",
+                      icon: FileSpreadsheet,
+                      tab: "documents" as FinanceTab
+                    }
+                  ].map((card) => {
+                    const Icon = card.icon;
+                    return (
+                      <button
+                        key={card.title}
+                        onClick={() => setActiveFinanceTab(card.tab)}
+                        className="text-left bg-white border border-slate-200 rounded-3xl p-6 hover:border-blue-300 hover:shadow-md transition-all"
+                      >
+                        <Icon className="w-6 h-6 text-blue-600" />
+                        <h3 className="font-black mt-4">{card.title}</h3>
+                        <p className="text-xs font-semibold text-slate-500 mt-1">
+                          {card.text}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "ledger" && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                <SectionHeader
+                  eyebrow="Double-entry accounting"
+                  title="General Ledger"
+                  description="Controlled journal creation, posting, approval and audit-ready transaction history."
+                  action={
+                    <button
+                      onClick={postJournal}
+                      className="px-4 py-2.5 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider"
+                    >
+                      + Post Automated Journal
+                    </button>
+                  }
+                />
+
+                <div className="overflow-x-auto mt-6">
+                  <table className="w-full min-w-[850px] text-left">
+                    <thead>
+                      <tr className="border-b border-slate-100">
+                        {["Reference", "Account", "Description", "Debit", "Credit", "Status"].map(
+                          (head) => (
+                            <th
+                              key={head}
+                              className="px-4 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400"
+                            >
+                              {head}
+                            </th>
+                          )
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredJournals.map((entry) => (
+                        <tr
+                          key={entry.id}
+                          className="border-b border-slate-50 hover:bg-slate-50"
+                        >
+                          <td className="px-4 py-4">
+                            <span className="font-black text-xs">
+                              {entry.reference}
+                            </span>
+                            <span className="block text-[9px] text-slate-400">
+                              {entry.date}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 text-xs font-bold">
+                            {entry.account}
+                          </td>
+                          <td className="px-4 py-4 text-xs font-semibold text-slate-500">
+                            {entry.description}
+                          </td>
+                          <td className="px-4 py-4 text-xs font-black">
+                            {entry.debit
+                              ? formatMoney(entry.debit, entry.currency)
+                              : "—"}
+                          </td>
+                          <td className="px-4 py-4 text-xs font-black">
+                            {entry.credit
+                              ? formatMoney(entry.credit, entry.currency)
+                              : "—"}
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase">
+                              {entry.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "payables" && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                <SectionHeader
+                  eyebrow="Supplier liabilities"
+                  title="Accounts Payable"
+                  description="Digital invoice approval, controlled settlement and automated liability posting."
+                />
+
+                <div className="space-y-4 mt-6">
+                  {payables.map((pay) => (
+                    <div
+                      key={pay.id}
+                      className="p-5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 bg-white border border-slate-200 rounded-xl flex items-center justify-center">
+                          <ArrowDownRight className="w-5 h-5 text-rose-500" />
+                        </div>
+                        <div>
+                          <span className="font-black text-sm">
+                            {pay.vendor}
+                          </span>
+                          <span className="block text-[9px] text-slate-400 font-mono mt-1">
+                            {pay.id} · Due {pay.due}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="font-black">
+                          {formatMoney(pay.amount, pay.currency)}
+                        </span>
+                        <span
+                          className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase ${
+                            pay.status === "Paid"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : pay.status === "Approved"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {pay.status}
+                        </span>
+
+                        {pay.status === "Pending Approval" && (
+                          <button
+                            onClick={() => approvePayable(pay.id)}
+                            className="px-4 py-2 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase"
+                          >
+                            Approve
+                          </button>
+                        )}
+
+                        {pay.status === "Approved" && (
+                          <button
+                            onClick={() => settlePayable(pay.id)}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                          >
+                            Disburse
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "receivables" && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                <SectionHeader
+                  eyebrow="Customer collections"
+                  title="Accounts Receivable"
+                  description="Invoice lifecycle, collections and automatic settlement recording."
+                />
+
+                <div className="space-y-4 mt-6">
+                  {receivables.map((rec) => (
+                    <div
+                      key={rec.id}
+                      className="p-5 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                    >
+                      <div>
+                        <span className="font-black text-sm">
+                          {rec.client}
+                        </span>
+                        <span className="block text-[9px] text-slate-400 font-mono mt-1">
+                          {rec.id} · Due {rec.due}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="font-black">
+                          {formatMoney(rec.amount, rec.currency)}
+                        </span>
+                        <span
+                          className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase ${
+                            rec.status === "Collected"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}
+                        >
+                          {rec.status}
+                        </span>
+
+                        {rec.status === "Invoiced" && (
+                          <button
+                            onClick={() => collectReceivable(rec.id)}
+                            className="px-4 py-2 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase"
+                          >
+                            Record Collection
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "banking" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Banking infrastructure"
+                  title="Banking & Reconciliation"
+                  description="Digital bank feeds, transaction matching, reconciliation exceptions and settlement controls."
+                />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  {[
+                    ["Primary Operating Bank", "Connected", "1,248 transactions"],
+                    ["Settlement Account", "Connected", "426 transactions"],
+                    ["Treasury Account", "Connected", "98 transactions"]
+                  ].map(([name, status, volume]) => (
+                    <div
+                      key={name}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <Landmark className="w-6 h-6 text-blue-600" />
+                      <h3 className="font-black mt-4">{name}</h3>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className="text-[10px] font-black uppercase text-emerald-600">
+                          {status}
+                        </span>
+                      </div>
+                      <p className="text-[10px] font-semibold text-slate-500 mt-2">
+                        {volume}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-black">Automated reconciliation</h3>
+                      <p className="text-xs font-semibold text-slate-500 mt-1">
+                        Matching rules are applied before exceptions enter the
+                        finance work queue.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => runAutomation("Bank reconciliation")}
+                      className="px-4 py-2.5 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Run Reconciliation
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 mt-6">
+                    <div className="p-4 rounded-2xl bg-emerald-50">
+                      <span className="text-[9px] font-black uppercase text-emerald-700">
+                        Matched
+                      </span>
+                      <div className="text-xl font-black mt-1">98.6%</div>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-amber-50">
+                      <span className="text-[9px] font-black uppercase text-amber-700">
+                        Exceptions
+                      </span>
+                      <div className="text-xl font-black mt-1">17</div>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-blue-50">
+                      <span className="text-[9px] font-black uppercase text-blue-700">
+                        Auto-posted
+                      </span>
+                      <div className="text-xl font-black mt-1">1,143</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "budget" && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                <SectionHeader
+                  eyebrow="Financial planning"
+                  title="Budget & Commitments"
+                  description="Allocation control, commitments, utilization and variance monitoring."
+                />
+
+                <div className="space-y-5 mt-6">
+                  {budgets.map((budget) => {
+                    const utilization = Math.min(
+                      100,
+                      Math.round(
+                        (budget.utilized / budget.allocated) * 100
+                      )
+                    );
+                    const committed = Math.min(
+                      100,
+                      Math.round(
+                        (budget.committed / budget.allocated) * 100
+                      )
+                    );
+
+                    return (
+                      <div
+                        key={budget.id}
+                        className="p-6 bg-slate-50 border border-slate-100 rounded-2xl"
+                      >
+                        <div className="flex justify-between gap-4 flex-wrap">
+                          <div>
+                            <span className="font-black">{budget.department}</span>
+                            <span className="block text-[9px] uppercase tracking-widest text-slate-400 mt-1">
+                              {budget.category}
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[9px] uppercase font-black text-slate-400 block">
+                              Allocation
+                            </span>
+                            <span className="font-black">
+                              {formatMoney(budget.allocated)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-5">
+                          <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-600 rounded-full"
+                              style={{ width: `${utilization}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between mt-2 text-[9px] font-black uppercase">
+                            <span className="text-slate-400">
+                              Utilized {utilization}%
+                            </span>
+                            <span className="text-amber-600">
+                              Committed {committed}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "assets" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Capital management"
+                  title="Fixed Assets"
+                  description="Digital asset registry, capitalization, depreciation and disposal controls."
+                  action={
+                    <button
+                      onClick={() => runAutomation("Depreciation run")}
+                      className="px-4 py-2.5 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Run Depreciation
+                    </button>
+                  }
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                  {[
+                    ["Enterprise Server Cluster", "FA-001", "UGX 820,000,000", "12.5%"],
+                    ["Office Property", "FA-002", "UGX 1,240,000,000", "2.5%"],
+                    ["Transport Fleet", "FA-003", "UGX 310,000,000", "20%"],
+                    ["Network Infrastructure", "FA-004", "UGX 185,000,000", "15%"],
+                    ["Office Equipment", "FA-005", "UGX 92,000,000", "20%"],
+                    ["Digital Infrastructure", "FA-006", "UGX 148,000,000", "25%"]
+                  ].map(([name, id, value, rate]) => (
+                    <div
+                      key={id}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <Building2 className="w-6 h-6 text-blue-600" />
+                      <h3 className="font-black mt-4">{name}</h3>
+                      <span className="text-[9px] text-slate-400 font-mono">
+                        {id}
+                      </span>
+                      <div className="mt-5 flex justify-between">
+                        <span className="text-[9px] font-black uppercase text-slate-400">
+                          Net book value
+                        </span>
+                        <span className="text-xs font-black">{value}</span>
+                      </div>
+                      <div className="mt-3 text-[9px] font-black text-blue-600 uppercase">
+                        Depreciation {rate}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "inventory" && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                <SectionHeader
+                  eyebrow="Inventory accounting"
+                  title="Stock Valuation & Control"
+                  description="Accounting integration for inventory receipts, issues, valuation, turnover and cost recognition."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+                  {[
+                    ["Inventory Value", "UGX 486,000,000", "FIFO"],
+                    ["Stock Turnover", "7.8x", "Annualized"],
+                    ["Pending Receipts", "26", "Purchase orders"]
+                  ].map(([label, value, detail]) => (
+                    <div
+                      key={label}
+                      className="p-6 bg-slate-50 rounded-2xl border border-slate-100"
+                    >
+                      <span className="text-[9px] uppercase font-black tracking-widest text-slate-400">
+                        {label}
+                      </span>
+                      <div className="text-2xl font-black mt-2">{value}</div>
+                      <span className="text-[9px] font-bold text-blue-600 uppercase">
+                        {detail}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => runAutomation("Inventory valuation")}
+                  className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                >
+                  Run Automated Valuation
+                </button>
+              </div>
+            )}
+
+            {activeFinanceTab === "payroll" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="People finance"
+                  title="Payroll Processing"
+                  description="Digital payroll calculation, approval, statutory deduction and disbursement workflow."
+                  action={
+                    <button
+                      onClick={() => runAutomation("Payroll calculation")}
+                      className="px-4 py-2.5 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Run Payroll
+                    </button>
+                  }
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+                  {[
+                    ["Employees", "1,284"],
+                    ["Gross Payroll", "UGX 1.84B"],
+                    ["Statutory Deductions", "UGX 312M"],
+                    ["Net Disbursement", "UGX 1.53B"]
+                  ].map(([label, value]) => (
+                    <MetricCard
+                      key={label}
+                      title={label}
+                      value={value}
+                      subtitle="Current payroll period"
+                      icon={Wallet}
+                    />
+                  ))}
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-black">Payroll processing pipeline</h3>
+                    <span className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase">
+                      Ready
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
+                    {[
+                      "Attendance",
+                      "Calculation",
+                      "Approval",
+                      "Statutory",
+                      "Disbursement"
+                    ].map((step, index) => (
+                      <div
+                        key={step}
+                        className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center"
+                      >
+                        <div className="w-8 h-8 mx-auto rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-xs">
+                          {index + 1}
+                        </div>
+                        <span className="text-[9px] font-black uppercase mt-3 block">
+                          {step}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "tax" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Statutory finance"
+                  title="Tax & Compliance"
+                  description="Automated tax calculations, withholding, VAT control, filing readiness and compliance evidence."
+                  action={
+                    <button
+                      onClick={() => runAutomation("Tax compliance validation")}
+                      className="px-4 py-2.5 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Validate Compliance
+                    </button>
+                  }
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {[
+                    ["VAT Control", "18%", "Current configured rate"],
+                    ["VAT Pool", "UGX 160.27M", "Collected"],
+                    ["WHT Payable", "UGX 18.9M", "Pending statutory settlement"]
+                  ].map(([label, value, detail]) => (
+                    <div
+                      key={label}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <FileCheck2 className="w-6 h-6 text-blue-600" />
+                      <span className="block text-[9px] uppercase font-black tracking-widest text-slate-400 mt-4">
+                        {label}
+                      </span>
+                      <div className="text-2xl font-black mt-2">{value}</div>
+                      <p className="text-[10px] font-semibold text-slate-500 mt-1">
+                        {detail}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "treasury" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Liquidity management"
+                  title="Treasury & Multi-Currency"
+                  description="Liquidity allocation, currency exposure, settlement pools and treasury controls."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                  {[
+                    ["UGX", "UGX 1.68B", "Primary liquidity"],
+                    ["USD", "$184,200", "Settlement reserve"],
+                    ["EUR", "€72,400", "Operating reserve"],
+                    ["KES", "KES 9.4M", "Regional reserve"]
+                  ].map(([currency, amount, detail]) => (
+                    <div
+                      key={currency}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <CircleDollarSign className="w-6 h-6 text-blue-600" />
+                      <div className="text-2xl font-black mt-4">{amount}</div>
+                      <span className="text-[9px] uppercase tracking-widest font-black text-slate-400">
+                        {currency} · {detail}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-slate-950 text-white rounded-3xl p-7">
+                  <span className="text-[9px] uppercase tracking-widest font-black text-blue-400">
+                    Treasury automation
+                  </span>
+                  <h3 className="text-xl font-black mt-2">
+                    Intelligent liquidity allocation
+                  </h3>
+                  <p className="text-xs text-slate-400 font-semibold mt-2 max-w-2xl">
+                    FAAP can route approved allocations through the treasury
+                    workflow while preserving currency, authorization,
+                    settlement and audit controls.
+                  </p>
+                  <button
+                    onClick={() => runAutomation("Treasury liquidity allocation")}
+                    className="mt-5 px-5 py-3 bg-white text-slate-950 rounded-xl text-[9px] font-black uppercase"
+                  >
+                    Run Liquidity Allocation
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "reports" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Financial intelligence"
+                  title="Financial Reports"
+                  description="Generate controlled financial statements and management reporting from the FAAP ledger."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                  {[
+                    ["Statement of Financial Position", "Balance Sheet"],
+                    ["Statement of Comprehensive Income", "Income Statement"],
+                    ["Cash Flow Statement", "Cash Flow"],
+                    ["Trial Balance", "Ledger Control"],
+                    ["Budget vs Actual", "Management"],
+                    ["General Ledger Detail", "Audit"]
+                  ].map(([name, category]) => (
+                    <div
+                      key={name}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <FileText className="w-6 h-6 text-blue-600" />
+                      <span className="block text-[9px] uppercase font-black text-slate-400 tracking-widest mt-4">
+                        {category}
+                      </span>
+                      <h3 className="font-black mt-2">{name}</h3>
+                      <div className="flex gap-2 mt-5">
+                        <button
+                          onClick={() =>
+                            runAutomation(`Generate ${name}`)
+                          }
+                          className="px-3 py-2 bg-slate-950 text-white rounded-lg text-[9px] font-black uppercase"
+                        >
+                          Generate
+                        </button>
+                        <button
+                          onClick={() =>
+                            runAutomation(`Export ${name} to Excel`)
+                          }
+                          className="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-[9px] font-black uppercase flex items-center gap-1"
+                        >
+                          <Download className="w-3 h-3" />
+                          Excel
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "controls" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Governance & assurance"
+                  title="Controls & Audit"
+                  description="Continuous finance controls, segregation of duties, approvals, audit evidence and exception monitoring."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                  {[
+                    ["Ledger Integrity", "100%", "Passed"],
+                    ["Segregation of Duties", "98.7%", "Healthy"],
+                    ["Approval Compliance", "96.4%", "Healthy"],
+                    ["Audit Evidence", "100%", "Available"]
+                  ].map(([name, value, status]) => (
+                    <div
+                      key={name}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                    >
+                      <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                      <span className="block text-[9px] uppercase font-black tracking-widest text-slate-400 mt-4">
+                        {name}
+                      </span>
+                      <div className="text-2xl font-black mt-2">{value}</div>
+                      <span className="text-[9px] font-black uppercase text-emerald-600">
+                        {status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                  <h3 className="font-black">Continuous control monitor</h3>
+                  <div className="space-y-3 mt-5">
+                    {[
+                      "Duplicate transaction detection",
+                      "Unbalanced journal detection",
+                      "Unauthorized account access",
+                      "Budget overspend prevention",
+                      "Supplier payment approval",
+                      "Period close integrity"
+                    ].map((control) => (
+                      <div
+                        key={control}
+                        className="flex items-center justify-between p-4 bg-slate-50 rounded-xl"
+                      >
+                        <span className="text-xs font-bold">{control}</span>
+                        <span className="flex items-center gap-1 text-[9px] font-black uppercase text-emerald-600">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Monitoring
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "documents" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="Digital office integration"
+                  title="Excel & Word Finance Workspace"
+                  description="Structured financial data can move between FAAP, spreadsheet analysis and document reporting without paper-based workflows."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                    <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
+                    <h3 className="text-xl font-black mt-4">
+                      Microsoft Excel interoperability
+                    </h3>
+                    <p className="text-xs font-semibold text-slate-500 mt-2">
+                      Export ledgers, budgets, reconciliations and reports into
+                      spreadsheet-ready structures and import validated
+                      finance datasets.
+                    </p>
+                    <div className="space-y-2 mt-6">
+                      {[
+                        "Ledger export",
+                        "Budget templates",
+                        "Bank reconciliation data",
+                        "Bulk journal import",
+                        "Management analysis datasets"
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-center gap-2 text-[10px] font-bold"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => runAutomation("Excel finance export")}
+                      className="mt-6 px-5 py-3 bg-emerald-600 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Generate Excel Dataset
+                    </button>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                    <FileText className="w-8 h-8 text-blue-600" />
+                    <h3 className="text-xl font-black mt-4">
+                      Microsoft Word interoperability
+                    </h3>
+                    <p className="text-xs font-semibold text-slate-500 mt-2">
+                      Produce structured finance reports, approval documents,
+                      statements and audit evidence from controlled FAAP data.
+                    </p>
+                    <div className="space-y-2 mt-6">
+                      {[
+                        "Financial statements",
+                        "Payment vouchers",
+                        "Audit reports",
+                        "Budget reports",
+                        "Approval documents"
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-center gap-2 text-[10px] font-bold"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => runAutomation("Word finance document")}
+                      className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Generate Word Document
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeFinanceTab === "automation" && (
+              <div className="space-y-6">
+                <SectionHeader
+                  eyebrow="UEOS automation"
+                  title="Automation, Hybrid Runtime & Upgrades"
+                  description="FAAP lifecycle operations are designed around digital execution, validation, synchronization and controlled upgrades rather than manual paperwork."
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                  {[
+                    ["Workflow Engine", "Operational", Workflow],
+                    ["Hybrid Sync", "Operational", RefreshCw],
+                    ["Upgrade Engine", "Ready", Zap],
+                    ["Audit Engine", "Monitoring", ShieldCheck]
+                  ].map(([name, status, Icon]) => {
+                    const RuntimeIcon = Icon as React.ElementType;
+                    return (
+                      <div
+                        key={name as string}
+                        className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+                      >
+                        <RuntimeIcon className="w-6 h-6 text-blue-600" />
+                        <h3 className="font-black mt-4">{name as string}</h3>
+                        <span className="text-[9px] font-black uppercase text-emerald-600">
+                          {status as string}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="bg-slate-950 text-white rounded-3xl p-7">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-blue-400" />
+                    <span className="text-[9px] uppercase tracking-widest font-black text-blue-400">
+                      Automated lifecycle
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                    {[
+                      ["1", "Detect"],
+                      ["2", "Validate"],
+                      ["3", "Migrate"],
+                      ["4", "Activate"]
+                    ].map(([number, label]) => (
+                      <div
+                        key={number}
+                        className="p-5 rounded-2xl bg-white/5 border border-white/10"
+                      >
+                        <span className="text-2xl font-black text-blue-400">
+                          {number}
+                        </span>
+                        <span className="block font-black mt-2">{label}</span>
+                        <span className="block text-[9px] text-slate-500 mt-1">
+                          UEOS controlled lifecycle stage
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-3 mt-7">
+                    <button
+                      onClick={() => runAutomation("FAAP upgrade validation")}
+                      className="px-5 py-3 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Validate Upgrade
+                    </button>
+                    <button
+                      onClick={() => runAutomation("FAAP migration preparation")}
+                      className="px-5 py-3 bg-white text-slate-950 rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Prepare Migration
+                    </button>
+                    <button
+                      onClick={() => runAutomation("FAAP health audit")}
+                      className="px-5 py-3 bg-slate-800 text-white rounded-xl text-[9px] font-black uppercase"
+                    >
+                      Run Health Audit
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-3xl p-7 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <CloudOff className="w-5 h-5 text-amber-600" />
+                    <div>
+                      <h3 className="font-black">
+                        Hybrid / offline transaction continuity
+                      </h3>
+                      <p className="text-xs font-semibold text-slate-500 mt-1">
+                        Finance operations can queue locally and synchronize
+                        when connectivity becomes available.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <span className="px-4 py-2 rounded-xl bg-amber-50 text-amber-700 text-[9px] font-black uppercase">
+                      Queue: {offlineQueue}
+                    </span>
+                    <button
+                      onClick={synchronize}
+                      disabled={syncing}
+                      className="px-5 py-3 bg-slate-950 text-white rounded-xl text-[9px] font-black uppercase disabled:opacity-50"
+                    >
+                      {syncing
+                        ? "Synchronizing..."
+                        : "Synchronize Finance Runtime"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+
+      <AnimatePresence>
+        {showCommand && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowCommand(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              onClick={(event) => event.stopPropagation()}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-7"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-600">
+                    UEOS Finance Command
+                  </span>
+                  <h3 className="text-2xl font-black mt-1">
+                    FAAP Operations
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowCommand(false)}
+                  className="p-2 rounded-xl bg-slate-100"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+                {[
+                  ["Post Journal", postJournal],
+                  ["Reconcile Banks", () => runAutomation("Bank reconciliation")],
+                  ["Run Payroll", () => runAutomation("Payroll")],
+                  ["Generate Reports", () => setActiveFinanceTab("reports")],
+                  ["Validate Controls", () => setActiveFinanceTab("controls")],
+                  ["Synchronize", synchronize]
+                ].map(([label, action]) => (
+                  <button
+                    key={label as string}
+                    onClick={() => {
+                      (action as () => void)();
+                      setShowCommand(false);
+                    }}
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-left flex items-center justify-between"
+                  >
+                    <span className="text-xs font-black">{label as string}</span>
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6 p-4 bg-slate-50 rounded-2xl flex items-center gap-3">
+                <Database className="w-5 h-5 text-blue-600" />
+                <div>
+                  <span className="text-[9px] font-black uppercase text-slate-400">
+                    Runtime
+                  </span>
+                  <span className="block text-xs font-black">
+                    UEOS → FAAP → Finance Operations
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
+
+export default FAAPRenderer;
