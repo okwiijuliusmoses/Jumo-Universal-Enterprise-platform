@@ -113,6 +113,7 @@ export interface SovereignState {
   architectureRequests: ArchitectureRequest[];
   architectureContracts: ArchitectureContract[];
   blueprints: JumoBlueprint[];
+  engineeringAgents: EngineeringAgent[];
   jobs: ManufacturingJob[];
   buildArtifacts: BuildArtifact[];
   deploymentRecords: DeploymentRecord[];
@@ -148,7 +149,7 @@ export class SovereignOperatingStateService {
     return {
       architectureRequests: [
         {
-          id: "ARCH-2026-000001",
+          id: "ARCH-REQ-001",
           title: "Sovereign FAAP Reserve Ledger Integration",
           problem: "Need direct reserve balance tracking on sovereign cloud instances without third-party ledger exposure.",
           targetUsers: "National Bank Authorities, Sovereign Treasury Engineers",
@@ -180,6 +181,61 @@ export class SovereignOperatingStateService {
             components: ["BalanceSheet", "TransactionQueue"]
           }, null, 2),
           lifecycleState: "APPROVED"
+        }
+      ],
+      engineeringAgents: [
+        { 
+          agentId: "agent-01", 
+          jumoName: "ARCHITECT-01", 
+          displayName: "Sovereign Architect", 
+          role: "Architecture Agent", 
+          division: "Design", 
+          specialization: "System Architecture", 
+          description: "Authoritative system design agent.", 
+          capabilities: ["Blueprint Generation", "Contract Validation"], 
+          status: "IDLE", 
+          workload: 0, 
+          health: "HEALTHY",
+          modelPolicy: { modelAlias: "Flash-v3", isolationLevel: "TENANT" } 
+        },
+        { 
+          agentId: "agent-02", 
+          jumoName: "FRONTEND-01", 
+          displayName: "Sovereign Frontend", 
+          role: "Frontend Agent", 
+          division: "Engineering", 
+          specialization: "React / Tailwind", 
+          description: "User experience implementation agent.", 
+          capabilities: ["UI Generation", "Responsive Design"], 
+          status: "IDLE", 
+          workload: 0, 
+          health: "HEALTHY" 
+        },
+        { 
+          agentId: "agent-03", 
+          jumoName: "BACKEND-01", 
+          displayName: "Sovereign Backend", 
+          role: "Backend Agent", 
+          division: "Engineering", 
+          specialization: "Node.js / Express", 
+          description: "Authoritative server-side implementation agent.", 
+          capabilities: ["API Design", "Database Integration"], 
+          status: "IDLE", 
+          workload: 0, 
+          health: "HEALTHY" 
+        },
+        { 
+          agentId: "agent-04", 
+          jumoName: "SECURITY-01", 
+          displayName: "Sovereign Security", 
+          role: "Security Agent", 
+          division: "Cyber", 
+          specialization: "Zero Trust / Crypto", 
+          description: "Authoritative security hardening agent.", 
+          capabilities: ["Penetration Testing", "Encryption Validation"], 
+          status: "IDLE", 
+          workload: 0, 
+          health: "HEALTHY" 
         }
       ],
       jobs: [],
@@ -236,7 +292,27 @@ export class SovereignOperatingStateService {
   }
 
   public static getState(): SovereignState {
-    return this.state;
+    const s = this.state || this.getInitialState();
+    // Authoritative Runtime Normalization Boundary
+    return {
+      ...s,
+      architectureRequests: s.architectureRequests ?? [],
+      architectureContracts: s.architectureContracts ?? [],
+      blueprints: s.blueprints ?? [],
+      engineeringAgents: s.engineeringAgents ?? [],
+      jobs: s.jobs ?? [],
+      buildArtifacts: s.buildArtifacts ?? [],
+      deploymentRecords: s.deploymentRecords ?? [],
+      verificationFailures: s.verificationFailures ?? [],
+      certificationRecords: s.certificationRecords ?? [],
+      incidents: s.incidents ?? [],
+      cloudSlots: s.cloudSlots ?? [],
+      auditEvents: s.auditEvents ?? [],
+      verificationGates: s.verificationGates ?? [],
+      databaseVolumes: s.databaseVolumes ?? [],
+      migrations: s.migrations ?? [],
+      assets: s.assets ?? []
+    };
   }
 
   public static logAudit(actor: string, operation: string, details: string) {
@@ -274,31 +350,92 @@ export class SovereignOperatingStateService {
         tenancyModel: "Multi-tenant"
       },
       experienceArchitecture: {
-        portals: req.capabilities.map(c => ({ id: `portal-${c.toLowerCase().replace(/\s+/g, '-')}`, name: `${c} Portal` }))
+        portals: ["Public", "Staff", "Management"],
+        mobileExperience: true,
+        apiExperience: true
       },
       organizationalArchitecture: {
-        organization: req.organization
+        ministries: [req.organization],
+        departments: ["IT", "Operations", "Finance"],
+        directorates: ["National Digital Services"],
+        divisions: ["Sovereign Infrastructure"],
+        branches: ["Main"],
+        offices: ["HQ"],
+        units: ["Development", "QA"],
+        teams: ["A", "B"],
+        committees: ["Architecture Review Board"],
+        roles: ["Operator", "Auditor", "Engineer"],
+        responsibilities: ["Manufacturing", "Verification"]
       },
       functionalArchitecture: {
-        modules: req.capabilities
+        modules: ["Identity", "Finance", "Workflow"],
+        submodules: ["Auth", "Ledger", "StepEngine"],
+        capabilities: req.capabilities,
+        services: ["Queue", "Cache"],
+        components: ["Dashboard", "Portal"],
+        forms: ["Application", "Approval"],
+        reports: ["Audit", "Analytics"],
+        dashboards: ["Main"],
+        workflows: ["Approval", "Escalation"],
+        notifications: ["Email", "SMS"],
+        documents: ["PDF", "XLS"],
+        search: true,
+        analytics: true
       },
       dataArchitecture: {
-        infrastructure: req.infrastructure
+        entities: ["User", "Transaction", "Job"],
+        relationships: ["1:N", "N:M"],
+        schemas: ["Public", "Audit"],
+        databases: ["PostgreSQL", "Redis"],
+        documentStorage: ["S3-Compatible"],
+        auditRecords: true,
+        retention: "7 Years",
+        backup: "Daily",
+        recovery: "Point-in-time",
+        synchronization: "Real-time"
       },
       integrationArchitecture: {
-        integrations: req.integrations
+        jumoServices: req.integrations,
+        internalProducts: [],
+        externalApis: [],
+        bankingSystems: true,
+        governmentSystems: true,
+        partnerSystems: false
       },
       aiArchitecture: {
-        aiRequirements: req.aiRequirements
+        assignedAgents: ["agent-01", "agent-02", "agent-03", "agent-04"],
+        agentResponsibilities: ["Architecture", "Implementation", "QA", "Security"],
+        modelRequirements: "Flash-v3",
+        ragRequirements: true,
+        knowledgeSources: ["UEOS-DOCS"],
+        agentPermissions: ["READ", "WRITE"],
+        humanApprovalPoints: ["CONTRACT_APPROVAL", "DEPLOYMENT"],
+        aiSafetyBoundaries: ["NO_SENSITIVE_DATA_EXPORT"],
+        auditRequirements: true
       },
       securityArchitecture: {
-        mfa: true,
+        authentication: "MFA-SAML",
+        authorization: "RBAC-ABAC",
         rbac: true,
-        zeroTrust: true
+        mfa: true,
+        zeroTrust: true,
+        encryption: "AES-256-GCM",
+        secrets: "Vault",
+        keyManagement: "KMS",
+        networkBoundaries: ["VPC-INTERNAL"],
+        audit: true,
+        threatMonitoring: true
       },
       deploymentArchitecture: {
-        infrastructure: req.infrastructure,
-        scaling: "Automatic"
+        target: req.infrastructure,
+        hybridMode: true,
+        offlineCapability: true,
+        privateInfrastructure: true,
+        nodeRequirements: "4vCPU / 16GB RAM",
+        scaling: "Horizontal Auto-scaling",
+        disasterRecovery: true,
+        backup: "Multi-region",
+        regionalDeployment: ["REG-01"]
       },
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -313,25 +450,38 @@ export class SovereignOperatingStateService {
 
   public static approveArchitectureContract(contractId: string, actor: string) {
     const contract = this.state.architectureContracts.find(c => c.id === contractId);
-    if (!contract) throw new Error("Contract not found");
+    if (!contract) throw new Error(`Architecture Contract ${contractId} not found in authoritative state.`);
 
     contract.status = 'APPROVED';
     contract.updatedAt = new Date().toISOString();
 
     const req = this.state.architectureRequests.find(r => r.id === contract.specificationId);
-    if (req) req.status = 'APPROVED';
+    if (req) {
+      req.status = 'APPROVED';
+    }
 
-    this.logAudit(actor, "ARCHITECTURE_CONTRACT_APPROVED", `Formally approved Architecture Contract ${contractId}`);
+    this.logAudit(actor, "ARCHITECTURE_CONTRACT_APPROVED", `Authoritative approval granted for Architecture Contract ${contractId} (Product: ${contract.productIdentity.name})`);
     this.saveState();
     return contract;
   }
 
   public static createManufacturingJob(contractId: string, actor: string) {
     const contract = this.state.architectureContracts.find(c => c.id === contractId);
-    if (!contract) throw new Error("Contract not found");
-    if (contract.status !== 'APPROVED') throw new Error("Architecture must be APPROVED before manufacturing.");
+    if (!contract) throw new Error(`Architecture Contract ${contractId} not found.`);
+    if (contract.status !== 'APPROVED') throw new Error(`Architecture Contract ${contractId} must be APPROVED before initiating manufacturing.`);
 
     const id = `JOB-2026-${Math.floor(Math.random() * 900000) + 100000}`;
+    
+    // Assign workforce based on contract architecture requirements
+    const assignedWorkforce: EngineeringAssignment[] = (contract.aiArchitecture?.assignedAgents ?? []).map((agentId, idx) => ({
+      engineerId: agentId,
+      role: (contract.aiArchitecture?.agentResponsibilities ?? [])[idx] || "System Operator",
+      responsibility: "Baseline Manufacturing",
+      status: 'ASSIGNED',
+      progress: 0,
+      tasks: []
+    }));
+
     const newJob: ManufacturingJob = {
       id,
       architectureId: contractId,
@@ -340,18 +490,18 @@ export class SovereignOperatingStateService {
       version: contract.version,
       status: 'INTAKE',
       progress: 0,
-      assignedWorkforce: [],
+      assignedWorkforce,
       repository: "Jumo-Universal-Enterprise-platform",
       branch: "manufacturing-hub-architecture",
       commitSha: "0d39c3a2aeebe5035e8985df1932a7a6c96fce30",
       evidence: [],
-      logs: [`[INTAKE] Initiating manufacturing job ${id} from approved architecture ${contractId}`],
+      logs: [`[INTAKE] Initiating manufacturing job ${id} from approved architecture BLUEPRINT: ${contractId}`],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
     this.state.jobs.unshift(newJob);
-    this.logAudit(actor, "MANUFACTURING_JOB_CREATED", `Created manufacturing job ${id} for product ${newJob.productId}`);
+    this.logAudit(actor, "MANUFACTURING_JOB_CREATED", `Initiated Manufacturing Job ${id} for product ${newJob.productId} with ${assignedWorkforce.length} agents`);
     this.saveState();
     return newJob;
   }
@@ -538,7 +688,7 @@ export class SovereignOperatingStateService {
 
   public static promoteManufacturingJob(jobId: string, actor: string) {
     const job = this.state.jobs.find(j => j.id === jobId);
-    if (!job) throw new Error("Job not found");
+    if (!job) throw new Error(`Manufacturing Job ${jobId} not found in authoritative registry.`);
 
     const stageSequence: ManufacturingJobStatus[] = [
       'INTAKE', 'SPECIFICATION', 'ARCHITECTURE', 'APPROVAL', 'ENGINEERING', 
@@ -550,7 +700,7 @@ export class SovereignOperatingStateService {
 
     const currentIdx = stageSequence.indexOf(job.status);
     if (currentIdx === -1 || currentIdx === stageSequence.length - 1) {
-      throw new Error(`Cannot promote job from terminal or unknown state: ${job.status}`);
+      throw new Error(`Authoritative promotion blocked: Job ${jobId} is in a terminal or invalid state (${job.status}).`);
     }
 
     const nextStage = stageSequence[currentIdx + 1];
@@ -561,21 +711,21 @@ export class SovereignOperatingStateService {
     const timestamp = new Date().toLocaleTimeString();
     let stageLog = "";
     switch (nextStage) {
-      case 'SPECIFICATION': stageLog = "[SPECIFICATION] Digital Ecosystem Specification finalized."; break;
-      case 'ARCHITECTURE': stageLog = "[ARCHITECTURE] Architecture Contract generated from specification."; break;
-      case 'APPROVAL': stageLog = "[APPROVAL] Architecture approved for manufacturing."; break;
-      case 'ENGINEERING': stageLog = "[ENGINEERING] Commencing engineering workstreams."; break;
-      case 'SOURCE_GENERATION': stageLog = "[SOURCE] Executing JUMO-AI source generation engine."; break;
-      case 'COMPILATION': stageLog = "[BUILD] Compilation successful. Artifact generated."; break;
-      case 'DEPLOYMENT': stageLog = "[DEPLOY] Deployment to JUMO Cloud successful."; break;
-      case 'VERIFICATION': stageLog = "[VERIFY] Commencing 100+ layer verification suite."; break;
-      case 'CERTIFICATION': stageLog = "[CERTIFY] Product certified for production release."; break;
-      case 'REGISTRY_ACTIVATION': stageLog = "[REGISTRY] Product activated in ecosystem registry."; break;
-      default: stageLog = `[${nextStage}] Stage complete.`; break;
+      case 'SPECIFICATION': stageLog = "[SPECIFICATION] Digital Ecosystem Specification finalized and validated."; break;
+      case 'ARCHITECTURE': stageLog = "[ARCHITECTURE] Blueprints converted to authoritative Architecture Contract."; break;
+      case 'APPROVAL': stageLog = "[APPROVAL] Architecture blueprints formally approved for manufacturing."; break;
+      case 'ENGINEERING': stageLog = "[ENGINEERING] Swarm operators assigned to core engineering workstreams."; break;
+      case 'SOURCE_GENERATION': stageLog = "[SOURCE] JUMO-AI engine executing sovereign source generation."; break;
+      case 'COMPILATION': stageLog = "[BUILD] Native compilation successful. Authoritative binary sealed."; break;
+      case 'DEPLOYMENT': stageLog = "[DEPLOY] Secure deployment to JUMO Sovereign Cloud Node completed."; break;
+      case 'VERIFICATION': stageLog = "[VERIFY] Executing 100+ layer architectural verification suite."; break;
+      case 'CERTIFICATION': stageLog = "[CERTIFY] Sovereign Manufacturing Hub Certificate issued for production."; break;
+      case 'REGISTRY_ACTIVATION': stageLog = "[REGISTRY] Product formally activated in National Ecosystem Registry."; break;
+      default: stageLog = `[HUB] Job transitioned to ${nextStage} stage.`; break;
     }
 
     job.logs.push(`[${timestamp}] ${stageLog}`);
-    this.logAudit(actor, "JOB_STAGE_PROMOTED", `Promoted job ${jobId} to ${nextStage}`);
+    this.logAudit(actor, "JOB_STAGE_PROMOTED", `Promoted Job ${jobId} to Authoritative Stage: ${nextStage}`);
     this.saveState();
     return job;
   }

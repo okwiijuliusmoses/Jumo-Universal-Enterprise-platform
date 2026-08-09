@@ -49,11 +49,22 @@ export interface VerificationProfile {
   layerIds: string[];
 }
 
+export interface EcosystemVerificationProfile {
+  id: string;
+  ecosystem: ManufacturingCategory;
+  name: string;
+  description: string;
+  layerIds: string[];
+  mandatoryLayerIds: string[];
+  config: any;
+  version: string;
+}
+
 export interface ArchitectureContract {
   id: string;
   version: string;
   specificationId: string;
-  status: 'DRAFT' | 'REVIEW' | 'APPROVED';
+  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'LOCKED';
   productIdentity: {
     name: string;
     ecosystem: ManufacturingCategory;
@@ -65,14 +76,94 @@ export interface ArchitectureContract {
     deploymentModel: string;
     tenancyModel: string;
   };
-  experienceArchitecture: any;
-  organizationalArchitecture: any;
-  functionalArchitecture: any;
-  dataArchitecture: any;
-  integrationArchitecture: any;
-  aiArchitecture: any;
-  securityArchitecture: any;
-  deploymentArchitecture: any;
+  experienceArchitecture: {
+    portals: string[];
+    mobileExperience: boolean;
+    apiExperience: boolean;
+  };
+  organizationalArchitecture: {
+    ministries: string[];
+    departments: string[];
+    directorates: string[];
+    divisions: string[];
+    branches: string[];
+    offices: string[];
+    units: string[];
+    teams: string[];
+    committees: string[];
+    roles: string[];
+    responsibilities: string[];
+  };
+  functionalArchitecture: {
+    modules: string[];
+    submodules: string[];
+    capabilities: string[];
+    services: string[];
+    components: string[];
+    forms: string[];
+    reports: string[];
+    dashboards: string[];
+    workflows: string[];
+    notifications: string[];
+    documents: string[];
+    search: boolean;
+    analytics: boolean;
+  };
+  dataArchitecture: {
+    entities: string[];
+    relationships: string[];
+    schemas: string[];
+    databases: string[];
+    documentStorage: string[];
+    auditRecords: boolean;
+    retention: string;
+    backup: string;
+    recovery: string;
+    synchronization: string;
+  };
+  integrationArchitecture: {
+    jumoServices: string[];
+    internalProducts: string[];
+    externalApis: string[];
+    bankingSystems: boolean;
+    governmentSystems: boolean;
+    partnerSystems: boolean;
+  };
+  aiArchitecture: {
+    assignedAgents: string[];
+    agentResponsibilities: string[];
+    modelRequirements: string;
+    ragRequirements: boolean;
+    knowledgeSources: string[];
+    agentPermissions: string[];
+    humanApprovalPoints: string[];
+    aiSafetyBoundaries: string[];
+    auditRequirements: boolean;
+  };
+  securityArchitecture: {
+    authentication: string;
+    authorization: string;
+    rbac: boolean;
+    mfa: boolean;
+    zeroTrust: boolean;
+    encryption: string;
+    secrets: string;
+    keyManagement: string;
+    networkBoundaries: string[];
+    audit: boolean;
+    threatMonitoring: boolean;
+  };
+  deploymentArchitecture: {
+    target: string;
+    hybridMode: boolean;
+    offlineCapability: boolean;
+    privateInfrastructure: boolean;
+    nodeRequirements: string;
+    scaling: string;
+    disasterRecovery: boolean;
+    backup: string;
+    regionalDeployment: string[];
+  };
   createdAt: string;
   updatedAt: string;
 }
