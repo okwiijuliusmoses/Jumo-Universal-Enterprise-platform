@@ -75,7 +75,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Cloud Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Hyperconverged Allocator",
         desc: "Manages JUMO Cloud micro-environments and container deployment slot routing topologies.",
         tools: ["allocateClusterNodes", "routeTrafficSlot"],
@@ -83,7 +83,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "DevOps Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Continuous Integration Governor",
         desc: "Validates sandboxed pipeline builds and packages clean, signed common.cjs distribution artifacts.",
         tools: ["runEsbuild", "stampChecksum"],
@@ -91,7 +91,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "SRE Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Sovereign Telemetry Guardian",
         desc: "Monitors active container metrics, CPU thresholds, and routes failovers under emergency conditions.",
         tools: ["monitorSLA", "triggerFailover"],
@@ -155,7 +155,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Financial Systems Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "FAAP Ledger Authority Guard",
         desc: "Maintains absolute ledger consistency, ensuring zero balance discrepancies on corporate cash assets.",
         tools: ["runCognitiveAudit", "validateBalanceSheet"],
@@ -163,7 +163,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "FAAP Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "General Ledger Compiler",
         desc: "Integrates specialized organizational accounts into the primary JUMO FAAP ledger authority.",
         tools: ["postJournalEntries", "reconcileAccounts"],
@@ -171,7 +171,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Digital Pay Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Payment Routing Governor",
         desc: "Configures webhook integrations and payment routing thresholds to FAAP settlement boards.",
         tools: ["verifySettlementBatch", "auditPaymentRoute"],
@@ -179,7 +179,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Treasury Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Liquidity Pool Allocator",
         desc: "Enforces national liquidity reserve requirements on all active commercial products.",
         tools: ["allocateReserves", "monitorLiquidityPools"],
@@ -243,7 +243,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Infrastructure Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Bare-Metal Server Provisioner",
         desc: "Binds virtualization containers to hyperconverged physical infrastructure modules safely.",
         tools: ["configureHypervisors", "assertNodeStatus"],
@@ -251,7 +251,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Network Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Air-Gap Network Architect",
         desc: "Configures restricted internal subnets, blocking external public access via physical edge firewalls.",
         tools: ["configureNetworkRoutes", "blockPortScan"],
@@ -259,7 +259,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Observability Engineer",
-        division: "COMMERCIAL_PRODUCT_ENGINEERING",
+        division: "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING",
         role: "Log Stream Aggregator",
         desc: "Structures logging formats, integrating traces, metrics, and incident reporting tools smoothly.",
         tools: ["aggregateLogs", "formatTraceLogs"],

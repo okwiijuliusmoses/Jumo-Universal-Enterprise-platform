@@ -66,7 +66,7 @@ export class JumoManufacturingOrchestrator {
     });
 
     // GATE 3: FAAP FINANCIAL LEDGER INTEGRATION GATE
-    const isFinancialCategory = request.targetCategory === 'ERP_ECOSYSTEM' || request.targetCategory === 'COMMERCIAL_PRODUCT';
+    const isFinancialCategory = request.targetCategory === 'ERP_ECOSYSTEM' || request.targetCategory === 'COMMERCIAL_PRODUCTS_ECOSYSTEM';
     pipelineGates.push({
       gateName: "3. FAAP Ledger & Settlement Integrity Gate",
       passed: true,

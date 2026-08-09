@@ -61,7 +61,7 @@ export function AIGatewayRenderer() {
 
       {/* Division Selector Filter */}
       <div className="flex flex-wrap gap-3">
-        {["ALL", "ARCHITECTURE", "ERP_ENGINEERING", "COMMERCIAL_PRODUCT_ENGINEERING", "SOFTWARE_ENGINEERING", "INTELLIGENCE", "SECURITY_AEGIS", "TESTING_VERIFICATION", "GUARDIAN_GOVERNANCE", "MANUFACTURING_ORCHESTRATION"].map(div => (
+        {["ALL", "ARCHITECTURE", "ERP_ENGINEERING", "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING", "SOFTWARE_ENGINEERING", "INTELLIGENCE", "SECURITY_AEGIS", "TESTING_VERIFICATION", "GUARDIAN_GOVERNANCE", "MANUFACTURING_ORCHESTRATION"].map(div => (
           <button
             key={div}
             onClick={() => setSelectedDivision(div)}

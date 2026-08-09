@@ -4,10 +4,10 @@
 import {
   AuthoritativeRegistryRecord,
   ERPEcosystemRegistryRecord,
-  CommercialProductRegistryRecord,
-  SoftwareProductRegistryRecord,
-  IntelligenceRegistryRecord,
-  CloudServiceRegistryRecord,
+  CommercialProductsEcosystemRegistryRecord,
+  SoftwareEcosystemRegistryRecord,
+  ResearchInnovationEcosystemRegistryRecord,
+  JumoCloudEcosystemRegistryRecord,
   BlueprintRegistryRecord,
   ComponentRegistryRecord,
   ModuleRegistryRecord,
@@ -161,11 +161,11 @@ export class UniversalHubRegistry {
     erpEcosystems.forEach(e => this.masterRecords.set(e.registryId, e));
 
     // 2. Commercial Product Registry Baseline (Pointing to real underlying services)
-    const commercialProducts: CommercialProductRegistryRecord[] = [
+    const commercialProducts: CommercialProductsEcosystemRegistryRecord[] = [
       {
         registryId: "prod-faap",
         name: "JUMO FAAP (Federal Assets & Accounting Platform)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v5.0.0-AUTHORITATIVE",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -189,7 +189,7 @@ export class UniversalHubRegistry {
       {
         registryId: "prod-pay",
         name: "JUMO DIGITAL PAY (Sovereign Digital Payments Gateway)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v4.5.0-SETTLEMENT",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -213,7 +213,7 @@ export class UniversalHubRegistry {
       {
         registryId: "prod-treasury",
         name: "JUMO TREASURY (Reserve Liquidity & Yield Engine)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v3.2.0",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -237,7 +237,7 @@ export class UniversalHubRegistry {
       {
         registryId: "prod-auditor",
         name: "JUMO DIGITAL AUDITOR (Continuous Cryptographic Audit)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v2.8.0",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -261,7 +261,7 @@ export class UniversalHubRegistry {
       {
         registryId: "prod-aegis",
         name: "JUMO AEGIS (Sovereign Cybersecurity & Threat Center)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v4.0.1",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -281,11 +281,16 @@ export class UniversalHubRegistry {
         engineService: "SecurityGovernor",
         faapLedgerAuthority: false,
         digitalPaySettlementBridge: false
-      },
+      }
+    ];
+
+    commercialProducts.forEach(p => this.masterRecords.set(p.registryId, p));
+
+    const jumoCloudEcosystems: JumoCloudEcosystemRegistryRecord[] = [
       {
         registryId: "prod-cloud",
         name: "JUMO CLOUD (Sovereign Infrastructure Orchestrator)",
-        category: "COMMERCIAL_PRODUCT",
+        category: "JUMO_CLOUD_ECOSYSTEM",
         lifecycleState: "OPERATIONAL",
         version: "v3.5.0",
         repository: "Jumo-Universal-Enterprise-platform",
@@ -302,13 +307,12 @@ export class UniversalHubRegistry {
         maintenanceStatus: "HEALTHY",
         verificationStatus: "VERIFIED",
         lastAuditTimestamp: new Date().toISOString(),
-        engineService: "PlatformProvisioner",
-        faapLedgerAuthority: false,
-        digitalPaySettlementBridge: false
+        nodeCluster: "Sovereign Node Cluster A",
+        autoScaling: true
       }
     ];
 
-    commercialProducts.forEach(p => this.masterRecords.set(p.registryId, p));
+    jumoCloudEcosystems.forEach(c => this.masterRecords.set(c.registryId, c));
 
     // Seed initial compiler blueprints
     this.blueprints.set("bp-sacco-v4", {
@@ -356,25 +360,25 @@ export class UniversalHubRegistry {
     return ERPInstanceRegistry.getAll();
   }
 
-  // 4. COMMERCIAL PRODUCT REGISTRY ACCESSORS
-  static getCommercialProducts(): CommercialProductRegistryRecord[] {
+  // 4. COMMERCIAL PRODUCTS ECOSYSTEM REGISTRY ACCESSORS
+  static getCommercialProducts(): CommercialProductsEcosystemRegistryRecord[] {
     return Array.from(this.masterRecords.values()).filter(
-      r => r.category === "COMMERCIAL_PRODUCT"
-    ) as CommercialProductRegistryRecord[];
+      r => r.category === "COMMERCIAL_PRODUCTS_ECOSYSTEM"
+    ) as CommercialProductsEcosystemRegistryRecord[];
   }
 
-  // 5. SOFTWARE PRODUCT REGISTRY ACCESSORS
-  static getSoftwareProducts(): SoftwareProductRegistryRecord[] {
+  // 5. SOFTWARE ECOSYSTEM REGISTRY ACCESSORS
+  static getSoftwareProducts(): SoftwareEcosystemRegistryRecord[] {
     return Array.from(this.masterRecords.values()).filter(
-      r => r.category === "SOFTWARE_PRODUCT"
-    ) as SoftwareProductRegistryRecord[];
+      r => r.category === "SOFTWARE_ECOSYSTEM"
+    ) as SoftwareEcosystemRegistryRecord[];
   }
 
-  // 6. AI / INTELLIGENCE REGISTRY ACCESSORS
-  static getIntelligenceProducts(): IntelligenceRegistryRecord[] {
+  // 6. RESEARCH & INNOVATION ECOSYSTEM REGISTRY ACCESSORS
+  static getResearchProducts(): ResearchInnovationEcosystemRegistryRecord[] {
     return Array.from(this.masterRecords.values()).filter(
-      r => r.category === "INTELLIGENCE_AI"
-    ) as IntelligenceRegistryRecord[];
+      r => r.category === "RESEARCH_INNOVATION_ECOSYSTEM"
+    ) as ResearchInnovationEcosystemRegistryRecord[];
   }
 
   static getAIAgentWorkforce() {
@@ -388,15 +392,15 @@ export class UniversalHubRegistry {
   // 7. PLATFORM REGISTRY ACCESSORS
   static getPlatforms(): AuthoritativeRegistryRecord[] {
     return Array.from(this.masterRecords.values()).filter(
-      r => r.category === "PLATFORM" || r.category === "COMMERCIAL_PRODUCT"
+      r => r.category === "ERP_ECOSYSTEM" || r.category === "COMMERCIAL_PRODUCTS_ECOSYSTEM" || r.category === "JUMO_CLOUD_ECOSYSTEM" || r.category === "SOFTWARE_ECOSYSTEM" || r.category === "RESEARCH_INNOVATION_ECOSYSTEM"
     );
   }
 
-  // 8. CLOUD SERVICE REGISTRY ACCESSORS
-  static getCloudServices(): CloudServiceRegistryRecord[] {
+  // 8. JUMO CLOUD ECOSYSTEM REGISTRY ACCESSORS
+  static getCloudServices(): JumoCloudEcosystemRegistryRecord[] {
     return Array.from(this.masterRecords.values()).filter(
-      r => r.category === "CLOUD_SERVICE"
-    ) as CloudServiceRegistryRecord[];
+      r => r.category === "JUMO_CLOUD_ECOSYSTEM"
+    ) as JumoCloudEcosystemRegistryRecord[];
   }
 
   // 9. BLUEPRINT REGISTRY ACCESSORS

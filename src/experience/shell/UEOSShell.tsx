@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { 
   Command, Cpu, FileText, Users, Server, Layers, CheckSquare, Globe, 
   RefreshCw, Shield, History, Settings, LogOut, ChevronLeft, ChevronRight, 
-  User, Key, Menu, Search, X, Sliders, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard
+  User, Key, Menu, Search, X, Sliders, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard,
+  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical
 } from "lucide-react";
 import { NationalManufacturingHub, HubWorkspace } from "../renderer/NationalManufacturingHub";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
@@ -29,7 +30,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 1. BASIC SHELL STATES ===
   const [activeTab, setActiveTab] = useState<HubWorkspace>(() => {
     const saved = localStorage.getItem("jumo_ueos_active_workspace");
-    return (saved as HubWorkspace) || "command";
+    return (saved as HubWorkspace) || "overview";
   });
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
@@ -58,10 +59,10 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       uiDensity: "comfortable",
       animationsEnabled: true,
       sidebarDefaultState: "expanded",
-      defaultLandingWorkspace: "command",
+      defaultLandingWorkspace: "overview",
       rememberLastWorkspace: true,
       tableDensity: "comfortable",
-      rememberedTabs: ["command"],
+      rememberedTabs: ["overview"],
       inspectorPosition: "side",
       notifyOps: true,
       notifySecurity: true,
@@ -151,7 +152,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   };
 
   const handleParent = () => {
-    navigateTo("command");
+    navigateTo("overview");
   };
 
   // === 9. UNIFIED KEYBOARD CONTROLLER ===
@@ -373,44 +374,33 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 11. SIDEBAR NAVIGATION GROUPS ===
   const sidebarGroups = [
     {
-      id: "COMMAND",
+      id: "NATIONAL DIGITAL MANUFACTURING HUB",
       items: [
-        { id: "command" as HubWorkspace, label: "Command Center", icon: Command, color: "text-blue-600" }
+        { id: "overview" as HubWorkspace, label: "Overview", icon: Home, color: "text-slate-600" },
+        { id: "specification" as HubWorkspace, label: "Specification", icon: Edit3, color: "text-slate-600" },
+        { id: "architecture" as HubWorkspace, label: "Architecture Studio", icon: Hexagon, color: "text-slate-600" },
+        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Pipeline", icon: Cpu, color: "text-indigo-600" },
+        { id: "engineering" as HubWorkspace, label: "Engineering", icon: Code, color: "text-slate-600" },
+        { id: "cloud" as HubWorkspace, label: "JUMO Cloud", icon: Server, color: "text-sky-600" },
+        { id: "verification" as HubWorkspace, label: "Verification Center", icon: CheckSquare, color: "text-emerald-500" },
+        { id: "certification" as HubWorkspace, label: "Certification", icon: Award, color: "text-slate-600" },
+        { id: "registries" as HubWorkspace, label: "Product Registries", icon: Layers, color: "text-teal-600" },
+        { id: "templates" as HubWorkspace, label: "Template Manufacturing", icon: Copy, color: "text-slate-600" },
+        { id: "workforce" as HubWorkspace, label: "AI Workforce", icon: Users, color: "text-violet-600" },
+        { id: "security" as HubWorkspace, label: "Security", icon: Shield, color: "text-rose-600" },
+        { id: "audit" as HubWorkspace, label: "Audit", icon: FileText, color: "text-slate-600" },
+        { id: "hybrid" as HubWorkspace, label: "Hybrid Operations", icon: RefreshCw, color: "text-amber-600" },
+        { id: "settings" as HubWorkspace, label: "Settings", icon: Settings, color: "text-slate-600" }
       ]
     },
     {
-      id: "BUILD",
+      id: "MANUFACTURING ECOSYSTEMS",
       items: [
-        { id: "manufacturing" as HubWorkspace, label: "Intake & Workbench", icon: Cpu, color: "text-indigo-600" },
-        { id: "blueprints" as HubWorkspace, label: "Blueprint Factory", icon: FileText, color: "text-emerald-600" }
-      ]
-    },
-    {
-      id: "INTELLIGENCE",
-      items: [
-        { id: "workforce" as HubWorkspace, label: "AI Workforce", icon: Users, color: "text-violet-600" }
-      ]
-    },
-    {
-      id: "CLOUD",
-      items: [
-        { id: "cloud" as HubWorkspace, label: "Cloud Control", icon: Server, color: "text-sky-600" }
-      ]
-    },
-    {
-      id: "OPERATIONS",
-      items: [
-        { id: "deployment" as HubWorkspace, label: "Deployments", icon: Globe, color: "text-blue-500" },
-        { id: "migration" as HubWorkspace, label: "Migrations", icon: RefreshCw, color: "text-amber-600" },
-        { id: "lifecycle" as HubWorkspace, label: "Lifecycle Logs", icon: History, color: "text-slate-600" }
-      ]
-    },
-    {
-      id: "GOVERNANCE",
-      items: [
-        { id: "verification" as HubWorkspace, label: "20-Gate Verification", icon: CheckSquare, color: "text-emerald-500" },
-        { id: "audit" as HubWorkspace, label: "Audit & Guardian", icon: Shield, color: "text-rose-600" },
-        { id: "registries" as HubWorkspace, label: "Registries Fabric", icon: Layers, color: "text-teal-600" }
+        { id: "eco-erp" as HubWorkspace, label: "ERP Ecosystem", icon: Box, color: "text-blue-600" },
+        { id: "eco-cloud" as HubWorkspace, label: "JUMO Cloud Ecosystem", icon: Cloud, color: "text-cyan-600" },
+        { id: "eco-software" as HubWorkspace, label: "Software Ecosystem", icon: Terminal, color: "text-purple-600" },
+        { id: "eco-commercial" as HubWorkspace, label: "Commercial Products Ecosystem", icon: Briefcase, color: "text-orange-600" },
+        { id: "eco-research" as HubWorkspace, label: "Research & Innovation Ecosystem", icon: FlaskConical, color: "text-pink-600" }
       ]
     }
   ];
@@ -472,8 +462,8 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => navigateTo("command")}
-              className={`p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all cursor-pointer ${activeTab === "command" ? "bg-white text-slate-900 shadow-2xs" : ""}`}
+              onClick={() => navigateTo("overview")}
+              className={`p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all cursor-pointer ${activeTab === "overview" ? "bg-white text-slate-900 shadow-2xs" : ""}`}
               title="Sovereign Command Center"
               aria-label="Command Center Home"
             >

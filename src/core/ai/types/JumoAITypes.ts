@@ -4,7 +4,7 @@
 export type AIWorkforceDivision = 
   | 'ARCHITECTURE'
   | 'ERP_ENGINEERING'
-  | 'COMMERCIAL_PRODUCT_ENGINEERING'
+  | 'COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING'
   | 'SOFTWARE_ENGINEERING'
   | 'INTELLIGENCE'
   | 'SECURITY_AEGIS'
@@ -77,7 +77,7 @@ export interface ManufacturingTaskRequest {
   requestorRole: string;
   institutionType?: string;
   institutionName?: string;
-  targetCategory: 'ERP_ECOSYSTEM' | 'COMMERCIAL_PRODUCT' | 'SOFTWARE_PRODUCT' | 'INTELLIGENCE_AI';
+  targetCategory: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
   requestedCapabilities: string[];
   architectureConstraints: string[];
   requestedBy: string;

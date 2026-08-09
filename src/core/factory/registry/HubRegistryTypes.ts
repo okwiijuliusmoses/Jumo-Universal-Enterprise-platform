@@ -18,12 +18,10 @@ export type ProductLifecycleState =
 
 export type ManufacturingCategory =
   | 'ERP_ECOSYSTEM'
-  | 'COMMERCIAL_PRODUCT'
-  | 'SOFTWARE_PRODUCT'
-  | 'INTELLIGENCE_AI'
-  | 'PLATFORM'
-  | 'CLOUD_SERVICE'
-  | 'FUTURE_MANUFACTURING';
+  | 'JUMO_CLOUD_ECOSYSTEM'
+  | 'SOFTWARE_ECOSYSTEM'
+  | 'COMMERCIAL_PRODUCTS_ECOSYSTEM'
+  | 'RESEARCH_INNOVATION_ECOSYSTEM';
 
 export interface AuthoritativeRegistryRecord {
   registryId: string;
@@ -57,28 +55,27 @@ export interface ERPEcosystemRegistryRecord extends AuthoritativeRegistryRecord 
   governanceModel: string;
 }
 
-export interface CommercialProductRegistryRecord extends AuthoritativeRegistryRecord {
-  category: 'COMMERCIAL_PRODUCT';
+export interface CommercialProductsEcosystemRegistryRecord extends AuthoritativeRegistryRecord {
+  category: 'COMMERCIAL_PRODUCTS_ECOSYSTEM';
   engineService: string;
   faapLedgerAuthority: boolean;
   digitalPaySettlementBridge: boolean;
 }
 
-export interface SoftwareProductRegistryRecord extends AuthoritativeRegistryRecord {
-  category: 'SOFTWARE_PRODUCT';
+export interface SoftwareEcosystemRegistryRecord extends AuthoritativeRegistryRecord {
+  category: 'SOFTWARE_ECOSYSTEM';
   framework: string;
   targetPlatform: string;
 }
 
-export interface IntelligenceRegistryRecord extends AuthoritativeRegistryRecord {
-  category: 'INTELLIGENCE_AI';
-  agentSwarmId?: string;
+export interface ResearchInnovationEcosystemRegistryRecord extends AuthoritativeRegistryRecord {
+  category: 'RESEARCH_INNOVATION_ECOSYSTEM';
+  experimentalStage: string;
   boundaryGuardsEnforced: boolean;
-  modelFamily: string;
 }
 
-export interface CloudServiceRegistryRecord extends AuthoritativeRegistryRecord {
-  category: 'CLOUD_SERVICE';
+export interface JumoCloudEcosystemRegistryRecord extends AuthoritativeRegistryRecord {
+  category: 'JUMO_CLOUD_ECOSYSTEM';
   nodeCluster: string;
   autoScaling: boolean;
 }

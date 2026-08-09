@@ -11,7 +11,7 @@
 
 export type DigitalPayProductType =
   | "ERP"
-  | "COMMERCIAL_PRODUCT"
+  | "COMMERCIAL_PRODUCTS_ECOSYSTEM"
   | "PLATFORM_SERVICE"
   | "INSTITUTIONAL_PRODUCT"
   | "FINANCIAL_PRODUCT";
@@ -289,7 +289,7 @@ class ProductPaymentProfileService {
         profiles.filter(
           profile =>
             profile.productType ===
-            "COMMERCIAL_PRODUCT"
+            "COMMERCIAL_PRODUCTS_ECOSYSTEM"
         ).length,
 
       institutionalProducts:

@@ -18,6 +18,9 @@ export interface ArchitectureRequest {
   infrastructure: string;
   integrations: string[];
   aiRequirements: string;
+  ecosystemType?: string;
+  sector?: string;
+  detailedSpecification?: any;
   status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
   createdAt: string;
 }
@@ -36,7 +39,7 @@ export interface JumoBlueprint {
 export interface ManufacturingJob {
   id: string;
   name: string;
-  type: 'ERP_ECOSYSTEM' | 'COMMERCIAL_PRODUCT' | 'SOFTWARE_APPLICATION';
+  type: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
   targetEcosystemId: string;
   blueprintId: string;
   status: 'INTAKE' | 'PLANNED' | 'QUEUED' | 'ASSIGNED' | 'BUILDING' | 'TESTING' | 'VERIFYING' | 'BLOCKED' | 'APPROVED' | 'STAGING' | 'DEPLOYING' | 'PRODUCTION' | 'UPGRADING' | 'MIGRATING' | 'ROLLING_BACK' | 'RETIRED';
@@ -205,7 +208,7 @@ export class SovereignOperatingStateService {
         {
           id: "JOB-2026-000905",
           name: "Sovereign Finance Core Compilation Suite",
-          type: "COMMERCIAL_PRODUCT",
+          type: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
           targetEcosystemId: "erp-sacco",
           blueprintId: "bp-sacco-v4",
           status: "VERIFYING",
@@ -505,7 +508,7 @@ export class SovereignOperatingStateService {
     const newJob: ManufacturingJob = {
       id: jobId,
       name: `Pipeline for ${bp.name}`,
-      type: bp.type === "Financial Engine" ? 'ERP_ECOSYSTEM' : 'SOFTWARE_APPLICATION',
+      type: bp.type === "Financial Engine" ? 'ERP_ECOSYSTEM' : 'SOFTWARE_ECOSYSTEM',
       targetEcosystemId: bp.blueprintId,
       blueprintId: bp.blueprintId,
       status: 'INTAKE',

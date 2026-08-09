@@ -10,21 +10,33 @@ import {
 } from "lucide-react";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
+import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from "./specification/DigitalEcosystemSpecificationForm";
 
 // === TYPES ===
 export type HubWorkspace = 
-  | 'command' 
-  | 'manufacturing' 
-  | 'blueprints' 
-  | 'workforce' 
-  | 'cloud' 
-  | 'registries' 
-  | 'verification' 
-  | 'deployment' 
-  | 'migration' 
-  | 'audit' 
-  | 'lifecycle' 
-  | 'settings';
+  | 'overview'
+  | 'specification'
+  | 'architecture'
+  | 'manufacturing'
+  | 'engineering'
+  | 'cloud'
+  | 'verification'
+  | 'certification'
+  | 'registries'
+  | 'templates'
+  | 'workforce'
+  | 'security'
+  | 'audit'
+  | 'hybrid'
+  | 'settings'
+  | 'deployment'
+  | 'migration'
+  | 'lifecycle'
+  | 'eco-erp'
+  | 'eco-cloud'
+  | 'eco-software'
+  | 'eco-commercial'
+  | 'eco-research';
 
 interface ArchitectureRequest {
   id: string;
@@ -36,6 +48,9 @@ interface ArchitectureRequest {
   infrastructure: string;
   integrations: string[];
   aiRequirements: string;
+  ecosystemType?: string;
+  sector?: string;
+  detailedSpecification?: any;
   status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
   createdAt: string;
 }
@@ -54,7 +69,7 @@ interface JumoBlueprint {
 interface ManufacturingJob {
   id: string;
   name: string;
-  type: 'ERP_ECOSYSTEM' | 'COMMERCIAL_PRODUCT' | 'SOFTWARE_APPLICATION';
+  type: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
   targetEcosystemId: string;
   blueprintId: string;
   status: 'INTAKE' | 'PLANNED' | 'QUEUED' | 'ASSIGNED' | 'BUILDING' | 'TESTING' | 'VERIFYING' | 'BLOCKED' | 'APPROVED' | 'STAGING' | 'DEPLOYING' | 'PRODUCTION' | 'UPGRADING' | 'MIGRATING' | 'ROLLING_BACK' | 'RETIRED';
@@ -295,7 +310,34 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
 
   // === MUTATION ACTIONS ===
 
-  // 1. Create Architecture Request
+  // 1. Create Architecture Request (Phase 2 Specification)
+  const handleGenerateArchitectureContract = async (spec: EcosystemSpecification) => {
+    try {
+      // Create a complex architecture request mapping the full specification
+      const payload = {
+        title: spec.product.productName || "New Manufacturing Product",
+        problem: spec.product.purpose || "Generated from Digital Ecosystem Specification Form",
+        targetUsers: spec.portals.selected.join(", ") || "Public",
+        organization: spec.product.targetOrganization || "National Digital Hub",
+        capabilities: spec.modules.selected,
+        infrastructure: spec.deployment.selected.join(", ") || "JUMO Cloud",
+        integrations: spec.integrations.selected,
+        aiRequirements: spec.aiWorkforce.selected.join(", "),
+        ecosystemType: spec.product.ecosystem,
+        sector: spec.product.sector,
+        detailedSpecification: spec
+      };
+      
+      const res = await serverPost("/api/v1/ueos/architecture-requests", payload);
+      if (res.ok) {
+        await fetchSovereignState();
+        onNavigate?.('architecture');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleCreateArchRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle) return;
@@ -392,7 +434,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       const res = await serverPost(`/api/v1/ueos/blueprints/${bpId}/launch-pipeline`);
       if (res.ok) {
         await fetchSovereignState();
-        onNavigate?.('command');
+        onNavigate?.('manufacturing');
       }
     } catch (err) {
       console.error(err);
@@ -712,7 +754,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       <div className="min-h-[600px] bg-slate-50">
         
         {/* Workspace 1: Sovereign Command */}
-        {activeWorkspace === "command" && (
+        {activeWorkspace === "overview" && (
           <div className="space-y-6" id="workspace-command">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
@@ -891,99 +933,23 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace 2: Human Idea & Architecture Workbench */}
-        {activeWorkspace === "manufacturing" && (
-          <div className="space-y-6" id="workspace-manufacturing">
+        {/* Workspace 2: Digital Ecosystem Specification (Phase 2) */}
+        {activeWorkspace === "specification" && (
+          <div className="space-y-6" id="workspace-specification">
+            <DigitalEcosystemSpecificationForm onSubmit={handleGenerateArchitectureContract} />
+          </div>
+        )}
+
+        {/* Workspace 3: Architecture Studio (Phase 3 & 4) */}
+        {activeWorkspace === "architecture" && (
+          <div className="space-y-6" id="workspace-architecture">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
-              {/* Left Column: Requirements and Intake submission */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
-                  <div>
-                    <h3 className="text-sm font-extrabold text-slate-900">1. Architecture Request Intake</h3>
-                    <p className="text-xs text-slate-500 mt-1">Submit high-level national institution requirements to formulate a JUMO architecture.</p>
-                  </div>
-
-                  <form onSubmit={handleCreateArchRequest} className="space-y-4">
-                    <div className="space-y-1">
-                      <label htmlFor="arch-title" className="text-[10px] font-black uppercase text-slate-600">Request Title</label>
-                      <input 
-                        id="arch-title"
-                        type="text" 
-                        value={newTitle}
-                        onChange={(e) => setNewTitle(e.target.value)}
-                        placeholder="e.g. National Healthcare Patient Records"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-1 focus:ring-blue-500 focus:outline-hidden"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label htmlFor="arch-problem" className="text-[10px] font-black uppercase text-slate-600">Business Problem / Scope</label>
-                      <textarea 
-                        id="arch-problem"
-                        value={newProblem}
-                        onChange={(e) => setNewProblem(e.target.value)}
-                        placeholder="Describe target requirements and scope limits..."
-                        className="w-full h-16 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-1 focus:ring-blue-500 focus:outline-hidden"
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label htmlFor="arch-users" className="text-[10px] font-black uppercase text-slate-600">Target User Cohort</label>
-                        <input 
-                          id="arch-users"
-                          type="text" 
-                          value={newUsers}
-                          onChange={(e) => setNewUsers(e.target.value)}
-                          placeholder="Physicians, bank clerks"
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-1 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label htmlFor="arch-org" className="text-[10px] font-black uppercase text-slate-600">Sponsoring Institution</label>
-                        <select 
-                          id="arch-org"
-                          value={newOrg}
-                          onChange={(e) => setNewOrg(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"
-                        >
-                          <option value="Ministry of Finance">Ministry of Finance</option>
-                          <option value="Ministry of Health">Ministry of Health</option>
-                          <option value="National Security Council">National Security Council</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label htmlFor="arch-caps" className="text-[10px] font-black uppercase text-slate-600">Required Key Capabilities (Comma separated)</label>
-                      <input 
-                        id="arch-caps"
-                        type="text" 
-                        value={newCap}
-                        onChange={(e) => setNewCap(e.target.value)}
-                        placeholder="Balance checking, Encrypted claims"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Submit to Architecture Intake
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-              {/* Right Column: Active Architecture Workbench & Pipeline */}
-              <div className="lg:col-span-7 space-y-6">
+              <div className="lg:col-span-12 space-y-6">
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                     <div>
-                      <h3 className="text-sm font-extrabold text-slate-900">2. Active Architecture Review Desk</h3>
-                      <p className="text-xs text-slate-500 mt-1">Review human requests and promote them to Blueprint compilation targets.</p>
+                      <h3 className="text-sm font-extrabold text-slate-900">Active Architecture Review Desk</h3>
+                      <p className="text-xs text-slate-500 mt-1">Review generated architecture contracts and approve them for engineering.</p>
                     </div>
                   </div>
 
@@ -1002,6 +968,9 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                           <div>
                             <span className="font-extrabold text-xs text-slate-900 block">{req.title}</span>
                             <p className="text-[11px] text-slate-600 leading-relaxed mt-1">{req.problem}</p>
+                            {req.ecosystemType && (
+                              <p className="text-[10px] text-slate-500 mt-1 font-semibold uppercase">Ecosystem: {req.ecosystemType}</p>
+                            )}
                           </div>
                           <div className="flex flex-wrap gap-1.5 pt-1">
                             {req.capabilities.map((cap, i) => (
@@ -1021,21 +990,21 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                               <button
                                 onClick={() => {
                                   setArchRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'APPROVED' } : r));
-                                  logAudit("ARCH_APPROVED", `Approved architecture requirements for ${req.id}`);
+                                  logAudit("ARCH_APPROVED", `Approved architecture contract for ${req.id}`);
                                 }}
                                 className="px-3 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[10px] font-bold cursor-pointer"
                               >
-                                Approve Request
+                                Approve Contract
                               </button>
                             )}
                             {req.status === 'APPROVED' && (
                               <button
                                 onClick={() => {
-                                  const bpId = `bp-manual-${Math.floor(Math.random() * 900) + 100}`;
+                                  const bpId = `bp-arch-${Math.floor(Math.random() * 900) + 100}`;
                                   const newBp: JumoBlueprint = {
                                     blueprintId: bpId,
-                                    name: `${req.title} Compiler Spec`,
-                                    type: "Custom Microservice",
+                                    name: `${req.title} Manufacturing Blueprint`,
+                                    type: req.ecosystemType || "SOFTWARE_ECOSYSTEM",
                                     version: "v1.0.0",
                                     lastBuildTime: "Never",
                                     compilerStatus: "DRAFT",
@@ -1055,12 +1024,12 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                                 className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer inline-flex items-center gap-1"
                               >
                                 <Zap className="w-3.5 h-3.5" />
-                                Generate Blueprint
+                                Hand-off to Engineering
                               </button>
                             )}
                             {req.status === 'COMPILED' && (
                               <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                                Blueprinted
+                                Engineering Handoff Complete
                               </span>
                             )}
                           </div>
@@ -1070,13 +1039,85 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
 
+        {/* Workspace 4: Manufacturing Pipeline */}
+        {activeWorkspace === "manufacturing" && (
+          <div className="space-y-6" id="workspace-manufacturing-pipeline">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900">Active Manufacturing Pipeline</h3>
+                  <p className="text-xs text-slate-500 mt-1">Monitor end-to-end building, testing, deploying, and QA jobs.</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-y border-slate-200/80 text-[10px] uppercase font-black text-slate-400 tracking-wider">
+                      <th className="p-4">Pipeline Job</th>
+                      <th className="p-4">Repository & Branch</th>
+                      <th className="p-4">Active Stage</th>
+                      <th className="p-4">Swarm Engine</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {jobs.map((job) => (
+                      <tr key={job.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                        <td className="p-4">
+                          <span className="font-extrabold text-xs text-slate-800 block">{job.name}</span>
+                          <span className="text-[10px] text-slate-500 font-medium">ID: {job.id} | Target: {job.targetEcosystemId}</span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                            <Database className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="font-medium">{job.repository}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5">
+                            <Command className="w-3 h-3" />
+                            <span>{job.branch}</span>
+                            <span className="text-slate-300">•</span>
+                            <span className="font-mono text-slate-400">{job.commitSha.substring(0, 7)}</span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wider">
+                            <Activity className="w-3 h-3" />
+                            {job.status}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex -space-x-2">
+                            {job.assignedWorkforce.map((agentId, i) => (
+                              <div key={i} className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-black text-slate-600" title={agentId}>
+                                {agentId.substring(agentId.length - 2)}
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="p-4 text-right space-x-2">
+                          <button
+                            onClick={() => handlePromoteJob(job.id)}
+                            className="p-1.5 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1"
+                            title="Promote to Next Phase"
+                          >
+                            <Play className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
 
         {/* Workspace 3: Sovereign Blueprint Factory */}
-        {activeWorkspace === "blueprints" && (
+        {activeWorkspace === "templates" && (
           <div className="space-y-6" id="workspace-blueprints">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
@@ -1908,6 +1949,19 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                 </form>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* Other Missing Workspaces (Placeholder for Phase 6 completeness) */}
+        {["engineering", "certification", "security", "hybrid", "eco-erp", "eco-cloud", "eco-software", "eco-commercial", "eco-research"].includes(activeWorkspace) && (
+          <div className="space-y-6" id={`workspace-${activeWorkspace}`}>
+            <div className="bg-white p-10 rounded-xl border border-slate-200 shadow-sm text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Box className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-extrabold text-slate-900 capitalize">{activeWorkspace.replace("eco-", "Ecosystem: ")}</h3>
+              <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">This workspace is a recognized node within the JUMO National Manufacturing Hub architecture. It is scheduled for continuous deployment in upcoming implementation phases.</p>
             </div>
           </div>
         )}
