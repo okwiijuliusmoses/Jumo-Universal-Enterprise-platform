@@ -16,6 +16,8 @@ import {
   WorkflowRegistryRecord,
   DeploymentRegistryRecord,
   VerificationRegistryRecord,
+  VerificationLayer,
+  VerificationProfile,
   UpgradeRegistryRecord,
   MaintenanceRegistryRecord,
   ProductLifecycleState,
@@ -38,6 +40,8 @@ export class UniversalHubRegistry {
   private static blueprints: Map<string, BlueprintRegistryRecord> = new Map();
   private static deployments: Map<string, DeploymentRegistryRecord> = new Map();
   private static verifications: Map<string, VerificationRegistryRecord> = new Map();
+  private static verificationLayers: Map<string, VerificationLayer> = new Map();
+  private static verificationProfiles: Map<string, VerificationProfile> = new Map();
   private static upgrades: Map<string, UpgradeRegistryRecord> = new Map();
   private static maintenanceLogs: Map<string, MaintenanceRegistryRecord> = new Map();
 

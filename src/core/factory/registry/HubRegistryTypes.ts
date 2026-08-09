@@ -23,6 +23,32 @@ export type ManufacturingCategory =
   | 'COMMERCIAL_PRODUCTS_ECOSYSTEM'
   | 'RESEARCH_INNOVATION_ECOSYSTEM';
 
+export type VerificationGate = 
+  | 'GATE_01' | 'GATE_02' | 'GATE_03' | 'GATE_04' | 'GATE_05'
+  | 'GATE_06' | 'GATE_07' | 'GATE_08' | 'GATE_09' | 'GATE_10'
+  | 'GATE_11' | 'GATE_12' | 'GATE_13' | 'GATE_14' | 'GATE_15'
+  | 'GATE_16' | 'GATE_17' | 'GATE_18' | 'GATE_19' | 'GATE_20';
+
+export interface VerificationLayer {
+  layerId: string;
+  name: string;
+  description: string;
+  category: string;
+  gate: VerificationGate;
+  enabled: boolean;
+  mandatory: boolean;
+  blocking: boolean;
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
+  standards: string[];
+}
+
+export interface VerificationProfile {
+  profileId: string;
+  name: string;
+  description: string;
+  layerIds: string[];
+}
+
 export interface AuthoritativeRegistryRecord {
   registryId: string;
   name: string;
