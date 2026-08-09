@@ -54,31 +54,162 @@ export interface ArchitectureContract {
   version: string;
   specificationId: string;
   status: 'DRAFT' | 'REVIEW' | 'APPROVED';
-  productDetails: any; // Simplified for now
+  productIdentity: {
+    name: string;
+    ecosystem: ManufacturingCategory;
+    sector: string;
+    organization: string;
+    purpose: string;
+    targetUsers: string;
+    operatingJurisdiction: string;
+    deploymentModel: string;
+    tenancyModel: string;
+  };
+  experienceArchitecture: any;
+  organizationalArchitecture: any;
+  functionalArchitecture: any;
+  dataArchitecture: any;
+  integrationArchitecture: any;
+  aiArchitecture: any;
+  securityArchitecture: any;
+  deploymentArchitecture: any;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface EngineeringJob {
+export interface ManufacturingJob {
   id: string;
   architectureId: string;
-  status: 'UNASSIGNED' | 'ASSIGNED' | 'ACTIVE' | 'BLOCKED' | 'COMPLETED';
-  assignedEngineers: string[];
-  tasks: EngineeringTask[];
+  productId: string;
+  ecosystem: ManufacturingCategory;
+  version: string;
+  status: ManufacturingJobStatus;
+  progress: number;
+  assignedWorkforce: EngineeringAssignment[];
+  repository: string;
+  branch: string;
+  commitSha: string;
+  buildArtifactId?: string;
+  deploymentId?: string;
+  verificationProfileId?: string;
+  evidence: string[];
+  logs: string[];
   createdAt: string;
+  updatedAt: string;
+}
+
+export type ManufacturingJobStatus =
+  | 'INTAKE'
+  | 'SPECIFICATION'
+  | 'ARCHITECTURE'
+  | 'APPROVAL'
+  | 'ENGINEERING'
+  | 'SOURCE_GENERATION'
+  | 'DEPENDENCY_RESOLUTION'
+  | 'COMPILATION'
+  | 'BUILDING'
+  | 'UNIT_TESTING'
+  | 'INTEGRATION_PREP'
+  | 'CLOUD_BUILD'
+  | 'DEPLOYMENT_PREP'
+  | 'DEPLOYMENT'
+  | 'VERIFICATION'
+  | 'VERIFIED'
+  | 'CERTIFICATION'
+  | 'CERTIFIED'
+  | 'REGISTRY_ACTIVATION'
+  | 'PRODUCTION'
+  | 'OPERATIONS'
+  | 'AUDIT'
+  | 'UPGRADE'
+  | 'LIFECYCLE_MANAGEMENT'
+  | 'RETIRED'
+  | 'FAILED'
+  | 'BLOCKED';
+
+export interface EngineeringAssignment {
+  engineerId: string;
+  role: string;
+  responsibility: string;
+  assignedModule?: string;
+  status: 'UNASSIGNED' | 'ASSIGNED' | 'ACTIVE' | 'BLOCKED' | 'WAITING_REVIEW' | 'COMPLETED' | 'REASSIGNED';
+  progress: number;
+  tasks: EngineeringTask[];
 }
 
 export interface EngineeringTask {
   id: string;
   title: string;
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  architectureRequirementId?: string;
 }
 
 export interface EngineeringAgent {
-  id: string;
-  name: string;
+  agentId: string;
+  jumoName: string;
+  displayName: string;
+  role: string;
   division: string;
-  status: 'ACTIVE' | 'BUSY' | 'OFFLINE';
+  specialization: string;
+  description: string;
+  capabilities: string[];
+  status: string;
+  workload: number;
+  health: 'HEALTHY' | 'DEGRADED' | 'OFFLINE';
+  modelPolicy?: any;
+  memoryPolicy?: any;
+}
+
+export interface BuildArtifact {
+  artifactId: string;
+  jobId: string;
+  hash: string;
+  size: number;
+  timestamp: string;
+  status: 'PASSED' | 'FAILED';
+  logs: string[];
+}
+
+export interface DeploymentRecord {
+  deploymentId: string;
+  jobId: string;
+  environment: 'SANDBOX' | 'STAGING' | 'PRODUCTION' | 'HYBRID' | 'OFFLINE';
+  target: string;
+  status: 'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED';
+  healthCheck?: 'PASSED' | 'FAILED';
+  timestamp: string;
+}
+
+export interface VerificationFailureRecord {
+  failureId: string;
+  jobId: string;
+  layerId: string;
+  architectureRequirement: string;
+  actualResult: string;
+  expectedResult: string;
+  affectedComponent: string;
+  severity: 'CRITICAL' | 'WARNING';
+  evidence: string;
+  diagnostic: string;
+  assignedEngineerId: string;
+  correctionStatus: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED';
+  retryCount: number;
+  timestamp: string;
+}
+
+export interface CertificationRecord {
+  certificationId: string;
+  jobId: string;
+  productId: string;
+  architectureId: string;
+  version: string;
+  commitSha: string;
+  artifactId: string;
+  deploymentId: string;
+  verificationPolicyVersion: string;
+  evidenceHashes: string[];
+  approvalAuthority: string;
+  timestamp: string;
 }
 
 export interface AuthoritativeRegistryRecord {

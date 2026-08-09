@@ -59,61 +59,126 @@ async function startServer() {
     }
   });
 
-  // 3. Approve architecture request
-  app.put("/api/v1/ueos/architecture-requests/:id/approve", (req, res) => {
+  // 2a. Generate architecture contract from request
+  app.post("/api/v1/ueos/architecture-contracts", (req, res) => {
+    try {
+      const { requestId } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const contract = SovereignOperatingStateService.createArchitectureContract(requestId, actor);
+      res.json(contract);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 2b. Approve architecture contract
+  app.put("/api/v1/ueos/architecture-contracts/:id/approve", (req, res) => {
     try {
       const id = req.params.id;
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updated = SovereignOperatingStateService.approveArchitectureRequest(id, actor);
+      const updated = SovereignOperatingStateService.approveArchitectureContract(id, actor);
       res.json(updated);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
   });
 
-  // 4. Generate blueprint from request
-  app.put("/api/v1/ueos/architecture-requests/:id/blueprint", (req, res) => {
+  // 3. Create manufacturing job from contract
+  app.post("/api/v1/ueos/jobs", (req, res) => {
     try {
-      const id = req.params.id;
+      const { contractId } = req.body;
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const result = SovereignOperatingStateService.generateBlueprintFromRequest(id, actor);
-      res.json(result);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 5. Compile blueprint using TemplateCompiler
-  app.post("/api/v1/ueos/blueprints/:blueprintId/compile", (req, res) => {
-    try {
-      const blueprintId = req.params.blueprintId;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const result = SovereignOperatingStateService.compileBlueprint(blueprintId, actor);
-      res.json(result);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 6. Launch pipeline from blueprint
-  app.post("/api/v1/ueos/blueprints/:blueprintId/launch-pipeline", (req, res) => {
-    try {
-      const blueprintId = req.params.blueprintId;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const newJob = SovereignOperatingStateService.launchPipelineFromBlueprint(blueprintId, actor);
+      const newJob = SovereignOperatingStateService.createManufacturingJob(contractId, actor);
       res.json(newJob);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
   });
 
-  // 7. Promote job pipeline stage
+  // 4. Assign workforce to job
+  app.post("/api/v1/ueos/jobs/:id/assign", (req, res) => {
+    try {
+      const id = req.params.id;
+      const { assignments } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const updated = SovereignOperatingStateService.assignWorkforceToJob(id, assignments, actor);
+      res.json(updated);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 5. Promote manufacturing job stage
   app.post("/api/v1/ueos/jobs/:id/promote", (req, res) => {
     try {
       const id = req.params.id;
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updatedJob = SovereignOperatingStateService.promoteJobStage(id, actor);
+      const updatedJob = SovereignOperatingStateService.promoteManufacturingJob(id, actor);
       res.json(updatedJob);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 6. Record build artifact
+  app.post("/api/v1/ueos/jobs/:id/build", (req, res) => {
+    try {
+      const id = req.params.id;
+      const { hash, size } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const artifact = SovereignOperatingStateService.recordBuildArtifact(id, hash, size, actor);
+      res.json(artifact);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 7. Record deployment
+  app.post("/api/v1/ueos/jobs/:id/deploy", (req, res) => {
+    try {
+      const id = req.params.id;
+      const { environment, target } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const record = SovereignOperatingStateService.recordDeployment(id, environment, target, actor);
+      res.json(record);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 8. Record verification failure
+  app.post("/api/v1/ueos/jobs/:id/verify-failure", (req, res) => {
+    try {
+      const id = req.params.id;
+      const { layerId, diagnostic } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const failure = SovereignOperatingStateService.recordVerificationFailure(id, layerId, diagnostic, actor);
+      res.json(failure);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 9. Certify manufacturing job
+  app.post("/api/v1/ueos/jobs/:id/certify", (req, res) => {
+    try {
+      const id = req.params.id;
+      const { authority } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const cert = SovereignOperatingStateService.certifyManufacturingJob(id, authority, actor);
+      res.json(cert);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 10. Activate product registry
+  app.post("/api/v1/ueos/jobs/:id/activate-registry", (req, res) => {
+    try {
+      const id = req.params.id;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const job = SovereignOperatingStateService.activateProductRegistry(id, actor);
+      res.json(job);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }

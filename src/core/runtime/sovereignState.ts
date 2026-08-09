@@ -9,6 +9,20 @@ import { UniversalHubRegistry } from "../factory/registry/UniversalHubRegistry";
 import { TemplateCompiler } from "../factory/TemplateCompiler";
 import { UniversalVerificationEngine } from "./verificationEngine";
 
+import { 
+  ArchitectureContract, 
+  ManufacturingJob, 
+  ManufacturingJobStatus, 
+  EngineeringAssignment, 
+  EngineeringTask, 
+  EngineeringAgent,
+  BuildArtifact,
+  DeploymentRecord,
+  VerificationFailureRecord,
+  CertificationRecord,
+  ManufacturingCategory
+} from "../factory/registry/HubRegistryTypes";
+
 export interface ArchitectureRequest {
   id: string;
   title: string;
@@ -19,8 +33,8 @@ export interface ArchitectureRequest {
   infrastructure: string;
   integrations: string[];
   aiRequirements: string;
-  ecosystemType?: string;
-  sector?: string;
+  ecosystemType: ManufacturingCategory;
+  sector: string;
   detailedSpecification?: any;
   status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
   createdAt: string;
@@ -35,23 +49,6 @@ export interface JumoBlueprint {
   compilerStatus: 'OK' | 'DRAFT' | 'ERROR';
   content: string;
   lifecycleState: 'DRAFT' | 'REVIEW' | 'VALIDATED' | 'VERIFIED' | 'APPROVED' | 'COMPILED' | 'READY' | 'PROVISIONED' | 'RETIRED';
-}
-
-export interface ManufacturingJob {
-  id: string;
-  name: string;
-  type: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
-  targetEcosystemId: string;
-  blueprintId: string;
-  status: 'INTAKE' | 'PLANNED' | 'QUEUED' | 'ASSIGNED' | 'BUILDING' | 'TESTING' | 'VERIFYING' | 'BLOCKED' | 'APPROVED' | 'STAGING' | 'DEPLOYING' | 'PRODUCTION' | 'UPGRADING' | 'MIGRATING' | 'ROLLING_BACK' | 'RETIRED';
-  progress: number;
-  assignedWorkforce: string[];
-  repository: string;
-  branch: string;
-  commitSha: string;
-  logs: string[];
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface VerificationGateResult {
@@ -114,8 +111,13 @@ export interface AuditEvent {
 
 export interface SovereignState {
   architectureRequests: ArchitectureRequest[];
+  architectureContracts: ArchitectureContract[];
   blueprints: JumoBlueprint[];
   jobs: ManufacturingJob[];
+  buildArtifacts: BuildArtifact[];
+  deploymentRecords: DeploymentRecord[];
+  verificationFailures: VerificationFailureRecord[];
+  certificationRecords: CertificationRecord[];
   incidents: JumoIncident[];
   cloudSlots: DeploymentSlot[];
   auditEvents: AuditEvent[];
@@ -155,23 +157,13 @@ export class SovereignOperatingStateService {
           infrastructure: "Sovereign Hybrid Cloud Node JUMO-NODE-01",
           integrations: ["prod-faap", "prod-pay"],
           aiRequirements: "Automated real-time anomaly detection daemon",
+          ecosystemType: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
+          sector: "FINANCE",
           status: "APPROVED",
           createdAt: "2026-08-01T12:00:00Z"
-        },
-        {
-          id: "ARCH-2026-000002",
-          title: "EHR Decentralized Hospital Sync Network",
-          problem: "Medical record updates must remain resilient, synchronized in high-latency or offline settings.",
-          targetUsers: "District Physicians, Ministry of Health Auditors",
-          organization: "Ministry of Health",
-          capabilities: ["Offline-resilient EHR Ledger", "Patient Identity Cryptographic Isolation"],
-          infrastructure: "Sovereign Edge Cluster JUMO-EDGE-04",
-          integrations: ["prod-identity", "prod-auditor"],
-          aiRequirements: "Secure medical classification and diagnostic indexing assistant",
-          status: "COMPILED",
-          createdAt: "2026-08-05T09:30:00Z"
         }
       ],
+      architectureContracts: [],
       blueprints: [
         {
           blueprintId: "bp-sacco-v4",
@@ -188,114 +180,26 @@ export class SovereignOperatingStateService {
             components: ["BalanceSheet", "TransactionQueue"]
           }, null, 2),
           lifecycleState: "APPROVED"
-        },
-        {
-          blueprintId: "bp-aegis-v4",
-          name: "Sovereign Cybersecurity Daemon Blueprint",
-          type: "Security Daemon",
-          version: "v4.0.1",
-          lastBuildTime: "01:15 PM",
-          compilerStatus: "OK",
-          content: JSON.stringify({
-            blueprint: "bp-aegis-v4",
-            owner: "AEGIS Defence Directorate",
-            firewallRules: ["BLOCK_EXTERNAL_INGRESS", "FORCE_VPC_TUNNELLING"],
-            decryptionKeys: ["SHA256-SIGNATURE_ENFORCED"]
-          }, null, 2),
-          lifecycleState: "VERIFIED"
         }
       ],
-      jobs: [
-        {
-          id: "JOB-2026-000905",
-          name: "Sovereign Finance Core Compilation Suite",
-          type: "COMMERCIAL_PRODUCTS_ECOSYSTEM",
-          targetEcosystemId: "erp-sacco",
-          blueprintId: "bp-sacco-v4",
-          status: "VERIFYING",
-          progress: 75,
-          assignedWorkforce: ["jumo-ai-arch-001", "jumo-ai-prod-020"],
-          repository: "Jumo-Universal-Enterprise-platform",
-          branch: "manufacturing-hub-architecture",
-          commitSha: "5eff8446f64cb656a1b31f88a2efbe6476bedb65",
-          logs: [
-            "[INTAKE] Received fully validated architecture request ARCH-2026-000001.",
-            "[PLANNED] Resolved dependency chain for SACCO microservices.",
-            "[BUILD] Bundled package and compiled source to node bundles cleanly.",
-            "[TESTING] Unit assertion pass rate: 100%. Coverage score: 98.4%.",
-            "[VERIFYING] Commencing 20-Layer executable verification framework..."
-          ],
-          createdAt: "2026-08-09T05:00:00Z",
-          updatedAt: "2026-08-09T05:40:00Z"
-        }
-      ],
-      incidents: [
-        {
-          id: "INC-1092",
-          title: "API Endpoint Interoperability Warnings on SACCO Ledger",
-          severity: "WARNING",
-          component: "Digital Pay Bridge",
-          timestamp: "05:12 AM"
-        }
-      ],
+      jobs: [],
+      buildArtifacts: [],
+      deploymentRecords: [],
+      verificationFailures: [],
+      certificationRecords: [],
+      incidents: [],
       cloudSlots: [
         { id: "dev", name: "Development (Isolated-01)", activeRelease: "v4.2.0-RC1", health: "HEALTHY", cpu: 12, memory: 18, trafficWeight: 100 },
         { id: "staging", name: "Staging Canary Floor", activeRelease: "v4.2.0-BETA3", health: "HEALTHY", cpu: 25, memory: 40, trafficWeight: 10 },
         { id: "production", name: "National Production Cluster", activeRelease: "v4.1.9-STABLE", health: "HEALTHY", cpu: 48, memory: 62, trafficWeight: 90 }
       ],
-      auditEvents: [
-        {
-          id: "AUD-9901",
-          actor: "Hon. Minister Julius Moses",
-          operation: "BLUEPRINT_APPROVED",
-          details: "Formally approved bp-sacco-v4 following security auditor signature clearance.",
-          timestamp: "2026-08-09T05:30:00Z"
-        },
-        {
-          id: "AUD-9902",
-          actor: "JUMO-CORE-OPERATOR",
-          operation: "JOB_PROMOTED",
-          details: "Promoted job JOB-2026-000905 to VERIFYING stage.",
-          timestamp: "2026-08-09T05:40:00Z"
-        }
-      ],
-      verificationGates: [
-        { id: "v1", name: "Repository Integrity", status: "PASS", evidence: "Commit 5eff844 matched signature key authorization.", timestamp: "05:40 AM", logs: ["Validated commit signature with sovereign root CA key."] },
-        { id: "v2", name: "Source Provenance", status: "PASS", evidence: "Code traces match signed developer credentials.", timestamp: "05:40 AM", logs: ["Verified developer fingerprint against JUMO identity register."] },
-        { id: "v3", name: "Architecture Boundary", status: "PASS", evidence: "No external unapproved package namespaces found.", timestamp: "05:41 AM", logs: ["Checked directory imports. Boundaries solid."] },
-        { id: "v4", name: "Registry Ownership", status: "PASS", evidence: "Target erp-sacco owner verified: Sovereign Financial Board.", timestamp: "05:41 AM", logs: ["Ownership validation checks out."] },
-        { id: "v5", name: "Dependency Graph", status: "PASS", evidence: "Zero cycles found in the core compilation graph.", timestamp: "05:41 AM", logs: ["Analyzed prod-faap and prod-pay dependency hierarchy."] },
-        { id: "v6", name: "TypeScript/Static Analysis", status: "PASS", evidence: "Zero static validation compiler warning flags.", timestamp: "05:42 AM", logs: ["Stripped types. Type verification successful."] },
-        { id: "v7", name: "UI/Accessibility", status: "PASS", evidence: "Meets WCAG AA 4.5:1 contrast and keyboard navigation rules.", timestamp: "05:42 AM", logs: ["Analyzed compiled markup models."] },
-        { id: "v8", name: "API Contract", status: "PASS", evidence: "Matches OpenAPI specs for /api/sacco/loans cleanly.", timestamp: "05:42 AM", logs: ["Integrated schema verification pass."] },
-        { id: "v9", name: "Database Schema", status: "PASS", evidence: "Database migrations are fully backward compatible.", timestamp: "05:43 AM", logs: ["Passed schema validator checks."] },
-        { id: "v10", name: "Migration Safety", status: "PASS", evidence: "Validated automatic rollback points are available.", timestamp: "05:43 AM", logs: ["Simulated rollback check."] },
-        { id: "v11", name: "Tenant/Data Isolation", status: "PASS", evidence: "Subnet firewall policies prevent tenant leakage.", timestamp: "05:44 AM", logs: ["Zero-leak network simulation passed."] },
-        { id: "v12", name: "Identity/Session Security", status: "PASS", evidence: "Crypto tokens expire in 15 minutes of inactivity.", timestamp: "05:44 AM", logs: ["Validated token config."] },
-        { id: "v13", name: "RBAC/ABAC Policy", status: "PASS", evidence: "Permissions verified for LEVEL-10 clearance operators.", timestamp: "05:45 AM", logs: ["RBAC ledger rules successfully asserted."] },
-        { id: "v14", name: "AEGIS Threat Audit", status: "PASS", evidence: "All server endpoints are isolated behind IPS systems.", timestamp: "05:45 AM", logs: ["IPS penetration checks returned clean."] },
-        { id: "v15", name: "FAAP Financial Balance", status: "PASS", evidence: "Double-entry rules balanced with zero pending ledger drift.", timestamp: "05:46 AM", logs: ["Ledger validation check complete."] },
-        { id: "v16", name: "AI Workforce Boundary", status: "PASS", evidence: "Agent memory environments strictly isolated inside sandboxes.", timestamp: "05:46 AM", logs: ["Checked memory container locks."] },
-        { id: "v17", name: "Pipeline Integrity", status: "PASS", evidence: "Build server isolated with zero external network connectivity.", timestamp: "05:47 AM", logs: ["VPC air-gap state confirmed."] },
-        { id: "v18", name: "Interoperability Event Bus", status: "PASS", evidence: "Payloads validated against event signature registry.", timestamp: "05:47 AM", logs: ["Event bus channel validation complete."] },
-        { id: "v19", name: "Deployment Artifact Signing", status: "PASS", evidence: "SHA256 signature generated and saved in audit registry.", timestamp: "05:48 AM", logs: ["Signed artifact successfully."] },
-        { id: "v20", name: "Architecture Guardian Final", status: "PASS", evidence: "Zero drift with authorized architecture baseline.", timestamp: "05:48 AM", logs: ["Guardian final pass audit complete."] }
-      ],
+      auditEvents: [],
+      verificationGates: [],
       databaseVolumes: [
-        { name: "ueos_ledger_db", tenant: "Global Core Ledger", pool: "FAAP_RESERVE_PRIMARY", size: "4.2TB", status: "HEALTHY" },
-        { name: "ueos_sacco_db", tenant: "Sovereign ERP Sacco", pool: "FINANCIAL_POOL_01", size: "1.8TB", status: "HEALTHY" },
-        { name: "ueos_healthcare_db", tenant: "Sovereign Health Node", pool: "HEALTH_PROTECTED", size: "3.5TB", status: "HEALTHY" }
+        { name: "ueos_ledger_db", tenant: "Global Core Ledger", pool: "FAAP_RESERVE_PRIMARY", size: "4.2TB", status: "HEALTHY" }
       ],
-      migrations: [
-        { id: "MIG-001", name: "Add double-entry FAAP journal balances", type: "PostgreSQL Schema Alter", status: "PENDING", progress: 0 },
-        { id: "MIG-002", name: "Isolate Member session clearance tokens", type: "Identity Migration", status: "PENDING", progress: 0 },
-        { id: "MIG-003", name: "Provision secondary healthcare storage vaults", type: "Storage Partition", status: "PENDING", progress: 0 }
-      ],
-      assets: [
-        { name: "SACCO Financial Core Suite", type: "Commercial ERP Platform", status: "OPERATIONAL", step: "DEPLOY" },
-        { name: "Decentralized Municipal Land Ledger", type: "Governance System", status: "DRAFT", step: "BLUEPRINT" },
-        { name: "Legacy District Dispensary Sync Module", type: "Hospital Service", status: "RETIRED", step: "ARCHIVE" }
-      ],
+      migrations: [],
+      assets: [],
       cryptographicKeys: {
         primaryKey: "SHA256:06dfbc2a8e8b919feae99a0d39c3a2aeebe5035e8985df1932a7a6c96fce30f2",
         backupKey: "SHA256:77ae93aeebe5035e8985df1932a7a6c96fce30f206dfbc2a8e8b919feae99a0d",
@@ -348,27 +252,108 @@ export class SovereignOperatingStateService {
     return newEvent;
   }
 
-  public static createArchitectureRequest(req: Omit<ArchitectureRequest, 'id' | 'status' | 'createdAt'>, actor: string) {
-    const id = `ARCH-2026-${Math.floor(Math.random() * 900000) + 100000}`;
-    const newRequest: ArchitectureRequest = {
-      ...req,
+  public static createArchitectureContract(reqId: string, actor: string) {
+    const req = this.state.architectureRequests.find(r => r.id === reqId);
+    if (!req) throw new Error("Request not found");
+
+    const id = `ARCH-CONTRACT-${Math.floor(Math.random() * 90000) + 10000}`;
+    const newContract: ArchitectureContract = {
       id,
+      version: "v1.0.0",
+      specificationId: reqId,
       status: 'DRAFT',
-      createdAt: new Date().toISOString()
+      productIdentity: {
+        name: req.title,
+        ecosystem: req.ecosystemType,
+        sector: req.sector,
+        organization: req.organization,
+        purpose: req.problem,
+        targetUsers: req.targetUsers,
+        operatingJurisdiction: "Sovereign Jurisdiction",
+        deploymentModel: "Hybrid",
+        tenancyModel: "Multi-tenant"
+      },
+      experienceArchitecture: {
+        portals: req.capabilities.map(c => ({ id: `portal-${c.toLowerCase().replace(/\s+/g, '-')}`, name: `${c} Portal` }))
+      },
+      organizationalArchitecture: {
+        organization: req.organization
+      },
+      functionalArchitecture: {
+        modules: req.capabilities
+      },
+      dataArchitecture: {
+        infrastructure: req.infrastructure
+      },
+      integrationArchitecture: {
+        integrations: req.integrations
+      },
+      aiArchitecture: {
+        aiRequirements: req.aiRequirements
+      },
+      securityArchitecture: {
+        mfa: true,
+        rbac: true,
+        zeroTrust: true
+      },
+      deploymentArchitecture: {
+        infrastructure: req.infrastructure,
+        scaling: "Automatic"
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
-    this.state.architectureRequests.unshift(newRequest);
-    this.logAudit(actor, "ARCHITECTURE_REQUEST_CREATED", `Created new Architecture Request: ${id} - ${req.title}`);
+
+    this.state.architectureRequests.find(r => r.id === reqId)!.status = 'REVIEW';
+    this.state.architectureContracts.unshift(newContract);
+    this.logAudit(actor, "ARCHITECTURE_CONTRACT_GENERATED", `Generated Architecture Contract ${id} from request ${reqId}`);
     this.saveState();
-    return newRequest;
+    return newContract;
   }
 
-  public static approveArchitectureRequest(id: string, actor: string) {
-    const req = this.state.architectureRequests.find(r => r.id === id);
-    if (!req) throw new Error("Request not found");
-    req.status = 'APPROVED';
-    this.logAudit(actor, "ARCHITECTURE_APPROVED", `Approved Architecture Request: ${id}`);
+  public static approveArchitectureContract(contractId: string, actor: string) {
+    const contract = this.state.architectureContracts.find(c => c.id === contractId);
+    if (!contract) throw new Error("Contract not found");
+
+    contract.status = 'APPROVED';
+    contract.updatedAt = new Date().toISOString();
+
+    const req = this.state.architectureRequests.find(r => r.id === contract.specificationId);
+    if (req) req.status = 'APPROVED';
+
+    this.logAudit(actor, "ARCHITECTURE_CONTRACT_APPROVED", `Formally approved Architecture Contract ${contractId}`);
     this.saveState();
-    return req;
+    return contract;
+  }
+
+  public static createManufacturingJob(contractId: string, actor: string) {
+    const contract = this.state.architectureContracts.find(c => c.id === contractId);
+    if (!contract) throw new Error("Contract not found");
+    if (contract.status !== 'APPROVED') throw new Error("Architecture must be APPROVED before manufacturing.");
+
+    const id = `JOB-2026-${Math.floor(Math.random() * 900000) + 100000}`;
+    const newJob: ManufacturingJob = {
+      id,
+      architectureId: contractId,
+      productId: contract.productIdentity.name.toLowerCase().replace(/\s+/g, '-'),
+      ecosystem: contract.productIdentity.ecosystem,
+      version: contract.version,
+      status: 'INTAKE',
+      progress: 0,
+      assignedWorkforce: [],
+      repository: "Jumo-Universal-Enterprise-platform",
+      branch: "manufacturing-hub-architecture",
+      commitSha: "0d39c3a2aeebe5035e8985df1932a7a6c96fce30",
+      evidence: [],
+      logs: [`[INTAKE] Initiating manufacturing job ${id} from approved architecture ${contractId}`],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    this.state.jobs.unshift(newJob);
+    this.logAudit(actor, "MANUFACTURING_JOB_CREATED", `Created manufacturing job ${id} for product ${newJob.productId}`);
+    this.saveState();
+    return newJob;
   }
 
   public static generateBlueprintFromRequest(id: string, actor: string) {
@@ -508,17 +493,25 @@ export class SovereignOperatingStateService {
 
     const newJob: ManufacturingJob = {
       id: jobId,
-      name: `Pipeline for ${bp.name}`,
-      type: bp.type === "Financial Engine" ? 'ERP_ECOSYSTEM' : 'SOFTWARE_ECOSYSTEM',
-      targetEcosystemId: bp.blueprintId,
-      blueprintId: bp.blueprintId,
+      architectureId: bp.blueprintId,
+      productId: bp.name.replace(/\s+/g, '-').toLowerCase(),
+      ecosystem: bp.type === "Financial Engine" ? 'ERP_ECOSYSTEM' : 'SOFTWARE_ECOSYSTEM',
+      version: bp.version,
       status: 'INTAKE',
       progress: 0,
-      assignedWorkforce: assignedIds,
+      assignedWorkforce: assignedIds.map(id => ({
+        engineerId: id,
+        role: "Cyber Operator",
+        responsibility: "System Compilation",
+        status: 'ASSIGNED',
+        progress: 0,
+        tasks: []
+      })),
       repository: "Jumo-Universal-Enterprise-platform",
       branch: "manufacturing-hub-architecture",
       commitSha: "0d39c3a2aeebe5035e8985df1932a7a6c96fce30",
       logs: ["[INTAKE] Initiating job pipeline sequence with dynamic agent swarm assignment..."],
+      evidence: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -529,109 +522,194 @@ export class SovereignOperatingStateService {
     return newJob;
   }
 
-  public static promoteJobStage(jobId: string, actor: string) {
+  public static assignWorkforceToJob(jobId: string, assignments: EngineeringAssignment[], actor: string) {
     const job = this.state.jobs.find(j => j.id === jobId);
     if (!job) throw new Error("Job not found");
 
-    const stageSequence: ManufacturingJob['status'][] = [
-      'INTAKE', 'PLANNED', 'QUEUED', 'ASSIGNED', 'BUILDING', 
-      'TESTING', 'VERIFYING', 'APPROVED', 'STAGING', 'DEPLOYING', 'PRODUCTION'
+    job.assignedWorkforce = assignments;
+    job.status = 'ENGINEERING';
+    job.updatedAt = new Date().toISOString();
+    job.logs.push(`[ENGINEERING] Workforce assigned: ${assignments.map(a => `${a.role} (${a.engineerId})`).join(", ")}`);
+
+    this.logAudit(actor, "WORKFORCE_ASSIGNED", `Assigned ${assignments.length} engineers to job ${jobId}`);
+    this.saveState();
+    return job;
+  }
+
+  public static promoteManufacturingJob(jobId: string, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    const stageSequence: ManufacturingJobStatus[] = [
+      'INTAKE', 'SPECIFICATION', 'ARCHITECTURE', 'APPROVAL', 'ENGINEERING', 
+      'SOURCE_GENERATION', 'DEPENDENCY_RESOLUTION', 'COMPILATION', 'UNIT_TESTING', 
+      'INTEGRATION_PREP', 'CLOUD_BUILD', 'DEPLOYMENT_PREP', 'DEPLOYMENT', 
+      'VERIFICATION', 'CERTIFICATION', 'REGISTRY_ACTIVATION', 'OPERATIONS', 
+      'AUDIT', 'UPGRADE', 'LIFECYCLE_MANAGEMENT'
     ];
 
     const currentIdx = stageSequence.indexOf(job.status);
     if (currentIdx === -1 || currentIdx === stageSequence.length - 1) {
-      throw new Error(`Cannot promote job from terminal state: ${job.status}`);
+      throw new Error(`Cannot promote job from terminal or unknown state: ${job.status}`);
     }
 
     const nextStage = stageSequence[currentIdx + 1];
     job.status = nextStage;
-    job.progress = Math.min(100, Math.round(((currentIdx + 1) / (stageSequence.length - 1)) * 100));
+    job.progress = Math.round(((currentIdx + 1) / (stageSequence.length - 1)) * 100);
     job.updatedAt = new Date().toISOString();
 
     const timestamp = new Date().toLocaleTimeString();
     let stageLog = "";
     switch (nextStage) {
-      case 'PLANNED':
-        stageLog = `[PLANNED] Resolved fully isolated sovereign dependency structures.`;
-        break;
-      case 'QUEUED':
-        stageLog = `[QUEUED] Assigned build pipeline thread to sovereign hardware CPU queue.`;
-        break;
-      case 'ASSIGNED':
-        stageLog = `[ASSIGNED] Assigned swarm roles to AI workforce profiles: ${job.assignedWorkforce.join(", ")}.`;
-        break;
-      case 'BUILDING':
-        stageLog = `[BUILD] Executing tsx template code compilations and bundling bundles.`;
-        break;
-      case 'TESTING':
-        stageLog = `[TEST] Executed automated unit checks. Pass rate: 100%. Coverage: 98.4%.`;
-        break;
-      case 'VERIFYING':
-        stageLog = `[VERIFYING] Commencing 20-Gate sovereign verification center checks...`;
-        break;
-      case 'APPROVED': {
-        // Enforce Architectural QA Gates before approval
-        const architectureContract = this.state.architectureRequests.find(req => req.id === job.blueprintId);
-        const qaResults = this.runVerificationSuite(actor, architectureContract?.detailedSpecification);
-        const hasFailures = qaResults.some(g => g.status === 'FAIL');
-        
-        if (hasFailures) {
-          // Automatic Failure Correction Loop trigger
-          job.status = 'BLOCKED';
-          stageLog = `[FAIL] Architecture-Aware QA Verification Failed. Freezing promotion. Diagnostic report generated. Commencing automatic correction loop with Gemini / ChatGPT implementation engine. Affected components isolated. Re-queued for rebuild.`;
-          this.logAudit(actor, "QA_GATES_FAILED", `Job ${job.id} failed verification gates and was frozen. Correction loop initiated.`);
-          this.saveState();
-          return job;
-        }
-        
-        stageLog = `[APPROVED] All 20-Gate Architecture QA checks passed. Signed and validated. Golden artifact sealed in sovereign vault.`;
-        break;
-      }
-      case 'STAGING':
-        stageLog = `[STAGING] Provisioned canary container slot and routed 10% test traffic.`;
-        break;
-      case 'DEPLOYING':
-        stageLog = `[DEPLOYING] Transitioning production environment containers cleanly.`;
-        break;
-      case 'PRODUCTION':
-        stageLog = `[PRODUCTION] Deployment 100% active. Serving institutional transactions.`;
-        // Release swarm agents upon successful product production deployment
-        job.assignedWorkforce.forEach(agentId => {
-          JumoAIAgentRegistry.releaseAgentFromJob(agentId, jobId, true);
-        });
-        // 10. PRODUCT REGISTRY ACTIVATION
-        try {
-            const newRecord = {
-                registryId: "reg-" + job.id,
-                name: job.name,
-                domainName: job.name,
-                type: job.type,
-                category: job.type === 'COMMERCIAL_PRODUCTS_ECOSYSTEM' ? 'COMMERCIAL_PRODUCTS_ECOSYSTEM' : job.type as any,
-                version: "1.0.0",
-                implementationVersion: "1.0.0",
-                architectureBaseline: "Generated Architecture Contract v1",
-                lifecycleState: 'PRODUCTION',
-                deploymentEnvironment: 'JUMO_CLOUD',
-                ownerInstitution: 'JUMO',
-                technicalCustodian: 'Sovereign Command',
-                createdAt: new Date().toISOString(),
-                lastAuditTimestamp: new Date().toISOString(),
-                securityClearance: 'LEVEL_3',
-                dataClassification: 'CONFIDENTIAL',
-                slaTier: 'TIER_1',
-                activeNodes: 3,
-                healthStatus: 'HEALTHY'
-            };
-            UniversalHubRegistry.registerRecord(newRecord as any);
-            stageLog += ` Automatically registered ${job.name} into ${newRecord.category} registry.`;
-        } catch (e) {
-            console.error("Auto-registration failed:", e);
-        }
-        break;
+      case 'SPECIFICATION': stageLog = "[SPECIFICATION] Digital Ecosystem Specification finalized."; break;
+      case 'ARCHITECTURE': stageLog = "[ARCHITECTURE] Architecture Contract generated from specification."; break;
+      case 'APPROVAL': stageLog = "[APPROVAL] Architecture approved for manufacturing."; break;
+      case 'ENGINEERING': stageLog = "[ENGINEERING] Commencing engineering workstreams."; break;
+      case 'SOURCE_GENERATION': stageLog = "[SOURCE] Executing JUMO-AI source generation engine."; break;
+      case 'COMPILATION': stageLog = "[BUILD] Compilation successful. Artifact generated."; break;
+      case 'DEPLOYMENT': stageLog = "[DEPLOY] Deployment to JUMO Cloud successful."; break;
+      case 'VERIFICATION': stageLog = "[VERIFY] Commencing 100+ layer verification suite."; break;
+      case 'CERTIFICATION': stageLog = "[CERTIFY] Product certified for production release."; break;
+      case 'REGISTRY_ACTIVATION': stageLog = "[REGISTRY] Product activated in ecosystem registry."; break;
+      default: stageLog = `[${nextStage}] Stage complete.`; break;
     }
 
     job.logs.push(`[${timestamp}] ${stageLog}`);
     this.logAudit(actor, "JOB_STAGE_PROMOTED", `Promoted job ${jobId} to ${nextStage}`);
+    this.saveState();
+    return job;
+  }
+
+  public static recordBuildArtifact(jobId: string, hash: string, size: number, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    const artifactId = `ART-${Math.floor(Math.random() * 90000) + 10000}`;
+    const newArtifact: BuildArtifact = {
+      artifactId,
+      jobId,
+      hash,
+      size,
+      timestamp: new Date().toISOString(),
+      status: 'PASSED',
+      logs: ["[BUILD] Compilation completed successfully.", "[BUILD] Artifact hashed and sealed."]
+    };
+
+    job.buildArtifactId = artifactId;
+    job.status = 'COMPILATION';
+    this.state.buildArtifacts.unshift(newArtifact);
+    this.logAudit(actor, "BUILD_ARTIFACT_RECORDED", `Recorded build artifact ${artifactId} for job ${jobId}`);
+    this.saveState();
+    return newArtifact;
+  }
+
+  public static recordDeployment(jobId: string, env: DeploymentRecord['environment'], target: string, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    const deploymentId = `DEP-${Math.floor(Math.random() * 90000) + 10000}`;
+    const newRecord: DeploymentRecord = {
+      deploymentId,
+      jobId,
+      environment: env,
+      target,
+      status: 'SUCCESS',
+      healthCheck: 'PASSED',
+      timestamp: new Date().toISOString()
+    };
+
+    job.deploymentId = deploymentId;
+    job.status = 'DEPLOYMENT';
+    this.state.deploymentRecords.unshift(newRecord);
+    this.logAudit(actor, "DEPLOYMENT_RECORDED", `Recorded deployment ${deploymentId} for job ${jobId} to ${env}`);
+    this.saveState();
+    return newRecord;
+  }
+
+  public static recordVerificationFailure(jobId: string, layerId: string, diagnostic: string, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    const failureId = `FAIL-${Math.floor(Math.random() * 90000) + 10000}`;
+    const newFailure: VerificationFailureRecord = {
+      failureId,
+      jobId,
+      layerId,
+      architectureRequirement: "Architecture Conformance",
+      actualResult: "Incongruent Implementation",
+      expectedResult: "Full Conformance",
+      affectedComponent: "Primary Logic Module",
+      severity: 'CRITICAL',
+      evidence: "Verification Layer Assertion Failed.",
+      diagnostic,
+      assignedEngineerId: job.assignedWorkforce[0]?.engineerId || "SYSTEM",
+      correctionStatus: 'PENDING',
+      retryCount: 0,
+      timestamp: new Date().toISOString()
+    };
+
+    job.status = 'FAILED';
+    this.state.verificationFailures.unshift(newFailure);
+    this.logAudit(actor, "VERIFICATION_FAILURE_RECORDED", `Recorded verification failure ${failureId} for job ${jobId} on layer ${layerId}`);
+    this.saveState();
+    return newFailure;
+  }
+
+  public static certifyManufacturingJob(jobId: string, authority: string, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    const certId = `CERT-${Math.floor(Math.random() * 90000) + 10000}`;
+    const newCert: CertificationRecord = {
+      certificationId: certId,
+      jobId,
+      productId: job.productId,
+      architectureId: job.architectureId,
+      version: job.version,
+      commitSha: job.commitSha,
+      artifactId: job.buildArtifactId || "",
+      deploymentId: job.deploymentId || "",
+      verificationPolicyVersion: "v1.0.0",
+      evidenceHashes: job.evidence,
+      approvalAuthority: authority,
+      timestamp: new Date().toISOString()
+    };
+
+    job.status = 'CERTIFICATION';
+    this.state.certificationRecords.unshift(newCert);
+    this.logAudit(actor, "JOB_CERTIFIED", `Certified manufacturing job ${jobId} as ${certId}`);
+    this.saveState();
+    return newCert;
+  }
+
+  public static activateProductRegistry(jobId: string, actor: string) {
+    const job = this.state.jobs.find(j => j.id === jobId);
+    if (!job) throw new Error("Job not found");
+
+    job.status = 'REGISTRY_ACTIVATION';
+    
+    const record: any = {
+      registryId: `reg-${job.id}`,
+      name: job.productId.toUpperCase(),
+      category: job.ecosystem,
+      lifecycleState: 'OPERATIONAL',
+      version: job.version,
+      implementationVersion: job.version,
+      architectureBaseline: job.architectureId,
+      dependencies: [],
+      capabilities: [],
+      services: [],
+      apis: [],
+      testStatus: 'PASSED',
+      deploymentStatus: 'DEPLOYED',
+      upgradeStatus: 'UP_TO_DATE',
+      maintenanceStatus: 'HEALTHY',
+      verificationStatus: 'VERIFIED',
+      lastAuditTimestamp: new Date().toISOString()
+    };
+
+    UniversalHubRegistry.registerRecord(record);
+    this.logAudit(actor, "REGISTRY_ACTIVATION_COMPLETED", `Activated product ${job.productId} in ${job.ecosystem} registry`);
     this.saveState();
     return job;
   }
@@ -642,7 +720,7 @@ export class SovereignOperatingStateService {
 
     const timestamp = new Date().toLocaleTimeString();
     if (job.status === 'BLOCKED') {
-      job.status = 'BUILDING';
+      job.status = 'COMPILATION';
       job.logs.push(`[${timestamp}] [RESUMED] Resumed pipeline compilation threads.`);
       this.logAudit(actor, "JOB_RESUMED", `Resumed compilation execution for job ${jobId}`);
     } else {

@@ -52,23 +52,98 @@ export class UniversalHubRegistry {
   }
 
   private static seedVerificationRegistries() {
-    this.verificationLayers.set("layer-arch-01", {
-      layerId: "layer-arch-01",
-      name: "Architecture Conformance",
-      description: "Verifies architecture contract conformance",
-      category: "ARCHITECTURE",
-      gate: "GATE_01",
-      enabled: true,
-      mandatory: true,
-      blocking: true,
-      severity: "CRITICAL",
-      standards: ["ISO/IEC 42001"]
+    const categories = [
+      { id: "SRC", name: "Source Integrity", layers: ["Checksum", "Signature", "Provenance", "History", "Author"] },
+      { id: "ARCH", name: "Architecture Conformance", layers: ["Contract", "Hierarchy", "Naming", "Module", "Dependency"] },
+      { id: "DEP", name: "Dependency Integrity", layers: ["Version", "License", "Security", "Chain", "Registry"] },
+      { id: "BUILD", name: "Build Integrity", layers: ["Reproducibility", "Environment", "Artifact", "Hash", "Sign"] },
+      { id: "TYPE", name: "Type Safety", layers: ["Static", "Runtime", "Schema", "Interface", "Boundary"] },
+      { id: "API", name: "API Correctness", layers: ["Spec", "Versioning", "Payload", "Status", "Contract"] },
+      { id: "DB", name: "Database Integrity", layers: ["Schema", "Relation", "Constraint", "Migration", "Seed"] },
+      { id: "AUTH", name: "Authentication", layers: ["MFA", "SSO", "Session", "Token", "Identity"] },
+      { id: "AUTHZ", name: "Authorization", layers: ["RBAC", "ABAC", "Scope", "Permission", "Policy"] },
+      { id: "ZT", name: "Zero Trust", layers: ["Network", "Endpoint", "Data", "Workload", "Traffic"] },
+      { id: "ENC", name: "Encryption", layers: ["AtRest", "InTransit", "InUse", "Algorithm", "Key"] },
+      { id: "SEC", name: "Secrets Protection", layers: ["Storage", "Rotation", "Exposure", "Access", "Audit"] },
+      { id: "VULN", name: "Vulnerability Scanning", layers: ["Static", "Dynamic", "Component", "OS", "Container"] },
+      { id: "MAL", name: "Malware Inspection", layers: ["Signature", "Behavior", "Heuristic", "Sandbox", "Report"] },
+      { id: "LOG", name: "Logging", layers: ["Format", "Retention", "Security", "Audit", "Search"] },
+      { id: "MON", name: "Monitoring", layers: ["Metrics", "Health", "Alert", "Threshold", "Dashboard"] },
+      { id: "OBS", name: "Observability", layers: ["Trace", "Span", "Context", "Sampling", "Analysis"] },
+      { id: "ERR", name: "Error Handling", layers: ["Boundary", "Recovery", "Graceful", "Circuit", "Retry"] },
+      { id: "PERF", name: "Performance", layers: ["Latency", "Throughput", "Resource", "Load", "Stress"] },
+      { id: "SCALE", name: "Scalability", layers: ["Horizontal", "Vertical", "Auto", "Limits", "Queue"] },
+      { id: "AVAIL", name: "Availability", layers: ["Uptime", "SLA", "Redundancy", "Failover", "Region"] },
+      { id: "DR", name: "Disaster Recovery", layers: ["RPO", "RTO", "Backup", "Restore", "Drill"] },
+      { id: "SYNC", name: "Synchronization", layers: ["State", "Conflict", "Reconcile", "Offline", "Queue"] },
+      { id: "WORK", name: "Workflow Correctness", layers: ["Step", "Transition", "Approval", "State", "History"] },
+      { id: "FORM", name: "Form Validation", layers: ["Input", "Sanitization", "Mask", "Error", "Submit"] },
+      { id: "UI", name: "UI/UX Quality", layers: ["Accessibility", "Mobile", "Responsive", "Locale", "Theme"] },
+      { id: "DATA", name: "Data Governance", layers: ["Privacy", "Retention", "Lineage", "Quality", "Consent"] },
+      { id: "COMP", name: "Compliance", layers: ["Legal", "Regulatory", "Industry", "Audit", "Cert"] },
+      { id: "DEPLOY", name: "Deployment Integrity", layers: ["Environment", "Config", "Health", "Rollback", "Verification"] },
+      { id: "LIFE", name: "Lifecycle Integrity", layers: ["Version", "Migration", "Deprecation", "Retired", "Archive"] },
+      { id: "FAAP", name: "FAAP Integration", layers: ["Ledger", "Journal", "Balance", "Audit", "Asset"] },
+      { id: "PAY", name: "Digital Pay Integration", layers: ["Intent", "Charge", "Settle", "Route", "Reconcile"] },
+      { id: "AEGIS", name: "Aegis Integration", layers: ["Threat", "Intrusion", "Signature", "Shield", "Log"] },
+      { id: "AUDIT", name: "Digital Auditor Integration", layers: ["Evidence", "Chain", "Proof", "Report", "Archive"] }
+    ];
+
+    let layerCount = 0;
+    const allLayerIds: string[] = [];
+
+    categories.forEach(cat => {
+      cat.layers.forEach((l, idx) => {
+        layerCount++;
+        const layerId = `layer-${cat.id.toLowerCase()}-${(idx + 1).toString().padStart(2, '0')}`;
+        const gate = `GATE_${Math.min(20, Math.ceil(layerCount / 5))}` as any;
+        
+        this.verificationLayers.set(layerId, {
+          layerId,
+          name: `${cat.name}: ${l}`,
+          description: `Authoritative verification of ${l.toLowerCase()} within ${cat.name} context.`,
+          category: cat.id,
+          gate,
+          enabled: true,
+          mandatory: idx === 0, // Make the first in each category mandatory
+          blocking: idx === 0,
+          severity: idx === 0 ? "CRITICAL" : "WARNING",
+          standards: ["JUMO-UEOS-STD-v1"]
+        });
+        allLayerIds.push(layerId);
+      });
     });
+
+    // Ecosystem Specific Layers
+    const ecosystems: ManufacturingCategory[] = [
+      "ERP_ECOSYSTEM", "JUMO_CLOUD_ECOSYSTEM", "SOFTWARE_ECOSYSTEM", 
+      "COMMERCIAL_PRODUCTS_ECOSYSTEM", "RESEARCH_INNOVATION_ECOSYSTEM"
+    ];
+
+    ecosystems.forEach(eco => {
+      for (let i = 1; i <= 5; i++) {
+        const layerId = `layer-eco-${eco.substring(0, 3).toLowerCase()}-${i.toString().padStart(2, '0')}`;
+        this.verificationLayers.set(layerId, {
+          layerId,
+          name: `${eco.replace('_', ' ')}: Layer ${i}`,
+          description: `Ecosystem-specific verification for ${eco}.`,
+          category: eco,
+          gate: "GATE_20",
+          enabled: true,
+          mandatory: false,
+          blocking: false,
+          severity: "INFO",
+          standards: [eco]
+        });
+        allLayerIds.push(layerId);
+      }
+    });
+
     this.verificationProfiles.set("default-profile", {
       profileId: "default-profile",
-      name: "Default Enterprise Profile",
-      description: "Baseline verification profile",
-      layerIds: ["layer-arch-01"]
+      name: "Authoritative 100+ Layer Platform Baseline",
+      description: "Minimum sovereign verification baseline for all manufactured products.",
+      layerIds: allLayerIds
     });
   }
 

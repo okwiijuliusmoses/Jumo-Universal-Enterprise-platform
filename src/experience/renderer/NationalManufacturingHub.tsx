@@ -4,14 +4,28 @@ import {
   Cpu, Shield, Database, Activity, Server, Settings, Layers, Terminal, Globe, Sparkles, 
   Box, FileText, CheckCircle2, AlertCircle, Play, Pause, RefreshCw, Plus, Search, 
   ChevronRight, X, ArrowRight, Check, Sliders, AlertTriangle, FileCheck, Trash2, Send, 
-  History, RefreshCcw, Command, Zap, ExternalLink, HardDrive, Key, Network, Users,
+  History, RefreshCcw, Command, Zap, ExternalLink, HardDrive, Key, Network, Users, Cloud,
   CheckSquare, HelpCircle, ActivitySquare, AlertOctagon, Compass, BookOpen, Binary,
-  FileSignature, GitCommit, GitPullRequest, WifiOff
+  FileSignature, GitCommit, GitPullRequest, WifiOff, Award, ShieldCheck
 } from "lucide-react";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from "./specification/DigitalEcosystemSpecificationForm";
 import { EcosystemWorkspace } from "./ecosystem/EcosystemWorkspace";
+
+import { 
+  ArchitectureContract, 
+  ManufacturingJob, 
+  ManufacturingJobStatus, 
+  EngineeringAssignment, 
+  EngineeringTask, 
+  EngineeringAgent,
+  BuildArtifact,
+  DeploymentRecord,
+  VerificationFailureRecord,
+  CertificationRecord,
+  ManufacturingCategory
+} from "../../core/factory/registry/HubRegistryTypes";
 
 // === TYPES ===
 export type HubWorkspace = 
@@ -49,8 +63,8 @@ interface ArchitectureRequest {
   infrastructure: string;
   integrations: string[];
   aiRequirements: string;
-  ecosystemType?: string;
-  sector?: string;
+  ecosystemType: ManufacturingCategory;
+  sector: string;
   detailedSpecification?: any;
   status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
   createdAt: string;
@@ -65,23 +79,6 @@ interface JumoBlueprint {
   compilerStatus: 'OK' | 'DRAFT' | 'ERROR';
   content: string;
   lifecycleState: 'DRAFT' | 'REVIEW' | 'VALIDATED' | 'VERIFIED' | 'APPROVED' | 'COMPILED' | 'READY' | 'PROVISIONED' | 'RETIRED';
-}
-
-interface ManufacturingJob {
-  id: string;
-  name: string;
-  type: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
-  targetEcosystemId: string;
-  blueprintId: string;
-  status: 'INTAKE' | 'PLANNED' | 'QUEUED' | 'ASSIGNED' | 'BUILDING' | 'TESTING' | 'VERIFYING' | 'BLOCKED' | 'APPROVED' | 'STAGING' | 'DEPLOYING' | 'PRODUCTION' | 'UPGRADING' | 'MIGRATING' | 'ROLLING_BACK' | 'RETIRED';
-  progress: number;
-  assignedWorkforce: string[];
-  repository: string;
-  branch: string;
-  commitSha: string;
-  logs: string[];
-  createdAt: string;
-  updatedAt: string;
 }
 
 interface VerificationGateResult {
@@ -114,8 +111,14 @@ interface JumoIncident {
 export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { activeWorkspace: HubWorkspace; onNavigate?: (ws: HubWorkspace) => void }) {
   // === PERSISTED STATES INITIALIZERS ===
   const [archRequests, setArchRequests] = useState<ArchitectureRequest[]>([]);
+  const [archContracts, setArchContracts] = useState<ArchitectureContract[]>([]);
   const [blueprints, setBlueprints] = useState<JumoBlueprint[]>([]);
   const [jobs, setJobs] = useState<ManufacturingJob[]>([]);
+  const [buildArtifacts, setBuildArtifacts] = useState<BuildArtifact[]>([]);
+  const [deploymentRecords, setDeploymentRecords] = useState<DeploymentRecord[]>([]);
+  const [verificationFailures, setVerificationFailures] = useState<VerificationFailureRecord[]>([]);
+  const [certificationRecords, setCertificationRecords] = useState<CertificationRecord[]>([]);
+  const [engineeringAgents, setEngineeringAgents] = useState<EngineeringAgent[]>([]);
   const [incidents, setIncidents] = useState<JumoIncident[]>([]);
   const [cloudSlots, setCloudSlots] = useState<DeploymentSlot[]>([]);
   const [auditEvents, setAuditEvents] = useState<any[]>([]);
@@ -240,8 +243,14 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       if (!res.ok) throw new Error("Network status not OK");
       const data = await res.json();
       setArchRequests(data.architectureRequests);
+      setArchContracts(data.architectureContracts);
       setBlueprints(data.blueprints);
       setJobs(data.jobs);
+      setBuildArtifacts(data.buildArtifacts);
+      setDeploymentRecords(data.deploymentRecords);
+      setVerificationFailures(data.verificationFailures);
+      setCertificationRecords(data.certificationRecords);
+      setEngineeringAgents(data.engineeringAgents);
       setIncidents(data.incidents);
       setCloudSlots(data.cloudSlots);
       setAuditEvents(data.auditEvents);
@@ -370,10 +379,53 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
     }
   };
 
-  // Approve Architecture Request
-  const handleApproveArchRequest = async (id: string) => {
+  // 2a. Create Architecture Contract from Request
+  const handleCreateArchitectureContract = async (requestId: string) => {
     try {
-      const res = await serverPut(`/api/v1/ueos/architecture-requests/${id}/approve`);
+      const res = await serverPost("/api/v1/ueos/architecture-contracts", { requestId });
+      if (res.ok) await fetchSovereignState();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 2b. Approve Architecture Contract
+  const handleApproveArchitectureContract = async (contractId: string) => {
+    try {
+      const res = await serverPut(`/api/v1/ueos/architecture-contracts/${contractId}/approve`);
+      if (res.ok) await fetchSovereignState();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 3. Create Manufacturing Job from Contract
+  const handleCreateManufacturingJob = async (contractId: string) => {
+    try {
+      const res = await serverPost("/api/v1/ueos/jobs", { contractId });
+      if (res.ok) {
+        await fetchSovereignState();
+        onNavigate?.('manufacturing');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Assign Agent to Job
+  const handleAssignAgent = async (jobId: string, engineerId: string, role: string) => {
+    try {
+      const res = await serverPost(`/api/v1/ueos/jobs/${jobId}/assign`, { engineerId, role });
+      if (res.ok) await fetchSovereignState();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 5. Promote Manufacturing Job
+  const handlePromoteManufacturingJob = async (jobId: string) => {
+    try {
+      const res = await serverPost(`/api/v1/ueos/jobs/${jobId}/promote`);
       if (res.ok) await fetchSovereignState();
     } catch (err) {
       console.error(err);
@@ -701,7 +753,6 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   // Pre-load data from real registries
   const erpEcosystems = UniversalHubRegistry.getERPEcosystems();
   const commercialProducts = UniversalHubRegistry.getCommercialProducts();
-  const aiAgents = JumoAIAgentRegistry.getAllAgents();
 
   // Selected state filter
   const [registryFilter, setRegistryFilter] = useState<string>("erp");
@@ -776,7 +827,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
                     <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Cyber Guardians</span>
-                    <span className="text-xl font-black text-slate-900 block mt-1">{aiAgents.length}</span>
+                    <span className="text-xl font-black text-slate-900 block mt-1">{engineeringAgents.length}</span>
                   </div>
                 </div>
 
@@ -833,52 +884,42 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {jobs.map((job) => (
+                        {jobs.slice(0, 5).map((job) => (
                           <tr key={job.id} className="hover:bg-slate-50/50">
                             <td className="p-4">
-                              <span className="font-bold text-slate-800 block">{job.name}</span>
-                              <span className="text-[10px] text-slate-500 uppercase block mt-0.5">{job.type} • {job.branch}</span>
+                              <span className="font-extrabold text-slate-800 block">{job.id}</span>
+                              <span className="text-[10px] text-slate-500 uppercase block mt-0.5">{job.productId} • STAGE {job.status}</span>
                             </td>
                             <td className="p-4">
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-bold text-[10px] bg-blue-50 text-blue-700 border border-blue-100">
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-black text-[9px] bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-tight">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                 {job.status}
                               </span>
                             </td>
                             <td className="p-4">
                               <div className="w-24 bg-slate-100 rounded-full h-1 overflow-hidden">
-                                <div className="bg-blue-600 h-1 rounded-full" style={{ width: `${job.progress}%` }}></div>
+                                <div className="bg-blue-600 h-1 rounded-full transition-all duration-500" style={{ width: `${job.progress}%` }}></div>
                               </div>
-                              <span className="text-[9px] font-bold text-slate-500 block mt-1">{job.progress}% Compiled</span>
+                              <span className="text-[9px] font-black text-slate-500 block mt-1 uppercase">{job.progress}% COMPILED</span>
                             </td>
                             <td className="p-4">
                               <div className="flex -space-x-1.5 overflow-hidden">
-                                {job.assignedWorkforce.map((agentId) => {
-                                  const agent = JumoAIAgentRegistry.getAgentById(agentId);
-                                  return (
-                                    <div 
-                                      key={agentId} 
-                                      title={agent?.jumoName || agentId}
-                                      className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
-                                    >
-                                      {agent?.displayName?.substring(0, 2) || "AI"}
-                                    </div>
-                                  );
-                                })}
+                                {job.assignedWorkforce.map((assignment, i) => (
+                                  <div 
+                                    key={i} 
+                                    title={`${assignment.engineerId} - ${assignment.role}`}
+                                    className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
+                                  >
+                                    {assignment.engineerId.substring(0, 2)}
+                                  </div>
+                                ))}
                               </div>
                             </td>
                             <td className="p-4">
-                              <div className="flex items-center gap-1.5">
+                              <div className="flex items-center gap-1.5 justify-end">
                                 <button 
-                                  onClick={() => handlePauseJob(job.id)}
-                                  className="p-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"
-                                  title="Pause Stream"
-                                >
-                                  <Pause className="w-3.5 h-3.5" />
-                                </button>
-                                <button 
-                                  onClick={() => handlePromoteJob(job.id)}
-                                  className="px-2 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-md text-[10px] font-bold transition-colors"
+                                  onClick={() => handlePromoteManufacturingJob(job.id)}
+                                  className="px-2.5 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider transition-colors cursor-pointer"
                                 >
                                   Promote
                                 </button>
@@ -946,99 +987,120 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           <div className="space-y-6" id="workspace-architecture">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-12 space-y-6">
+                
+                {/* Architecture Requests Section */}
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                     <div>
-                      <h3 className="text-sm font-extrabold text-slate-900">Active Architecture Review Desk</h3>
-                      <p className="text-xs text-slate-500 mt-1">Review generated architecture contracts and approve them for engineering.</p>
+                      <h3 className="text-sm font-extrabold text-slate-900">Architecture Intake & Specification Review</h3>
+                      <p className="text-xs text-slate-500 mt-1">Convert digital ecosystem specifications into structured architecture contracts.</p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    {archRequests.map((req) => (
-                      <div key={req.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {archRequests.filter(r => r.status === 'APPROVED' || r.status === 'DRAFT').map((req) => (
+                      <div key={req.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[160px]">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                               {req.id}
                             </span>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">
                               {new Date(req.createdAt).toLocaleDateString()}
                             </span>
                           </div>
-                          <div>
-                            <span className="font-extrabold text-xs text-slate-900 block">{req.title}</span>
-                            <p className="text-[11px] text-slate-600 leading-relaxed mt-1">{req.problem}</p>
-                            {req.ecosystemType && (
-                              <p className="text-[10px] text-slate-500 mt-1 font-semibold uppercase">Ecosystem: {req.ecosystemType}</p>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {req.capabilities.map((cap, i) => (
-                              <span key={i} className="text-[9px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-md font-semibold">
-                                {cap}
-                              </span>
-                            ))}
-                          </div>
+                          <span className="font-extrabold text-xs text-slate-900 block">{req.title}</span>
+                          <p className="text-[10px] text-slate-600 line-clamp-2">{req.problem}</p>
                         </div>
-
-                        <div className="border-t border-slate-200/60 pt-3 flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">
-                            State: <span className="text-blue-600 font-extrabold">{req.status}</span>
-                          </span>
-                          <div className="flex items-center gap-2">
-                            {req.status === 'DRAFT' && (
-                              <button
-                                onClick={() => {
-                                  setArchRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'APPROVED' } : r));
-                                  logAudit("ARCH_APPROVED", `Approved architecture contract for ${req.id}`);
-                                }}
-                                className="px-3 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[10px] font-bold cursor-pointer"
-                              >
-                                Approve Contract
-                              </button>
-                            )}
-                            {req.status === 'APPROVED' && (
-                              <button
-                                onClick={() => {
-                                  const bpId = `bp-arch-${Math.floor(Math.random() * 900) + 100}`;
-                                  const newBp: JumoBlueprint = {
-                                    blueprintId: bpId,
-                                    name: `${req.title} Manufacturing Blueprint`,
-                                    type: req.ecosystemType || "SOFTWARE_ECOSYSTEM",
-                                    version: "v1.0.0",
-                                    lastBuildTime: "Never",
-                                    compilerStatus: "DRAFT",
-                                    content: JSON.stringify({
-                                      blueprint: bpId,
-                                      title: req.title,
-                                      organization: req.organization,
-                                      infrastructure: req.infrastructure,
-                                      capabilities: req.capabilities
-                                    }, null, 2),
-                                    lifecycleState: "DRAFT"
-                                  };
-                                  setBlueprints(prev => [...prev, newBp]);
-                                  setArchRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'COMPILED' } : r));
-                                  logAudit("BLUEPRINT_GENERATED", `Successfully generated blueprint ${bpId} from architecture request ${req.id}`);
-                                }}
-                                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold cursor-pointer inline-flex items-center gap-1"
-                              >
-                                <Zap className="w-3.5 h-3.5" />
-                                Hand-off to Engineering
-                              </button>
-                            )}
-                            {req.status === 'COMPILED' && (
-                              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                                Engineering Handoff Complete
-                              </span>
-                            )}
-                          </div>
+                        <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-500">Status: <span className="text-blue-600 uppercase font-black">{req.status}</span></span>
+                          <button
+                            onClick={() => handleCreateArchitectureContract(req.id)}
+                            className="px-3 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[10px] font-bold transition-colors cursor-pointer"
+                          >
+                            Generate Contract
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                {/* Architecture Contracts Section */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                      <h3 className="text-sm font-extrabold text-slate-900">Authoritative Architecture Contracts</h3>
+                      <p className="text-xs text-slate-500 mt-1">Formal architectural blueprints ready for manufacturing and engineering hand-off.</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {archContracts.map((contract) => (
+                      <div key={contract.id} className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-6">
+                        <div className="flex-1 space-y-3">
+                          <div className="flex items-center gap-2">
+                            <FileSignature className="w-4 h-4 text-indigo-600" />
+                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-tight">{contract.id} <span className="text-slate-400 font-bold ml-2">VERSION {contract.version}</span></span>
+                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${
+                              contract.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
+                            }`}>
+                              {contract.status}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-black text-slate-900">{contract.productIdentity.name}</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+                            <div>
+                              <span className="text-[8px] font-black text-slate-400 uppercase block">Ecosystem</span>
+                              <span className="text-[10px] font-bold text-slate-700">{contract.productIdentity.ecosystem}</span>
+                            </div>
+                            <div>
+                              <span className="text-[8px] font-black text-slate-400 uppercase block">Organization</span>
+                              <span className="text-[10px] font-bold text-slate-700">{contract.productIdentity.organization}</span>
+                            </div>
+                            <div>
+                              <span className="text-[8px] font-black text-slate-400 uppercase block">Infrastructure</span>
+                              <span className="text-[10px] font-bold text-slate-700">{contract.deploymentArchitecture?.infrastructure || 'Hybrid'}</span>
+                            </div>
+                            <div>
+                              <span className="text-[8px] font-black text-slate-400 uppercase block">Security</span>
+                              <span className="text-[10px] font-bold text-emerald-600">Zero-Trust Active</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="md:w-48 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 flex flex-col justify-center gap-2">
+                          {contract.status === 'DRAFT' && (
+                            <button
+                              onClick={() => handleApproveArchitectureContract(contract.id)}
+                              className="w-full py-2 bg-slate-900 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer"
+                            >
+                              Approve Architecture
+                            </button>
+                          )}
+                          {contract.status === 'APPROVED' && (
+                            <button
+                              onClick={() => handleCreateManufacturingJob(contract.id)}
+                              className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                              <Zap className="w-3 h-3 fill-current" />
+                              Launch Manufacturing Job
+                            </button>
+                          )}
+                          <button className="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border border-slate-200 cursor-pointer">
+                            View Detailed Contract
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {archContracts.length === 0 && (
+                      <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-40">
+                        <Layers className="w-12 h-12 text-slate-300" />
+                        <p className="text-xs font-bold text-slate-500">No architecture contracts generated yet.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -1065,51 +1127,75 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-slate-100">
                     {jobs.map((job) => (
-                      <tr key={job.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                      <tr key={job.id} className="hover:bg-slate-50/50 transition-colors">
                         <td className="p-4">
-                          <span className="font-extrabold text-xs text-slate-800 block">{job.name}</span>
-                          <span className="text-[10px] text-slate-500 font-medium">ID: {job.id} | Target: {job.targetEcosystemId}</span>
+                          <span className="text-[11px] font-black text-slate-900 block">{job.id}</span>
+                          <span className="text-[9px] text-slate-500 font-bold uppercase tracking-tight">{job.productId}</span>
                         </td>
                         <td className="p-4">
-                          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                            <Database className="w-3.5 h-3.5 text-slate-400" />
-                            <span className="font-medium">{job.repository}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5">
-                            <Command className="w-3 h-3" />
-                            <span>{job.branch}</span>
-                            <span className="text-slate-300">•</span>
-                            <span className="font-mono text-slate-400">{job.commitSha.substring(0, 7)}</span>
-                          </div>
+                          <span className="text-[10px] font-bold text-blue-600 font-mono">{job.architectureId}</span>
                         </td>
                         <td className="p-4">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wider">
-                            <Activity className="w-3 h-3" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-black text-[9px] bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wider">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                             {job.status}
                           </span>
                         </td>
                         <td className="p-4">
-                          <div className="flex -space-x-2">
-                            {job.assignedWorkforce.map((agentId, i) => (
-                              <div key={i} className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-black text-slate-600" title={agentId}>
-                                {agentId.substring(agentId.length - 2)}
-                              </div>
-                            ))}
+                          <div className="w-32 flex flex-col gap-1.5">
+                            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="bg-blue-600 h-full rounded-full transition-all duration-500" style={{ width: `${job.progress}%` }}></div>
+                            </div>
+                            <span className="text-[9px] font-black text-slate-500">{job.progress}% STAGE: {job.status}</span>
                           </div>
                         </td>
-                        <td className="p-4 text-right space-x-2">
-                          <button
-                            onClick={() => handlePromoteJob(job.id)}
-                            className="p-1.5 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-colors cursor-pointer inline-flex items-center gap-1"
-                            title="Promote to Next Phase"
-                          >
-                            <Play className="w-4 h-4" />
-                          </button>
+                        <td className="p-4">
+                          <div className="flex -space-x-1.5 overflow-hidden">
+                            {job.assignedWorkforce.map((assignment, i) => (
+                              <div 
+                                key={i} 
+                                title={`${assignment.engineerId} - ${assignment.role}`}
+                                className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
+                              >
+                                {assignment.engineerId.substring(0, 2)}
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const agent = engineeringAgents[Math.floor(Math.random() * engineeringAgents.length)];
+                                if (agent) handleAssignAgent(job.id, agent.agentId, "Cyber Guardian");
+                              }}
+                              className="w-6 h-6 rounded-full bg-slate-50 border border-dashed border-slate-300 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-300 transition-all cursor-pointer"
+                              title="Assign random available agent"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button 
+                              onClick={() => handlePromoteManufacturingJob(job.id)}
+                              className="px-3 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer"
+                            >
+                              Promote
+                            </button>
+                            <button className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-slate-600 border border-slate-200 cursor-pointer">
+                              <Sliders className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
+                    {jobs.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="p-12 text-center text-slate-400 font-bold text-xs">
+                          No active manufacturing jobs.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1117,8 +1203,8 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace 3: Sovereign Blueprint Factory */}
-        {activeWorkspace === "templates" && (
+        {/* Workspace 3: Sovereign Blueprint Factory (Build Studio) */}
+        {activeWorkspace === "engineering" && (
           <div className="space-y-6" id="workspace-blueprints">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
@@ -1242,19 +1328,19 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                 <p className="text-xs text-slate-500 mt-1">Air-gapped memory, tool permission isolation levels, and specialized capabilities registry.</p>
               </div>
               <span className="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-lg text-xs font-bold">
-                {aiAgents.length} Active Cyber Operators
+                {engineeringAgents.length} Active Cyber Operators
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {aiAgents.map((agent) => (
+              {engineeringAgents.map((agent) => (
                 <div key={agent.agentId} className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[9px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                         {agent.division}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase">{agent.version}</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase">v1.0.0</span>
                     </div>
                     <div>
                       <h4 className="font-extrabold text-slate-900 text-xs">{agent.jumoName}</h4>
@@ -1264,11 +1350,11 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                   <div className="border-t border-slate-100 pt-3.5 mt-4 space-y-2 text-[10px] text-slate-600 font-semibold">
                     <div className="flex justify-between">
                       <span>Preferred Model:</span>
-                      <span className="font-extrabold text-slate-800">{agent.modelPolicy.modelAlias}</span>
+                      <span className="font-extrabold text-slate-800">{agent.modelPolicy?.modelAlias || "Default Flash"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Memory Boundaries:</span>
-                      <span className="font-extrabold text-slate-800">{agent.memoryPolicy.isolationLevel}</span>
+                      <span className="font-extrabold text-slate-800">{agent.memoryPolicy?.isolationLevel || "TENANT"}</span>
                     </div>
                   </div>
                 </div>
@@ -1427,6 +1513,80 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
         )}
 
         {/* Workspace 6: Registries Fabric */}
+        {/* Workspace 8: Certification Center */}
+        {activeWorkspace === "certification" && (
+          <div className="space-y-6" id="workspace-certification">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900">National Product Certification Authority</h3>
+                  <p className="text-xs text-slate-500 mt-1">Formal verification of compliance and issuance of sovereign manufacturing certificates.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {jobs.filter(j => j.status === 'VERIFIED' || j.status === 'CERTIFIED' || j.status === 'PRODUCTION').map((job) => (
+                  <div key={job.id} className="p-5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-6">
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Award className="w-4 h-4 text-amber-500" />
+                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-tight">{job.id} Compliance Certificate</span>
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${
+                          job.status === 'CERTIFIED' || job.status === 'PRODUCTION' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-blue-50 text-blue-700 border-blue-100'
+                        }`}>
+                          {job.status}
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-black text-slate-900">Digital Ecosystem: {job.productId}</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-2">
+                        <div>
+                          <span className="text-[8px] font-black text-slate-400 uppercase block">Verification Proof</span>
+                          <span className="text-[10px] font-bold text-slate-700 font-mono">SHA256:V-OK-{job.id.substring(0,8)}</span>
+                        </div>
+                        <div>
+                          <span className="text-[8px] font-black text-slate-400 uppercase block">Compliance Gate</span>
+                          <span className="text-[10px] font-bold text-emerald-600 uppercase">20/20 PASSED</span>
+                        </div>
+                        <div>
+                          <span className="text-[8px] font-black text-slate-400 uppercase block">Security Clearance</span>
+                          <span className="text-[10px] font-bold text-slate-700">AUTHORITATIVE</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="md:w-56 flex flex-col justify-center gap-2 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
+                      {job.status === 'VERIFIED' && (
+                        <button
+                          onClick={async () => {
+                            await serverPost(`/api/v1/ueos/jobs/${job.id}/certify`, { authority: "National Hub Authority" });
+                            await fetchSovereignState();
+                          }}
+                          className="w-full py-2 bg-slate-900 hover:bg-amber-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          Issue Certificate
+                        </button>
+                      )}
+                      {(job.status === 'CERTIFIED' || job.status === 'PRODUCTION') && (
+                        <button
+                          className="w-full py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          Certified Product
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {jobs.filter(j => j.status === 'VERIFIED' || j.status === 'CERTIFIED' || j.status === 'PRODUCTION').length === 0 && (
+                  <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-40">
+                    <ShieldCheck className="w-12 h-12 text-slate-300" />
+                    <p className="text-xs font-bold text-slate-500">No products ready for certification.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeWorkspace === "registries" && (
           <div className="space-y-6" id="workspace-registries">
             <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1435,15 +1595,16 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
               <div className="flex flex-wrap gap-2">
                 {[
                   { id: "erp", label: "ERP Ecosystem Registry" },
-                  { id: "commercial", label: "Commercial Products" }
+                  { id: "commercial", label: "Commercial Products" },
+                  { id: "production", label: "Live Production Assets" }
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => { setRegistryFilter(tab.id); setSearchTerm(""); }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       registryFilter === tab.id 
-                        ? "bg-slate-900 text-white" 
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        ? "bg-slate-900 text-white shadow-sm" 
+                        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                     }`}
                   >
                     {tab.label}
@@ -1479,44 +1640,74 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                 <tbody className="divide-y divide-slate-100">
                   {registryFilter === 'erp' ? (
                     erpEcosystems.filter(e => e.name.toLowerCase().includes(searchTerm.toLowerCase())).map((e) => (
-                      <tr key={e.registryId} className="hover:bg-slate-50/40">
+                      <tr key={e.registryId} className="hover:bg-slate-50/40 transition-colors">
                         <td className="p-4">
                           <span className="font-extrabold text-slate-800 block">{e.name}</span>
                           <span className="text-[10px] text-slate-400 block mt-0.5 uppercase">{e.registryId}</span>
                         </td>
-                        <td className="p-4 text-slate-600 max-w-xs truncate">{e.capabilities.join(", ")}</td>
+                        <td className="p-4 text-slate-600 max-w-xs truncate font-medium">{e.capabilities.join(", ")}</td>
                         <td className="p-4">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-bold text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-black text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">
                             <CheckCircle2 className="w-3 h-3" />
                             {e.lifecycleState}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-slate-600">{e.version}</td>
-                        <td className="p-4 text-[10px] text-slate-400 font-semibold">
+                        <td className="p-4 font-black text-slate-600">{e.version}</td>
+                        <td className="p-4 text-[10px] text-slate-400 font-bold">
                           {new Date(e.lastAuditTimestamp).toLocaleDateString()}
                         </td>
                       </tr>
                     ))
-                  ) : (
+                  ) : registryFilter === 'commercial' ? (
                     commercialProducts.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())).map((p) => (
-                      <tr key={p.registryId} className="hover:bg-slate-50/40">
+                      <tr key={p.registryId} className="hover:bg-slate-50/40 transition-colors">
                         <td className="p-4">
                           <span className="font-extrabold text-slate-800 block">{p.name}</span>
                           <span className="text-[10px] text-slate-400 block mt-0.5 uppercase">{p.registryId}</span>
                         </td>
-                        <td className="p-4 text-slate-600 max-w-xs truncate">{p.capabilities.join(", ")}</td>
+                        <td className="p-4 text-slate-600 max-w-xs truncate font-medium">{p.capabilities.join(", ")}</td>
                         <td className="p-4">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-bold text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-black text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">
                             <CheckCircle2 className="w-3 h-3" />
                             {p.lifecycleState}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-slate-600">{p.version}</td>
-                        <td className="p-4 text-[10px] text-slate-400 font-semibold">
+                        <td className="p-4 font-black text-slate-600">{p.version}</td>
+                        <td className="p-4 text-[10px] text-slate-400 font-bold">
                           {new Date(p.lastAuditTimestamp).toLocaleDateString()}
                         </td>
                       </tr>
                     ))
+                  ) : (
+                    jobs.filter(j => j.status === 'PRODUCTION').map((job) => (
+                      <tr key={job.id} className="hover:bg-blue-50/30 transition-colors">
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Globe className="w-3.5 h-3.5 text-blue-600" />
+                            <span className="font-black text-slate-800 block">{job.productId}</span>
+                          </div>
+                          <span className="text-[10px] text-slate-400 block mt-0.5 uppercase">M-JOB: {job.id}</span>
+                        </td>
+                        <td className="p-4 text-slate-600 font-medium">Sovereign Live Deployment</td>
+                        <td className="p-4">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-black text-[9px] bg-blue-50 text-blue-700 border border-blue-100 uppercase">
+                            <Zap className="w-3 h-3 fill-current" />
+                            ACTIVE_LIVE
+                          </span>
+                        </td>
+                        <td className="p-4 font-black text-slate-600">v1.2.0-STABLE</td>
+                        <td className="p-4 text-[10px] text-slate-400 font-bold">
+                          {new Date(job.updatedAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                  {registryFilter === 'production' && jobs.filter(j => j.status === 'PRODUCTION').length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="p-12 text-center text-slate-400 font-bold text-xs italic">
+                        No products currently in live production registry.
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -1534,27 +1725,37 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                   <div>
                     <h3 className="text-sm font-extrabold text-slate-900">National Verification Engine</h3>
-                    <p className="text-xs text-slate-500 mt-1">Assert and execute the 20 distinct system compilation testing validation gates.</p>
+                    <p className="text-xs text-slate-500 mt-1">Assert and execute the authoritative 100+ layer platform baseline verification suite.</p>
                   </div>
-                  <button
-                    onClick={runFullVerificationSuite}
-                    disabled={isVerifyingSuite}
-                    className="px-4 py-2.5 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer inline-flex items-center gap-1.5 disabled:opacity-50"
-                  >
-                    {isVerifyingSuite ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-                    Execute Verification Suite
-                  </button>
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input 
+                        type="text" 
+                        placeholder="Filter layers..."
+                        className="bg-slate-50 border border-slate-200 text-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-[10px] font-bold focus:ring-1 focus:ring-blue-500 focus:outline-hidden w-40"
+                      />
+                    </div>
+                    <button
+                      onClick={runFullVerificationSuite}
+                      disabled={isVerifyingSuite}
+                      className="px-4 py-2.5 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer inline-flex items-center gap-1.5 disabled:opacity-50"
+                    >
+                      {isVerifyingSuite ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                      Run 100+ Layer Suite
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1">
                   {verificationGates.map((gate, i) => (
                     <div key={gate.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
                       <div className="space-y-1">
-                        <span className="text-[10px] font-black text-slate-400 block">GATE {i + 1}/20</span>
-                        <span className="font-bold text-xs text-slate-800 block">{gate.name}</span>
-                        <span className="text-[10px] text-slate-500 block truncate max-w-xs">{gate.evidence}</span>
+                        <span className="text-[10px] font-black text-slate-400 block uppercase tracking-tight">{gate.id}</span>
+                        <span className="font-bold text-[11px] text-slate-800 block leading-tight">{gate.name}</span>
+                        <span className="text-[9px] text-slate-500 block truncate max-w-[180px]">{gate.evidence}</span>
                       </div>
-                      <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                      <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
                         gate.status === 'PASS' 
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
                           : gate.status === 'NOT_RUN'
@@ -1574,22 +1775,43 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div>
                   <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Gate Diagnostics Report</h3>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Cryptographic validation receipts matching production deployments.</p>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Comprehensive architecture-aware verification summary.</p>
                 </div>
                 
                 <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 text-xs space-y-2 text-slate-600 leading-relaxed">
-                  <span className="font-bold text-slate-800 block">Compliance Status:</span>
+                  <span className="font-bold text-slate-800 block">Baseline Performance:</span>
                   <div className="flex justify-between font-semibold border-b border-slate-200/60 pb-1 text-[11px]">
-                    <span>Total Executed Gates:</span>
-                    <span className="text-slate-800">20 / 20</span>
+                    <span>Total Executed Layers:</span>
+                    <span className="text-slate-800">{verificationGates.filter(g => g.status !== 'NOT_RUN').length} / {verificationGates.length}</span>
                   </div>
                   <div className="flex justify-between font-semibold border-b border-slate-200/60 pb-1 text-[11px]">
-                    <span>Compliance Ledger:</span>
-                    <span className="text-emerald-600 font-extrabold">100% PASS</span>
+                    <span>Mandatory Passed:</span>
+                    <span className="text-emerald-600 font-extrabold">{verificationGates.filter(g => g.status === 'PASS').length}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-[11px]">
-                    <span>Security Authority:</span>
-                    <span className="text-slate-800 font-bold">AEGIS-LEVEL-10</span>
+                    <span>Sovereign Security:</span>
+                    <span className="text-slate-800 font-bold">CERTIFIED BASELINE</span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                  <h4 className="text-[10px] font-black uppercase text-amber-500 tracking-wider">Live Failure Streams</h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {verificationFailures.map((failure, idx) => (
+                      <div key={idx} className="p-2.5 bg-slate-900/50 border border-slate-800 rounded-lg space-y-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] font-black text-rose-500 uppercase">{failure.layerId}</span>
+                          <span className="text-[8px] text-slate-500 font-bold">{new Date(failure.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                        <p className="text-[10px] text-slate-300 font-medium leading-relaxed">{failure.actualResult}</p>
+                        <span className="text-[8px] text-slate-500 block italic">Source: {failure.evidence}</span>
+                      </div>
+                    ))}
+                    {verificationFailures.length === 0 && (
+                      <div className="text-[10px] text-slate-600 italic text-center py-4">
+                        Zero sovereign verification failures detected.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1598,113 +1820,120 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace 8: Deployment Center */}
+        {/* Workspace 8: Build & Deploy Studio */}
         {activeWorkspace === "deployment" && (
           <div className="space-y-6" id="workspace-deployment">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
-              {/* Left Column: Environment slots */}
-              <div className="lg:col-span-7 space-y-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
-                  <div>
-                    <h3 className="text-sm font-extrabold text-slate-900 font-sans">Sovereign Environments control</h3>
-                    <p className="text-xs text-slate-500 mt-1">Coordinate promotions, canary rollouts, and disaster recovery partitions.</p>
-                  </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 font-sans uppercase tracking-tight">Sovereign Build & Deploy Command Center</h3>
+                  <p className="text-xs text-slate-500 mt-1">Select repository artifacts and orchestrate secure JUMO Cloud deployments.</p>
+                </div>
+              </div>
 
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Build Configuration */}
+                <div className="space-y-5 lg:col-span-1">
                   <div className="space-y-4">
-                    {cloudSlots.map((slot) => (
-                      <div key={slot.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
-                        <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                          <div>
-                            <span className="font-extrabold text-xs text-slate-900 block">{slot.name}</span>
-                            <span className="text-[10px] text-slate-500 uppercase mt-0.5 block">Active Release: {slot.activeRelease}</span>
-                          </div>
-                          <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                            {slot.health}
-                          </span>
-                        </div>
-
-                        {/* Resource metrics */}
-                        <div className="grid grid-cols-3 gap-2 text-[10px] text-slate-500 font-semibold uppercase text-center">
-                          <div className="bg-white p-2 rounded-lg border border-slate-100">
-                            <span>CPU</span>
-                            <span className="font-black text-slate-800 block mt-0.5">{slot.cpu}%</span>
-                          </div>
-                          <div className="bg-white p-2 rounded-lg border border-slate-100">
-                            <span>Memory</span>
-                            <span className="font-black text-slate-800 block mt-0.5">{slot.memory}%</span>
-                          </div>
-                          <div className="bg-white p-2 rounded-lg border border-slate-100">
-                            <span>Traffic split</span>
-                            <span className="font-black text-slate-800 block mt-0.5">{slot.trafficWeight}%</span>
-                          </div>
-                        </div>
-
-                        {/* Interactive rollout selector */}
-                        <div className="flex items-center justify-between pt-2">
-                          <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold">
-                            <Sliders className="w-3.5 h-3.5" />
-                            <span>Adjust Traffic:</span>
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={slot.trafficWeight}
-                              onChange={(e) => {
-                                const val = Number(e.target.value);
-                                setCloudSlots(prev => prev.map(s => s.id === slot.id ? { ...s, trafficWeight: val } : s));
-                              }}
-                              className="w-12 bg-white border border-slate-200 rounded-md px-1.5 py-0.5 text-center text-[10px] text-slate-800"
-                            />
-                            <span>%</span>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleDeploySlot(slot.id, "ROLLBACK")}
-                              disabled={isDeploying}
-                              className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-[10px] font-bold cursor-pointer disabled:opacity-50"
-                            >
-                              Rollback
-                            </button>
-                            <button
-                              onClick={() => handleDeploySlot(slot.id, "PROMOTE")}
-                              disabled={isDeploying}
-                              className="px-2.5 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[10px] font-bold cursor-pointer disabled:opacity-50"
-                            >
-                              Promote Stable
-                            </button>
-                          </div>
-                        </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center gap-1.5">
+                        <Database className="w-3 h-3" /> Source Repository
+                      </label>
+                      <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-800 focus:ring-1 focus:ring-blue-500 outline-hidden">
+                        <option>Jumo-Universal-Enterprise-platform</option>
+                        <option>Sovereign-Digital-Pay-Engine</option>
+                        <option>FAAP-General-Ledger-Core</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center gap-1.5">
+                        <Globe className="w-3 h-3" /> Active Branch
+                      </label>
+                      <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-800 focus:ring-1 focus:ring-blue-500 outline-hidden">
+                        <option>manufacturing-hub-architecture</option>
+                        <option>main-sovereign-production</option>
+                        <option>feature/zero-trust-v2</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Commit SHA Selection</label>
+                      <div className="relative">
+                        <Terminal className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input 
+                          type="text" 
+                          defaultValue="0d39c3a2aeebe5035e8985df1932a7a6c96fce30"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-[11px] font-mono font-bold text-slate-700 outline-hidden"
+                        />
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Right Column: Deployment Progress log */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                  <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Release Deployment logs</h3>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Continuous delivery metrics from container orchestrators.</p>
                   
-                  <div className="bg-slate-950 font-mono text-[10px] text-emerald-400 border border-slate-800 p-4 rounded-xl space-y-1.5 h-64 overflow-y-auto">
-                    {deploymentLogs.map((log, idx) => (
-                      <div key={idx} className="flex items-start gap-1">
-                        <span className="text-slate-500 select-none">›</span>
-                        <span>{log}</span>
+                  <div className="pt-4 space-y-3">
+                    <button className="w-full py-3 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-sm cursor-pointer">
+                      Trigger Sovereign Build
+                    </button>
+                    <button className="w-full py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer">
+                      Validate Dependencies
+                    </button>
+                  </div>
+                </div>
+
+                {/* Deployment Environments */}
+                <div className="lg:col-span-2 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {cloudSlots.map((slot) => (
+                      <div key={slot.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full animate-pulse ${slot.health === 'HEALTHY' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                            <span className="font-black text-sm text-slate-900 uppercase tracking-tight">{slot.name}</span>
+                          </div>
+                          <span className="text-[9px] font-black text-slate-400">ID: {slot.id.toUpperCase()}</span>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-[10px] font-bold">
+                            <span className="text-slate-500">ACTIVE RELEASE</span>
+                            <span className="text-blue-600 font-black">{slot.activeRelease}</span>
+                          </div>
+                          <div className="flex justify-between text-[10px] font-bold">
+                            <span className="text-slate-500">TRAFFIC WEIGHT</span>
+                            <span className="text-slate-900 font-black">{slot.trafficWeight}%</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 pt-2">
+                          <div className="bg-white p-2.5 rounded-xl border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-black text-slate-400 uppercase">CPU Load</span>
+                            <span className="text-xs font-black text-slate-800">{slot.cpu}%</span>
+                          </div>
+                          <div className="bg-white p-2.5 rounded-xl border border-slate-100 flex flex-col items-center">
+                            <span className="text-[9px] font-black text-slate-400 uppercase">Mem Usage</span>
+                            <span className="text-xs font-black text-slate-800">{slot.memory}%</span>
+                          </div>
+                        </div>
+
+                        <button className="w-full py-2 bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer">
+                          Direct Deployment Handoff
+                        </button>
                       </div>
                     ))}
-                    {isDeploying && (
-                      <div className="flex items-center gap-1.5 text-blue-400 animate-pulse mt-1">
-                        <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping"></span>
-                        <span>Deploying live container nodes...</span>
-                      </div>
-                    )}
+                  </div>
+
+                  <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                      <Cloud className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-blue-900">JUMO CLOUD Integration Contract</h4>
+                      <p className="text-[11px] text-blue-700/80 mt-1 leading-relaxed">
+                        The Hub is currently connected to the primary JUMO Sovereign Cloud Node (JUMO-SVR-01). 
+                        All deployments are gated by the architecture-aware verification fabric.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         )}
@@ -1964,7 +2193,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
         )}
 
         {/* Other Missing Workspaces (Placeholder for Phase 6 completeness) */}
-        {["engineering", "certification", "security", "hybrid"].includes(activeWorkspace) && (
+        {["security", "hybrid"].includes(activeWorkspace) && (
           <div className="space-y-6" id={`workspace-${activeWorkspace}`}>
             <div className="bg-white p-10 rounded-xl border border-slate-200 shadow-sm text-center">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">

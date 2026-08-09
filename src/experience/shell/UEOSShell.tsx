@@ -7,7 +7,7 @@ import {
   Command, Cpu, FileText, Users, Server, Layers, CheckSquare, Globe, 
   RefreshCw, Shield, History, Settings, LogOut, ChevronLeft, ChevronRight, 
   User, Key, Menu, Search, X, Sliders, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard,
-  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical
+  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical, Zap, Database
 } from "lucide-react";
 import { NationalManufacturingHub, HubWorkspace } from "../renderer/NationalManufacturingHub";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
@@ -374,9 +374,18 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 11. SIDEBAR NAVIGATION GROUPS ===
   const sidebarGroups = [
     {
-      id: "NATIONAL DIGITAL MANUFACTURING HUB",
+      id: "FACTORY CONTROL PLANE",
       items: [
-        { id: "overview" as HubWorkspace, label: "Factory Overview", icon: Home, color: "text-slate-600" }
+        { id: "overview" as HubWorkspace, label: "Command Overview", icon: Home, color: "text-slate-600" },
+        { id: "specification" as HubWorkspace, label: "Specification Design", icon: FileText, color: "text-slate-600" },
+        { id: "architecture" as HubWorkspace, label: "Architecture Studio", icon: Layers, color: "text-blue-600" },
+        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Studio", icon: Zap, color: "text-amber-600" },
+        { id: "engineering" as HubWorkspace, label: "Build Studio", icon: Terminal, color: "text-indigo-600" },
+        { id: "workforce" as HubWorkspace, label: "Engineering Workforce", icon: Users, color: "text-slate-600" },
+        { id: "deployment" as HubWorkspace, label: "Deployment Studio", icon: Cloud, color: "text-cyan-600" },
+        { id: "verification" as HubWorkspace, label: "Verification Center", icon: Shield, color: "text-emerald-600" },
+        { id: "certification" as HubWorkspace, label: "Certification Authority", icon: Award, color: "text-amber-500" },
+        { id: "registries" as HubWorkspace, label: "Registries Fabric", icon: Database, color: "text-slate-600" }
       ]
     },
     {
