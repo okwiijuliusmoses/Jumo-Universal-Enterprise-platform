@@ -49,6 +49,38 @@ export interface VerificationProfile {
   layerIds: string[];
 }
 
+export interface ArchitectureContract {
+  id: string;
+  version: string;
+  specificationId: string;
+  status: 'DRAFT' | 'REVIEW' | 'APPROVED';
+  productDetails: any; // Simplified for now
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EngineeringJob {
+  id: string;
+  architectureId: string;
+  status: 'UNASSIGNED' | 'ASSIGNED' | 'ACTIVE' | 'BLOCKED' | 'COMPLETED';
+  assignedEngineers: string[];
+  tasks: EngineeringTask[];
+  createdAt: string;
+}
+
+export interface EngineeringTask {
+  id: string;
+  title: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+}
+
+export interface EngineeringAgent {
+  id: string;
+  name: string;
+  division: string;
+  status: 'ACTIVE' | 'BUSY' | 'OFFLINE';
+}
+
 export interface AuthoritativeRegistryRecord {
   registryId: string;
   name: string;
