@@ -1381,7 +1381,7 @@ export function EnterpriseFactory({
                         <Cpu className="w-3.5 h-3.5 text-blue-600" /> Active Modules
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {activeModuleIds.slice(0, 5).map(m => (
+                        {(Array.isArray(activeModuleIds) ? activeModuleIds : []).slice(0, 5).map(m => (
                           <span key={m} className="px-2 py-1 bg-slate-100 rounded-lg text-[10px] font-bold text-slate-600">{m}</span>
                         ))}
                         {activeModuleIds.length > 5 && <span className="px-2 py-1 bg-blue-50 rounded-lg text-[10px] font-bold text-blue-600">+{activeModuleIds.length - 5} more</span>}

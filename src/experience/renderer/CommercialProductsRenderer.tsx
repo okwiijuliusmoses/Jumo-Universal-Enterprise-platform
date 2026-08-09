@@ -498,7 +498,7 @@ export function CommercialProductsRenderer() {
               </p>
 
               <div className="pt-3 border-t border-slate-100 space-y-1.5">
-                {product.capabilities.slice(0, 3).map((capability) => (
+                {(Array.isArray(product?.capabilities) ? product.capabilities : []).slice(0, 3).map((capability) => (
                   <div
                     key={capability}
                     className="flex items-center gap-2 text-xs font-medium text-slate-700"

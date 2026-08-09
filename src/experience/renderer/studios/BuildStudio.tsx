@@ -48,7 +48,7 @@ export const BuildStudio: React.FC<BuildStudioProps> = ({
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
             <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Sealed Build Artifacts</h3>
             <div className="space-y-3">
-              {(artifacts ?? []).map((artifact) => (
+              {(Array.isArray(artifacts) ? artifacts : []).map((artifact) => (
                 <div key={artifact.artifactId} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-blue-300 transition-all">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400">
@@ -56,13 +56,13 @@ export const BuildStudio: React.FC<BuildStudioProps> = ({
                     </div>
                     <div>
                       <span className="text-[10px] font-black text-slate-900 uppercase block tracking-tight">{artifact.artifactId}</span>
-                      <span className="text-[9px] text-slate-500 font-mono block">SHA256:{artifact.hash.substring(0, 16)}...</span>
+                      <span className="text-[9px] text-slate-500 font-mono block">SHA256:{String(artifact?.hash ?? "UNSEALED").substring(0, 16)}...</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <span className="text-[9px] font-black text-slate-400 uppercase block">Size</span>
-                      <span className="text-[10px] font-bold text-slate-700">{(artifact.size / 1024 / 1024).toFixed(2)} MB</span>
+                      <span className="text-[10px] font-bold text-slate-700">{(Number(artifact?.size ?? 0) / 1024 / 1024).toFixed(2)} MB</span>
                     </div>
                     <div className="h-8 w-px bg-slate-200"></div>
                     <button className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 transition-all">

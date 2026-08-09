@@ -122,7 +122,7 @@ export class UniversalHubRegistry {
 
     ecosystems.forEach(eco => {
       for (let i = 1; i <= 5; i++) {
-        const layerId = `layer-eco-${eco.substring(0, 3).toLowerCase()}-${i.toString().padStart(2, '0')}`;
+        const layerId = `layer-eco-${String(eco ?? "").substring(0, 3).toLowerCase()}-${i.toString().padStart(2, '0')}`;
         this.verificationLayers.set(layerId, {
           layerId,
           name: `${eco.replace('_', ' ')}: Layer ${i}`,

@@ -137,7 +137,7 @@ export function PortalRenderer({ instance, onBack }: PortalRendererProps) {
                         Operational Directorate
                      </h4>
                      <div className="space-y-4">
-                        {instance.directorates?.slice(0, 3).map((dir: any) => (
+                        {(Array.isArray(instance?.directorates) ? instance.directorates : []).slice(0, 3).map((dir: any) => (
                           <div key={dir.id} className="p-4 bg-slate-50 rounded-2xl flex items-center justify-between">
                              <div>
                                 <span className="block text-xs font-bold text-slate-800">{dir.name}</span>

@@ -914,13 +914,13 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
                             </td>
                             <td className="p-4">
                               <div className="flex -space-x-1.5 overflow-hidden">
-                                {job.assignedWorkforce.map((assignment, i) => (
+                                {(Array.isArray(job?.assignedWorkforce) ? job.assignedWorkforce : []).map((assignment, i) => (
                                   <div 
                                     key={i} 
                                     title={`${assignment.engineerId} - ${assignment.role}`}
                                     className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
                                   >
-                                    {assignment.engineerId.substring(0, 2)}
+                                    {String(assignment?.engineerId ?? "NA").substring(0, 2).toUpperCase()}
                                   </div>
                                 ))}
                               </div>

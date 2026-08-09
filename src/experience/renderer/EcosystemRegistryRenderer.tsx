@@ -294,7 +294,7 @@ export function EcosystemRegistryRenderer() {
               <div className="pt-2 border-t border-slate-100">
                 <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">Key Governance Bodies</span>
                 <ul className="space-y-1">
-                  {eco.governanceModel?.boards?.slice(0, 3).map((board: string, bIdx: number) => (
+                  {(Array.isArray(eco?.governanceModel?.boards) ? eco.governanceModel.boards : []).slice(0, 3).map((board: string, bIdx: number) => (
                     <li key={bIdx} className="flex items-center gap-2 text-slate-700 font-medium">
                       <span className="w-1.5 h-1.5 bg-blue-500 rounded-full shrink-0" />
                       <span className="truncate">{board}</span>
