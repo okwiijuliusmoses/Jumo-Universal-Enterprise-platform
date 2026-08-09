@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import crypto from "crypto";
 import { UserRepository, AuditLogRepository } from "../../repositories/repositories";
 import { UserRecord } from "../../models/models";
@@ -150,12 +151,19 @@ export class SecurityService {
    * AES-256 Symmetric Secrets Encryption Wrapper (Symmetric Cryptographic Secrets Rotator)
    */
   public encryptSecret(text: string, secretKeyHex?: string): string {
-    const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-    let encrypted = cipher.update(text, "utf8", "hex");
-    encrypted += cipher.final("hex");
-    return `${iv.toString("hex")}:${encrypted}`;
+    try {
+      if (crypto && typeof crypto.scryptSync === "function") {
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+        let encrypted = cipher.update(text, "utf8", "hex");
+        encrypted += cipher.final("hex");
+        return `${iv.toString("hex")}:${encrypted}`;
+      }
+    } catch {
+      // Browser fallback
+    }
+    return `b64:${Buffer.from(text).toString("base64")}`;
   }
 
   /**
@@ -163,17 +171,23 @@ export class SecurityService {
    */
   public decryptSecret(cipherText: string, secretKeyHex?: string): string {
     try {
-      const parts = cipherText.split(":");
-      const iv = Buffer.from(parts[0], "hex");
-      const encryptedText = parts[1];
-      const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
-      const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-      let decrypted = decipher.update(encryptedText, "hex", "utf8");
-      decrypted += decipher.final("utf8");
-      return decrypted;
+      if (cipherText.startsWith("b64:")) {
+        return Buffer.from(cipherText.slice(4), "base64").toString("utf8");
+      }
+      if (crypto && typeof crypto.createDecipheriv === "function") {
+        const parts = cipherText.split(":");
+        const iv = Buffer.from(parts[0], "hex");
+        const encryptedText = parts[1];
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
+        const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+        let decrypted = decipher.update(encryptedText, "hex", "utf8");
+        decrypted += decipher.final("utf8");
+        return decrypted;
+      }
     } catch (err) {
       return "DECRYPTION_FAILED";
     }
+    return cipherText;
   }
 }
 

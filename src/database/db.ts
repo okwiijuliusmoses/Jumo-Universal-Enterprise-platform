@@ -5,7 +5,20 @@ import path from "path";
 import { Pool } from "pg";
 import { UEOS_SCHEMAS } from "../schema/schema";
 
-const DB_FILE_PATH = path.join(process.cwd(), "assets", "ueos_database.json");
+const isBrowser = typeof window !== "undefined";
+
+const getDBFilePath = () => {
+  try {
+    if (!isBrowser && typeof process !== "undefined" && typeof process.cwd === "function") {
+      return path.join(process.cwd(), "assets", "ueos_database.json");
+    }
+  } catch {
+    // fallback
+  }
+  return "assets/ueos_database.json";
+};
+
+const DB_FILE_PATH = getDBFilePath();
 
 export class JUMODBEngine {
   private static instance: JUMODBEngine;
@@ -83,10 +96,16 @@ export class JUMODBEngine {
   private async initializeEngine() {
     if (this.isInitialized) return;
 
-    // 1. Ensure assets directory exists for backup
-    const dir = path.dirname(DB_FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    // 1. Ensure assets directory exists for backup (Node environment only)
+    try {
+      if (!isBrowser && typeof fs !== "undefined" && typeof fs.existsSync === "function") {
+        const dir = path.dirname(DB_FILE_PATH);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+      }
+    } catch (err: any) {
+      console.warn("[DATABASE_WARN] Directory initialization skipped:", err.message);
     }
 
     // 2. Initialize collections in memory
@@ -94,38 +113,40 @@ export class JUMODBEngine {
       this.data[key] = [];
     }
 
-    // 3. Detect and establish PostgreSQL connection if variables exist
-    const host = process.env.SQL_HOST;
-    const dbName = process.env.SQL_DB_NAME;
-    const user = process.env.SQL_USER || process.env.SQL_ADMIN_USER;
-    const password = process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD;
+    // 3. Detect and establish PostgreSQL connection if variables exist (Node environment only)
+    if (!isBrowser && typeof process !== "undefined" && process.env) {
+      const host = process.env.SQL_HOST;
+      const dbName = process.env.SQL_DB_NAME;
+      const user = process.env.SQL_USER || process.env.SQL_ADMIN_USER;
+      const password = process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD;
 
-    if (host && dbName && user) {
-      console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
-      try {
-        this.pool = new Pool({
-          host,
-          database: dbName,
-          user,
-          password,
-          connectionTimeoutMillis: 5000,
-        });
+      if (host && dbName && user) {
+        console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
+        try {
+          this.pool = new Pool({
+            host,
+            database: dbName,
+            user,
+            password,
+            connectionTimeoutMillis: 5000,
+          });
 
-        // Test connection
-        const client = await this.pool.connect();
-        client.release();
+          // Test connection
+          const client = await this.pool.connect();
+          client.release();
 
-        this.usePostgres = true;
-        console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
+          this.usePostgres = true;
+          console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
 
-        // Initialize Postgres tables and load data
-        await this.bootstrapPostgresTables();
-      } catch (err: any) {
-        console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
-        this.usePostgres = false;
+          // Initialize Postgres tables and load data
+          await this.bootstrapPostgresTables();
+        } catch (err: any) {
+          console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
+          this.usePostgres = false;
+        }
+      } else {
+        console.log("[DATABASE] No PostgreSQL variables. Running on secure local JSON storage mode.");
       }
-    } else {
-      console.log("[DATABASE] No PostgreSQL variables. Running on secure local JSON storage mode.");
     }
 
     // Load backup data or local store
@@ -263,11 +284,21 @@ export class JUMODBEngine {
     }
   }
 
-  // Load database from file / Postgres with error recovery
+  // Load database from file / Postgres / localStorage with error recovery
   public async load() {
-    // Read from local JSON first to verify schema and local baseline
+    // Read from local storage (browser) or JSON file (Node)
     try {
-      if (fs.existsSync(DB_FILE_PATH)) {
+      if (isBrowser && typeof localStorage !== "undefined") {
+        const stored = localStorage.getItem("ueos_db_backup");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          for (const key of Object.keys(UEOS_SCHEMAS)) {
+            if (Array.isArray(parsed[key])) {
+              this.data[key] = parsed[key];
+            }
+          }
+        }
+      } else if (!isBrowser && typeof fs !== "undefined" && typeof fs.existsSync === "function" && fs.existsSync(DB_FILE_PATH)) {
         const raw = fs.readFileSync(DB_FILE_PATH, "utf-8");
         const parsed = JSON.parse(raw);
         for (const key of Object.keys(UEOS_SCHEMAS)) {
@@ -277,7 +308,7 @@ export class JUMODBEngine {
         }
       }
     } catch (err: any) {
-      console.error("[DATABASE_ERROR] Local JSON read failed:", err.message);
+      console.error("[DATABASE_ERROR] Local storage/JSON read failed:", err.message);
     }
 
     // Overwrite cache from PostgreSQL if active
@@ -446,11 +477,15 @@ export class JUMODBEngine {
     }
   }
 
-  // Synchronize memory state to disk (always runs as backup)
+  // Synchronize memory state to disk / localStorage (always runs as backup)
   public save() {
     try {
       const payload = JSON.stringify(this.data, null, 2);
-      fs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
+      if (isBrowser && typeof localStorage !== "undefined") {
+        localStorage.setItem("ueos_db_backup", payload);
+      } else if (!isBrowser && typeof fs !== "undefined" && typeof fs.writeFileSync === "function") {
+        fs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
+      }
     } catch (err: any) {
       console.error("[DATABASE_ERROR] Write backup failed:", err.message);
     }

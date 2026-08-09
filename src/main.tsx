@@ -1,10 +1,23 @@
+import { Buffer } from 'buffer';
+
+if (typeof window !== 'undefined') {
+  (window as any).Buffer = (window as any).Buffer || Buffer;
+  (globalThis as any).Buffer = (globalThis as any).Buffer || Buffer;
+  (window as any).process = (window as any).process || { env: {} };
+  (globalThis as any).process = (globalThis as any).process || { env: {} };
+  (window as any).global = window;
+}
+
 import React, { StrictMode } from 'react';
 import ReactDOM, { createRoot } from 'react-dom/client';
 import App from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import './index.css';
 
 declare global {
   interface Window {
+    Buffer: typeof Buffer;
+    process: any;
     mountUEOSReactWorkspace?: (container?: HTMLElement, instanceId?: string) => void;
   }
 }
@@ -29,7 +42,9 @@ export const mountUEOSReactWorkspace = (container?: HTMLElement) => {
 
   rootInstance.render(
     <StrictMode>
-      <App />
+      <ErrorBoundary fallbackTitle="JUMO UEOS Core Kernel Failure">
+        <App />
+      </ErrorBoundary>
     </StrictMode>
   );
   console.log('[UEOS Entry Point] React UEOS Workspace Shell mounted successfully.');
