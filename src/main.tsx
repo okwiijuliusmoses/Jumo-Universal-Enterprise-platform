@@ -1,10 +1,6 @@
-import { Buffer } from 'buffer';
-
 console.log('[JUMO BOOT 02] main.tsx loaded');
 
 if (typeof window !== 'undefined') {
-  (window as any).Buffer = (window as any).Buffer || Buffer;
-  (globalThis as any).Buffer = (globalThis as any).Buffer || Buffer;
   (window as any).process = (window as any).process || { env: {} };
   (globalThis as any).process = (globalThis as any).process || { env: {} };
   (window as any).global = window;
@@ -22,7 +18,6 @@ import './index.css';
 
 declare global {
   interface Window {
-    Buffer: typeof Buffer;
     process: any;
     mountUEOSReactWorkspace?: (container?: HTMLElement, instanceId?: string) => void;
   }
