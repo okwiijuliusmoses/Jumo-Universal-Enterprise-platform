@@ -47,7 +47,37 @@ export class UniversalHubRegistry {
 
   static {
     this.seedInitialAuthoritativeRegistries();
+    this.seedVerificationRegistries();
     console.log('[JUMO BOOT 09] Registry initialized');
+  }
+
+  private static seedVerificationRegistries() {
+    this.verificationLayers.set("layer-arch-01", {
+      layerId: "layer-arch-01",
+      name: "Architecture Conformance",
+      description: "Verifies architecture contract conformance",
+      category: "ARCHITECTURE",
+      gate: "GATE_01",
+      enabled: true,
+      mandatory: true,
+      blocking: true,
+      severity: "CRITICAL",
+      standards: ["ISO/IEC 42001"]
+    });
+    this.verificationProfiles.set("default-profile", {
+      profileId: "default-profile",
+      name: "Default Enterprise Profile",
+      description: "Baseline verification profile",
+      layerIds: ["layer-arch-01"]
+    });
+  }
+
+  public static getVerificationLayers(layerIds: string[]): VerificationLayer[] {
+    return layerIds.map(id => this.verificationLayers.get(id)).filter(l => l !== undefined) as VerificationLayer[];
+  }
+
+  public static getProfile(profileId: string): VerificationProfile | undefined {
+    return this.verificationProfiles.get(profileId);
   }
 
   /**

@@ -7,6 +7,7 @@ import { faapEnterpriseRuntime } from "../faap/faapService";
 import { JumoAIAgentRegistry } from "../ai/registry/JumoAIAgentRegistry";
 import { UniversalHubRegistry } from "../factory/registry/UniversalHubRegistry";
 import { TemplateCompiler } from "../factory/TemplateCompiler";
+import { UniversalVerificationEngine } from "./verificationEngine";
 
 export interface ArchitectureRequest {
   id: string;
@@ -736,15 +737,30 @@ export class SovereignOperatingStateService {
     const nowStr = new Date().toLocaleTimeString();
     
     // In the new architecture, we get the profile from registry
-    // For now, we mock the profile selection
-    this.state.verificationGates = [
-      {
-        id: "v1", name: "Architecture-Aware Engine",
-        status: "PASS",
-        evidence: "Verification engine running 100+ dynamic layers.",
-        timestamp: nowStr, logs: ["Scanning layers...", "All layers verified."]
-      }
-    ];
+    const profile = UniversalHubRegistry.getProfile("default-profile");
+    
+    if (profile) {
+        const layers = UniversalHubRegistry.getVerificationLayers(profile.layerIds);
+        const results = UniversalVerificationEngine.executeProfile(layers, { architectureContract });
+        
+        this.state.verificationGates = results.map(res => ({
+            id: res.layerId,
+            name: layers.find(l => l.layerId === res.layerId)?.name || 'Unknown',
+            status: res.status,
+            evidence: res.evidence,
+            timestamp: res.timestamp,
+            logs: []
+        }));
+    } else {
+        this.state.verificationGates = [
+          {
+            id: "v1", name: "Architecture-Aware Engine",
+            status: "FAIL",
+            evidence: "No verification profile found.",
+            timestamp: nowStr, logs: ["Error: default-profile missing."]
+          }
+        ];
+    }
 
     this.logAudit(actor, "VERIFICATION_SUITE_RUN", `Executed Architecture-Aware Verification Engine.`);
     this.saveState();
