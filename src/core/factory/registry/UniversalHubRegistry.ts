@@ -141,7 +141,7 @@ export class UniversalHubRegistry {
 
     this.verificationProfiles.set("default-profile", {
       profileId: "default-profile",
-      name: "Authoritative 100+ Layer Platform Baseline",
+      name: "Authoritative JUMO Platform Verification Baseline",
       description: "Minimum sovereign verification baseline for all manufactured products.",
       layerIds: allLayerIds
     });

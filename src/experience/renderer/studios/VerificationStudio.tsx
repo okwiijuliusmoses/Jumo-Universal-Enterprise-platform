@@ -41,7 +41,7 @@ export const VerificationStudio: React.FC<VerificationStudioProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase">Verification Center</h2>
-            <p className="text-xs text-slate-500 font-medium">Authoritative 100+ Layer Verification & Validation Engine</p>
+            <p className="text-xs text-slate-500 font-medium">Authoritative Dynamic Verification & Validation Engine</p>
           </div>
         </div>
         <button 
@@ -50,7 +50,7 @@ export const VerificationStudio: React.FC<VerificationStudioProps> = ({
           className="px-6 py-2 bg-slate-900 hover:bg-emerald-600 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm flex items-center gap-2 cursor-pointer"
         >
           {isVerifying ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-          {isVerifying ? "Executing Suite..." : "Execute 100+ Layer Suite"}
+          {isVerifying ? "Executing Suite..." : "Execute Verification Suite"}
         </button>
       </div>
 

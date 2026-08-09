@@ -718,7 +718,7 @@ export class SovereignOperatingStateService {
       case 'SOURCE_GENERATION': stageLog = "[SOURCE] JUMO-AI engine executing sovereign source generation."; break;
       case 'COMPILATION': stageLog = "[BUILD] Native compilation successful. Authoritative binary sealed."; break;
       case 'DEPLOYMENT': stageLog = "[DEPLOY] Secure deployment to JUMO Sovereign Cloud Node completed."; break;
-      case 'VERIFICATION': stageLog = "[VERIFY] Executing 100+ layer architectural verification suite."; break;
+      case 'VERIFICATION': stageLog = "[VERIFY] Executing the dynamically registered architectural verification suite."; break;
       case 'CERTIFICATION': stageLog = "[CERTIFY] Sovereign Manufacturing Hub Certificate issued for production."; break;
       case 'REGISTRY_ACTIVATION': stageLog = "[REGISTRY] Product formally activated in National Ecosystem Registry."; break;
       default: stageLog = `[HUB] Job transitioned to ${nextStage} stage.`; break;
@@ -961,7 +961,7 @@ export class SovereignOperatingStateService {
   }
 
   public static runVerificationSuite(actor: string, architectureContract?: any) {
-    console.log(`[VERIFICATION_CENTER] Launching architecture-aware 100+ layer Verification Engine by ${actor}`);
+    console.log(`[VERIFICATION_CENTER] Launching the architecture-aware Verification Engine by ${actor}`);
     const nowStr = new Date().toLocaleTimeString();
     
     // In the new architecture, we get the profile from registry
