@@ -1,6 +1,4 @@
 import express from "express";
-import { jumoConversationalReasoning } from "./src/core/ai/conversational/JumoConversationalReasoningService";
-
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
@@ -51,67 +49,6 @@ async function startServer() {
   });
 
   // 2. Create architecture request
-  /**
-   * JUMO UEOS General-Purpose Conversational Reasoning AI
-   *
-   * Human-facing reasoning boundary.
-   *
-   * The endpoint does not execute specialized work directly.
-   * It interprets the request, reasons over authorized context,
-   * produces a plan, and returns delegation requirements.
-   */
-  app.post("/api/v1/ueos/ai/reason", async (req, res) => {
-    try {
-      const {
-        message,
-        mode,
-        context,
-      } = req.body ?? {};
-
-      if (
-        typeof message !== "string" ||
-        message.trim().length === 0
-      ) {
-        return res.status(400).json({
-          ok: false,
-          error: "A non-empty reasoning message is required.",
-        });
-      }
-
-      const result =
-        await jumoConversationalReasoning.reason({
-          message: message.trim(),
-          mode,
-          context,
-        });
-
-      return res.status(200).json({
-        ok: true,
-        service:
-          "JUMO General-Purpose Conversational Reasoning AI",
-        providerBoundary:
-          "JUMO Reasoning Provider Adapter",
-        result,
-      });
-    } catch (error) {
-      console.error(
-        "[JUMO_REASONING] Request failed:",
-        error
-      );
-
-      return res.status(503).json({
-        ok: false,
-        service:
-          "JUMO General-Purpose Conversational Reasoning AI",
-        error:
-          error instanceof Error
-            ? error.message
-            : "JUMO reasoning service unavailable.",
-        execution: "NOT_EXECUTED",
-      });
-    }
-  });
-
   app.post("/api/v1/ueos/architecture-requests", (req, res) => {
     try {
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
