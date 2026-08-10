@@ -1,3 +1,5 @@
+import { registerJumoManufacturingCatalog } from './JumoManufacturingCatalog';
+
 import {
   JUMO_DIGITAL_SPECIFICATION_ENGINE,
 } from './specification/JumoDigitalSpecificationEngine';
@@ -25,6 +27,10 @@ import {
 } from './lifecycle/JumoDigitalManufacturingLifecycle';
 
 export class JumoDigitalManufacturingPlatform {
+  private catalogStats: ReturnType<typeof registerJumoManufacturingCatalog> | null = null;
+
+  private catalogInitialized = false;
+
   readonly specification =
     JUMO_DIGITAL_SPECIFICATION_ENGINE;
 
@@ -59,7 +65,26 @@ export class JumoDigitalManufacturingPlatform {
       this.cloudProvisioning,
     );
 
+  initializeCatalog() {
+    if (!this.catalogInitialized) {
+      this.catalogStats = registerJumoManufacturingCatalog(
+        this.detections,
+        this.engineers,
+        this.applicationTesting,
+        this.endToEndTesting,
+        this.cloudProvisioning,
+        this.specification,
+      );
+
+      this.catalogInitialized = true;
+    }
+
+    return this.catalogStats;
+  }
+
   status() {
+    this.initializeCatalog();
+
     return {
       specificationSchemas:
         this.specification.listSchemas().length,
