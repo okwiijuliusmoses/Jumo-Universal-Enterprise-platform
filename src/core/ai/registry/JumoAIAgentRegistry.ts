@@ -315,7 +315,7 @@ export class JumoAIAgentRegistry {
       
       const currentJob = workload > 50 ? `JOB-2026-000${900 + (i % 12)}` : null;
 
-      const modelAlias = i % 3 === 0 ? "gemini-3.1-pro-preview" : "gemini-3.6-flash";
+      const modelAlias = "gemini-3.6-flash";
 
       const histories = [
         `[${now}] Handshaked with Sovereign Gate successfully.`,
@@ -596,7 +596,7 @@ export class JumoAIAgentRegistry {
         authorizedTools: ['inspectBlueprint', 'verifyKernelBoundaries'],
         modelPolicy: {
           preferredProvider: 'GOOGLE_GENAI',
-          modelAlias: 'gemini-3.1-pro-preview',
+          modelAlias: 'gemini-3.6-flash',
           maxOutputTokens: 8192,
           temperature: 0.2,
           offlineFallbackEnabled: true
@@ -619,7 +619,7 @@ export class JumoAIAgentRegistry {
           assignedSkills: [taskType, 'Autonomous Engineering', 'Completeness Verification'],
           capabilities: [taskType, 'Autonomous Engineering', 'Completeness Verification'],
           authorizedTools: ['inspectBlueprint', 'verifyKernelBoundaries'],
-          modelAlias: 'gemini-3.1-pro-preview'
+          modelAlias: 'gemini-3.6-flash'
         },
         architectureConstraints: [],
         assignedProducts: [],

@@ -176,26 +176,45 @@ export class GeminiProvider implements JumoAIProvider {
       throw new Error("Cannot execute: GEMINI_API_KEY is not configured.");
     }
 
-    const ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-      httpOptions: {
-        headers: { "User-Agent": "aistudio-build" }
-      }
-    });
-
-    const model = request.modelId || process.env.GEMINI_MODEL || "gemini-3.6-flash";
-    const sysPrompt = request.systemPrompt || "You are JUMO GPT Sovereign Intelligence.";
-    const contextStr = request.context ? `\n\nContext:\n${JSON.stringify(request.context)}` : "";
-    const prompt = `${sysPrompt}${contextStr}\n\nUser Input: ${request.message}`;
-
     try {
-      const response = await ai.models.generateContent({
-        model: model,
-        contents: prompt,
-        config: {
-          temperature: request.temperature ?? 0.2,
+      const ai = new GoogleGenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+        httpOptions: {
+          headers: { "User-Agent": "aistudio-build" }
         }
       });
+
+      const model = request.modelId || process.env.GEMINI_MODEL || "gemini-3.6-flash";
+      const sysPrompt = request.systemPrompt || "You are JUMO GPT Sovereign Intelligence.";
+      const contextStr = request.context ? `\n\nContext:\n${JSON.stringify(request.context)}` : "";
+      const prompt = `${sysPrompt}${contextStr}\n\nUser Input: ${request.message}`;
+
+      let response;
+      let lastErr: any = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          response = await ai.models.generateContent({
+            model: model,
+            contents: prompt,
+            config: {
+              temperature: request.temperature ?? 0.2,
+            }
+          });
+          if (response && response.text) {
+            lastErr = null;
+            break;
+          }
+        } catch (err: any) {
+          lastErr = err;
+          if (attempt < 3) {
+            await new Promise(r => setTimeout(r, 500 * attempt));
+          }
+        }
+      }
+
+      if (lastErr || !response?.text) {
+        throw new Error(`Gemini Provider execution failed after 3 attempts: [${lastErr?.status || "API_ERROR"}] ${lastErr?.message || "Empty response"}`);
+      }
 
       const text = response.text || "";
       const latencyMs = Date.now() - start;
@@ -206,7 +225,7 @@ export class GeminiProvider implements JumoAIProvider {
         providerId: this.providerId,
         reasoning: true,
         usage: {
-          inputTokens: Math.floor(prompt.length / 4), // Fallback calculation since Gemini SDK tokens might not be flat
+          inputTokens: Math.floor(prompt.length / 4),
           outputTokens: Math.floor(text.length / 4),
           totalTokens: Math.floor((prompt.length + text.length) / 4)
         },

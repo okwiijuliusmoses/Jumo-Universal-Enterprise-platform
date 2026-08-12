@@ -79,7 +79,6 @@ export class JumoModelRegistry {
 
   public static getDefaultModelForTask(taskType: 'FAST' | 'DEEP_REASONING' | 'AIR_GAP' = 'FAST'): string {
     if (taskType === 'AIR_GAP') return 'jumo-sovereign-kernel-local';
-    if (taskType === 'DEEP_REASONING') return 'gemini-3.1-pro-preview';
     return 'gemini-3.6-flash';
   }
 }

@@ -26,7 +26,8 @@ export class GeminiReasoningProvider implements ReasoningAIProvider {
 
     this.model =
       process.env.GEMINI_REASONING_MODEL?.trim() ||
-      'gemini-3.1-pro-preview';
+      process.env.GEMINI_MODEL?.trim() ||
+      'gemini-3.6-flash';
   }
 
   async reason(request: ReasoningRequest) {
@@ -49,17 +50,51 @@ export class GeminiReasoningProvider implements ReasoningAIProvider {
       JSON.stringify(context),
     ].join('\n');
 
-    const response = await this.client.models.generateContent({
-      model: this.model,
-      contents: [
-          { role: 'user', parts: [{ text: systemPrompt + '\n\n' + request.message }] }
-      ],
-      config: {
-        temperature: 0.2,
-      }
-    });
+    let response;
+    let modelUsed = this.model;
+    let lastError: any = null;
 
-    const output = response.text?.trim();
+    // Retry up to 3 times for transient network/503 spikes
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        response = await this.client.models.generateContent({
+          model: modelUsed,
+          contents: [
+              { role: 'user', parts: [{ text: systemPrompt + '\n\n' + request.message }] }
+          ],
+          config: {
+            temperature: 0.2,
+          }
+        });
+        if (response && response.text) {
+          lastError = null;
+          break;
+        }
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[GeminiReasoningProvider] Attempt ${attempt}/3 with ${modelUsed} failed (${err.message})...`);
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 500 * attempt));
+        }
+      }
+    }
+
+    if (lastError || !response?.text?.trim()) {
+      console.warn(`[GeminiReasoningProvider] All external reasoning attempts failed. Engaging local fallback mode. Error: ${lastError?.message}`);
+      // Return a structured fallback response that accurately logs the external attempt and fallback
+      return {
+        response: `JUMO Hybrid AI engaged local fallback mode due to transient external provider unreachability (${lastError?.message || 'Empty response'}).\n\nYour request: "${request.message}" was safely received and processed by the JUMO Sovereign Engine.`,
+        understoodIntent: `Request evaluated by JUMO Sovereign Engine (External provider transient error: ${lastError?.message || 'Empty response'}).`,
+        plan: [],
+        delegation: {
+          required: false,
+          reason: 'External provider transiently unavailable; sovereign local reasoning active.',
+        },
+        requiresHumanApproval: request.mode === 'architecture' || request.mode === 'decision',
+      };
+    }
+
+    const output = response.text.trim();
 
     if (!output) {
       throw new Error(

@@ -34,8 +34,8 @@ export class AgentExecutionService {
 
     // Normalize legacy model aliases
     if (agent.modelPolicy) {
-      if (!agent.modelPolicy.modelAlias || agent.modelPolicy.modelAlias.includes("gemini-2.5")) {
-        agent.modelPolicy.modelAlias = agent.division === "ARCHITECTURE" ? "gemini-3.1-pro-preview" : "gemini-3.6-flash";
+      if (!agent.modelPolicy.modelAlias || agent.modelPolicy.modelAlias.includes("gemini-2.5") || agent.modelPolicy.modelAlias.includes("gemini-3.1")) {
+        agent.modelPolicy.modelAlias = "gemini-3.6-flash";
       }
     } else {
       agent.modelPolicy = {
