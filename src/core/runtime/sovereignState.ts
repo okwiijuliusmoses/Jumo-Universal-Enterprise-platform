@@ -25,130 +25,45 @@ import {
   ManufacturingCategory
 } from "../factory/registry/HubRegistryTypes";
 
-export interface ArchitectureRequest {
-  id: string;
-  title: string;
-  problem: string;
-  targetUsers: string;
-  organization: string;
-  capabilities: string[];
-  infrastructure: string;
-  integrations: string[];
-  aiRequirements: string;
-  ecosystemType: ManufacturingCategory;
-  sector: string;
-  governmentScale?: string;
-  applicationType?: string;
-  detailedSpecification?: any;
-  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
-  createdAt: string;
-}
+import * as Types from "./sovereignState.types";
 
-export interface JumoBlueprint {
-  blueprintId: string;
-  name: string;
-  type: string;
-  version: string;
-  lastBuildTime: string;
-  compilerStatus: 'OK' | 'DRAFT' | 'ERROR';
-  content: string;
-  lifecycleState: 'DRAFT' | 'REVIEW' | 'VALIDATED' | 'VERIFIED' | 'APPROVED' | 'COMPILED' | 'READY' | 'PROVISIONED' | 'RETIRED';
-}
+import { 
+  ArchitectureRequest,
+  JumoBlueprint,
+  VerificationGateResult,
+  DeploymentSlot,
+  JumoIncident,
+  DatabaseVolume,
+  SchemaMigration,
+  LifecycleAsset,
+  AuditEvent,
+  ArchitectureExpansionTrace,
+  ApplicationBranding,
+  InstallationConfig,
+  AgentWorkLog,
+  CoordinationEvent,
+  SovereignState
+} from "./sovereignState.types";
 
-export interface VerificationGateResult {
-  id: string;
-  name: string;
-  status: 'PASS' | 'FAIL' | 'WARNING' | 'BLOCKED' | 'NOT_RUN';
-  evidence: string;
-  timestamp: string;
-  logs: string[];
-}
+export type { 
+  ArchitectureRequest,
+  JumoBlueprint,
+  VerificationGateResult,
+  DeploymentSlot,
+  JumoIncident,
+  DatabaseVolume,
+  SchemaMigration,
+  LifecycleAsset,
+  AuditEvent,
+  ArchitectureExpansionTrace,
+  ApplicationBranding,
+  InstallationConfig,
+  AgentWorkLog,
+  CoordinationEvent,
+  SovereignState
+};
 
-export interface DeploymentSlot {
-  id: string;
-  name: string;
-  activeRelease: string;
-  health: 'HEALTHY' | 'DEGRADED' | 'OFFLINE';
-  cpu: number;
-  memory: number;
-  trafficWeight: number;
-}
 
-export interface JumoIncident {
-  id: string;
-  title: string;
-  severity: 'CRITICAL' | 'WARNING' | 'RESOLVED';
-  component: string;
-  timestamp: string;
-}
-
-export interface DatabaseVolume {
-  name: string;
-  tenant: string;
-  pool: string;
-  size: string;
-  status: 'HEALTHY' | 'DEGRADED' | 'OFFLINE';
-}
-
-export interface SchemaMigration {
-  id: string;
-  name: string;
-  type: string;
-  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
-  progress: number;
-}
-
-export interface LifecycleAsset {
-  name: string;
-  type: string;
-  status: string;
-  step: string;
-}
-
-export interface AuditEvent {
-  id: string;
-  actor: string;
-  operation: string;
-  details: string;
-  timestamp: string;
-}
-
-export interface SovereignState {
-  architectureRequests: ArchitectureRequest[];
-  architectureContracts: ArchitectureContract[];
-  blueprints: JumoBlueprint[];
-  engineeringAgents: EngineeringAgent[];
-  jobs: ManufacturingJob[];
-  buildArtifacts: BuildArtifact[];
-  deploymentRecords: DeploymentRecord[];
-  verificationFailures: VerificationFailureRecord[];
-  certificationRecords: CertificationRecord[];
-  incidents: JumoIncident[];
-  cloudSlots: DeploymentSlot[];
-  auditEvents: AuditEvent[];
-  verificationGates: VerificationGateResult[];
-  databaseVolumes: DatabaseVolume[];
-  migrations: SchemaMigration[];
-  assets: LifecycleAsset[];
-  archLayers?: JumoArchitectureLayer[];
-  counters: {
-    audit: number;
-    archReq: number;
-    archContract: number;
-    job: number;
-    artifact: number;
-    deployment: number;
-    failure: number;
-    certification: number;
-  };
-  cryptographicKeys: {
-    primaryKey: string;
-    backupKey: string;
-    algorithm: string;
-    lastRotation: string;
-  };
-  emergencyMode: boolean;
-}
 
 const STATE_FILE_PATH = path.join(process.cwd(), "sovereign-state.json");
 
@@ -162,6 +77,79 @@ export class SovereignOperatingStateService {
   private static getInitialState(): SovereignState {
     const nowStr = new Date().toISOString();
     return {
+      branding: {
+        name: "JUMO UEOS",
+        productIdentity: "Universal Enterprise Operating System",
+        institutionIdentity: "Sovereign National Authority",
+        logo: "/jumo-logo-sovereign.png",
+        favicon: "/favicon.ico",
+        colors: {
+          primary: "#0f172a",
+          secondary: "#334155",
+          accent: "#3b82f6",
+          background: "#f8fafc",
+          surface: "#ffffff",
+          text: "#0f172a"
+        },
+        typography: {
+          fontFamily: "Inter, sans-serif",
+          baseSize: "16px"
+        },
+        theme: 'system',
+        density: 'comfortable',
+        publicLoginEnabled: true,
+        publicLandingEnabled: true,
+        portalAppearance: "PRO_DASHBOARD",
+        navigationAppearance: "SIDEBAR_LEFT",
+        footerLegalIdentity: "© 2026 JUMO Universal Enterprise. All Rights Reserved.",
+        emailBranding: "Sovereign Notification System"
+      },
+      installation: {
+        institution: {
+          name: "National Enterprise Authority",
+          legalName: "Sovereign Authority of JUMO",
+          acronym: "NEA",
+          country: "Jumo Sovereign",
+          region: "Central",
+          administrativeHierarchy: "National",
+          type: "Government",
+          ownership: "State",
+          operatingModel: "Self-Managed"
+        },
+        application: {
+          product: "JUMO UEOS Platform",
+          ecosystem: "Sovereign Architecture",
+          edition: "Enterprise Sovereign Edition",
+          grade: "L130_N420",
+          capacity: "Unlimited",
+          deploymentProfile: "High Availability Cluster",
+          tenant: "Primary",
+          environment: "Production"
+        },
+        enabledModules: ["Identity", "Core Architecture", "Manufacturing Hub", "FAAP"],
+        enabledPortals: ["Sovereign Control", "Architecture Studio", "Manufacturing Factory"],
+        enabledServices: ["JUMO GPT", "Verification Engine", "Audit System"],
+        navigation: {
+          hierarchy: [],
+          roleBasedAccess: {
+            "SUPREME_OPERATOR": ["*"],
+            "AUDITOR": ["Audit", "Sovereign Control"],
+            "ENGINEER": ["Architecture Studio", "Engineering Studio"]
+          },
+          featureFlags: {
+            "AI_WORKFORCE": true,
+            "ZERO_TRUST": true,
+            "REAL_TIME_MANUFACTURING": true
+          }
+        },
+        systemDefaults: {
+          workflow: "AUTHORITATIVE_APPROVAL",
+          security: "ZERO_TRUST_ENFORCED",
+          notifications: "REAL_TIME_ONLY",
+          dataPolicy: "STRICT_SOVEREIGNTY",
+          localization: "en-US"
+        }
+      },
       architectureRequests: [],
       architectureContracts: [],
       blueprints: [],
@@ -232,14 +220,18 @@ export class SovereignOperatingStateService {
         { id: "production", name: "National Production Cluster", activeRelease: "N/A", health: "HEALTHY", cpu: 48, memory: 62, trafficWeight: 90 }
       ],
       auditEvents: [],
+      eventLog: [],
       verificationGates: [],
       databaseVolumes: [
         { name: "ueos_ledger_db", tenant: "Global Core Ledger", pool: "FAAP_RESERVE_PRIMARY", size: "4.2TB", status: "HEALTHY" }
       ],
       migrations: [],
       assets: [],
+      agentWorkLogs: [],
+      expansionTraces: [],
       counters: {
         audit: 1,
+        event: 1,
         archReq: 1,
         archContract: 1,
         job: 1,
@@ -333,12 +325,39 @@ export class SovereignOperatingStateService {
       incidents: s.incidents ?? [],
       cloudSlots: s.cloudSlots ?? [],
       auditEvents: s.auditEvents ?? [],
+      eventLog: s.eventLog ?? [],
       verificationGates: s.verificationGates ?? [],
       databaseVolumes: s.databaseVolumes ?? [],
       migrations: s.migrations ?? [],
       assets: s.assets ?? [],
+      agentWorkLogs: s.agentWorkLogs ?? [],
+      expansionTraces: s.expansionTraces ?? [],
+      branding: s.branding ?? this.getInitialState().branding,
+      installation: s.installation ?? this.getInitialState().installation,
       archLayers: JUMO_HYBRID_ARCHITECTURE_REGISTRY.all()
     };
+  }
+
+  public static updateBranding(branding: Partial<ApplicationBranding>, actor: string) {
+    this.state.branding = { ...this.state.branding, ...branding };
+    this.logAudit(actor, "BRANDING_UPDATED", `Updated application branding: ${Object.keys(branding).join(", ")}`);
+    this.saveState();
+    return this.state.branding;
+  }
+
+  public static updateInstallation(config: Partial<InstallationConfig>, actor: string) {
+    this.state.installation = { ...this.state.installation, ...config };
+    this.logAudit(actor, "INSTALLATION_UPDATED", `Updated installation configuration`);
+    this.saveState();
+    return this.state.installation;
+  }
+
+  public static logAgentWork(log: Omit<AgentWorkLog, 'id'>, actor: string) {
+    const id = `WORK-LOG-${Date.now().toString(36).toUpperCase()}`;
+    const newLog: AgentWorkLog = { id, ...log };
+    this.state.agentWorkLogs.unshift(newLog);
+    this.saveState();
+    return newLog;
   }
 
   public static logAudit(actor: string, operation: string, details: string) {
@@ -351,6 +370,18 @@ export class SovereignOperatingStateService {
       timestamp: new Date().toISOString()
     };
     this.state.auditEvents.unshift(newEvent);
+    this.saveState();
+    return newEvent;
+  }
+
+  public static emitEvent(event: Omit<Types.CoordinationEvent, 'id' | 'timestamp'>) {
+    const idNum = this.state.counters.event++;
+    const newEvent: Types.CoordinationEvent = {
+      id: `EVT-${idNum.toString().padStart(5, '0')}`,
+      timestamp: new Date().toISOString(),
+      ...event
+    };
+    this.state.eventLog.unshift(newEvent);
     this.saveState();
     return newEvent;
   }
@@ -368,6 +399,28 @@ export class SovereignOperatingStateService {
     this.logAudit(actor, "ARCHITECTURE_REQUEST_CREATED", `Created Architecture Request ${id} for product ${req.title}`);
     this.saveState();
     return newRequest;
+  }
+
+  public static proposeArchitectureExpansion(trace: Omit<ArchitectureExpansionTrace, 'id' | 'timestamp'>, actor: string) {
+    const id = `EXP-${Date.now().toString(36).toUpperCase()}`;
+    const newTrace: ArchitectureExpansionTrace = {
+      id,
+      ...trace,
+      timestamp: new Date().toISOString()
+    };
+    this.state.expansionTraces.unshift(newTrace);
+    this.logAudit(actor, "ARCHITECTURE_EXPANSION_PROPOSED", `Proposed expansion for requirement: ${trace.requirement} (Layer: ${trace.proposedLayerId})`);
+    this.saveState();
+    return newTrace;
+  }
+
+  public static approveArchitectureExpansion(traceId: string, actor: string) {
+    const trace = this.state.expansionTraces.find(t => t.id === traceId);
+    if (!trace) throw new Error("Expansion trace not found");
+    trace.status = 'APPROVED';
+    this.logAudit(actor, "ARCHITECTURE_EXPANSION_APPROVED", `Approved architecture expansion ${traceId}`);
+    this.saveState();
+    return trace;
   }
 
   public static createArchitectureContract(reqId: string, actor: string) {

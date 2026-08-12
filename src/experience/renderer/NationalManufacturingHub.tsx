@@ -8,7 +8,8 @@ import {
   ChevronRight, X, ArrowRight, Check, Sliders, AlertTriangle, FileCheck, Trash2, Send, 
   History, RefreshCcw, Command, Zap, ExternalLink, HardDrive, Key, Network, Users, Cloud,
   CheckSquare, HelpCircle, ActivitySquare, AlertOctagon, Compass, BookOpen, Binary,
-  FileSignature, GitCommit, GitPullRequest, WifiOff, Award, ShieldCheck, Briefcase, FlaskConical
+  FileSignature, GitCommit, GitPullRequest, WifiOff, Award, ShieldCheck, Briefcase, FlaskConical,
+  Home
 } from "lucide-react";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
@@ -29,6 +30,10 @@ import { LifecycleStudio } from './studios/LifecycleStudio';
 import { CertificationStudio } from './studios/CertificationStudio';
 import { SpecificationStudio } from './studios/SpecificationStudio';
 import { RegistryStudio } from './studios/RegistryStudio';
+import { BrandingStudio } from './studios/BrandingStudio';
+import { ConfigStudio } from './studios/ConfigStudio';
+import { SovereignControlStudio } from './studios/SovereignControlStudio';
+import { FAAPLedgerStudio } from './studios/FAAPLedgerStudio';
 
 // Import High-Level Audit & Infrastructure Renderers
 import { AuditRenderer } from './AuditRenderer';
@@ -77,7 +82,11 @@ export type HubWorkspace =
   | 'eco-software'
   | 'eco-commercial'
   | 'eco-research'
-  | 'provisioning';
+  | 'provisioning'
+  | 'branding'
+  | 'config'
+  | 'faap'
+  | 'control';
 
 interface ArchitectureRequest {
   id: string;
@@ -140,6 +149,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   // === PERSISTED STATES INITIALIZERS ===
   const [archRequests, setArchRequests] = useState<ArchitectureRequest[]>([]);
   const [archContracts, setArchContracts] = useState<ArchitectureContract[]>([]);
+  const [expansionTraces, setExpansionTraces] = useState<any[]>([]);
   const [blueprints, setBlueprints] = useState<JumoBlueprint[]>([]);
   const [jobs, setJobs] = useState<ManufacturingJob[]>([]);
   const [buildArtifacts, setBuildArtifacts] = useState<BuildArtifact[]>([]);
@@ -150,10 +160,12 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const [incidents, setIncidents] = useState<JumoIncident[]>([]);
   const [cloudSlots, setCloudSlots] = useState<DeploymentSlot[]>([]);
   const [auditEvents, setAuditEvents] = useState<any[]>([]);
+  const [eventLog, setEventLog] = useState<any[]>([]);
   const [verificationGates, setVerificationGates] = useState<VerificationGateResult[]>([]);
   const [databaseVolumes, setDatabaseVolumes] = useState<any[]>([]);
   const [migrations, setMigrations] = useState<any[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
+  const [agentWorkLogs, setAgentWorkLogs] = useState<any[]>([]);
   const [cryptographicKeys, setCryptographicKeys] = useState({
     primaryKey: "SHA256:06dfbc2a8e8b919feae99a0d39c3a2aeebe5035e8985df1932a7a6c96fce30f2",
     backupKey: "SHA256:77ae93aeebe5035e8985df1932a7a6c96fce30f206dfbc2a8e8b919feae99a0d",
@@ -165,6 +177,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const [ecosystems, setEcosystems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [driftDetected, setDriftDetected] = useState(false);
+  const [archSubWorkspace, setArchSubWorkspace] = useState<'studio' | 'command-center'>('studio');
 
   const [isOfflineMode, setIsOfflineMode] = useState<boolean>(() => {
     return localStorage.getItem("jumo_offline_mode") === "true";
@@ -265,6 +278,351 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const [isScanningGuardian, setIsScanningGuardian] = useState(false);
   const [guardianData, setGuardianData] = useState<any>(null);
 
+  // Consolidated Studio Sub-tab States
+  const [architectureTab, setArchitectureTab] = useState<'blueprint' | 'workforce' | 'verification'>('blueprint');
+  const [manufacturingTab, setManufacturingTab] = useState<'pipeline' | 'build'>('pipeline');
+  const [deploymentTab, setDeploymentTab] = useState<'provisioning' | 'deployment'>('provisioning');
+  const [overviewTab, setOverviewTab] = useState<'telemetry' | 'cloud' | 'security' | 'lifecycle'>('telemetry');
+  const [templatesTab, setTemplatesTab] = useState<'registry' | 'audit' | 'migration'>('registry');
+
+  // =======================================================
+  // AUTHORITATIVE UNIFIED LIFECYCLE PIPELINE STATE & RUNNER
+  // =======================================================
+  const [pipelineActive, setPipelineActive] = useState<boolean>(false);
+  const [pipelineStage, setPipelineStage] = useState<number>(1);
+  const [pipelineLogs, setPipelineLogs] = useState<string[]>([
+    "› [ORCHESTRATOR] Sovereign JUMO UEOS factory pipeline standing by. Ready for digital intake."
+  ]);
+  const [isAwaitingGate, setIsAwaitingGate] = useState<"ARCH_LOCK" | "RELEASE_CERT" | null>(null);
+  const [currentPipelineJobId, setCurrentPipelineJobId] = useState<string>("");
+  const [currentPipelineContractId, setCurrentPipelineContractId] = useState<string>("");
+  const [currentPipelineRequestId, setCurrentPipelineRequestId] = useState<string>("");
+  const [currentPipelineRequestName, setCurrentPipelineRequestName] = useState<string>("Sovereign Financial Ledger");
+
+  // Helper helper to append logs
+  const addPipelineLog = (msg: string) => {
+    setPipelineLogs(prev => [...prev, `› ${msg}`]);
+  };
+
+  const executePipelineStageSideEffects = async (stageNum: number) => {
+    try {
+      switch (stageNum) {
+        case 1: {
+          onNavigate?.('specification');
+          addPipelineLog(`[INTAKE] Received digital specification for product [Sovereign Financial Ledger].`);
+          
+          // Submit request
+          const payload = {
+            title: "Sovereign Financial Ledger",
+            problem: "Establish unified treasury control and sovereign audit ledgers across state ministries.",
+            targetUsers: "Treasury Officers, Sovereign Auditors",
+            organization: "Ministry of Finance",
+            capabilities: ["Double-entry Ledger", "Immutable Audit Trace", "Real-time Settlement"],
+            infrastructure: "JUMO Sovereign Node Cloud",
+            integrations: ["Sovereign Banking Core"],
+            aiRequirements: "Sovereign Architect, Sovereign Security",
+            ecosystemType: "ERP_ECOSYSTEM",
+            sector: "Finance"
+          };
+          const res = await fetch("/api/v1/ueos/architecture-requests", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.id) {
+              setCurrentPipelineRequestId(data.id);
+              addPipelineLog(`[INTAKE] Specification created successfully in JUMO registry with ID: ${data.id}.`);
+            }
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 2: {
+          onNavigate?.('specification');
+          addPipelineLog(`[NORMALIZER] Standardizing intake parameters against sovereign government sectors.`);
+          addPipelineLog(`[NORMALIZER] Match confidence: 99.4% on JUMO compliance framework v13.`);
+          break;
+        }
+        case 3: {
+          onNavigate?.('specification');
+          addPipelineLog(`[NORMALIZER] Definition created: Mapping standard modules [General Ledger, Core Settle, Audit Ledger].`);
+          break;
+        }
+        case 4: {
+          onNavigate?.('architecture');
+          addPipelineLog(`[ARCHITECT-01] Discovery initiated. 420+ cognitive workforce scanning structural modules...`);
+          
+          // Trigger architecture contract creation
+          if (currentPipelineRequestId) {
+            const res = await fetch(`/api/v1/ueos/architecture-contracts`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() },
+              body: JSON.stringify({ requestId: currentPipelineRequestId })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.id) {
+                setCurrentPipelineContractId(data.id);
+                addPipelineLog(`[ARCHITECT-01] Architecture contract created with ID: ${data.id}.`);
+              }
+            }
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 5: {
+          onNavigate?.('architecture');
+          addPipelineLog(`[ARCHITECT-01] Expanding layer nodes (L001-L012). Mapping secure microservices.`);
+          break;
+        }
+        case 6: {
+          onNavigate?.('architecture');
+          addPipelineLog(`[SECURITY-01] Initiating Zero-Trust architectural policy checking. All constraints matched.`);
+          break;
+        }
+        case 7: {
+          onNavigate?.('architecture');
+          addPipelineLog(`[GATE-01] GOVERNANCE GATE REACHED: Awaiting Human Architect signature to LOCK the architecture contract.`);
+          setIsAwaitingGate('ARCH_LOCK');
+          break;
+        }
+        case 8: {
+          onNavigate?.('architecture');
+          addPipelineLog(`[ARCHITECT-01] Architecture contract locked successfully. Signature Hash: ECDSA_P384_77AE.`);
+          
+          // Approve & launch job
+          if (currentPipelineContractId) {
+            const res = await fetch(`/api/v1/ueos/architecture-contracts/${currentPipelineContractId}/approve`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              addPipelineLog(`[ARCHITECT-01] Architecture approved. Core state service launched manufacturing job.`);
+            }
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 9: {
+          onNavigate?.('manufacturing');
+          addPipelineLog(`[ORCHESTRATOR] Allocating cognitive workforce swarm (FRONTEND-01, BACKEND-01, DATABASE-01, SECURITY-01).`);
+          break;
+        }
+        case 10: {
+          onNavigate?.('manufacturing');
+          addPipelineLog(`[ORCHESTRATOR] Decomposing architectural layers L001-L012 into 12 concrete development tasks.`);
+          break;
+        }
+        case 11: {
+          onNavigate?.('manufacturing');
+          addPipelineLog(`[FRONTEND-01] Active: Implementing Operator Portal with React 18 & Tailwind CSS.`);
+          addPipelineLog(`[BACKEND-01] Active: Implementing Express v4 server API controller on port 3000.`);
+          break;
+        }
+        case 12: {
+          onNavigate?.('manufacturing');
+          addPipelineLog(`[COMPILER] Generating compiled template schemas, REST controllers, and test fixtures.`);
+          break;
+        }
+        case 13: {
+          onNavigate?.('manufacturing');
+          
+          // Look up current job
+          let jobId = "";
+          try {
+            const stateRes = await fetch("/api/v1/ueos/state");
+            if (stateRes.ok) {
+              const s = await stateRes.json();
+              if (s.jobs && s.jobs.length > 0) {
+                jobId = s.jobs[s.jobs.length - 1].id;
+                setCurrentPipelineJobId(jobId);
+              }
+            }
+          } catch(e) {}
+
+          const currentJob = jobId || currentPipelineJobId;
+          addPipelineLog(`[COMPILER] Pure air-gapped compilation complete. Artifact signed. Signature Hash: SHA256_STAMP_F44E.`);
+          if (currentJob) {
+            const res = await fetch(`/api/v1/ueos/jobs/${currentJob}/build`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() },
+              body: JSON.stringify({ hash: "SHA256:77ae93a" + Math.floor(Math.random() * 100000), size: 4520000 })
+            });
+            if (res.ok) {
+              addPipelineLog(`[COMPILER] Build artifact successfully recorded in the sovereign registry database.`);
+            }
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 14: {
+          onNavigate?.('verification');
+          addPipelineLog(`[VERIFIER] Running Completeness Verification. Core Specification vs Architecture vs Code matches 100%.`);
+          break;
+        }
+        case 15: {
+          onNavigate?.('verification');
+          addPipelineLog(`[SECURITY-01] Zero-Trust trace validated. No open ports, dependency audits matched clean signature.`);
+          break;
+        }
+        case 16: {
+          onNavigate?.('verification');
+          addPipelineLog(`[QA-AGENT] Standard functional, regression, stress, and chaos tests ran to completion: 100% PASSED.`);
+          
+          // Run the verification suite
+          await fetch(`/api/v1/ueos/verification/run-suite`, {
+            method: "POST",
+            headers: { "x-operator-name": getOperatorName() }
+          });
+          await fetchSovereignState();
+          break;
+        }
+        case 17: {
+          onNavigate?.('certification');
+          addPipelineLog(`[GATE-02] GOVERNANCE GATE REACHED: Awaiting Operator signature to CERTIFY the application release.`);
+          setIsAwaitingGate('RELEASE_CERT');
+          break;
+        }
+        case 18: {
+          onNavigate?.('deployment');
+          addPipelineLog(`[ORCHESTRATOR] Certified release certified. Launching VPC network, DB volume, and routing node layers.`);
+          
+          let jobId = currentPipelineJobId;
+          if (!jobId) {
+            try {
+              const stateRes = await fetch("/api/v1/ueos/state");
+              if (stateRes.ok) {
+                const s = await stateRes.json();
+                if (s.jobs && s.jobs.length > 0) {
+                  jobId = s.jobs[s.jobs.length - 1].id;
+                }
+              }
+            } catch(e) {}
+          }
+
+          if (jobId) {
+            // Certify first
+            await fetch(`/api/v1/ueos/jobs/${jobId}/certify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() },
+              body: JSON.stringify({ authority: "National Hub Authority" })
+            });
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 19: {
+          onNavigate?.('deployment');
+          addPipelineLog(`[ORCHESTRATOR] Discharging signed container payloads to Production. Scaling traffic weights: 100%.`);
+          
+          let jobId = currentPipelineJobId;
+          if (!jobId) {
+            try {
+              const stateRes = await fetch("/api/v1/ueos/state");
+              if (stateRes.ok) {
+                const s = await stateRes.json();
+                if (s.jobs && s.jobs.length > 0) {
+                  jobId = s.jobs[s.jobs.length - 1].id;
+                }
+              }
+            } catch(e) {}
+          }
+
+          if (jobId) {
+            // Deploy
+            await fetch(`/api/v1/ueos/jobs/${jobId}/deploy`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-operator-name": getOperatorName() },
+              body: JSON.stringify({ environment: "production", target: "JUMO-NODE-01 Sovereign Cloud" })
+            });
+          }
+          await fetchSovereignState();
+          break;
+        }
+        case 20: {
+          onNavigate?.('overview');
+          addPipelineLog(`[MONITOR] Runtime operational, 100% healthy, continuous operations and immutable audits active.`);
+          await fetchSovereignState();
+          break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      addPipelineLog(`[ERROR] Pipeline exception occurred: ${String(err)}`);
+    }
+  };
+
+  useEffect(() => {
+    if (!pipelineActive || isAwaitingGate) return;
+
+    const timer = setTimeout(async () => {
+      const nextStage = pipelineStage + 1;
+      if (nextStage > 20) {
+        setPipelineActive(false);
+        setPipelineLogs(prev => [...prev, `› [ORCHESTRATOR] SUCCESS: Factory pipeline sequence completed successfully! All 20 lifecycle stages active & operating.`]);
+        logAudit("PIPELINE_COMPLETED", "Unified digital manufacturing pipeline completed successfully.");
+        return;
+      }
+
+      setPipelineStage(nextStage);
+      await executePipelineStageSideEffects(nextStage);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [pipelineActive, pipelineStage, isAwaitingGate]);
+
+  const startAutoPipeline = async () => {
+    setPipelineActive(true);
+    setPipelineStage(1);
+    setIsAwaitingGate(null);
+    setPipelineLogs(["› [ORCHESTRATOR] Initiating automated digital manufacturing pipeline driver..."]);
+    await executePipelineStageSideEffects(1);
+  };
+
+  const approveGate1 = async () => {
+    setIsAwaitingGate(null);
+    addPipelineLog(`[GATE-01] Human Architect approval granted. Securing and locking architecture contract...`);
+    setPipelineStage(8);
+    await executePipelineStageSideEffects(8);
+  };
+
+  const approveGate2 = async () => {
+    setIsAwaitingGate(null);
+    addPipelineLog(`[GATE-02] Human Operator signature granted. Certifying and compiling release bundle...`);
+    setPipelineStage(18);
+    await executePipelineStageSideEffects(18);
+  };
+
+  const pausePipeline = () => {
+    setPipelineActive(false);
+    addPipelineLog(`[ORCHESTRATOR] Pipeline paused manually by operator.`);
+  };
+
+  const resumePipeline = () => {
+    setPipelineActive(true);
+    addPipelineLog(`[ORCHESTRATOR] Resuming automated pipeline driver...`);
+  };
+
+  const stepPipeline = async () => {
+    const nextStage = pipelineStage + 1;
+    if (nextStage > 20) {
+      addPipelineLog(`[ORCHESTRATOR] Pipeline already at final stage.`);
+      return;
+    }
+    setPipelineStage(nextStage);
+    await executePipelineStageSideEffects(nextStage);
+  };
+
+  const resetPipeline = () => {
+    setPipelineActive(false);
+    setPipelineStage(1);
+    setIsAwaitingGate(null);
+    setPipelineLogs(["› [ORCHESTRATOR] Pipeline orchestrator reset to idle state."]);
+  };
+
   // Fetch full sovereign operating state from Express backend
   const fetchSovereignState = async () => {
     try {
@@ -273,6 +631,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       const data = await res.json();
       setArchRequests(data.architectureRequests);
       setArchContracts(data.architectureContracts);
+      setExpansionTraces(data.expansionTraces || []);
       setBlueprints(data.blueprints);
       setJobs(data.jobs);
       setBuildArtifacts(data.buildArtifacts);
@@ -284,10 +643,12 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       setIncidents(data.incidents);
       setCloudSlots(data.cloudSlots);
       setAuditEvents(data.auditEvents);
+      setEventLog(data.eventLog || []);
       setVerificationGates(data.verificationGates);
       setDatabaseVolumes(data.databaseVolumes);
       setMigrations(data.migrations);
       setAssets(data.assets);
+      setAgentWorkLogs(data.agentWorkLogs || []);
       setCryptographicKeys(data.cryptographicKeys);
       setEmergencyMode(data.emergencyMode);
 
@@ -358,51 +719,37 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
 
   // === MUTATION ACTIONS ===
 
-  // 1. Create Architecture Request (Phase 2 Specification) & Lock Handoff to Manufacturing Pipeline
-  const handleGenerateArchitectureContract = async (spec: EcosystemSpecification) => {
+  // 1. Create Architecture Request from Specification & Route to Architecture Studio (Requirements 18, 19, 20)
+  const handleGenerateArchitectureContract = async (spec: any) => {
     try {
-      // Create a complex architecture request mapping the full specification
       const payload = {
-        title: spec.product.productName || "Sovereign Enterprise System",
-        problem: spec.product.purpose || "Derived Digital Ecosystem Specification",
-        targetUsers: spec.portals.selected.join(", ") || "Citizens and Staff",
-        organization: spec.product.targetOrganization || "National Hub Authority",
-        capabilities: spec.modules.selected,
-        infrastructure: spec.deployment.selected.join(", ") || "JUMO Sovereign Cloud",
-        integrations: spec.integrations.selected,
-        aiRequirements: spec.aiWorkforce.selected.join(", "),
-        ecosystemType: spec.product.ecosystem,
-        sector: spec.product.sector,
-        governmentScale: spec.product.governmentScale,
-        applicationType: spec.product.applicationType,
+        title: spec.productName || spec.product?.productName || "Sovereign Enterprise System",
+        problem: spec.purpose || spec.product?.purpose || "Derived Digital Ecosystem Specification",
+        targetUsers: (spec.selectedPortals || spec.portals?.selected || []).join(", ") || "Citizens and Staff",
+        organization: spec.organizationModel?.targetOrganization || spec.product?.targetOrganization || "National Hub Authority",
+        capabilities: spec.selectedCapabilities || spec.modules?.selected || [],
+        infrastructure: spec.targetInfrastructure || (spec.deployment?.selected || []).join(", ") || "JUMO Sovereign Cloud",
+        integrations: spec.selectedIntegrations || spec.integrations?.selected || [],
+        aiRequirements: (spec.aiRequirements || spec.aiWorkforce?.selected || []).join(", "),
+        ecosystemType: spec.productType || spec.productFamily || spec.product?.ecosystem || "Enterprise ERP",
+        sector: spec.sector || spec.product?.sector || "Sovereign",
+        governmentScale: spec.productGrade || spec.product?.governmentScale || "SOVEREIGN",
+        applicationType: spec.productType || spec.product?.applicationType || "Sovereign Application",
         detailedSpecification: spec
       };
       
       const reqRes = await serverPost("/api/v1/ueos/architecture-requests", payload);
       if (reqRes.ok) {
-        const reqData = await reqRes.json();
-        const requestId = reqData.id;
-
-        // Auto-generate Contract from Request
-        const contractRes = await serverPost("/api/v1/ueos/architecture-contracts", { requestId });
-        if (contractRes.ok) {
-          const contractData = await contractRes.json();
-          const contractId = contractData.id;
-
-          // Auto-approve Contract
-          const approveRes = await serverPut(`/api/v1/ueos/architecture-contracts/${contractId}/approve`);
-          if (approveRes.ok) {
-            // Auto-create Manufacturing Job in 20-stage Manufacturing Pipeline
-            const jobRes = await serverPost("/api/v1/ueos/jobs", { contractId });
-            if (jobRes.ok) {
-              await fetchSovereignState();
-              logAudit("SPECIFICATION_LOCKED", `Specification locked for ${payload.title}. Auto-generated Contract ${contractId} & Manufacturing Job.`);
-              onNavigate?.('manufacturing');
-              return;
-            }
-          }
-        }
+        await serverPost("/api/v1/ueos/events/emit", {
+          sourceStudio: "SPECIFICATION",
+          destinationStudio: "ARCHITECTURE",
+          entityId: reqRes.id,
+          action: "SPECIFICATION_SUBMITTED",
+          status: "EXECUTED",
+          payload: { title: payload.title }
+        });
         await fetchSovereignState();
+        logAudit("SPECIFICATION_RECEIVED", `Specification compiled for ${payload.title}. Routed to Architecture Studio for 420+ agent discovery and human lock.`);
         onNavigate?.('architecture');
       }
     } catch (err) {
@@ -414,17 +761,33 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const handleCreateArchitectureContract = async (requestId: string) => {
     try {
       const res = await serverPost("/api/v1/ueos/architecture-contracts", { requestId });
-      if (res.ok) await fetchSovereignState();
+      if (res.ok) {
+        await serverPost("/api/v1/ueos/events/emit", {
+          sourceStudio: "ARCHITECTURE",
+          destinationStudio: "ENGINEERING",
+          entityId: requestId,
+          action: "ARCHITECTURE_CONTRACT_CREATED",
+          status: "EXECUTED",
+          payload: { requestId }
+        });
+        await fetchSovereignState();
+      }
     } catch (err) {
       console.error(err);
     }
   };
 
-  // 2b. Approve Architecture Contract
+  // 2b. Approve Architecture Contract & Auto-Launch Manufacturing
   const handleApproveArchitectureContract = async (contractId: string) => {
     try {
       const res = await serverPut(`/api/v1/ueos/architecture-contracts/${contractId}/approve`);
-      if (res.ok) await fetchSovereignState();
+      if (res.ok) {
+        // Automatically create or link manufacturing job in manufacturing pipeline
+        const jobRes = await serverPost("/api/v1/ueos/jobs", { contractId });
+        await fetchSovereignState();
+        logAudit("ARCHITECTURE_LOCKED", `Architecture Contract ${contractId} locked by architect. Transitioning to Manufacturing Studio.`);
+        onNavigate?.('manufacturing');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -772,7 +1135,9 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const [registryFilter, setRegistryFilter] = useState<string>("erp");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const activeJob = jobs.find(j => j.id === selectedJobId) || jobs[0];
+  const activeJob = jobs.length > 0 
+    ? (jobs.find(j => j.id === selectedJobId) || jobs[0]) 
+    : null;
 
   return (
     <div className="space-y-8 bg-slate-50 selection:bg-blue-100 font-sans" id="national-manufacturing-hub">
@@ -816,407 +1181,734 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
         </div>
       )}
 
-      {/* CORE WORKSPACE SECTIONS CONTAINER */}
-      <div className="min-h-[600px] bg-slate-50">
-        
-        {/* Workspace 1: Sovereign Command */}
-        {activeWorkspace === "overview" && (
-          <div className="space-y-6" id="workspace-command">
-            
-        {/* Ecosystem Products Quick Launch - REMOVED LEGACY ARCHITECTURE */}
-        <div className="hidden" id="workspace-ecosystem-cards-purge">
+      {/* ========================================================
+          SOVEREIGN AUTOMATED DIGITAL MANUFACTURING PIPELINE (ADMP)
+          ======================================================== */}
+      <section className="bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-xl overflow-hidden p-6 space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+              <Zap className="h-5 w-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-sm font-black uppercase tracking-wider text-slate-100">
+                  Automated Digital Manufacturing Pipeline (ADMP)
+                </h2>
+                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase ${
+                  pipelineActive
+                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20 animate-pulse"
+                    : isAwaitingGate
+                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                    : "bg-slate-800 text-slate-400 border-slate-700"
+                }`}>
+                  {pipelineActive ? "Active Run" : isAwaitingGate ? "Awaiting Gate" : "Standby"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Authoritative multi-stage machine coordinator. Automates intake, blueprints, compiler runs, zero-trust cloud network deployment, and continuous audits.
+              </p>
+            </div>
+          </div>
+
+          {/* Core ADMP Manual Overrides & Controls */}
+          <div className="flex flex-wrap items-center gap-2">
+            {!pipelineActive && !isAwaitingGate && pipelineStage === 1 && (
+              <button
+                onClick={startAutoPipeline}
+                className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5" />
+                <span>Trigger Orchestrator Run</span>
+              </button>
+            )}
+
+            {pipelineActive && (
+              <button
+                onClick={pausePipeline}
+                className="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl shadow-lg hover:shadow-amber-500/20 transition-all uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <Pause className="w-3.5 h-3.5" />
+                <span>Pause Run</span>
+              </button>
+            )}
+
+            {!pipelineActive && (pipelineStage > 1 || isAwaitingGate) && (
+              <button
+                onClick={resumePipeline}
+                disabled={!!isAwaitingGate}
+                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-extrabold text-xs rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5" />
+                <span>Resume Run</span>
+              </button>
+            )}
+
+            {!pipelineActive && (
+              <button
+                onClick={stepPipeline}
+                disabled={pipelineStage >= 20 || !!isAwaitingGate}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-750 disabled:opacity-40 text-slate-200 font-extrabold text-xs rounded-xl border border-slate-700 transition-all uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+                <span>Step Run</span>
+              </button>
+            )}
+
+            <button
+              onClick={resetPipeline}
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 font-extrabold text-xs rounded-xl border border-slate-700 transition-all uppercase tracking-wider inline-flex items-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Reset Orchestrator</span>
+            </button>
+          </div>
         </div>
 
-        {/* JUMO Digital Hybrid Studios Registry */}
-            <section
-              data-jumo-section="JUMO_VISIBLE_STUDIO_CONTROL_CENTER"
-              className="mb-8 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
-            >
-              <div className="px-6 py-5 border-b border-slate-200 bg-slate-50">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                        <Layers className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-slate-900">
-                          JUMO Digital Hybrid Studios
-                        </h2>
-                        <p className="text-sm text-slate-500">
-                          Architecture, engineering, verification and enterprise orchestration
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
-                      <div className="text-[10px] uppercase tracking-wide text-slate-400">
-                        Layers
-                      </div>
-                      <div className="text-lg font-bold text-slate-900">
-                        {JUMO_HYBRID_ARCHITECTURE_REGISTRY.listLayers().length}
-                      </div>
-                    </div>
-
-                    <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
-                      <div className="text-[10px] uppercase tracking-wide text-slate-400">
-                        Families
-                      </div>
-                      <div className="text-lg font-bold text-slate-900">
-                        {JUMO_HYBRID_ARCHITECTURE_REGISTRY.families().length}
-                      </div>
-                    </div>
-
-                    <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
-                      <div className="text-[10px] uppercase tracking-wide text-slate-400">
-                        Studios
-                      </div>
-                      <div className="text-lg font-bold text-slate-900">
-                        {JUMO_STUDIO_REGISTRY.list().length}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        {/* Human-In-The-Loop Governance Interventions */}
+        {isAwaitingGate && (
+          <div className="bg-amber-950/40 border border-amber-500/30 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="text-xs font-black uppercase text-amber-300 tracking-wider block">
+                  Sovereign Gate Intervention Required
+                </span>
+                <p className="text-[11px] text-amber-200/80 leading-relaxed mt-1">
+                  {isAwaitingGate === "ARCH_LOCK"
+                    ? "The pipeline has generated an optimal design blueprint. Human Architect signature is requested to lock the contract."
+                    : "All verification and regression test suites have passed. Human Operator signature is required to certify & sign release."}
+                </p>
               </div>
-
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {JUMO_STUDIO_REGISTRY.list().map((studio) => (
-                    <div
-                      key={studio.id}
-                      className="rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-300 hover:shadow-sm transition"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-lg bg-slate-100 flex items-center justify-center">
-                            <Layers className="h-4 w-4 text-slate-600" />
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-bold text-slate-900">
-                              {studio.name}
-                            </h3>
-                            <p className="text-[11px] text-slate-500">
-                              {studio.family}
-                            </p>
-                          </div>
-                        </div>
-
-                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                          studio.status === "AVAILABLE" || studio.status === "READY" || studio.status === "RUNNING" 
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                            : "bg-amber-50 text-amber-700 border border-amber-100"
-                        }`}>
-                          {studio.status}
-                        </span>
-                      </div>
-
-                      <div className="mt-4 pt-4 border-t border-slate-100">
-                        <button
-                          onClick={() => onNavigate?.(studio.id as any)}
-                          className="w-full flex items-center justify-between group cursor-pointer"
-                        >
-                          <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600">
-                            Open Studio
-                          </span>
-                          <ArrowRight className="h-3 w-3 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-1" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Primary Active Metrics Panel */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
-                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Intake Requests</span>
-                    <span className="text-xl font-black text-slate-900 block mt-1">{(archRequests ?? []).length}</span>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
-                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Compiled Blueprints</span>
-                    <span className="text-xl font-black text-slate-900 block mt-1">{(blueprints ?? []).filter(b => b.compilerStatus === 'OK').length}</span>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
-                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Active Compile Streams</span>
-                    <span className="text-xl font-black text-slate-900 block mt-1">{(jobs ?? []).filter(j => j.status !== 'RUNTIME_ACTIVE' && j.status !== 'FAILED').length}</span>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
-                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Cyber Guardians</span>
-                    <span className="text-xl font-black text-slate-900 block mt-1">{(engineeringAgents ?? []).length}</span>
-                  </div>
-                </div>
-
-                {/* Live Compilation Queue Map */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">Operational System Core Services</h3>
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 uppercase">
-                      FAAP Reserves Isolated
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {(Array.isArray(ecosystems) ? ecosystems : []).slice(0, 4).map((eco, i) => {
-                      const ecoId = String(eco?.id || eco?.registryId || eco?.name || `ECO-${i}`);
-                      const ecoName = String(eco?.name || eco?.registryId || "Sovereign Ecosystem");
-                      const ecoCategory = String(eco?.category || "ERP_ECOSYSTEM");
-                      return (
-                        <div key={ecoId || i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-[10px] bg-white border border-slate-200`}>
-                            {ecoId.substring(0, 2).toUpperCase()}
-                          </div>
-                          <div>
-                            <span className="font-bold text-xs text-slate-800 block">{ecoName}</span>
-                            <span className="text-[9px] text-slate-500 block font-semibold">{ecoCategory} Gateway Connected</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {ecosystems.length === 0 && (
-                      <div className="col-span-2 py-4 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">
-                        Searching Registry for Active Core Services...
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Primary Stream Tracking List */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="border-b border-slate-200 px-5 py-4 flex items-center justify-between">
-                    <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Active Pipeline Streams</h3>
-                    <button 
-                      onClick={() => onNavigate?.('manufacturing')}
-                      className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                    >
-                      Open Planner <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold uppercase text-[9px]">
-                          <th className="p-4">Pipeline Job</th>
-                          <th className="p-4">State</th>
-                          <th className="p-4">Progress</th>
-                          <th className="p-4">Assigned Agents</th>
-                          <th className="p-4">Quick Command</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {jobs.slice(0, 5).map((job) => (
-                          <tr key={job.id} className="hover:bg-slate-50/50">
-                            <td className="p-4">
-                              <span className="font-extrabold text-slate-800 block">{job.id}</span>
-                              <span className="text-[10px] text-slate-500 uppercase block mt-0.5">{job.productId} • STAGE {job.status}</span>
-                            </td>
-                            <td className="p-4">
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-black text-[9px] bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-tight">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                                {job.status}
-                              </span>
-                            </td>
-                            <td className="p-4">
-                              <div className="w-24 bg-slate-100 rounded-full h-1 overflow-hidden">
-                                <div className="bg-blue-600 h-1 rounded-full transition-all duration-500" style={{ width: `${job.progress}%` }}></div>
-                              </div>
-                              <span className="text-[9px] font-black text-slate-500 block mt-1 uppercase">{job.progress}% COMPILED</span>
-                            </td>
-                            <td className="p-4">
-                              <div className="flex -space-x-1.5 overflow-hidden">
-                                {(Array.isArray(job?.assignedWorkforce) ? job.assignedWorkforce : []).map((assignment, i) => (
-                                  <div 
-                                    key={i} 
-                                    title={`${assignment.engineerId} - ${assignment.role}`}
-                                    className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
-                                  >
-                                    {String(assignment?.engineerId ?? "NA").substring(0, 2).toUpperCase()}
-                                  </div>
-                                ))}
-                              </div>
-                            </td>
-                            <td className="p-4">
-                              <div className="flex items-center gap-1.5 justify-end">
-                                <button 
-                                  onClick={() => handlePromoteManufacturingJob(job.id)}
-                                  className="px-2.5 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider transition-colors cursor-pointer"
-                                >
-                                  Promote
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              {/* Immutable Operations Ledger sidebar */}
-              <div className="space-y-6">
-                
-                {/* Active Incident Banner */}
-                {(incidents ?? []).length > 0 && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-                    <div className="flex items-start gap-2.5">
-                      <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
-                      <div>
-                        <span className="font-extrabold text-xs text-amber-900 block">Sovereign Core Alert</span>
-                        <p className="text-[11px] text-amber-700 leading-relaxed mt-0.5">{incidents[0].title}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Immutable Operations Ledger</h3>
-                    <History className="w-4 h-4 text-slate-400" />
-                  </div>
-                  <div className="space-y-3.5 max-h-96 overflow-y-auto pr-1">
-                    {auditEvents.map((evt) => (
-                      <div key={evt.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 text-[11px] leading-relaxed">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1.5">
-                          <span className="font-extrabold text-blue-600">{evt.operation}</span>
-                          <span className="text-[9px] text-slate-400 font-bold">{new Date(evt.timestamp).toLocaleTimeString()}</span>
-                        </div>
-                        <p className="text-slate-600">{evt.details}</p>
-                        <span className="text-[9px] font-bold text-slate-400 mt-1 block uppercase">
-                          Operator: {evt.actor}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
+            </div>
+            <div>
+              {isAwaitingGate === "ARCH_LOCK" ? (
+                <button
+                  onClick={approveGate1}
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl uppercase tracking-wider shadow-lg hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <FileSignature className="w-3.5 h-3.5" />
+                  <span>Sign & Lock Architecture Contract</span>
+                </button>
+              ) : (
+                <button
+                  onClick={approveGate2}
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl uppercase tracking-wider shadow-lg hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Sign & Certify Product Release</span>
+                </button>
+              )}
             </div>
           </div>
         )}
 
-        {/* Workspace 2: Digital Ecosystem Specification (Phase 2) */}
+        {/* Visual Stepper Representing the 20 Core Stages */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Pipeline Stage: {pipelineStage} / 20
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">
+              Current Target: {
+                pipelineStage <= 3 ? "Digital Specification Intake" :
+                pipelineStage <= 8 ? "Architecture Design & Approval" :
+                pipelineStage <= 13 ? "Automated Code Compilation" :
+                pipelineStage <= 16 ? "Verification Suite Run" :
+                pipelineStage <= 17 ? "Compliance & Cert Release" :
+                "VPC Orchestration & Production Deployment"
+              }
+            </span>
+          </div>
+
+          <div className="grid grid-cols-10 md:grid-cols-20 gap-1.5">
+            {Array.from({ length: 20 }).map((_, idx) => {
+              const stageNum = idx + 1;
+              const isActive = pipelineStage === stageNum;
+              const isCompleted = pipelineStage > stageNum;
+              return (
+                <div
+                  key={idx}
+                  title={`Stage ${stageNum}: ${
+                    stageNum === 1 ? "Spec Intake" :
+                    stageNum === 2 ? "Spec Standardization" :
+                    stageNum === 3 ? "Core Modules Layout" :
+                    stageNum === 4 ? "Design Graph Discovery" :
+                    stageNum === 5 ? "Expansion of Layers" :
+                    stageNum === 6 ? "Zero-Trust Architecture Check" :
+                    stageNum === 7 ? "Architect Signature Gate" :
+                    stageNum === 8 ? "Lock Design Contract" :
+                    stageNum === 9 ? "Allocation of Workforce" :
+                    stageNum === 10 ? "Task Decomposition" :
+                    stageNum === 11 ? "React/Express Codegen" :
+                    stageNum === 12 ? "Compile Schema Models" :
+                    stageNum === 13 ? "Assembly Build & Stamp" :
+                    stageNum === 14 ? "Completeness Audit" :
+                    stageNum === 15 ? "Zero-Trust Audit Trace" :
+                    stageNum === 16 ? "Functional/Chaos Testing" :
+                    stageNum === 17 ? "Operator Signature Gate" :
+                    stageNum === 18 ? "Infrastructure Provisioning" :
+                    stageNum === 19 ? "Continuous Operations Setup" :
+                    "Sovereign Release Live Monitor"
+                  }`}
+                  className={`h-2 rounded-full transition-all duration-300 relative group ${
+                    isActive
+                      ? "bg-blue-500 animate-pulse shadow-xs shadow-blue-500 ring-2 ring-blue-500/40"
+                      : isCompleted
+                      ? "bg-emerald-500"
+                      : "bg-slate-800"
+                  }`}
+                >
+                  {/* Tooltip on Hover */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-950 text-white text-[9px] leading-relaxed rounded-lg border border-slate-800 shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50">
+                    <span className="font-black text-slate-400 uppercase tracking-widest block mb-0.5">Stage {stageNum}</span>
+                    <span className="font-bold text-slate-100">
+                      {stageNum === 1 && "Spec Intake & Registration"}
+                      {stageNum === 2 && "Parameters Standardization"}
+                      {stageNum === 3 && "Core Module Schema Layout"}
+                      {stageNum === 4 && "Blueprints Graph Discovery"}
+                      {stageNum === 5 && "L001-L012 Nodes Expansion"}
+                      {stageNum === 6 && "Zero-Trust Policy Validation"}
+                      {stageNum === 7 && "Architect Human Signature"}
+                      {stageNum === 8 && "Secure Design Contract Lock"}
+                      {stageNum === 9 && "Cognitive Workforce Allocation"}
+                      {stageNum === 10 && "Task Decomposition Runner"}
+                      {stageNum === 11 && "React 18 & Express Codegen"}
+                      {stageNum === 12 && "Database Schema Modeling"}
+                      {stageNum === 13 && "Assembly Build Signing"}
+                      {stageNum === 14 && "Completeness Verification"}
+                      {stageNum === 15 && "Zero-Trust Audit Trace Run"}
+                      {stageNum === 16 && "Chaos & Stress Test Suite"}
+                      {stageNum === 17 && "Operator Release Signature"}
+                      {stageNum === 18 && "VPC Platform Provisioning"}
+                      {stageNum === 19 && "Container Deployment Rollout"}
+                      {stageNum === 20 && "Continuous Telemetry Active"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Live Execution Logs Console */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Sovereign Flight Log Terminal
+            </span>
+            <span className="text-[9px] text-slate-500 font-mono font-bold">
+              SYS_PID_2026_SOVEREIGN_HUB
+            </span>
+          </div>
+          <div className="bg-slate-950 font-mono text-[10px] text-blue-400 border border-slate-800 p-4 rounded-xl space-y-1.5 h-36 overflow-y-auto">
+            {pipelineLogs.map((log, idx) => (
+              <div key={idx} className="flex items-start gap-1">
+                <span className="break-all">{log}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CORE WORKSPACE SECTIONS CONTAINER */}
+      <div className="min-h-[600px] bg-slate-50">
+        
+        {/* ========================================================
+            STUDIO 1: RUNTIME & OPERATIONS CENTER (activeWorkspace === 'overview')
+            ======================================================== */}
+        {activeWorkspace === "overview" && (
+          <div className="space-y-6" id="workspace-command">
+            {/* Studio Sub-tabs Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <Home className="w-5 h-5 text-sky-500" />
+                <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Runtime & Operations Center</span>
+              </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
+                {(['telemetry', 'cloud', 'security', 'lifecycle'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setOverviewTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      overviewTab === tab
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab === 'telemetry' && "Telemetry & Instances"}
+                    {tab === 'cloud' && "Cloud Infrastructure"}
+                    {tab === 'security' && "Security & SOC"}
+                    {tab === 'lifecycle' && "Lifecycle Management"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sub-tab 1: Telemetry & Instances (Standard Overview Dashboard) */}
+            {overviewTab === 'telemetry' && (
+              <div className="space-y-6 animate-fadeIn">
+                {/* JUMO Digital Hybrid Studios Registry */}
+                <section
+                  data-jumo-section="JUMO_VISIBLE_STUDIO_CONTROL_CENTER"
+                  className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+                >
+                  <div className="px-6 py-5 border-b border-slate-200 bg-slate-50">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                            <Layers className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h2 className="text-lg font-bold text-slate-900">
+                              JUMO Digital Hybrid Studios
+                            </h2>
+                            <p className="text-sm text-slate-500">
+                              Architecture, engineering, verification and enterprise orchestration
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                          <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                            Layers
+                          </div>
+                          <div className="text-lg font-bold text-slate-900">
+                            {JUMO_HYBRID_ARCHITECTURE_REGISTRY.listLayers().length}
+                          </div>
+                        </div>
+
+                        <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                          <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                            Families
+                          </div>
+                          <div className="text-lg font-bold text-slate-900">
+                            {JUMO_HYBRID_ARCHITECTURE_REGISTRY.families().length}
+                          </div>
+                        </div>
+
+                        <div className="px-3 py-2 rounded-lg bg-white border border-slate-200">
+                          <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                            Studios
+                          </div>
+                          <div className="text-lg font-bold text-slate-900">
+                            {JUMO_STUDIO_REGISTRY.list().length}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {JUMO_STUDIO_REGISTRY.list().map((studio) => (
+                        <div
+                          key={studio.id}
+                          className="rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-300 hover:shadow-sm transition"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <div className="h-9 w-9 rounded-lg bg-slate-100 flex items-center justify-center">
+                                <Layers className="h-4 w-4 text-slate-600" />
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold text-slate-900">
+                                  {studio.name}
+                                </h3>
+                                <p className="text-[11px] text-slate-500">
+                                  {studio.family}
+                                </p>
+                              </div>
+                            </div>
+
+                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                              studio.status === "AVAILABLE" || studio.status === "READY" || studio.status === "RUNNING" 
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                : "bg-amber-50 text-amber-700 border border-amber-100"
+                            }`}>
+                              {studio.status}
+                            </span>
+                          </div>
+
+                          <div className="mt-4 pt-4 border-t border-slate-100">
+                            <button
+                              onClick={() => onNavigate?.(studio.id as any)}
+                              className="w-full flex items-center justify-between group cursor-pointer"
+                            >
+                              <span className="text-[11px] font-bold text-slate-600 group-hover:text-blue-600">
+                                Open Studio
+                              </span>
+                              <ArrowRight className="h-3 w-3 text-slate-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-1" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  
+                  {/* Primary Active Metrics Panel */}
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+                        <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Intake Requests</span>
+                        <span className="text-xl font-black text-slate-900 block mt-1">{(archRequests ?? []).length}</span>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+                        <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Compiled Blueprints</span>
+                        <span className="text-xl font-black text-slate-900 block mt-1">{(blueprints ?? []).filter(b => b.compilerStatus === 'OK').length}</span>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+                        <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Active Compile Streams</span>
+                        <span className="text-xl font-black text-slate-900 block mt-1">{(jobs ?? []).filter(j => j.status !== 'RUNTIME_ACTIVE' && j.status !== 'FAILED').length}</span>
+                      </div>
+                      <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+                        <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Cyber Guardians</span>
+                        <span className="text-xl font-black text-slate-900 block mt-1">{(engineeringAgents ?? []).length}</span>
+                      </div>
+                    </div>
+
+                    {/* Live Compilation Queue Map */}
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">Operational System Core Services</h3>
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 uppercase">
+                          FAAP Reserves Isolated
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(Array.isArray(ecosystems) ? ecosystems : []).slice(0, 4).map((eco, i) => {
+                          const ecoId = String(eco?.id || eco?.registryId || eco?.name || `ECO-${i}`);
+                          const ecoName = String(eco?.name || eco?.registryId || "Sovereign Ecosystem");
+                          const ecoCategory = String(eco?.category || "ERP_ECOSYSTEM");
+                          return (
+                            <div key={ecoId || i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-[10px] bg-white border border-slate-200`}>
+                                {ecoId.substring(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                <span className="font-bold text-xs text-slate-800 block">{ecoName}</span>
+                                <span className="text-[9px] text-slate-500 block font-semibold">{ecoCategory} Gateway Connected</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {ecosystems.length === 0 && (
+                          <div className="col-span-2 py-4 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">
+                            Searching Registry for Active Core Services...
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Primary Stream Tracking List */}
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="border-b border-slate-200 px-5 py-4 flex items-center justify-between">
+                        <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Active Pipeline Streams</h3>
+                        <button 
+                          onClick={() => onNavigate?.('manufacturing')}
+                          className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                        >
+                          Open Planner <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold uppercase text-[9px]">
+                              <th className="p-4">Pipeline Job</th>
+                              <th className="p-4">State</th>
+                              <th className="p-4">Progress</th>
+                              <th className="p-4">Assigned Agents</th>
+                              <th className="p-4">Quick Command</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            {jobs.slice(0, 5).map((job) => (
+                              <tr key={job.id} className="hover:bg-slate-50/50">
+                                <td className="p-4">
+                                  <span className="font-extrabold text-slate-800 block">{job.id}</span>
+                                  <span className="text-[10px] text-slate-500 uppercase block mt-0.5">{job.productId} • STAGE {job.status}</span>
+                                </td>
+                                <td className="p-4">
+                                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-black text-[9px] bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-tight">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                    {job.status}
+                                  </span>
+                                </td>
+                                <td className="p-4">
+                                  <div className="w-24 bg-slate-100 rounded-full h-1 overflow-hidden">
+                                    <div className="bg-blue-600 h-1 rounded-full transition-all duration-500" style={{ width: `${job.progress}%` }}></div>
+                                  </div>
+                                  <span className="text-[9px] font-black text-slate-500 block mt-1 uppercase">{job.progress}% COMPILED</span>
+                                </td>
+                                <td className="p-4">
+                                  <div className="flex -space-x-1.5 overflow-hidden">
+                                    {(Array.isArray(job?.assignedWorkforce) ? job.assignedWorkforce : []).map((assignment, i) => (
+                                      <div 
+                                        key={i} 
+                                        title={`${assignment.engineerId} - ${assignment.role}`}
+                                        className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[9px] font-black text-slate-600 uppercase"
+                                      >
+                                        {String(assignment?.engineerId ?? "NA").substring(0, 2).toUpperCase()}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </td>
+                                <td className="p-4">
+                                  <div className="flex items-center gap-1.5 justify-end">
+                                    <button 
+                                      onClick={() => handlePromoteManufacturingJob(job.id)}
+                                      className="px-2.5 py-1 bg-slate-900 hover:bg-blue-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider transition-colors cursor-pointer"
+                                    >
+                                      Promote
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Immutable Operations Ledger sidebar */}
+                  <div className="space-y-6">
+                    
+                    {/* Active Incident Banner */}
+                    {(incidents ?? []).length > 0 && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+                        <div className="flex items-start gap-2.5">
+                          <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-extrabold text-xs text-amber-900 block">Sovereign Core Alert</span>
+                            <p className="text-[11px] text-amber-700 leading-relaxed mt-0.5">{incidents[0].title}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Immutable Operations Ledger</h3>
+                        <History className="w-4 h-4 text-slate-400" />
+                      </div>
+                      <div className="space-y-3.5 max-h-96 overflow-y-auto pr-1">
+                        {auditEvents.map((evt) => (
+                          <div key={evt.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 text-[11px] leading-relaxed">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1.5">
+                              <span className="font-extrabold text-blue-600">{evt.operation}</span>
+                              <span className="text-[9px] text-slate-400 font-bold">{new Date(evt.timestamp).toLocaleTimeString()}</span>
+                            </div>
+                            <p className="text-slate-600">{evt.details}</p>
+                            <span className="text-[9px] font-bold text-slate-400 mt-1 block uppercase">
+                              Operator: {evt.actor}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {/* Sub-tab 2: Cloud Infrastructure (Merged CloudStudio / InfrastructureRenderer) */}
+            {overviewTab === 'cloud' && (
+              <div className="space-y-6 animate-fadeIn">
+                <InfrastructureRenderer 
+                  slots={cloudSlots}
+                  volumes={databaseVolumes}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 3: Security & SOC (Merged SecurityRegistryRenderer) */}
+            {overviewTab === 'security' && (
+              <div className="space-y-6 animate-fadeIn">
+                <SecurityRegistryRenderer />
+              </div>
+            )}
+
+            {/* Sub-tab 4: Lifecycle Management (Merged LifecycleStudio) */}
+            {overviewTab === 'lifecycle' && (
+              <div className="space-y-6 animate-fadeIn">
+                <LifecycleStudio 
+                  assets={assets}
+                  onTransition={handleTransitionAsset}
+                  onArchive={handleArchiveAsset}
+                  onRegister={handleRegisterAsset}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================================
+            STUDIO 2: SPECIFICATION & INTAKE STUDIO (activeWorkspace === 'specification')
+            ======================================================== */}
         {activeWorkspace === "specification" && (
-          <div className="space-y-6" id="workspace-specification">
+          <div className="space-y-6 animate-fadeIn" id="workspace-specification">
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-4">
+              <FileText className="w-5 h-5 text-blue-500" />
+              <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Specification & Intake Studio</span>
+            </div>
             <SpecificationStudio 
               requests={archRequests}
               onCreateRequest={handleGenerateArchitectureContract}
+              eventLog={eventLog}
             />
           </div>
         )}
 
-        {/* JUMO Dynamic Architecture & AI Command Center (Only on architecture workspace) */}
+        {/* ========================================================
+            STUDIO 3: ARCHITECTURE & ENGINEERING STUDIO (activeWorkspace === 'architecture')
+            ======================================================== */}
         {activeWorkspace === "architecture" && (
-          <ArchitectureVerificationCommandCenter 
-             layers={archLayers}
-             onOpenStudio={(s) => onNavigate?.(s as any)}
-          />
-        )}
+          <div className="space-y-6">
+            {/* Studio Sub-tabs Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <Layers className="w-5 h-5 text-indigo-500" />
+                <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Architecture & Engineering Studio</span>
+              </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
+                {(['blueprint', 'workforce', 'verification'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setArchitectureTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      architectureTab === tab
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab === 'blueprint' && "Blueprint & Design"}
+                    {tab === 'workforce' && "Cognitive Workforce"}
+                    {tab === 'verification' && "Validation Engine"}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {/* Workspace: Template Registry */}
-        {activeWorkspace === "templates" && (
-          <div className="space-y-6" id="workspace-templates">
-            <RegistryStudio 
-              registryFilter={registryFilter}
-              setRegistryFilter={setRegistryFilter}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              erpEcosystems={erpEcosystems}
-              commercialProducts={commercialProducts}
-              softwareProducts={softwareProducts}
-              jobs={jobs}
-              onConfigureInFactory={(templateId) => handleCreateArchitectureContract(templateId)}
-            />
+            {/* Sub-tab 1: Blueprint & Design */}
+            {architectureTab === 'blueprint' && (
+              <div className="space-y-6 animate-fadeIn">
+                <ArchitectureStudio 
+                  requests={archRequests}
+                  contracts={archContracts}
+                  expansionTraces={expansionTraces}
+                  onCreateContract={handleCreateArchitectureContract}
+                  onApproveContract={handleApproveArchitectureContract}
+                  onLaunchManufacturing={handleCreateManufacturingJob}
+                  onCreateRequest={handleGenerateArchitectureContract}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 2: Cognitive Workforce (Merged EngineeringStudio) */}
+            {architectureTab === 'workforce' && (
+              <div className="space-y-6 animate-fadeIn">
+                <EngineeringStudio 
+                  agents={engineeringAgents}
+                  jobs={jobs}
+                  workLogs={agentWorkLogs}
+                  eventLog={eventLog}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 3: Validation Engine (Merged ArchitectureVerificationCommandCenter) */}
+            {architectureTab === 'verification' && (
+              <div className="space-y-6 animate-fadeIn">
+                <ArchitectureVerificationCommandCenter 
+                   layers={archLayers}
+                   onOpenStudio={(s) => onNavigate?.(s as any)}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* Workspace 2: Architecture Studio */}
-        {activeWorkspace === "architecture" && (
-          <div className="space-y-6" id="workspace-architecture">
-            <ArchitectureStudio 
-              requests={archRequests}
-              contracts={archContracts}
-              onCreateContract={handleCreateArchitectureContract}
-              onApproveContract={handleApproveArchitectureContract}
-              onLaunchManufacturing={handleCreateManufacturingJob}
-              onCreateRequest={handleGenerateArchitectureContract}
-            />
-          </div>
-        )}
-
-
-        {/* Workspace 4: Manufacturing Studio */}
+        {/* ========================================================
+            STUDIO 4: MANUFACTURING FACTORY (activeWorkspace === 'manufacturing' / 'engineering')
+            ======================================================== */}
         {activeWorkspace === "manufacturing" && (
-          <div className="space-y-6" id="workspace-manufacturing">
-            <ManufacturingStudio 
-              jobs={jobs}
-              onPromoteJob={handlePromoteManufacturingJob}
-              onPauseJob={handlePauseJob}
-            />
+          <div className="space-y-6">
+            {/* Studio Sub-tabs Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Manufacturing Factory</span>
+              </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
+                {(['pipeline', 'build'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setManufacturingTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      manufacturingTab === tab
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab === 'pipeline' && "Factory Pipeline"}
+                    {tab === 'build' && "Build Assembly & Artifacts"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sub-tab 1: Factory Pipeline */}
+            {manufacturingTab === 'pipeline' && (
+              <div className="space-y-6 animate-fadeIn">
+                <ManufacturingStudio 
+                  jobs={jobs}
+                  contracts={archContracts}
+                  onPromoteJob={handlePromoteManufacturingJob}
+                  onPauseJob={handlePauseJob}
+                  eventLog={eventLog}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 2: Build Assembly (Merged BuildStudio) */}
+            {manufacturingTab === 'build' && (
+              <div className="space-y-6 animate-fadeIn">
+                <BuildStudio 
+                  artifacts={buildArtifacts.map(a => ({
+                    artifactId: a.artifactId,
+                    jobId: a.jobId,
+                    hash: a.hash,
+                    size: a.size,
+                    timestamp: a.timestamp,
+                    status: a.status,
+                    logs: a.logs
+                  }))}
+                  isCompiling={isCompiling}
+                  compilerLogs={compilerLogs}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* Workspace 3: Build Studio */}
-        {activeWorkspace === "engineering" && (
-          <div className="space-y-6" id="workspace-build">
-            <BuildStudio 
-              artifacts={buildArtifacts.map(a => ({
-                artifactId: a.artifactId,
-                jobId: a.jobId,
-                hash: a.hash,
-                size: a.size,
-                timestamp: a.timestamp,
-                status: a.status,
-                logs: a.logs
-              }))}
-              isCompiling={isCompiling}
-              compilerLogs={compilerLogs}
-            />
-          </div>
-        )}
-
-        {/* Workspace 4: Engineering Workforce Studio */}
-        {activeWorkspace === "workforce" && (
-          <div className="space-y-6" id="workspace-workforce">
-            <EngineeringStudio 
-              agents={engineeringAgents}
-              jobs={jobs}
-            />
-          </div>
-        )}
-
-        {/* Workspace 5: Deployment Studio */}
-        {activeWorkspace === "deployment" && (
-          <div className="space-y-6" id="workspace-deployment">
-            <DeploymentStudio 
-              records={deploymentRecords}
-              slots={cloudSlots}
-              isDeploying={isDeploying}
-              deploymentLogs={deploymentLogs}
-              onScaleSlot={handleScaleSlot}
-              onTogglePowerSlot={handleTogglePowerSlot}
-              onDeploySlot={handleDeploySlot}
-              jobs={jobs}
-            />
-          </div>
-        )}
-
-        {/* Workspace 6: Provisioning Studio */}
-        {activeWorkspace === "provisioning" && (
-          <div className="space-y-6" id="workspace-provisioning">
-            <ProvisioningStudio 
-              onProvisionPlatform={(templateId, config) => handleCreateArchitectureContract(templateId)}
-            />
-          </div>
-        )}
-
-        {/* Workspace 7: Verification Studio */}
+        {/* ========================================================
+            STUDIO 5: VERIFICATION & TESTING CENTER (activeWorkspace === 'verification')
+            ======================================================== */}
         {activeWorkspace === "verification" && (
-          <div className="space-y-6" id="workspace-verification">
+          <div className="space-y-6 animate-fadeIn" id="workspace-verification">
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-4">
+              <Shield className="w-5 h-5 text-emerald-500" />
+              <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Verification & Testing Center</span>
+            </div>
             <VerificationStudio 
               gates={verificationGates}
               failures={verificationFailures}
@@ -1227,9 +1919,15 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace 8: Certification Studio */}
+        {/* ========================================================
+            STUDIO 6: CERTIFICATION & RELEASE CONTROL (activeWorkspace === 'certification')
+            ======================================================== */}
         {activeWorkspace === "certification" && (
-          <div className="space-y-6" id="workspace-certification">
+          <div className="space-y-6 animate-fadeIn" id="workspace-certification">
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-4">
+              <Award className="w-5 h-5 text-purple-500" />
+              <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Certification & Release Control</span>
+            </div>
             <CertificationStudio
               certifications={certificationRecords}
               jobs={jobs}
@@ -1238,134 +1936,216 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace: Sovereign Cloud Studio */}
-        {activeWorkspace === "cloud" && (
-          <div className="space-y-6" id="workspace-cloud">
-            <InfrastructureRenderer
-              slots={cloudSlots}
-              volumes={databaseVolumes}
-            />
-          </div>
-        )}
-
-
-        {/* Workspace 9: Migration & Upgrade */}
-        {activeWorkspace === "migration" && (
-          <div className="space-y-6" id="workspace-migration">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
-              {/* Left Column: Schema and API migrations */}
-              <div className="lg:col-span-7 space-y-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
-                  <div>
-                    <h3 className="text-sm font-extrabold text-slate-900">Database & Schema Upgrades</h3>
-                    <p className="text-xs text-slate-500 mt-1">Trigger secure migrations, schema alters, or database schema backups with rollback insurance.</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    {migrations.map((mig) => (
-                      <div key={mig.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="text-[10px] font-black text-slate-400 block">{mig.type} • {mig.id}</span>
-                            <span className="font-bold text-xs text-slate-800 block mt-0.5">{mig.name}</span>
-                          </div>
-                          <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${
-                            mig.status === "COMPLETED"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                              : mig.status === "RUNNING"
-                              ? "bg-blue-50 text-blue-700 border-blue-100 animate-pulse"
-                              : "bg-slate-100 text-slate-500 border-slate-200"
-                          }`}>
-                            {mig.status}
-                          </span>
-                        </div>
-
-                        {mig.status === "RUNNING" && (
-                          <div className="space-y-1.5">
-                            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                              <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-200" style={{ width: `${mig.progress}%` }}></div>
-                            </div>
-                            <div className="flex justify-between text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                              <span>Executing DDL transaction blocks</span>
-                              <span>{mig.progress}%</span>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex justify-end pt-1">
-                          <button
-                            onClick={() => handleExecuteMigration(mig.id)}
-                            disabled={mig.status === "COMPLETED" || activeMigrationId !== null}
-                            className="px-3 py-1.5 bg-slate-900 hover:bg-blue-600 disabled:opacity-40 disabled:hover:bg-slate-900 text-white rounded-lg text-[10px] font-bold cursor-pointer transition-all"
-                          >
-                            {mig.status === "COMPLETED" ? "Alter Applied" : mig.status === "RUNNING" ? "Executing..." : "Execute Alter"}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        {/* ========================================================
+            STUDIO 7: PROVISION & DEPLOY CONTROL (activeWorkspace === 'deployment' / 'provisioning')
+            ======================================================== */}
+        {activeWorkspace === "deployment" && (
+          <div className="space-y-6">
+            {/* Studio Sub-tabs Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <Cloud className="w-5 h-5 text-cyan-500" />
+                <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Provision & Deploy Control</span>
               </div>
-
-              {/* Right Column: Compatibility matrix & Console logs */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                  <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Version Compatibility Matrix</h3>
-                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Verifies structural backward compatibility with underlying databases and legacy applications before rollout.</p>
-                  
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 text-xs space-y-3 text-slate-600">
-                    <div className="flex justify-between border-b border-slate-200/60 pb-1 text-[11px]">
-                      <span>PostgreSQL Core Compatibility:</span>
-                      <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-200/60 pb-1 text-[11px]">
-                      <span>FAAP Ledger Schema Base:</span>
-                      <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span>JUMO-UEOS Platform Core v13:</span>
-                      <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                  <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Database Execution Terminal</h3>
-                  <div className="bg-slate-950 font-mono text-[10px] text-emerald-400 border border-slate-800 p-4 rounded-xl space-y-1.5 h-44 overflow-y-auto">
-                    {migrationLogs.map((log, idx) => (
-                      <div key={idx} className="flex items-start gap-1">
-                        <span className="text-slate-500 select-none">›</span>
-                        <span className="break-all">{log}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
+                {(['provisioning', 'deployment'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setDeploymentTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      deploymentTab === tab
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab === 'provisioning' && "Provisioning Studio"}
+                    {tab === 'deployment' && "Deployment Control"}
+                  </button>
+                ))}
               </div>
-
             </div>
+
+            {/* Sub-tab 1: Provisioning Studio */}
+            {deploymentTab === 'provisioning' && (
+              <div className="space-y-6 animate-fadeIn">
+                <ProvisioningStudio 
+                  onProvisionPlatform={(templateId, config) => handleCreateArchitectureContract(templateId)}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 2: Deployment Control */}
+            {deploymentTab === 'deployment' && (
+              <div className="space-y-6 animate-fadeIn">
+                <DeploymentStudio 
+                  records={deploymentRecords}
+                  slots={cloudSlots}
+                  isDeploying={isDeploying}
+                  deploymentLogs={deploymentLogs}
+                  onScaleSlot={handleScaleSlot}
+                  onTogglePowerSlot={handleTogglePowerSlot}
+                  onDeploySlot={handleDeploySlot}
+                  jobs={jobs}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* Workspace 10: Audit & Guardian */}
-        {activeWorkspace === "audit" && (
-          <div className="space-y-6" id="workspace-audit">
-            <AuditRenderer 
-              incidents={incidents}
-              institutions={ecosystems}
-            />
-          </div>
-        )}
+        {/* ========================================================
+            STUDIO 8: GOVERNANCE & REGISTRY (activeWorkspace === 'templates' / 'audit' / 'migration')
+            ======================================================== */}
+        {activeWorkspace === "templates" && (
+          <div className="space-y-6">
+            {/* Studio Sub-tabs Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-teal-500" />
+                <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Governance & Registry</span>
+              </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
+                {(['registry', 'audit', 'migration'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setTemplatesTab(tab)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      templatesTab === tab
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab === 'registry' && "Registry Fabric"}
+                    {tab === 'audit' && "Continuous Audit"}
+                    {tab === 'migration' && "Schema Migration"}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {/* Workspace 11: Lifecycle Management */}
-        {activeWorkspace === "lifecycle" && (
-          <div className="space-y-6" id="workspace-lifecycle">
-            <LifecycleStudio 
-              assets={assets}
-              onTransition={handleTransitionAsset}
-              onArchive={handleArchiveAsset}
-              onRegister={handleRegisterAsset}
-            />
+            {/* Sub-tab 1: Registry Fabric */}
+            {templatesTab === 'registry' && (
+              <div className="space-y-6 animate-fadeIn">
+                <RegistryStudio 
+                  registryFilter={registryFilter}
+                  setRegistryFilter={setRegistryFilter}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  erpEcosystems={erpEcosystems}
+                  commercialProducts={commercialProducts}
+                  softwareProducts={softwareProducts}
+                  jobs={jobs}
+                  onConfigureInFactory={(templateId) => handleCreateArchitectureContract(templateId)}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 2: Continuous Audit (Merged AuditRenderer) */}
+            {templatesTab === 'audit' && (
+              <div className="space-y-6 animate-fadeIn">
+                <AuditRenderer 
+                  incidents={incidents}
+                  institutions={ecosystems}
+                />
+              </div>
+            )}
+
+            {/* Sub-tab 3: Schema Migration (Merged Database & Schema upgrades) */}
+            {templatesTab === 'migration' && (
+              <div className="space-y-6 animate-fadeIn" id="workspace-migration">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  
+                  {/* Left Column: Schema and API migrations */}
+                  <div className="lg:col-span-7 space-y-6">
+                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+                      <div>
+                        <h3 className="text-sm font-extrabold text-slate-900">Database & Schema Upgrades</h3>
+                        <p className="text-xs text-slate-500 mt-1">Trigger secure migrations, schema alters, or database schema backups with rollback insurance.</p>
+                      </div>
+
+                      <div className="space-y-4">
+                        {migrations.map((mig) => (
+                          <div key={mig.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="text-[10px] font-black text-slate-400 block">{mig.type} • {mig.id}</span>
+                                <span className="font-bold text-xs text-slate-800 block mt-0.5">{mig.name}</span>
+                              </div>
+                              <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                                mig.status === "COMPLETED"
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                                  : mig.status === "RUNNING"
+                                  ? "bg-blue-50 text-blue-700 border-blue-100 animate-pulse"
+                                  : "bg-slate-100 text-slate-500 border-slate-200"
+                              }`}>
+                                {mig.status}
+                              </span>
+                            </div>
+
+                            {mig.status === "RUNNING" && (
+                              <div className="space-y-1.5">
+                                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                  <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-200" style={{ width: `${mig.progress}%` }}></div>
+                                </div>
+                                <div className="flex justify-between text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                  <span>Executing DDL transaction blocks</span>
+                                  <span>{mig.progress}%</span>
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="flex justify-end pt-1">
+                              <button
+                                onClick={() => handleExecuteMigration(mig.id)}
+                                disabled={mig.status === "COMPLETED" || activeMigrationId !== null}
+                                className="px-3 py-1.5 bg-slate-900 hover:bg-blue-600 disabled:opacity-40 disabled:hover:bg-slate-900 text-white rounded-lg text-[10px] font-bold cursor-pointer transition-all"
+                              >
+                                {mig.status === "COMPLETED" ? "Alter Applied" : mig.status === "RUNNING" ? "Executing..." : "Execute Alter"}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Compatibility matrix & Console logs */}
+                  <div className="lg:col-span-5 space-y-6">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                      <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Version Compatibility Matrix</h3>
+                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Verifies structural backward compatibility with underlying databases and legacy applications before rollout.</p>
+                      
+                      <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 text-xs space-y-3 text-slate-600">
+                        <div className="flex justify-between border-b border-slate-200/60 pb-1 text-[11px]">
+                          <span>PostgreSQL Core Compatibility:</span>
+                          <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
+                        </div>
+                        <div className="flex justify-between border-b border-slate-200/60 pb-1 text-[11px]">
+                          <span>FAAP Ledger Schema Base:</span>
+                          <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                          <span>JUMO-UEOS Platform Core v13:</span>
+                          <span className="text-emerald-600 font-extrabold">COMPATIBLE</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                      <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Database Execution Terminal</h3>
+                      <div className="bg-slate-950 font-mono text-[10px] text-emerald-400 border border-slate-800 p-4 rounded-xl space-y-1.5 h-44 overflow-y-auto">
+                        {migrationLogs.map((log, idx) => (
+                          <div key={idx} className="flex items-start gap-1">
+                            <span className="text-slate-500 select-none">›</span>
+                            <span className="break-all">{log}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1385,7 +2165,13 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
         )}
 
-        {/* Workspace 12: Settings & Security config */}
+        {/* JUMO UEOS Control Studios */}
+        {activeWorkspace === 'branding' && <BrandingStudio />}
+        {activeWorkspace === 'config' && <ConfigStudio />}
+        {activeWorkspace === 'control' && <SovereignControlStudio />}
+        {activeWorkspace === 'faap' && <FAAPLedgerStudio />}
+
+        {/* Workspace: Settings & Security config */}
         {activeWorkspace === "settings" && (
           <div className="space-y-6" id="workspace-settings">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

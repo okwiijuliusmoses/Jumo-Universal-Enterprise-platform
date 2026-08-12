@@ -1,51 +1,69 @@
 import { OpenAIReasoningProvider } from './OpenAIReasoningProvider';
+import { GeminiReasoningProvider } from './GeminiReasoningProvider';
 import { LocalHybridReasoningProvider } from './LocalHybridReasoningProvider';
+import type { ReasoningAIProvider, ReasoningRequest } from './GeneralPurposeReasoningAI';
+import dotenv from 'dotenv';
 
-export function createReasoningProvider() {
-  const configuredProvider =
-    process.env.JUMO_AI_PROVIDER?.trim().toLowerCase();
-
-  /*
-   * External AI providers are optional.
-   *
-   * UEOS must remain operational when an external provider has not
-   * been configured. This preserves the Digital Hybrid architecture:
-   *
-   *   UEOS Runtime
-   *        |
-   *   AI Provider Factory
-   *      /       \
-   * external     local
-   *
-   * No credentials are hardcoded and no external provider is allowed
-   * to become a platform-wide boot dependency.
-   */
-
-  if (
-    configuredProvider === 'openai' &&
-    process.env.OPENAI_API_KEY?.trim()
-  ) {
-    return new OpenAIReasoningProvider();
+export class ReasoningProviderFactory {
+  private static instance: ReasoningProviderFactory;
+  private providers: Map<string, ReasoningAIProvider> = new Map();
+  private activeProviderId: string = 'local';
+  
+  public static getInstance(): ReasoningProviderFactory {
+    if (!ReasoningProviderFactory.instance) {
+      ReasoningProviderFactory.instance = new ReasoningProviderFactory();
+      ReasoningProviderFactory.instance.refreshProviders();
+    }
+    return ReasoningProviderFactory.instance;
+  }
+  
+  public refreshProviders() {
+    dotenv.config({ override: true });
+    this.providers.clear();
+    
+    const configuredProvider = process.env.JUMO_AI_PROVIDER?.trim().toLowerCase();
+    const openAiKey = process.env.OPENAI_API_KEY?.trim();
+    const geminiKey = process.env.GEMINI_API_KEY?.trim();
+    
+    if (openAiKey) {
+      try {
+        this.providers.set('openai', new OpenAIReasoningProvider());
+      } catch(err: any) {
+        console.warn(`[JUMO AI] OpenAI reasoning provider initialization failed: ${err.message}`);
+      }
+    }
+    
+    if (geminiKey) {
+      try {
+        this.providers.set('gemini', new GeminiReasoningProvider());
+      } catch(err: any) {
+        console.warn(`[JUMO AI] Gemini reasoning provider initialization failed: ${err.message}`);
+      }
+    }
+    
+    this.providers.set('local', new LocalHybridReasoningProvider());
+    
+    if (configuredProvider && this.providers.has(configuredProvider)) {
+       this.activeProviderId = configuredProvider;
+    } else if (this.providers.has('openai')) {
+      this.activeProviderId = 'openai';
+    } else if (this.providers.has('gemini')) {
+      this.activeProviderId = 'gemini';
+    } else {
+      this.activeProviderId = 'local';
+    }
   }
 
-  if (
-    configuredProvider &&
-    configuredProvider !== 'openai' &&
-    configuredProvider !== 'local' &&
-    configuredProvider !== 'hybrid'
-  ) {
-    console.warn(
-      `[JUMO AI] Unsupported provider "${configuredProvider}". ` +
-      'Falling back to local hybrid reasoning.'
-    );
+  public getActiveProvider(): ReasoningAIProvider {
+    return this.providers.get(this.activeProviderId) || this.providers.get('local')!;
   }
+}
 
-  if (configuredProvider === 'openai') {
-    console.warn(
-      '[JUMO AI] OpenAI selected but OPENAI_API_KEY is unavailable. ' +
-      'Falling back to local hybrid reasoning.'
-    );
-  }
-
-  return new LocalHybridReasoningProvider();
+export function createReasoningProvider(): ReasoningAIProvider {
+  return {
+    reason: async (request: ReasoningRequest) => {
+      const provider = ReasoningProviderFactory.getInstance().getActiveProvider();
+      return provider.reason(request);
+    }
+  };
 }

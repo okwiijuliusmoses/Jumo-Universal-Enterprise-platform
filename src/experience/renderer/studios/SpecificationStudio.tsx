@@ -5,20 +5,24 @@ import {
   CheckCircle2, Clock, ShieldCheck, X
 } from 'lucide-react';
 import { ArchitectureRequest } from '../../../core/runtime/sovereignState';
-import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from '../specification/DigitalEcosystemSpecificationForm';
+import { CoordinationEvent } from '../../../core/runtime/sovereignState';
+import { DigitalEcosystemSpecificationForm } from '../specification/DigitalEcosystemSpecificationForm';
+import { CanonicalEcosystemSpecification } from '../../../core/specification/JumoSpecificationCompiler';
 
 interface SpecificationStudioProps {
   requests: ArchitectureRequest[];
-  onCreateRequest: (data: EcosystemSpecification) => void;
+  onCreateRequest: (data: CanonicalEcosystemSpecification) => void;
+  eventLog?: CoordinationEvent[];
 }
 
 export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
   requests,
-  onCreateRequest
+  onCreateRequest,
+  eventLog = []
 }) => {
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSubmit = (spec: EcosystemSpecification) => {
+  const handleSubmit = (spec: CanonicalEcosystemSpecification) => {
     onCreateRequest(spec);
     setIsCreating(false);
   };
@@ -33,7 +37,7 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase">Specification Studio</h2>
-            <p className="text-xs text-slate-500 font-medium">Digital Ecosystem Specification Intake & Validation Center</p>
+            <p className="text-xs text-slate-500 font-medium">Authoritative Digital Ecosystem & Product Specification Compiler</p>
           </div>
         </div>
         {!isCreating && (
@@ -52,11 +56,11 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
           <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200">
              <div className="flex items-center gap-2">
                <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-               <span className="text-xs font-black uppercase text-slate-800 tracking-widest">Authoritative Specification Entry Mode</span>
+               <span className="text-xs font-black uppercase text-slate-800 tracking-widest">Guided Product & Enterprise Specification Compiler Mode</span>
              </div>
              <button 
               onClick={() => setIsCreating(false)}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 transition-colors"
+              className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 transition-colors cursor-pointer"
              >
               <X className="w-5 h-5" />
              </button>
@@ -69,13 +73,13 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
           <div className="lg:col-span-8 space-y-6">
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Active Intake Queue</h3>
+                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Active Specification Intake Queue</h3>
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input 
                       type="text" 
-                      placeholder="Search requests..."
+                      placeholder="Search specifications..."
                       className="bg-slate-50 border border-slate-200 text-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-[10px] font-bold focus:ring-1 focus:ring-blue-500 outline-hidden w-40"
                     />
                   </div>
@@ -94,7 +98,7 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
                             req.status === 'REVIEW' ? 'bg-amber-50 text-amber-700 border-amber-100' :
                             'bg-slate-100 text-slate-500 border-slate-200'
                           }`}>
-                            {req.status}
+                            {req.status === 'REVIEW' ? 'SPECIFICATION RECEIVED' : req.status}
                           </span>
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-auto">{req.ecosystemType}</span>
                         </div>
@@ -102,7 +106,7 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
                         <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">{req.problem}</p>
                         
                         <div className="flex flex-wrap gap-2 pt-2">
-                          {req.capabilities.map((cap, i) => (
+                          {(req.capabilities ?? []).map((cap, i) => (
                             <span key={i} className="text-[9px] font-bold bg-white border border-slate-200 text-slate-500 px-2 py-0.5 rounded-md">
                               {cap}
                             </span>
@@ -125,7 +129,7 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
                           </div>
                         </div>
                         <button className="w-full py-2 bg-white hover:bg-slate-900 hover:text-white border border-slate-900 text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer">
-                          View Details
+                          View Specification Details
                         </button>
                       </div>
                     </div>
@@ -136,7 +140,7 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
                     <Target className="w-16 h-16 mx-auto text-slate-300" />
                     <div>
                       <p className="text-sm font-black text-slate-900 uppercase">No intake requests detected</p>
-                      <p className="text-xs font-bold text-slate-500 mt-1 uppercase">Initialize a new sovereign digital ecosystem specification.</p>
+                      <p className="text-xs font-bold text-slate-500 mt-1 uppercase">Initialize a new sovereign digital ecosystem specification compiler.</p>
                     </div>
                   </div>
                 )}
@@ -144,54 +148,49 @@ export const SpecificationStudio: React.FC<SpecificationStudioProps> = ({
             </div>
           </div>
 
-          {/* Sidebar: Diagnostics */}
+          {/* Sidebar: Diagnostics & Activity */}
           <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
-                <div className="space-y-2">
-                  <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Intake Diagnostics</h3>
-                  <p className="text-[11px] text-slate-500 leading-relaxed">
-                    Real-time validation of incoming digital product specifications against JUMO sovereign standards.
-                  </p>
-                </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+              <div className="space-y-2 border-b border-slate-100 pb-4">
+                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Handoff Lifecycle Gate</h3>
+                <p className="text-[11px] text-slate-500">Form intake compiles WHAT is required, then routes automatically to Architecture Studio for HOW engineering.</p>
+              </div>
 
-                <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl space-y-3">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span className="text-[10px] font-black text-emerald-900 uppercase">Sovereign Compliance</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-[9px] font-bold">
-                      <span className="text-emerald-700/70">Registry Availability</span>
-                      <span className="text-emerald-900 font-black">99.9%</span>
-                    </div>
-                    <div className="flex justify-between text-[9px] font-bold">
-                      <span className="text-emerald-700/70">Intake Validation</span>
-                      <span className="text-emerald-900 font-black">ACTIVE</span>
-                    </div>
-                  </div>
+              <div className="space-y-3 text-xs">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg font-bold">
+                  <span>Guided Input</span>
+                  <span className="text-emerald-600">✓ VERIFIED</span>
                 </div>
-
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                      <Target className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-[10px] font-black text-slate-800 uppercase">Architecture Mapping</h4>
-                      <p className="text-[10px] text-slate-500 mt-0.5">Approved specifications are automatically routed to the Architecture Studio for contract generation.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
-                      <Building2 className="w-4 h-4 text-slate-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-[10px] font-black text-slate-800 uppercase">Ecosystem Governance</h4>
-                      <p className="text-[10px] text-slate-500 mt-0.5">Every product must align with one of the five core sovereign manufacturing ecosystems.</p>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg font-bold">
+                  <span>Product Classification</span>
+                  <span className="text-emerald-600">✓ AUTOMATED</span>
+                </div>
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg font-bold">
+                  <span>Architecture Studio Handoff</span>
+                  <span className="text-indigo-600">AUTOMATIC</span>
+                </div>
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg font-bold">
+                  <span>420+ Cognitive Agent Review</span>
+                  <span className="text-amber-600">POST-HANDOFF</span>
+                </div>
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg font-bold">
+                  <span>Human Architect Lock</span>
+                  <span className="text-slate-400">REQUIRED BEFORE MFG</span>
                 </div>
               </div>
+
+              <div className="border-t border-slate-100 pt-6">
+                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider mb-4">Coordination Fabric</h3>
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                  {eventLog.map(evt => (
+                    <div key={evt.id} className="text-[10px] text-slate-500 font-medium">
+                      <span className="font-bold text-slate-800">{evt.action}</span>
+                      <p className="line-clamp-1">Target: {evt.entityId}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -7,8 +7,8 @@ import {
   Command, Cpu, FileText, Users, Server, Layers, CheckSquare, Globe, 
   RefreshCw, Shield, History, Settings, LogOut, ChevronLeft, ChevronRight, 
   User, Key, Menu, Search, X, Sliders, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard,
-  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical, Zap, Database,
-  ShieldCheck, Activity, RefreshCcw
+  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical, Zap, Database, BookOpen,
+  ShieldCheck, Activity, RefreshCcw, CreditCard
 } from "lucide-react";
 import { NationalManufacturingHub, HubWorkspace } from "../renderer/NationalManufacturingHub";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
@@ -283,74 +283,6 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       });
     });
 
-    // Index ERP Ecosystems from Registry
-    const ecosystems = UniversalHubRegistry.getERPEcosystems();
-    ecosystems.forEach(eco => {
-      if (!q || eco.name.toLowerCase().includes(q) || eco.registryId.toLowerCase().includes(q)) {
-        results.push({
-          id: eco.registryId,
-          name: eco.name,
-          type: "ERP Ecosystem",
-          status: eco.lifecycleState,
-          workspace: "registries",
-          icon: Layers,
-          entityType: "ecosystem",
-          data: eco
-        });
-      }
-    });
-
-    // Index Commercial Products
-    const products = UniversalHubRegistry.getCommercialProducts();
-    products.forEach(prod => {
-      if (!q || prod.name.toLowerCase().includes(q) || prod.registryId.toLowerCase().includes(q)) {
-        results.push({
-          id: prod.registryId,
-          name: prod.name,
-          type: "Sovereign Product",
-          status: prod.lifecycleState,
-          workspace: "registries",
-          icon: Globe,
-          entityType: "product",
-          data: prod
-        });
-      }
-    });
-
-    // Index Blueprints
-    const blueprints = UniversalHubRegistry.getBlueprints();
-    blueprints.forEach(bp => {
-      if (!q || bp.name.toLowerCase().includes(q) || bp.blueprintId.toLowerCase().includes(q)) {
-        results.push({
-          id: bp.blueprintId,
-          name: bp.name,
-          type: "Blueprint Template",
-          status: bp.compilerStatus,
-          workspace: "blueprints",
-          icon: FileText,
-          entityType: "blueprint",
-          data: bp
-        });
-      }
-    });
-
-    // Index AI Agents
-    const agents = JumoAIAgentRegistry.getAllAgents();
-    agents.forEach(agent => {
-      if (!q || agent.displayName.toLowerCase().includes(q) || agent.jumoName.toLowerCase().includes(q)) {
-        results.push({
-          id: agent.jumoName,
-          name: agent.displayName,
-          type: "AI Cognitive Agent",
-          status: agent.status,
-          workspace: "workforce",
-          icon: Users,
-          entityType: "agent",
-          data: agent
-        });
-      }
-    });
-
     return results;
   };
 
@@ -376,40 +308,40 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 11. SIDEBAR NAVIGATION GROUPS ===
   const sidebarGroups = [
     {
-      id: "PLATFORM",
+      id: "PLATFORM & DESIGN",
       items: [
-        { id: "specification" as HubWorkspace, label: "Digital Specification", icon: FileText, color: "text-slate-600" },
-        { id: "provisioning" as HubWorkspace, label: "Provisioning Studio", icon: Database, color: "text-slate-600" }
+        { id: "specification" as HubWorkspace, label: "Specification & Intake", icon: FileText, color: "text-blue-500" },
+        { id: "architecture" as HubWorkspace, label: "Architecture & Eng.", icon: Layers, color: "text-indigo-500" }
       ]
     },
     {
-      id: "MANUFACTURING",
+      id: "AUTOMATED FACTORY",
       items: [
-        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Pipeline", icon: Zap, color: "text-amber-600" },
-        { id: "engineering" as HubWorkspace, label: "Build Studio", icon: Terminal, color: "text-indigo-600" },
-        { id: "workforce" as HubWorkspace, label: "Engineering Workforce", icon: Users, color: "text-slate-600" },
-        { id: "verification" as HubWorkspace, label: "Verification Studio", icon: Shield, color: "text-emerald-600" },
-        { id: "certification" as HubWorkspace, label: "Certification Studio", icon: Award, color: "text-amber-500" },
-        { id: "deployment" as HubWorkspace, label: "Deployment Studio", icon: Cloud, color: "text-cyan-600" }
+        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Factory", icon: Zap, color: "text-amber-500" },
+        { id: "verification" as HubWorkspace, label: "Verification & Testing", icon: Shield, color: "text-emerald-500" },
+        { id: "certification" as HubWorkspace, label: "Certification & Release", icon: Award, color: "text-purple-500" }
       ]
     },
     {
-      id: "OPERATIONS",
+      id: "DEPLOY & OPERATE",
       items: [
-        { id: "overview" as HubWorkspace, label: "Runtime Instance", icon: Home, color: "text-slate-600" },
-        { id: "cloud" as HubWorkspace, label: "Cloud & Infrastructure", icon: Server, color: "text-sky-600" },
-        { id: "security" as HubWorkspace, label: "Security & SOC", icon: ShieldCheck, color: "text-rose-600" },
-        { id: "migration" as HubWorkspace, label: "Schema Migration", icon: Database, color: "text-amber-600" },
-        { id: "lifecycle" as HubWorkspace, label: "Lifecycle Studio", icon: RefreshCcw, color: "text-violet-600" }
+        { id: "deployment" as HubWorkspace, label: "Provision & Deploy", icon: Cloud, color: "text-cyan-500" },
+        { id: "overview" as HubWorkspace, label: "Runtime & Operations", icon: Home, color: "text-sky-500" }
       ]
     },
     {
-      id: "GOVERNANCE",
+      id: "SOVEREIGN GOVERNANCE",
       items: [
-        { id: "architecture" as HubWorkspace, label: "Architecture Studio", icon: Layers, color: "text-blue-600" },
-        { id: "templates" as HubWorkspace, label: "Registry Fabric", icon: Layers, color: "text-indigo-500" },
-        { id: "audit" as HubWorkspace, label: "Audit", icon: Activity, color: "text-teal-600" },
-        { id: "settings" as HubWorkspace, label: "Settings", icon: Settings, color: "text-slate-600" }
+        { id: "branding" as HubWorkspace, label: "Branding Studio", icon: Edit3, color: "text-pink-500" },
+        { id: "config" as HubWorkspace, label: "Configuration Studio", icon: Sliders, color: "text-slate-500" },
+        { id: "control" as HubWorkspace, label: "Sovereign Control", icon: ShieldCheck, color: "text-amber-600" }
+      ]
+    },
+    {
+      id: "COMPLIANCE & TRUTH",
+      items: [
+        { id: "templates" as HubWorkspace, label: "Governance & Registry", icon: BookOpen, color: "text-teal-500" },
+        { id: "faap" as HubWorkspace, label: "Sovereign Ledger", icon: CreditCard, color: "text-emerald-600" }
       ]
     }
   ];
@@ -428,7 +360,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     >
       
       {/* 1. TOP OPERATING NAV BAR */}
-      <header className="bg-white border-b border-slate-200/80 h-14 px-4 flex items-center justify-between sticky top-0 z-40 select-none shadow-xs" id="ueos-shell-header">
+      <header className="bg-blue-950 text-white border-b border-blue-900 h-14 px-4 flex items-center justify-between sticky top-0 z-40 select-none shadow-md" id="ueos-shell-header">
         
         {/* Left Side: Navigation Keys & Toggles */}
         <div className="flex items-center gap-1.5 md:gap-3">
@@ -436,18 +368,18 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Mobile Rails Toggle */}
           <button
             onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 md:hidden cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-blue-900 text-blue-200 md:hidden cursor-pointer"
             aria-label="Toggle Mobile Sidebar"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           {/* Core Navigation controls */}
-          <div className="hidden md:flex items-center gap-1 bg-slate-100/80 p-0.5 rounded-xl border border-slate-200/50">
+          <div className="hidden md:flex items-center gap-1 bg-blue-900/40 p-0.5 rounded-xl border border-blue-800/50">
             <button
               onClick={handleBack}
               disabled={backStack.length === 0}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
+              className="p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
               title="Back (Alt + ←)"
               aria-label="Navigate Back"
             >
@@ -456,7 +388,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             <button
               onClick={handleForward}
               disabled={forwardStack.length === 0}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
+              className="p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
               title="Forward (Alt + →)"
               aria-label="Navigate Forward"
             >
@@ -464,7 +396,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             </button>
             <button
               onClick={handleParent}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer"
               title="Parent Workspace (Alt + ↑)"
               aria-label="Navigate to Parent"
             >
@@ -472,7 +404,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             </button>
             <button
               onClick={() => navigateTo("overview")}
-              className={`p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-white transition-all cursor-pointer ${activeTab === "overview" ? "bg-white text-slate-900 shadow-2xs" : ""}`}
+              className={`p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer ${activeTab === "overview" ? "bg-blue-600 text-white shadow-xs" : ""}`}
               title="Sovereign Command Center"
               aria-label="Command Center Home"
             >
@@ -480,16 +412,16 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             </button>
           </div>
 
-          <div className="h-4 w-px bg-slate-200 hidden md:block"></div>
+          <div className="h-4 w-px bg-blue-800 hidden md:block"></div>
 
           {/* Host brand identity */}
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-xs">
+            <div className="w-7 h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/20">
               J
             </div>
             <div className="min-w-0">
-              <span className="font-extrabold tracking-tight text-slate-900 text-xs block">JUMO UEOS</span>
-              <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Sovereign Layer</span>
+              <span className="font-extrabold tracking-tight text-slate-100 text-xs block">JUMO UEOS</span>
+              <span className="text-[8px] font-bold text-blue-400 uppercase tracking-widest block leading-none">Sovereign Command</span>
             </div>
           </div>
         </div>
@@ -498,14 +430,14 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
         <div className="flex-1 max-w-md mx-4 lg:mx-8">
           <button
             onClick={() => setCommandPaletteOpen(true)}
-            className="w-full h-9 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl px-3 flex items-center justify-between text-slate-400 text-xs font-bold transition-all text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-9 bg-blue-900/40 hover:bg-blue-900/60 border border-blue-850/60 rounded-xl px-3 flex items-center justify-between text-blue-100 text-xs font-bold transition-all text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
             title="Search registries and commands (Ctrl + K)"
           >
             <div className="flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-slate-400" />
-              <span>Search ecosystems, products, commands...</span>
+              <Search className="w-3.5 h-3.5 text-blue-300" />
+              <span className="text-blue-200">Search ecosystems, products, commands...</span>
             </div>
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white border border-slate-200 text-slate-400 font-bold rounded-lg text-[9px] shadow-2xs font-mono uppercase">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-blue-950 border border-blue-800 text-blue-300 font-bold rounded-lg text-[9px] shadow-2xs font-mono uppercase">
               Ctrl K
             </kbd>
           </button>
@@ -517,7 +449,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Keyboard Help Guide */}
           <button
             onClick={() => setKeyboardGuideOpen(true)}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-colors"
+            className="p-2 rounded-xl text-blue-200 hover:text-white hover:bg-blue-900/50 cursor-pointer transition-colors"
             title="Keyboard Shortcuts Guide (Ctrl + /)"
             aria-label="Shortcuts Help"
           >
@@ -527,28 +459,28 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Unified Settings Gear */}
           <button
             onClick={() => setSettingsOpen(true)}
-            className={`p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-colors ${settingsOpen ? "bg-slate-100 text-slate-900" : ""}`}
+            className={`p-2 rounded-xl text-blue-200 hover:text-white hover:bg-blue-900/50 cursor-pointer transition-colors ${settingsOpen ? "bg-blue-900 text-white" : ""}`}
             title="Settings Center (Ctrl + ,)"
             aria-label="Platform Settings"
           >
             <Settings className="w-4 h-4" />
           </button>
 
-          <div className="h-4 w-px bg-slate-200"></div>
+          <div className="h-4 w-px bg-blue-800"></div>
 
           {/* Authorized Identity Label */}
           <div className="flex items-center gap-2">
             <div className="hidden lg:block text-right">
-              <span className="font-extrabold text-[10px] text-slate-800 block truncate max-w-[150px]">
+              <span className="font-extrabold text-[10px] text-blue-50 block truncate max-w-[150px]">
                 {preferences.operatorIdentityName || user.name}
               </span>
-              <span className="text-[8px] text-slate-400 font-black block uppercase tracking-wider leading-none">
+              <span className="text-[8px] text-blue-400 font-black block uppercase tracking-wider leading-none">
                 {user.clearance} clearance
               </span>
             </div>
             <button
               onClick={onLogout}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-all"
+              className="p-2 rounded-xl text-blue-200 hover:text-rose-400 hover:bg-blue-900/50 cursor-pointer transition-all"
               title="Secure Logout"
               aria-label="Secure Logout"
             >

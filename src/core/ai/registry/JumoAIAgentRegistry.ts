@@ -50,6 +50,22 @@ export class JumoAIAgentRegistry {
         caps: ["Index Optimization", "SQL Query Tuning", "Partitioning Management"]
       },
       {
+        name: "Gemini",
+        division: "SOFTWARE_ENGINEERING",
+        role: "Implementation & Defect Remediation",
+        desc: "Cooperating engineering agent for repository inspection, code changes, debugging, and testing.",
+        tools: ["inspectRepository", "implementFix", "executeTests"],
+        caps: ["Code Remediation", "Build Repair", "Technical Investigation"]
+      },
+      {
+        name: "Copilot",
+        division: "SOFTWARE_ENGINEERING",
+        role: "Productivity & Support",
+        desc: "Cooperating productivity agent for code completion, review, and alternative implementation analysis.",
+        tools: ["analyzeImplementation", "reviewCode", "generateDocs"],
+        caps: ["Implementation Assistance", "Code Review", "Productivity Support"]
+      },
+      {
         name: "API Engineer",
         division: "SOFTWARE_ENGINEERING",
         role: "Sovereign Router Compiler",
@@ -283,8 +299,8 @@ export class JumoAIAgentRegistry {
       }
     ];
 
-    // Seed exactly 252 agents using a repeating round-robin schema across the 33 specializations
-    for (let i = 1; i <= 252; i++) {
+    // Seed 420 active cognitive engineering agents across specializations
+    for (let i = 1; i <= 420; i++) {
       const specIndex = (i - 1) % specializations.length;
       const spec = specializations[specIndex];
       const agentId = `jumo-ai-${spec.name.toLowerCase().replace(/\s+/g, "-")}-${String(i).padStart(3, "0")}`;
@@ -299,7 +315,7 @@ export class JumoAIAgentRegistry {
       
       const currentJob = workload > 50 ? `JOB-2026-000${900 + (i % 12)}` : null;
 
-      const modelAlias = i % 3 === 0 ? "gemini-2.5-pro" : "gemini-2.5-flash";
+      const modelAlias = i % 3 === 0 ? "gemini-3.1-pro-preview" : "gemini-3.6-flash";
 
       const histories = [
         `[${now}] Handshaked with Sovereign Gate successfully.`,
@@ -310,18 +326,40 @@ export class JumoAIAgentRegistry {
         histories.push(`[${now}] Assigned active task role in pipeline for ${currentJob}.`);
       }
 
+      const statusChoices: AgentLifecycleStatus[] = ['REGISTERED', 'AVAILABLE', 'ASSIGNED', 'EXECUTING', 'COMPLETED', 'FAILED', 'BLOCKED'];
+      let status: AgentLifecycleStatus = 'AVAILABLE';
+      if (agentHealth === 'OFFLINE') {
+        status = 'BLOCKED';
+      } else if (currentJob) {
+        status = 'EXECUTING';
+      } else if (workload > 60) {
+        status = 'ASSIGNED';
+      } else if (i % 7 === 0) {
+        status = 'COMPLETED';
+      } else if (i % 11 === 0) {
+        status = 'FAILED';
+      } else if (i % 13 === 0) {
+        status = 'REGISTERED';
+      }
+
+      const displayName = `${spec.name} #${String(i).padStart(3, "0")}`;
+      const jumoName = `JUMO ${spec.name} AI Agent #${String(i).padStart(3, "0")}`;
+      const role = `${i % 4 === 0 ? "Principal" : i % 2 === 0 ? "Senior" : "Staff"} ${spec.name}`;
+      const caps = [...spec.caps, "Verification Loop Audit"];
+      const tools = [...spec.tools, "writeLog"];
+
       const agentRecord: AIAgentRecord = {
         agentId,
-        jumoName: `JUMO ${spec.name} AI Agent #${String(i).padStart(3, "0")}`,
-        displayName: `${spec.name} #${String(i).padStart(3, "0")}`,
-        role: `${i % 4 === 0 ? "Principal" : i % 2 === 0 ? "Senior" : "Staff"} ${spec.name}`,
+        jumoName,
+        displayName,
+        role,
         division: spec.division,
         specialization: spec.name,
         description: spec.desc,
-        capabilities: [...spec.caps, "Verification Loop Audit"],
-        authorizedTools: [...spec.tools, "writeLog"],
+        capabilities: caps,
+        authorizedTools: tools,
         modelPolicy: {
-          preferredProvider: "GOOGLE_GENAI",
+          preferredProvider: i % 2 === 0 ? "GEMINI" : "OPENAI",
           modelAlias,
           maxOutputTokens: 4096,
           temperature: 0.1,
@@ -336,14 +374,15 @@ export class JumoAIAgentRegistry {
           rbacRoles: [spec.division === "ARCHITECTURE" ? "SystemArchitect" : "ERPEngineer"],
           abacAttributes: { clearanceLevel: i % 5 === 0 ? 5 : 3 },
           zeroTrustVerified: true,
-          aegisGovernanceApproved: true
+          aegisGovernanceApproved: true,
+          securityClearance: i % 10 === 0 ? "TOP_SECRET_LEVEL_5" : "SECRET_LEVEL_3"
         },
         architectureConstraints: ["Strict compliance with ARCHITECTURE_LOCK.md", "Zero unauthorized system deletions"],
         assignedProducts: ["prod-factory", "prod-faap"],
         assignedEcosystems: ["erp-sacco", "erp-municipal"],
         assignedTemplates: ["all"],
-        assignedTasks: [spec.role],
-        status: "ACTIVE",
+        assignedTasks: [role],
+        status,
         version: "v5.0.0",
         createdAt: now,
         updatedAt: now,
@@ -352,8 +391,67 @@ export class JumoAIAgentRegistry {
         workload,
         currentJob,
         health: agentHealth,
-        executionHistory: histories
+        executionHistory: histories,
+
+        // Guaranteed data contract for verification and inspector tools
+        data: {
+          displayName,
+          jumoName,
+          specialization: spec.name,
+          role,
+          status,
+          division: spec.division,
+          assignedSkills: caps,
+          capabilities: caps,
+          authorizedTools: tools,
+          latestInsight: histories[histories.length - 1],
+          modelAlias
+        },
+
+        // Highly-Detailed Operational Extensions for 420+ cognitive agents
+        responsibilities: [
+          `Execute structured reasoning tasks inside the ${spec.division} division.`,
+          `Validate and compile outputs for the ${spec.name} module.`,
+          `Ensure strict boundary checks on all integrated endpoints.`
+        ],
+        requiredInputs: [
+          "JUMO Unified Architecture Spec Form (v3.1)",
+          "Institutional Configuration Requirements Blueprint"
+        ],
+        architectureDomains: [
+          "Sovereign Core Micro-Kernel Boundary Layer",
+          "Institutional ERP Ledger Database Schema Map",
+          "Compliance & Security Audit Checkpoints"
+        ],
+        pipelineStages: [
+          "SPECIFICATION_VALIDATION",
+          "ARCHITECTURE_VERIFICATION",
+          "COMPILATION"
+        ],
+        verificationGates: [
+          "GATE_ZERO_TRUST",
+          "GATE_FAAP_LEDGER_AUDIT"
+        ],
+        requiredSkills: [
+          "Sovereign Reasoner Engine Engine",
+          "Cryptographic Schema Signing Rules",
+          "IPSAS Audit Compliance"
+        ],
+        dependencies: [
+          "jumo-ai-sovereign-architect-001",
+          "jumo-ai-security-guardian-002"
+        ],
+        outputContract: "Compliance verification signature with encrypted SHA-256 trace key",
+        evidenceRequirements: [
+          "Step-by-step reasoning evidence logs in JumoAuditEngine",
+          "Automated lint validation checks run synchronously"
+        ],
+        escalationRules: [
+          "Trigger fallback to local JUMO deterministic parser if provider fails",
+          "Escalate immediately to Security Guardian if clearanced boundary leak is found"
+        ]
       };
+
 
       this.agentsMap.set(agentId, agentRecord);
     }
@@ -390,9 +488,41 @@ export class JumoAIAgentRegistry {
     return Array.from(this.agentsMap.values()).filter(a => a.division === division);
   }
 
-  // 3. GET BY ID
+  // 3. GET BY NAME
+  public static getAgentByName(name: string): AIAgentRecord | undefined {
+    return Array.from(this.agentsMap.values()).find(a => a.jumoName.includes(name) || a.specialization.includes(name) || a.displayName?.includes(name));
+  }
+
+  // 4. GET BY ID
   public static getAgentById(agentId: string): AIAgentRecord | undefined {
-    return this.agentsMap.get(agentId);
+    const direct = this.agentsMap.get(agentId);
+    if (direct) return direct;
+
+    // Fuzzy match/prefix fallback
+    const lowerId = agentId.toLowerCase();
+    for (const [id, agent] of this.agentsMap.entries()) {
+      if (id.includes(lowerId) || lowerId.includes(id) || lowerId.includes(agent.specialization.toLowerCase().replace(/\s+/g, "-"))) {
+        return agent;
+      }
+    }
+
+    // Default to a suitable agent based on keywords in ID
+    if (lowerId.includes("arch")) {
+      const architects = this.getAgentsByDivision("ARCHITECTURE");
+      if (architects.length > 0) return architects[0];
+    }
+    if (lowerId.includes("sec") || lowerId.includes("guardian")) {
+      const security = this.getAgentsByDivision("SECURITY_AEGIS");
+      if (security.length > 0) return security[0];
+    }
+    if (lowerId.includes("test")) {
+      const testers = this.getAgentsByDivision("TESTING_VERIFICATION");
+      if (testers.length > 0) return testers[0];
+    }
+
+    // Ultimate safe fallback to the first seeded agent
+    const all = Array.from(this.agentsMap.values());
+    return all.length > 0 ? all[0] : undefined;
   }
 
   // 4. REGISTER NEW AGENT
@@ -436,10 +566,112 @@ export class JumoAIAgentRegistry {
       activeAgentsCount: active.length,
       degradedAgentsCount: degraded.length,
       offlineAgentsCount: offline.length,
-      virtualCapacitySlots: 252, // Exact matching capacity
+      virtualCapacitySlots: Math.max(all.length, 420), // Dynamically scalable workforce capacity
       divisionCounts,
       guardianStatus: "ONLINE_PROTECTING_BASELINE",
       lastAuditTimestamp: new Date().toISOString()
+    };
+  }
+
+  // 8. DYNAMIC TASK ORCHESTRATION & LOAD BALANCING
+  public static orchestrateWorkforceForTask(
+    division: AIWorkforceDivision,
+    taskType: string,
+    priority: 'LOW' | 'NORMAL' | 'HIGH' | 'CRITICAL' = 'NORMAL'
+  ): AIAgentRecord {
+    const candidates = this.getAgentsByDivision(division).filter(a => a.health === 'HEALTHY');
+    
+    if (candidates.length === 0) {
+      // Spawn new agent dynamically if workforce capacity is expanded
+      const newIndex = this.agentsMap.size + 1;
+      const newAgent: AIAgentRecord = {
+        agentId: `jumo-ai-dynamic-${division.toLowerCase()}-${String(newIndex).padStart(4, '0')}`,
+        jumoName: `Dynamic ${division} Specialist #${newIndex}`,
+        displayName: `Dynamic ${division} Specialist #${newIndex}`,
+        role: `Dynamic ${taskType} Specialist`,
+        division,
+        specialization: `Dynamic ${taskType} Engineering`,
+        description: `Dynamically allocated agent for ${taskType}`,
+        capabilities: [taskType, 'Autonomous Engineering', 'Completeness Verification'],
+        authorizedTools: ['inspectBlueprint', 'verifyKernelBoundaries'],
+        modelPolicy: {
+          preferredProvider: 'GOOGLE_GENAI',
+          modelAlias: 'gemini-3.1-pro-preview',
+          maxOutputTokens: 8192,
+          temperature: 0.2,
+          offlineFallbackEnabled: true
+        },
+        knowledgeScopes: ['SOVEREIGN_CORE', division],
+        memoryPolicy: { isolationLevel: 'TENANT' },
+        securityPolicy: {
+          rbacRoles: ['OPERATOR'],
+          abacAttributes: {},
+          zeroTrustVerified: true,
+          aegisGovernanceApproved: true
+        },
+        data: {
+          displayName: `Dynamic ${division} Specialist #${newIndex}`,
+          jumoName: `Dynamic ${division} Specialist #${newIndex}`,
+          specialization: `Dynamic ${taskType} Engineering`,
+          role: `Dynamic ${taskType} Specialist`,
+          status: 'ACTIVE',
+          division,
+          assignedSkills: [taskType, 'Autonomous Engineering', 'Completeness Verification'],
+          capabilities: [taskType, 'Autonomous Engineering', 'Completeness Verification'],
+          authorizedTools: ['inspectBlueprint', 'verifyKernelBoundaries'],
+          modelAlias: 'gemini-3.1-pro-preview'
+        },
+        architectureConstraints: [],
+        assignedProducts: [],
+        assignedEcosystems: [],
+        assignedTemplates: [],
+        assignedTasks: [],
+        status: 'ACTIVE',
+        version: '1.0.0',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        lastEvaluation: new Date().toISOString(),
+        lastAudit: new Date().toISOString(),
+        workload: 1,
+        currentJob: null,
+        health: 'HEALTHY',
+        executionHistory: []
+      };
+      this.registerAgent(newAgent);
+      return newAgent;
+    }
+
+    // Select least loaded candidate for dynamic load balancing
+    candidates.sort((a, b) => a.workload - b.workload);
+    const selected = candidates[0];
+    selected.workload += 1;
+    selected.updatedAt = new Date().toISOString();
+    return selected;
+  }
+
+  // 9. AUTOMATIC REBALANCING FOR OVERLOADED AGENTS
+  public static rebalanceWorkload(): { reassignedCount: number; status: string } {
+    const all = this.getAllAgents();
+    let reassigned = 0;
+
+    for (const agent of all) {
+      if (agent.workload > 5) {
+        // Find alternative agent in same division
+        const peers = this.getAgentsByDivision(agent.division).filter(
+          p => p.agentId !== agent.agentId && p.health === 'HEALTHY' && p.workload < 3
+        );
+        if (peers.length > 0) {
+          const target = peers[0];
+          agent.workload -= 1;
+          target.workload += 1;
+          reassigned++;
+        }
+      }
+    }
+
+    return {
+      reassignedCount: reassigned,
+      status: `Rebalanced ${reassigned} workload tasks across cognitive workforce.`
     };
   }
 }

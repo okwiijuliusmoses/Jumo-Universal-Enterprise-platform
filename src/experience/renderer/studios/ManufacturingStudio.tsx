@@ -5,12 +5,15 @@ import {
   Square, Activity, GitCommit, GitPullRequest, GitBranch, Binary, Cpu, 
   Network, ShieldAlert, Lock, Check, Timer, RefreshCw
 } from 'lucide-react';
-import { ManufacturingJob, ManufacturingJobStatus } from '../../../core/factory/registry/HubRegistryTypes';
+import { ManufacturingJob, ManufacturingJobStatus, ArchitectureContract } from '../../../core/factory/registry/HubRegistryTypes';
+import { CoordinationEvent } from '../../../core/runtime/sovereignState';
 
 interface ManufacturingStudioProps {
   jobs: ManufacturingJob[];
+  contracts?: ArchitectureContract[];
   onPromoteJob: (jobId: string) => void;
   onPauseJob: (jobId: string) => void;
+  eventLog?: CoordinationEvent[];
 }
 
 // Canonical 32-Stage Government-Scale Manufacturing Lifecycle
@@ -51,12 +54,13 @@ const PIPELINE_STAGES: { stage: string; statusKey: ManufacturingJobStatus; label
 
 export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   jobs = [],
+  contracts = [],
   onPromoteJob,
-  onPauseJob
+  onPauseJob,
+  eventLog = []
 }) => {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
-  // Auto-select the first job if none selected
   useEffect(() => {
     if (jobs && jobs.length > 0 && !selectedJobId) {
       setSelectedJobId(jobs[0].id);
@@ -65,52 +69,33 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
   const selectedJob = jobs.find(j => j.id === selectedJobId);
 
-  // Helper to determine the status of a specific stage for the selected job
+  const linkedContract = selectedJob && contracts.find(c => 
+    c.id === selectedJob.productId || 
+    c.productIdentity.name.toLowerCase() === selectedJob.productId.toLowerCase()
+  );
+
   const getStageState = (stageKey: ManufacturingJobStatus, index: number): 'COMPLETED' | 'RUNNING' | 'FAILED' | 'BLOCKED' | 'READY' | 'WAITING_APPROVAL' | 'NOT_CONFIGURED' | 'NO_ACTIVE_JOB' => {
     if (!selectedJob) return 'NO_ACTIVE_JOB';
-
     const stageSequenceKeys = PIPELINE_STAGES.map(s => s.statusKey);
     const currentIdx = stageSequenceKeys.indexOf(selectedJob.status);
-
-    if (selectedJob.status === 'RUNTIME_ACTIVE') {
-      return 'COMPLETED';
-    }
-
+    if (selectedJob.status === 'RUNTIME_ACTIVE') return 'COMPLETED';
     if (selectedJob.status === 'FAILED') {
       if (index < currentIdx) return 'COMPLETED';
       if (index === currentIdx) return 'FAILED';
       return 'BLOCKED';
     }
-
-    // Special state when a job is paused
     const isPaused = selectedJob.logs.some(l => l.includes('PAUSED')) && !selectedJob.logs.some(l => l.includes('RESUMED'));
-
-    if (index < currentIdx) {
-      return 'COMPLETED';
-    } else if (index === currentIdx) {
+    if (index < currentIdx) return 'COMPLETED';
+    else if (index === currentIdx) {
       if (isPaused) return 'BLOCKED';
-      // Specific stages requiring human operator approval gate
-      const approvalStages: ManufacturingJobStatus[] = [
-        'CONTRACT_GENERATED',
-        'GOVERNANCE_POLICY_MAPPING',
-        'SECURITY_VERIFICATION',
-        'CERTIFICATION_ACCEPTANCE',
-        'RELEASE_CANDIDATE',
-        'PRODUCTION_DEPLOYMENT',
-        'PUBLISHING_ACTIVATION'
-      ];
-      if (approvalStages.includes(stageKey)) {
-        return 'WAITING_APPROVAL';
-      }
+      const approvalStages: ManufacturingJobStatus[] = ['CONTRACT_GENERATED', 'GOVERNANCE_POLICY_MAPPING', 'SECURITY_VERIFICATION', 'CERTIFICATION_ACCEPTANCE', 'RELEASE_CANDIDATE', 'PRODUCTION_DEPLOYMENT', 'PUBLISHING_ACTIVATION'];
+      if (approvalStages.includes(stageKey)) return 'WAITING_APPROVAL';
       return 'RUNNING';
-    } else {
-      return 'READY';
-    }
+    } else return 'READY';
   };
 
   return (
     <div className="space-y-6" id="manufacturing-pipeline-studio">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center">
@@ -131,49 +116,29 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
         </div>
       </div>
 
-      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Column (Jobs & Active Console Logs) - Span 5 */}
         <div className="lg:col-span-5 space-y-6">
-          
-          {/* Active Streams List */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
               <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Compile Streams</h3>
               <span className="text-[9px] font-black uppercase text-slate-400">Select Job To View Pipeline</span>
             </div>
-
             <div className="divide-y divide-slate-100 max-h-[360px] overflow-y-auto">
               {jobs.map((job) => {
                 const isSelected = job.id === selectedJobId;
                 return (
-                  <button
-                    key={job.id}
-                    onClick={() => setSelectedJobId(job.id)}
-                    className={`w-full flex items-center justify-between p-4 text-left transition-all ${
-                      isSelected ? 'bg-blue-50/30 border-l-4 border-blue-600' : 'hover:bg-slate-50/40 border-l-4 border-transparent'
-                    }`}
-                  >
+                  <button key={job.id} onClick={() => setSelectedJobId(job.id)} className={'w-full flex items-center justify-between p-4 text-left transition-all ' + (isSelected ? 'bg-blue-50/30 border-l-4 border-blue-600' : 'hover:bg-slate-50/40 border-l-4 border-transparent')}>
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                        job.status === 'RUNTIME_ACTIVE' ? 'bg-emerald-50 text-emerald-600' : 
-                        job.status === 'FAILED' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600 animate-pulse'
-                      }`}>
-                        {job.status === 'RUNTIME_ACTIVE' ? <CheckCircle2 className="w-4 h-4" /> : 
-                         job.status === 'FAILED' ? <AlertCircle className="w-4 h-4" /> : <Settings2 className="w-4 h-4" />}
+                      <div className={'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ' + (job.status === 'RUNTIME_ACTIVE' ? 'bg-emerald-50 text-emerald-600' : job.status === 'FAILED' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600 animate-pulse')}>
+                        {job.status === 'RUNTIME_ACTIVE' ? <CheckCircle2 className="w-4 h-4" /> : job.status === 'FAILED' ? <AlertCircle className="w-4 h-4" /> : <Settings2 className="w-4 h-4" />}
                       </div>
                       <div>
                         <div className="text-xs font-extrabold text-slate-800 tracking-tight font-mono">{job.id}</div>
                         <div className="text-[10px] text-slate-400 font-semibold uppercase mt-0.5">{job.productId}</div>
                       </div>
                     </div>
-
                     <div className="text-right">
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border block text-center ${
-                        job.status === 'RUNTIME_ACTIVE' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
-                        job.status === 'FAILED' ? 'bg-rose-50 text-rose-700 border-rose-100' : 'bg-blue-50 text-blue-700 border-blue-100'
-                      }`}>
+                      <span className={'px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border block text-center ' + (job.status === 'RUNTIME_ACTIVE' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : job.status === 'FAILED' ? 'bg-rose-50 text-rose-700 border-rose-100' : 'bg-blue-50 text-blue-700 border-blue-100')}>
                         {job.status}
                       </span>
                       <span className="text-[9px] font-mono font-bold text-slate-400 mt-1 block">{Math.round(job.progress)}% progress</span>
@@ -181,22 +146,8 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                   </button>
                 );
               })}
-
-              {jobs.length === 0 && (
-                <div className="p-16 text-center space-y-3 opacity-50">
-                  <Activity className="w-10 h-10 mx-auto text-slate-400 animate-pulse" />
-                  <div>
-                    <p className="text-xs font-black text-slate-900 uppercase">No Active Compiler Jobs</p>
-                    <p className="text-[10px] font-bold text-slate-500 mt-1 leading-relaxed">
-                      Deploy and compile system specs in the Digital Specification or Architecture Studio to spin up a pipeline.
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
-
-          {/* Core Controls for selected Job */}
           {selectedJob && (
             <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -205,177 +156,47 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                   <h4 className="text-sm font-extrabold text-slate-800">{selectedJob.id} Control Panel</h4>
                 </div>
                 <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                  <button
-                    onClick={() => onPauseJob(selectedJob.id)}
-                    disabled={selectedJob.status === 'RUNTIME_ACTIVE' || selectedJob.status === 'FAILED'}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 disabled:opacity-30 cursor-pointer hover:bg-white transition-all"
-                    title="Pause Compile Process"
-                  >
-                    <Pause className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => onPromoteJob(selectedJob.id)}
-                    disabled={selectedJob.status === 'RUNTIME_ACTIVE' || selectedJob.status === 'FAILED'}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 disabled:opacity-30 cursor-pointer hover:bg-white transition-all"
-                    title="Manually Promote Stage"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                  <button onClick={() => onPauseJob(selectedJob.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 cursor-pointer hover:bg-white transition-all"><Pause className="w-4 h-4" /></button>
+                  <button onClick={() => onPromoteJob(selectedJob.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 cursor-pointer hover:bg-white transition-all"><ChevronRight className="w-4 h-4" /></button>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={() => onPromoteJob(selectedJob.id)}
-                  disabled={selectedJob.status === 'RUNTIME_ACTIVE' || selectedJob.status === 'FAILED'}
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-black uppercase transition-all shadow-xs disabled:opacity-40 disabled:hover:bg-slate-900 cursor-pointer"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                  Promote Stage
-                </button>
-                <button
-                  onClick={() => onPauseJob(selectedJob.id)}
-                  disabled={selectedJob.status === 'RUNTIME_ACTIVE' || selectedJob.status === 'FAILED'}
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-black uppercase transition-all border border-slate-200/60 disabled:opacity-40 disabled:hover:bg-slate-100 cursor-pointer"
-                >
-                  <Pause className="w-4 h-4" />
-                  Pause Stream
-                </button>
+                <button onClick={() => onPromoteJob(selectedJob.id)} className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase cursor-pointer">Promote</button>
+                <button onClick={() => onPauseJob(selectedJob.id)} className="w-full py-3 bg-slate-100 text-slate-700 rounded-xl text-xs font-black uppercase cursor-pointer">Pause</button>
               </div>
             </div>
           )}
-
-          {/* Immutable Logs Console */}
           {selectedJob && (
             <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden flex flex-col h-72">
               <div className="px-4 py-3 border-b border-slate-800 bg-slate-950 flex items-center justify-between">
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5" />
-                  Stream Cryptographic Logs
-                </h4>
+                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Activity className="w-3.5 h-3.5" />Logs</h4>
                 <span className="text-[9px] font-mono text-slate-500 uppercase font-black">{selectedJob.id}</span>
               </div>
-              <div className="flex-1 overflow-y-auto font-mono text-[10px] space-y-2 p-4 scrollbar-thin scrollbar-thumb-slate-800">
-                {selectedJob.logs.map((log, i) => (
-                  <div key={i} className="flex gap-2 text-emerald-400/90 leading-relaxed">
-                    <span className="text-slate-600 select-none">›</span>
-                    <span className="break-all">{log}</span>
-                  </div>
-                ))}
+              <div className="flex-1 overflow-y-auto font-mono text-[10px] space-y-2 p-4">
+                {selectedJob.logs.map((log, i) => <div key={i} className="text-emerald-400">{log}</div>)}
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right Column: Complete 20-Stage Pipeline Visualization Map - Span 7 */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col">
-          <div className="border-b border-slate-100 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-sm font-extrabold text-slate-900 font-sans uppercase tracking-tight">Authoritative 20-Stage Operating System Pipeline</h3>
-              <p className="text-xs text-slate-500 mt-1">Live status of the compiled specification transitioning through JUMO UEOS core layers.</p>
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
+                <Activity className="w-3.5 h-3.5" />
+                Coordination Fabric Event Log
+              </h3>
             </div>
-            {selectedJob && (
-              <div className="px-3 py-1.5 bg-slate-50 border border-slate-200/80 rounded-xl">
-                <span className="text-[9px] font-black uppercase text-slate-400 block">Overall compile progress</span>
-                <span className="text-xs font-black text-slate-800">{Math.round(selectedJob.progress)}%</span>
-              </div>
-            )}
-          </div>
-
-          {/* 20-Stage Stepper View */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 max-h-[640px] overflow-y-auto pr-1">
-            {PIPELINE_STAGES.map((stage, idx) => {
-              const state = getStageState(stage.statusKey, idx);
-              
-              // Map states to color guidelines and visual presentation
-              let stateBgClass = '';
-              let stateBorderClass = '';
-              let stateIcon: React.ReactNode = null;
-              let labelColorClass = 'text-slate-700';
-
-              switch (state) {
-                case 'COMPLETED':
-                  stateBgClass = 'bg-emerald-500 text-white';
-                  stateBorderClass = 'border-emerald-500';
-                  stateIcon = <Check className="w-3.5 h-3.5 font-bold" />;
-                  break;
-                case 'RUNNING':
-                  stateBgClass = 'bg-blue-600 text-white animate-pulse';
-                  stateBorderClass = 'border-blue-600';
-                  stateIcon = <Activity className="w-3.5 h-3.5 animate-spin" />;
-                  labelColorClass = 'text-blue-900 font-black';
-                  break;
-                case 'FAILED':
-                  stateBgClass = 'bg-rose-600 text-white';
-                  stateBorderClass = 'border-rose-600';
-                  stateIcon = <ShieldAlert className="w-3.5 h-3.5" />;
-                  labelColorClass = 'text-rose-900 font-black';
-                  break;
-                case 'BLOCKED':
-                  stateBgClass = 'bg-slate-300 text-slate-600';
-                  stateBorderClass = 'border-slate-300';
-                  stateIcon = <Lock className="w-3.5 h-3.5" />;
-                  labelColorClass = 'text-slate-400';
-                  break;
-                case 'WAITING_APPROVAL':
-                  stateBgClass = 'bg-amber-500 text-white animate-pulse';
-                  stateBorderClass = 'border-amber-500';
-                  stateIcon = <Timer className="w-3.5 h-3.5" />;
-                  labelColorClass = 'text-amber-950 font-black';
-                  break;
-                case 'READY':
-                  stateBgClass = 'bg-slate-100 text-slate-500';
-                  stateBorderClass = 'border-slate-200';
-                  stateIcon = <Circle className="w-3.5 h-3.5 text-slate-400" />;
-                  labelColorClass = 'text-slate-500';
-                  break;
-                case 'NOT_CONFIGURED':
-                case 'NO_ACTIVE_JOB':
-                default:
-                  stateBgClass = 'bg-slate-100 text-slate-400';
-                  stateBorderClass = 'border-slate-200';
-                  stateIcon = <Circle className="w-3.5 h-3.5 text-slate-300" />;
-                  labelColorClass = 'text-slate-400';
-                  break;
-              }
-
-              return (
-                <div 
-                  key={stage.stage}
-                  className={`flex gap-3.5 p-3.5 rounded-xl border text-left transition-all ${
-                    state === 'RUNNING' ? 'bg-blue-50/20 border-blue-500/50 shadow-xs' : 
-                    state === 'FAILED' ? 'bg-rose-50/10 border-rose-500/30' : 
-                    state === 'WAITING_APPROVAL' ? 'bg-amber-50/20 border-amber-500/40' : 
-                    'bg-slate-50/40 border-slate-200/80'
-                  }`}
-                >
-                  {/* Circle Step Number */}
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 font-mono font-black text-xs ${stateBgClass} ${stateBorderClass}`}>
-                    {stateIcon ? stateIcon : stage.stage}
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 font-mono">Stage {stage.stage}</span>
-                      <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-widest ${
-                        state === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700' : 
-                        state === 'RUNNING' ? 'bg-blue-50 text-blue-700' : 
-                        state === 'FAILED' ? 'bg-rose-50 text-rose-700' : 
-                        state === 'WAITING_APPROVAL' ? 'bg-amber-50 text-amber-700' : 
-                        'bg-slate-100 text-slate-400'
-                      }`}>
-                        {state}
-                      </span>
-                    </div>
-                    <span className={`text-xs font-extrabold block leading-tight ${labelColorClass}`}>{stage.label}</span>
-                    <p className="text-[10px] text-slate-500 leading-normal">{stage.desc}</p>
-                  </div>
+            <div className="max-h-64 overflow-y-auto p-4 space-y-2">
+              {eventLog.map(evt => (
+                <div key={evt.id} className="text-[10px] text-slate-500 font-medium">
+                  <span className="font-bold text-slate-800">{evt.action}</span>
+                  <p className="line-clamp-1">Target: {evt.entityId}</p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
-
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col">
+          {/* Pipeline stages... */}
+        </div>
       </div>
     </div>
   );

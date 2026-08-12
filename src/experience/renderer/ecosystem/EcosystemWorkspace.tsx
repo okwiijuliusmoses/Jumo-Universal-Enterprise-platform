@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from '../specification/DigitalEcosystemSpecificationForm';
 import { useSovereignState } from '../../../hooks/useSovereignState';
+import { JumoSpecificationCompiler } from '../../../core/specification/JumoSpecificationCompiler';
 
 interface EcosystemWorkspaceProps {
   ecosystemId: 'eco-erp' | 'eco-cloud' | 'eco-software' | 'eco-commercial' | 'eco-research';
@@ -42,38 +43,20 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
     const tpl = quickTemplates.find(t => t.id === tplId);
     if (!tpl || !onGenerateArchitectureContract) return;
     
-    onGenerateArchitectureContract({
-      product: {
-        ecosystem: 'ERP_ECOSYSTEM',
-        productCategory: 'ERP',
-        productType: 'Enterprise System',
-        productName: tpl.name,
-        governmentScale: 'NATIONAL',
-        applicationType: 'WEB_APP',
-        governmentStandard: 'JUMO_GOVERNMENT_STANDARD',
-        purpose: tpl.description,
-        problemBeingSolved: tpl.description,
-        sector: 'Private',
+    const compiledSpec = JumoSpecificationCompiler.compileSpecification({
+      productName: tpl.name,
+      productType: 'General Enterprise ERP',
+      productFamily: 'ENTERPRISE_MANAGEMENT',
+      purpose: tpl.description,
+      sector: 'Private',
+      organizationModel: {
         targetOrganization: `${tpl.name} Cooperative`,
         organizationType: 'Cooperative',
-        countryRegion: 'Uganda',
-        targetUsers: 'All Members',
-        operatingModel: 'Centralized',
-        geographicScope: 'Regional',
-        deploymentModel: 'JUMO Cloud',
-        customization: ''
-      },
-      portals: { selected: ['EXECUTIVE', 'STAFF', 'CLIENT'], customization: '' },
-      organization: { selected: ['MANAGEMENT', 'FINANCE'], customization: '' },
-      modules: { selected: ['LEDGER', 'INVENTORY'], customization: '' },
-      digitalForms: { selected: ['REGISTRATION', 'INVOICE'], customization: '' },
-      workflows: { selected: ['APPROVAL_CHAIN'], customization: '' },
-      aiWorkforce: { selected: ['RESEARCH_AGENT'], customization: '' },
-      integrations: { selected: ['MOBILE_MONEY'], customization: '' },
-      security: { selected: ['MFA', 'RBAC'], customization: '' },
-      dataArchitecture: { selected: ['ENCRYPTED_STORAGE'], customization: '' },
-      deployment: { selected: ['AUTO_SCALING'], customization: '' }
+        hierarchyNodes: ['Board of Directors', 'Management', 'Operations']
+      }
     });
+
+    onGenerateArchitectureContract(compiledSpec);
     setActiveTab('architecture');
   };
 

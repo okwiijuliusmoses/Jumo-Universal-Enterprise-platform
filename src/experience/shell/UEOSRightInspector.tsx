@@ -19,7 +19,8 @@ interface UEOSRightInspectorProps {
 export function UEOSRightInspector({ entity, onClose, onTriggerAction }: UEOSRightInspectorProps) {
   if (!entity) return null;
 
-  const { type, id, data } = entity;
+  const { type, id } = entity;
+  const data = entity.data || {};
 
   return (
     <div 
@@ -241,23 +242,23 @@ export function UEOSRightInspector({ entity, onClose, onTriggerAction }: UEOSRig
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase text-slate-400">Cognitive Worker</span>
-                <h4 className="text-xs font-extrabold text-slate-900">{data.displayName}</h4>
-                <span className="text-[10px] text-slate-500 font-bold uppercase">{data.jumoName}</span>
+                <h4 className="text-xs font-extrabold text-slate-900">{data?.displayName || data?.jumoName || "AI Specialist"}</h4>
+                <span className="text-[10px] text-slate-500 font-bold uppercase">{data?.jumoName || "JUMO AI Agent"}</span>
               </div>
             </div>
 
             <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-2 text-[11px]">
               <div className="flex justify-between border-b border-slate-200/50 pb-1.5">
                 <span className="text-slate-400 font-bold">Specialization:</span>
-                <span className="font-extrabold text-violet-700">{data.specialization}</span>
+                <span className="font-extrabold text-violet-700">{data?.specialization || "Sovereign Engineering"}</span>
               </div>
               <div className="flex justify-between border-b border-slate-200/50 pb-1.5">
                 <span className="text-slate-400 font-bold">Operating Role:</span>
-                <span className="font-bold text-slate-800">{data.role}</span>
+                <span className="font-bold text-slate-800">{data?.role || "Specialist Agent"}</span>
               </div>
               <div className="flex justify-between border-b border-slate-200/50 pb-1.5">
                 <span className="text-slate-400 font-bold">Status:</span>
-                <span className="font-extrabold text-emerald-600 uppercase">{data.status || "ACTIVE"}</span>
+                <span className="font-extrabold text-emerald-600 uppercase">{data?.status || "ACTIVE"}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400 font-bold">Memory Pool:</span>
@@ -268,7 +269,7 @@ export function UEOSRightInspector({ entity, onClose, onTriggerAction }: UEOSRig
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase text-slate-400">Assigned Capabilities</span>
               <div className="flex flex-wrap gap-1">
-                {data.assignedSkills?.map((skill: string, i: number) => (
+                {(data?.assignedSkills || data?.capabilities || []).map((skill: string, i: number) => (
                   <span key={i} className="text-[10px] bg-violet-50 text-violet-700 border border-violet-100/60 px-2.5 py-1 rounded-md font-extrabold">
                     {skill}
                   </span>
@@ -276,7 +277,7 @@ export function UEOSRightInspector({ entity, onClose, onTriggerAction }: UEOSRig
               </div>
             </div>
 
-            {data.latestInsight && (
+            {data?.latestInsight && (
               <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 text-xs space-y-2 text-slate-600 leading-relaxed">
                 <div className="flex items-center gap-1.5 text-slate-800 font-extrabold text-[11px]">
                   <Info className="w-3.5 h-3.5 text-violet-600" />

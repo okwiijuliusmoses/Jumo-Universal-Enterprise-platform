@@ -1,6 +1,5 @@
 import express from "express";
 import { jumoConversationalReasoning } from "./src/core/ai/conversational/JumoConversationalReasoningService";
-
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
@@ -8,16 +7,28 @@ import { SovereignOperatingStateService } from "./src/core/runtime/sovereignStat
 import { UniversalHubRegistry } from "./src/core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "./src/core/ai/registry/JumoAIAgentRegistry";
 import { JUMO_HYBRID_ARCHITECTURE_REGISTRY } from "./src/core/hub/architecture/JumoHybridArchitectureLayers";
+import { JumoAIProviderGateway } from "./src/core/ai/gateway/JumoAIProviderGateway";
+import { JumoAIProviderRegistry } from "./src/core/ai/providers/JumoAIProviderRegistry";
+import { JumoCognitiveWorkforceOrchestrator } from "./src/core/ai/orchestrator/JumoCognitiveWorkforceOrchestrator";
+import { AgentExecutionService } from "./src/core/ai/execution/AgentExecutionService";
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const PORT = 3000;
 
   app.use(express.json());
 
+  // AUTHORITATIVE REQUEST LOGGING MIDDLEWARE
+  app.use((req, res, next) => {
+    if (req.url.startsWith("/api")) {
+      console.log(`[JUMO_UEOS_GATEWAY] ${new Date().toISOString()} | ${req.method} ${req.url}`);
+    }
+    next();
+  });
+
   // Health check endpoint
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+    res.json({ status: "ok", service: "JUMO UEOS Core Ingress" });
   });
 
   // UEOS Sovereign Identity Login Endpoint (Verification Mode active)
@@ -158,6 +169,39 @@ async function startServer() {
       const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
       const updated = SovereignOperatingStateService.approveArchitectureContract(id, actor);
       res.json(updated);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 2c. Propose architecture expansion
+  app.post("/api/v1/ueos/architecture/expansion/propose", (req, res) => {
+    try {
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const trace = SovereignOperatingStateService.proposeArchitectureExpansion(req.body, actor);
+      res.json(trace);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 2d. Approve architecture expansion
+  app.post("/api/v1/ueos/architecture/expansion/:id/approve", (req, res) => {
+    try {
+      const id = req.params.id;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+      const trace = SovereignOperatingStateService.approveArchitectureExpansion(id, actor);
+      res.json(trace);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 2e. Emit coordination event
+  app.post("/api/v1/ueos/events/emit", (req, res) => {
+    try {
+      const event = SovereignOperatingStateService.emitEvent(req.body);
+      res.json(event);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
@@ -390,6 +434,104 @@ async function startServer() {
         logs
       });
     } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // === AI WORKFORCE EXECUTION & CONFIGURATION GATEWAYS ===
+  app.get("/api/v1/ueos/ai/config", async (req, res) => {
+    try {
+      const dotenv = await import('dotenv');
+dotenv.config({ override: true });
+      
+      if (ReasoningProviderFactory.getInstance) {
+        ReasoningProviderFactory.getInstance().refreshProviders();
+      }
+    } catch (e) {
+      console.warn("Failed to refresh dotenv or ReasoningProviderFactory", e);
+    }
+    try {
+      const config = JumoAIProviderGateway.getInstance().getConfig();
+      // Redact sensitive keys for safety before returning
+      res.json({
+        mode: config.mode,
+        reasoningPolicy: config.reasoningPolicy,
+        openaiModel: config.openaiModel,
+        geminiModel: config.geminiModel,
+        hasOpenAIKey: !!config.openaiKey,
+        hasGeminiKey: !!config.geminiKey,
+        timeoutMs: config.timeoutMs,
+        maxRetries: config.maxRetries,
+        maxConcurrency: config.maxConcurrency,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Fetch real-time provider-specific health statuses
+  app.get("/api/v1/ueos/ai/providers/health", async (req, res) => {
+    try {
+      const dotenv = await import('dotenv');
+dotenv.config({ override: true });
+    } catch(e) {}
+    try {
+      const registry = JumoAIProviderRegistry.getInstance();
+      const providers = registry.list();
+      
+      const results = await Promise.all(
+        providers.map(async (p) => {
+          const health = await p.getHealth();
+          return {
+            providerId: p.providerId,
+            displayName: p.displayName,
+            local: p.local,
+            status: health.status,
+            latencyMs: health.latencyMs,
+            details: health.details,
+          };
+        })
+      );
+      
+      const isAnyHealthy = results.some((r) => r.status === "HEALTHY");
+      res.json({
+        intelligenceStatus: isAnyHealthy ? "OPERATIONAL" : "DEGRADED",
+        providers: results,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Run workforce parallel consensus and conflict-analysis
+  app.post("/api/v1/ueos/ai/consensus", async (req, res) => {
+    try {
+      const { specification, targetCategory, capabilities } = req.body;
+      const orchestrator = JumoCognitiveWorkforceOrchestrator.getInstance();
+      const report = await orchestrator.analyzeAndExpandArchitecture(specification, targetCategory, capabilities);
+      res.json(report);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/v1/ueos/ai/execute", async (req, res) => {
+    try {
+      const { agentId, taskTitle, jobId, architectureId, division, specialization } = req.body;
+      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
+
+      const workLog = await AgentExecutionService.executeAgentTask({
+        agentId,
+        jobId: jobId || "JOB-MANUAL-EXEC",
+        task: taskTitle || "Sovereign Engineering Task",
+        division: division || "ENGINEERING",
+        specialization: specialization || "Sovereign Systems",
+        architectureId,
+      }, actor);
+
+      res.json(workLog);
+    } catch (err: any) {
+      console.error(`[AGENT_EXECUTION] Failed: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   });

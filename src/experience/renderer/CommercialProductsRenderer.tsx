@@ -450,7 +450,7 @@ export function CommercialProductsRenderer() {
                     <div className="flex items-center gap-2">
                       <product.icon className="w-4 h-4 text-blue-400" />
                       <span className="text-[10px] font-black truncate">
-                        {product.name.replace("JUMO ", "")}
+                        {(product.name || 'Unknown Product').replace("JUMO ", "")}
                       </span>
                     </div>
                     <span className="block text-[9px] text-emerald-400 mt-2 font-bold">

@@ -36,7 +36,7 @@ export function AIGatewayRenderer() {
 
   const commandModules = [
     { id: "agents", title: "JUMO AI Workforce Registry", icon: Cpu, detail: `${stats.totalRegisteredAgents} Native JUMO Agents Registered`, status: "Active Swarm" },
-    { id: "models", title: "JUMO Model Gateway", icon: BrainCircuit, detail: "Gemini 2.5 Pro / Flash & Sovereign Local Runtime", status: "Operational" },
+    { id: "models", title: "JUMO Model Gateway", icon: BrainCircuit, detail: "Gemini 3.6 Flash / 3.1 Pro & Sovereign Local Runtime", status: "Operational" },
     { id: "memory", title: "Semantic Memory & RAG", icon: Database, detail: "Tenant-Isolated Knowledge Scopes", status: "Enforced" },
     { id: "governance", title: "JUMO AEGIS Security & Audit", icon: Shield, detail: "Zero Trust & Anti-Deletion Guardian", status: "Active" },
     { id: "manufacturing", title: "JUMO National Manufacturing Hub", icon: Zap, detail: `${UniversalHubRegistry.getERPEcosystems().length} ERP Ecosystems Configured`, status: "Ready" },
@@ -71,7 +71,7 @@ export function AIGatewayRenderer() {
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            {div.replace(/_/g, " ")}
+            {(div || 'UNKNOWN').replace(/_/g, " ")}
           </button>
         ))}
       </div>
@@ -91,7 +91,7 @@ export function AIGatewayRenderer() {
                 <div>
                   <h4 className="text-xl font-black text-slate-900 tracking-tight mb-1">{agent.jumoName}</h4>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-100">{agent.division.replace(/_/g, " ")}</span>
+                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-100">{(agent.division || 'UNKNOWN').replace(/_/g, " ")}</span>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{agent.role}</span>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export function AIGatewayRenderer() {
                 <div>
                   <h3 className="text-3xl font-black text-slate-900 tracking-tighter italic mb-1">{selectedAgent.jumoName}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2 py-0.5 rounded border border-rose-100">{selectedAgent.division.replace(/_/g, " ")}</span>
+                    <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest bg-rose-50 px-2 py-0.5 rounded border border-rose-100">{(selectedAgent.division || 'UNKNOWN').replace(/_/g, " ")}</span>
                     <span className="text-xs font-bold text-slate-500">{selectedAgent.role}</span>
                   </div>
                 </div>

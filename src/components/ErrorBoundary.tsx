@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, ShieldAlert, Terminal } from "lucide-react";
+import { UEOSErrorBoundary } from "../experience/components/UEOSErrorBoundary";
 
 interface Props {
   children: ReactNode;
@@ -96,3 +97,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export { UEOSErrorBoundary };
+export default ErrorBoundary;
+

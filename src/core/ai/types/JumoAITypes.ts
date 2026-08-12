@@ -14,6 +14,12 @@ export type AIWorkforceDivision =
 
 export type AgentLifecycleStatus = 
   | 'REGISTERED'
+  | 'AVAILABLE'
+  | 'ASSIGNED'
+  | 'EXECUTING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'BLOCKED'
   | 'CONFIGURED'
   | 'EVALUATED'
   | 'APPROVED'
@@ -24,8 +30,8 @@ export type AgentLifecycleStatus =
   | 'RETIRED';
 
 export interface ModelPolicy {
-  preferredProvider: 'GOOGLE_GENAI' | 'JUMO_LOCAL_RUNTIME' | 'CUSTOM_HYBRID';
-  modelAlias: string; // e.g. 'gemini-2.5-flash', 'gemini-2.5-pro'
+  preferredProvider: 'GOOGLE_GENAI' | 'JUMO_LOCAL_RUNTIME' | 'CUSTOM_HYBRID' | 'OPENAI' | 'GEMINI' | 'COPILOT' | 'JUMO_LOCAL';
+  modelAlias: string; // e.g. 'gemini-3.6-flash', 'gemini-3.1-pro-preview'
   maxOutputTokens: number;
   temperature: number;
   offlineFallbackEnabled: boolean;
@@ -36,6 +42,7 @@ export interface SecurityPolicy {
   abacAttributes: Record<string, any>;
   zeroTrustVerified: boolean;
   aegisGovernanceApproved: boolean;
+  securityClearance?: string; // e.g. "TOP_SECRET_LEVEL_5"
 }
 
 export interface AIAgentRecord {
@@ -70,6 +77,21 @@ export interface AIAgentRecord {
   currentJob: string | null;
   health: 'HEALTHY' | 'DEGRADED' | 'OFFLINE';
   executionHistory: string[];
+
+  // Mandatory data contract payload for UI & verification inspectors
+  data?: Record<string, any>;
+
+  // Highly-Detailed Operational Extensions for 420+ cognitive agents
+  responsibilities?: string[];
+  requiredInputs?: string[];
+  architectureDomains?: string[];
+  pipelineStages?: string[];
+  verificationGates?: string[];
+  requiredSkills?: string[];
+  dependencies?: string[];
+  outputContract?: string;
+  evidenceRequirements?: string[];
+  escalationRules?: string[];
 }
 
 export interface ManufacturingTaskRequest {

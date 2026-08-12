@@ -5,6 +5,7 @@ import {
   Layers, AlertCircle, CheckCircle2, ChevronDown, RefreshCw, Zap
 } from 'lucide-react';
 import { ReasoningPlanStep } from '../../core/ai/conversational/GeneralPurposeReasoningAI';
+import { StructuredAIResponseRenderer } from '../renderer/components/StructuredAIResponseRenderer';
 
 interface ChatMessage {
   id: string;
@@ -252,7 +253,11 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
                         ? 'bg-rose-50 text-rose-700 border-rose-200/60 rounded-tl-none font-bold'
                         : 'bg-white text-slate-800 border-slate-200/60 rounded-tl-none shadow-sm'
                     }`}>
-                      {msg.content}
+                      {msg.role === 'user' ? (
+                        typeof msg.content === 'object' ? JSON.stringify(msg.content) : String(msg.content || '')
+                      ) : (
+                        <StructuredAIResponseRenderer response={msg.content} theme="light" />
+                      )}
                     </div>
 
                     {/* Render Intent interpretation if available */}

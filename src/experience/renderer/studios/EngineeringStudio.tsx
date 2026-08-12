@@ -6,6 +6,8 @@ import {
   CheckCircle2, AlertCircle, HardDrive, Brain, Send, Lock, Eye
 } from 'lucide-react';
 import { EngineeringAgent, ManufacturingJob } from '../../../core/factory/registry/HubRegistryTypes';
+import { AgentWorkLog, CoordinationEvent } from '../../../core/runtime/sovereignState.types';
+import { StructuredAIResponseRenderer } from '../components/StructuredAIResponseRenderer';
 
 interface ReasoningResult {
   requestId: string;
@@ -21,10 +23,16 @@ interface ReasoningResult {
 interface EngineeringStudioProps {
   agents: EngineeringAgent[];
   jobs: ManufacturingJob[];
+  workLogs?: AgentWorkLog[];
+  eventLog?: CoordinationEvent[];
 }
 
-export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ agents = [], jobs = [] }) => {
-  const allLogs = (jobs ?? []).flatMap(j => j.logs).slice(-10).reverse();
+export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ agents = [], jobs = [], workLogs = [], eventLog = [] }) => {
+  const allLogs = [
+    ...(eventLog ?? []).map(e => `[${e.sourceStudio}→${e.destinationStudio}] ${e.action}: ${e.entityId}`),
+    ...(workLogs ?? []).map(l => `[${l.specialization}] ${l.task}: ${l.result.slice(0, 80)}${l.result.length > 80 ? '...' : ''}`),
+    ...(jobs ?? []).flatMap(j => j.logs)
+  ].slice(0, 20);
 
   // JUMO AI Interactive Terminal States
   const [selectedAgentId, setSelectedAgentId] = useState<string>('agent-01');
@@ -43,43 +51,44 @@ export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ agents = [
     setAiResponse(null);
 
     try {
-      const response = await fetch('/api/v1/ueos/ai/reason', {
+      // Call the authoritative execution endpoint
+      const response = await fetch('/api/v1/ueos/ai/execute', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-operator-name': 'Sovereign Operator Alpha'
         },
         body: JSON.stringify({
-          message: promptText.trim(),
-          mode: 'analysis',
-          context: {
-            activeStudio: 'workforce',
-            agentId: selectedAgentId,
-            agentName: selectedAgent?.jumoName
-          }
+          agentId: selectedAgentId,
+          taskTitle: promptText.trim(),
+          division: selectedAgent?.division,
+          specialization: selectedAgent?.specialization,
+          jobId: jobs[0]?.id // Default to most recent job if available
         })
       });
 
       if (!response.ok) {
-        throw new Error(`AI Request failed (HTTP ${response.status})`);
+        throw new Error(`Execution failed (HTTP ${response.status})`);
       }
 
-      const data = await response.json();
-      if (data.ok && data.result) {
-        // Safe check for structure
-        if (typeof data.result === 'object' && data.result !== null) {
-          setAiResponse(data.result as ReasoningResult);
-        } else if (typeof data.result === 'string') {
-          setAiResponse(data.result);
-        } else {
-          setAiResponse('[ERROR] Returned data matches an un-parseable cognitive block.');
-        }
-      } else {
-        setAiResponse('[ERROR] Failed to compile cognitive model response. Please verify security channels.');
-      }
+      const workLog = await response.json();
+      setAiResponse({
+        requestId: workLog.id,
+        mode: 'execution',
+        understoodIntent: `Execute ${selectedAgent?.specialization} task: ${promptText.trim()}`,
+        response: workLog.result,
+        timestamp: workLog.timestamp,
+        delegation: { required: false },
+        plan: [
+          { id: '1', title: 'Task Started', description: 'Agent handshake and tool authorization.', status: 'COMPLETED' },
+          { id: '2', title: 'Work Executed', description: 'Specialized logic compilation.', status: 'COMPLETED' },
+          { id: '3', title: 'Evidence Sealed', description: `SHA256: ${workLog.evidenceHash?.slice(0, 16)}...`, status: 'COMPLETED' }
+        ]
+      } as any);
+
     } catch (err: any) {
       console.error(err);
-      setAiResponse(`[CONNECTION_ERROR] Failed to establish high-throughput secure routing to the JUMO-AI Core. Detail: ${err.message}`);
+      setAiResponse(`[EXECUTION_ERROR] Failed to complete authoritative task lifecycle. Detail: ${err.message}`);
     } finally {
       setIsGenerating(false);
     }
@@ -277,41 +286,7 @@ export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ agents = [
                   <span className="text-[9px] text-emerald-400 font-black">MATCHED JUMO-SECURE-KEY-SHA256</span>
                 </div>
                 
-                {typeof aiResponse === 'object' ? (
-                  <div className="space-y-3">
-                    {aiResponse.understoodIntent && (
-                      <div className="text-[9px] font-black text-blue-400 uppercase tracking-wider bg-blue-950/40 px-2 py-1 rounded border border-blue-900/40 inline-block">
-                        Intent: {aiResponse.understoodIntent}
-                      </div>
-                    )}
-                    <p className="whitespace-pre-wrap leading-relaxed text-emerald-400/90">
-                      {typeof aiResponse.response === 'object' ? JSON.stringify(aiResponse.response, null, 2) : String(aiResponse.response || '')}
-                    </p>
-                    
-                    {Array.isArray(aiResponse.plan) && aiResponse.plan.length > 0 && (
-                      <div className="mt-3 p-3 bg-slate-900/50 rounded-xl border border-slate-800 space-y-2">
-                        <div className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Cognitive Action Items</div>
-                        {aiResponse.plan.map((step, idx) => (
-                          <div key={idx} className="text-[10px] text-slate-300 leading-relaxed">
-                            <span className="text-amber-500 font-extrabold mr-1.5">•</span>
-                            <span className="font-bold text-slate-100">
-                              {typeof step.title === 'object' ? JSON.stringify(step.title) : String(step.title || '')}:
-                            </span>{' '}
-                            {typeof step.description === 'object' ? JSON.stringify(step.description) : String(step.description || '')}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {aiResponse.delegation?.required && (
-                      <div className="p-2.5 bg-indigo-950/40 border border-indigo-900/50 rounded-lg text-[9px] text-indigo-300 font-bold">
-                        Swarm Node {aiResponse.delegation.agentId} delegated: {aiResponse.delegation.reason}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="whitespace-pre-wrap leading-relaxed text-emerald-400/90">{aiResponse}</p>
-                )}
+                <StructuredAIResponseRenderer response={aiResponse} theme="dark" />
               </div>
             )}
 

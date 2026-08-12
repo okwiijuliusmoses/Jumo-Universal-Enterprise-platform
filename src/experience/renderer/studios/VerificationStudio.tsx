@@ -96,7 +96,7 @@ export const VerificationStudio: React.FC<VerificationStudioProps> = ({
                         gate.status === 'WARNING' ? 'text-amber-600' :
                         'text-slate-400'
                       }`}>
-                        {gate.status.replace('_', ' ')}
+                        {(gate.status || 'UNKNOWN').replace('_', ' ')}
                       </span>
                     </div>
                   </div>
