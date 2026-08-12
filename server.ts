@@ -11,6 +11,10 @@ import { JumoAIProviderGateway } from "./src/core/ai/gateway/JumoAIProviderGatew
 import { JumoAIProviderRegistry } from "./src/core/ai/providers/JumoAIProviderRegistry";
 import { JumoCognitiveWorkforceOrchestrator } from "./src/core/ai/orchestrator/JumoCognitiveWorkforceOrchestrator";
 import { AgentExecutionService } from "./src/core/ai/execution/AgentExecutionService";
+import { DigitalProductFactoryRegistry } from "./src/core/factory/DigitalProductFactoryRegistry";
+import { NationalEnterpriseStandardEvaluator } from "./src/core/specification/NationalEnterpriseStandard";
+import { BlueprintLockEngine } from "./src/core/blueprint/BlueprintLockEngine";
+import { JumoPostManufacturingVerificationEngine } from "./src/core/verification/JumoPostManufacturingVerificationEngine";
 
 async function startServer() {
   const app = express();
@@ -828,8 +832,124 @@ dotenv.config({ override: true });
     });
   });
 
+  // Specialized Digital Product Factories Registry Endpoint
+  app.get("/api/v1/ueos/factories", (req, res) => {
+    try {
+      const factories = DigitalProductFactoryRegistry.getAllFactories();
+      res.json({ success: true, count: factories.length, factories });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // National Enterprise Standard Upgrade Evaluation Endpoint
+  app.post("/api/v1/ueos/national-standard/evaluate", (req, res) => {
+    try {
+      const { specification, architecture } = req.body || {};
+      const report = NationalEnterpriseStandardEvaluator.evaluateAndUpgrade(specification || {}, architecture || {});
+      res.json({ success: true, report });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Consolidated Architectural Blueprint Generation Endpoint
+  app.post("/api/v1/ueos/blueprint/consolidate", (req, res) => {
+    try {
+      const { specification, archReport, upgradeReport } = req.body || {};
+      const blueprint = BlueprintLockEngine.createConsolidatedBlueprint(
+        specification || {},
+        archReport || {},
+        upgradeReport || {}
+      );
+      res.json({ success: true, blueprint });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Human Approval Action: APPROVE & LOCK
+  app.post("/api/v1/ueos/blueprint/approve", (req, res) => {
+    try {
+      const { blueprintId, approvedBy } = req.body || {};
+      const blueprint = BlueprintLockEngine.approveBlueprint(
+        blueprintId,
+        approvedBy || "Authorized Human Administrator"
+      );
+      res.json({ success: true, blueprint, message: "Blueprint approved and locked as authoritative baseline." });
+    } catch (err: any) {
+      res.status(400).json({ success: false, error: err.message });
+    }
+  });
+
+  // Human Approval Action: REJECT
+  app.post("/api/v1/ueos/blueprint/reject", (req, res) => {
+    try {
+      const { blueprintId, rejectedBy, reason } = req.body || {};
+      const blueprint = BlueprintLockEngine.rejectBlueprint(
+        blueprintId,
+        rejectedBy || "Authorized Human Administrator",
+        reason || "Architecture requires revision."
+      );
+      res.json({ success: true, blueprint, message: "Blueprint rejected." });
+    } catch (err: any) {
+      res.status(400).json({ success: false, error: err.message });
+    }
+  });
+
+  // Human Approval Action: REQUEST CHANGES
+  app.post("/api/v1/ueos/blueprint/request-changes", (req, res) => {
+    try {
+      const { blueprintId, requestedBy, changes } = req.body || {};
+      const blueprint = BlueprintLockEngine.requestChangesBlueprint(
+        blueprintId,
+        requestedBy || "Authorized Human Administrator",
+        changes || ["Expand security layer to level 5."]
+      );
+      res.json({ success: true, blueprint, message: "Changes requested. Revised blueprint generated." });
+    } catch (err: any) {
+      res.status(400).json({ success: false, error: err.message });
+    }
+  });
+
+  // Post-Manufacturing Verification & Conformance Inspection
+  app.post("/api/v1/ueos/verification/conformance", (req, res) => {
+    try {
+      const { approvedBlueprint, manufacturedBundle } = req.body || {};
+      const report = JumoPostManufacturingVerificationEngine.verifyManufacturedProduct(
+        approvedBlueprint || {},
+        manufacturedBundle || {}
+      );
+      res.json({ success: true, report });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Automatic AI Remediation Loop Execution
+  app.post("/api/v1/ueos/verification/remediate", (req, res) => {
+    try {
+      const { reportId } = req.body || {};
+      const report = JumoPostManufacturingVerificationEngine.executeAutomaticRemediation(reportId);
+      res.json({ success: true, report, message: "Automatic remediation loop executed successfully." });
+    } catch (err: any) {
+      res.status(400).json({ success: false, error: err.message });
+    }
+  });
+
+  // Certification Gate Signoff
+  app.post("/api/v1/ueos/certification/issue", (req, res) => {
+    try {
+      const { reportId } = req.body || {};
+      const report = JumoPostManufacturingVerificationEngine.issueCertification(reportId);
+      res.json({ success: true, report, message: "Product certified successfully." });
+    } catch (err: any) {
+      res.status(400).json({ success: false, error: err.message });
+    }
+  });
+
   // Express 404 handler for API routes - ensures unmatched API requests return JSON instead of HTML fallback
-  app.use("/api/*", (req, res) => {
+  app.use("/api", (req, res) => {
     res.status(404).json({
       success: false,
       error: `API route not found: ${req.method} ${req.originalUrl || req.baseUrl}`
