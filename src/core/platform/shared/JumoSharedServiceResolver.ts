@@ -1,13 +1,14 @@
 import {
   jumoSharedEnterpriseServices,
   JumoSharedServiceId,
+  JumoServiceMode,
 } from "./JumoSharedEnterpriseServices";
 
 export interface JumoSharedServiceBinding {
   serviceId: JumoSharedServiceId;
   enabled: boolean;
   provider?: string;
-  mode?: string;
+  mode?: JumoServiceMode;
   endpoint?: string;
 }
 
@@ -15,41 +16,60 @@ export class JumoSharedServiceResolver {
   static resolve(
     serviceIds: JumoSharedServiceId[] = [],
   ): JumoSharedServiceBinding[] {
-    return serviceIds
-      .map((serviceId) => {
-        const service = jumoSharedEnterpriseServices.get(serviceId);
+    const bindings: JumoSharedServiceBinding[] = [];
 
-        if (!service) return null;
+    for (const serviceId of serviceIds) {
+      const service = jumoSharedEnterpriseServices.get(serviceId);
 
-        return {
-          serviceId,
-          enabled: service.configuration.enabled,
-          provider: service.configuration.provider,
-          mode: service.configuration.mode,
-          endpoint: service.configuration.endpoint,
-        };
-      })
-      .filter(
-        (value): value is JumoSharedServiceBinding => value !== null,
-      );
+      if (!service) {
+        continue;
+      }
+
+      bindings.push({
+        serviceId: service.id,
+        enabled: Boolean(service.configuration.enabled),
+        ...(service.configuration.provider
+          ? { provider: service.configuration.provider }
+          : {}),
+        ...(service.configuration.mode
+          ? { mode: service.configuration.mode }
+          : {}),
+        ...(service.configuration.endpoint
+          ? { endpoint: service.configuration.endpoint }
+          : {}),
+      });
+    }
+
+    return bindings;
   }
 
   static requiredServices(): JumoSharedServiceBinding[] {
     return jumoSharedEnterpriseServices
       .getAll()
       .filter((service) => service.required)
-      .map((service) => ({
-        serviceId: service.id,
-        enabled: service.configuration.enabled,
-        provider: service.configuration.provider,
-        mode: service.configuration.mode,
-        endpoint: service.configuration.endpoint,
-      }));
+      .map(
+        (service): JumoSharedServiceBinding => ({
+          serviceId: service.id,
+          enabled: Boolean(service.configuration.enabled),
+          ...(service.configuration.provider
+            ? { provider: service.configuration.provider }
+            : {}),
+          ...(service.configuration.mode
+            ? { mode: service.configuration.mode }
+            : {}),
+          ...(service.configuration.endpoint
+            ? { endpoint: service.configuration.endpoint }
+            : {}),
+        }),
+      );
   }
 
-  static isOperational(serviceId: JumoSharedServiceId): boolean {
+  static isOperational(
+    serviceId: JumoSharedServiceId,
+  ): boolean {
     return jumoSharedEnterpriseServices.isEnabled(serviceId);
   }
 }
 
-export const jumoSharedServiceResolver = JumoSharedServiceResolver;
+export const jumoSharedServiceResolver =
+  JumoSharedServiceResolver;
