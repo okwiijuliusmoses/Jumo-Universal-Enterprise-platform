@@ -73,14 +73,26 @@ export function SecurityRegistryRenderer() {
   // Load backend secrets and diagnostics
   const loadVaultData = async () => {
     try {
+      const fetchJson = async (url: string) => {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          const contentType = res.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      };
+
       const [secs, diags] = await Promise.all([
-        fetch("/api/ueos/secrets").then(r => r.json()),
-        fetch("/api/ueos/secrets/diagnostics").then(r => r.json())
+        fetchJson("/api/v1/ueos/secrets"),
+        fetchJson("/api/v1/ueos/secrets/diagnostics")
       ]);
-      setSecretsList(secs || []);
-      setVaultDiagnostics(diags || null);
+      if (secs && secs.secrets) setSecretsList(secs.secrets);
+      if (diags && diags.diagnostics) setVaultDiagnostics(diags.diagnostics);
     } catch (err) {
-      console.error("Failed to load AEGIS vault configurations", err);
+      console.warn("AEGIS vault data poll warning:", err);
     }
   };
 

@@ -40,18 +40,30 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
 
     async function loadLockData() {
       try {
+        const fetchJson = async (url: string) => {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) return { success: false };
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) return { success: false };
+            return await res.json();
+          } catch {
+            return { success: false };
+          }
+        };
+
         const [lockRes, planRes, smRes, certRes] = await Promise.all([
-          fetch("/api/ueos/kernel/architecture-lock").then(r => r.json()),
-          fetch("/api/ueos/kernel/factory-migration-plan").then(r => r.json()),
-          fetch("/api/ueos/kernel/provisioning-state-machine").then(r => r.json()),
-          fetch("/api/ueos/kernel/shared-platform-certification").then(r => r.json())
+          fetchJson("/api/v1/ueos/kernel/architecture-lock"),
+          fetchJson("/api/v1/ueos/kernel/factory-migration-plan"),
+          fetchJson("/api/v1/ueos/kernel/provisioning-state-machine"),
+          fetchJson("/api/v1/ueos/kernel/shared-platform-certification")
         ]);
-        if (lockRes.success) setLockData(lockRes);
-        if (planRes.success) setMigrationPlan(planRes.plan);
-        if (smRes.success) setStateMachine(smRes.stateMachine);
-        if (certRes.success) setCertificationData(certRes);
+        if (lockRes && lockRes.success) setLockData(lockRes);
+        if (planRes && planRes.success) setMigrationPlan(planRes.plan);
+        if (smRes && smRes.success) setStateMachine(smRes.stateMachine);
+        if (certRes && certRes.success) setCertificationData(certRes);
       } catch (err) {
-        console.error("Failed to load architecture lock telemetry:", err);
+        console.warn("Telemetry polling warning:", err);
       }
     }
 

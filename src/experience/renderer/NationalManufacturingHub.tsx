@@ -627,41 +627,57 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   const fetchSovereignState = async () => {
     try {
       const res = await fetch("/api/v1/ueos/state");
-      if (!res.ok) throw new Error("Network status not OK");
+      if (!res.ok) {
+        setIsLoading(false);
+        return;
+      }
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        setIsLoading(false);
+        return;
+      }
       const data = await res.json();
-      setArchRequests(data.architectureRequests);
-      setArchContracts(data.architectureContracts);
+      if (!data) {
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.architectureRequests) setArchRequests(data.architectureRequests);
+      if (data.architectureContracts) setArchContracts(data.architectureContracts);
       setExpansionTraces(data.expansionTraces || []);
-      setBlueprints(data.blueprints);
-      setJobs(data.jobs);
-      setBuildArtifacts(data.buildArtifacts);
-      setDeploymentRecords(data.deploymentRecords);
-      setVerificationFailures(data.verificationFailures);
-      setCertificationRecords(data.certificationRecords);
-      setEngineeringAgents(data.engineeringAgents);
+      if (data.blueprints) setBlueprints(data.blueprints);
+      if (data.jobs) setJobs(data.jobs);
+      if (data.buildArtifacts) setBuildArtifacts(data.buildArtifacts);
+      if (data.deploymentRecords) setDeploymentRecords(data.deploymentRecords);
+      if (data.verificationFailures) setVerificationFailures(data.verificationFailures);
+      if (data.certificationRecords) setCertificationRecords(data.certificationRecords);
+      if (data.engineeringAgents) setEngineeringAgents(data.engineeringAgents);
       setArchLayers(data.archLayers || []);
-      setIncidents(data.incidents);
-      setCloudSlots(data.cloudSlots);
-      setAuditEvents(data.auditEvents);
+      if (data.incidents) setIncidents(data.incidents);
+      if (data.cloudSlots) setCloudSlots(data.cloudSlots);
+      if (data.auditEvents) setAuditEvents(data.auditEvents);
       setEventLog(data.eventLog || []);
-      setVerificationGates(data.verificationGates);
-      setDatabaseVolumes(data.databaseVolumes);
-      setMigrations(data.migrations);
-      setAssets(data.assets);
+      if (data.verificationGates) setVerificationGates(data.verificationGates);
+      if (data.databaseVolumes) setDatabaseVolumes(data.databaseVolumes);
+      if (data.migrations) setMigrations(data.migrations);
+      if (data.assets) setAssets(data.assets);
       setAgentWorkLogs(data.agentWorkLogs || []);
-      setCryptographicKeys(data.cryptographicKeys);
-      setEmergencyMode(data.emergencyMode);
+      if (data.cryptographicKeys) setCryptographicKeys(data.cryptographicKeys);
+      if (typeof data.emergencyMode === "boolean") setEmergencyMode(data.emergencyMode);
 
       // Fetch Registry Ecosystems in parallel
       const ecoRes = await fetch("/api/v1/ueos/registry/ecosystems");
       if (ecoRes.ok) {
-        const ecoData = await ecoRes.json();
-        setEcosystems(ecoData);
+        const ecoContentType = ecoRes.headers.get("content-type");
+        if (ecoContentType && ecoContentType.includes("application/json")) {
+          const ecoData = await ecoRes.json();
+          if (Array.isArray(ecoData)) setEcosystems(ecoData);
+        }
       }
-
-      setIsLoading(false);
     } catch (err) {
-      console.error("[FRONTEND] Error loading sovereign state from server", err);
+      console.warn("[FRONTEND] Sovereign state poll warning:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
