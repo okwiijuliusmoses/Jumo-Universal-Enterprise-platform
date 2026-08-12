@@ -305,42 +305,41 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     setPreferences(nextSettings);
   };
 
-  // === 11. SIDEBAR NAVIGATION GROUPS ===
+  // === 11. SIDEBAR NAVIGATION GROUPS (5 CANONICAL STUDIOS) ===
   const sidebarGroups = [
     {
-      id: "PLATFORM & DESIGN",
+      id: "01 — PRODUCT ARCHITECTURE STUDIO",
       items: [
         { id: "specification" as HubWorkspace, label: "Specification & Intake", icon: FileText, color: "text-blue-500" },
-        { id: "architecture" as HubWorkspace, label: "Architecture & Eng.", icon: Layers, color: "text-indigo-500" }
+        { id: "architecture" as HubWorkspace, label: "Architecture & Engineering", icon: Layers, color: "text-indigo-500" }
       ]
     },
     {
-      id: "AUTOMATED FACTORY",
+      id: "02 — DIGITAL PRODUCT FACTORY",
       items: [
-        { id: "manufacturing" as HubWorkspace, label: "Manufacturing Factory", icon: Zap, color: "text-amber-500" },
+        { id: "manufacturing" as HubWorkspace, label: "Manufacturing & Assembly", icon: Zap, color: "text-amber-500" },
+        { id: "config" as HubWorkspace, label: "Configuration & Branding", icon: Sliders, color: "text-pink-500" }
+      ]
+    },
+    {
+      id: "03 — PRODUCT ASSURANCE STUDIO",
+      items: [
         { id: "verification" as HubWorkspace, label: "Verification & Testing", icon: Shield, color: "text-emerald-500" },
         { id: "certification" as HubWorkspace, label: "Certification & Release", icon: Award, color: "text-purple-500" }
       ]
     },
     {
-      id: "DEPLOY & OPERATE",
+      id: "04 — RUNTIME OPERATIONS STUDIO",
       items: [
         { id: "deployment" as HubWorkspace, label: "Provision & Deploy", icon: Cloud, color: "text-cyan-500" },
         { id: "overview" as HubWorkspace, label: "Runtime & Operations", icon: Home, color: "text-sky-500" }
       ]
     },
     {
-      id: "SOVEREIGN GOVERNANCE",
+      id: "05 — SOVEREIGN GOVERNANCE & TRUST STUDIO",
       items: [
-        { id: "branding" as HubWorkspace, label: "Branding Studio", icon: Edit3, color: "text-pink-500" },
-        { id: "config" as HubWorkspace, label: "Configuration Studio", icon: Sliders, color: "text-slate-500" },
-        { id: "control" as HubWorkspace, label: "Sovereign Control", icon: ShieldCheck, color: "text-amber-600" }
-      ]
-    },
-    {
-      id: "COMPLIANCE & TRUTH",
-      items: [
-        { id: "templates" as HubWorkspace, label: "Governance & Registry", icon: BookOpen, color: "text-teal-500" },
+        { id: "control" as HubWorkspace, label: "Sovereign Control & Governance", icon: ShieldCheck, color: "text-amber-600" },
+        { id: "templates" as HubWorkspace, label: "Registries & Standards", icon: BookOpen, color: "text-teal-500" },
         { id: "faap" as HubWorkspace, label: "Sovereign Ledger", icon: CreditCard, color: "text-emerald-600" }
       ]
     }
