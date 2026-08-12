@@ -3,10 +3,10 @@ export interface JumoAIRequest {
   systemPrompt?: string;
   context?: Record<string, unknown>;
   conversation?: Array<{
-    role: 'system' | 'user' | 'assistant';
+    role: "system" | "user" | "assistant";
     content: string;
   }>;
-  reasoningEffort?: 'low' | 'medium' | 'high' | 'max';
+  reasoningEffort?: "low" | "medium" | "high" | "max";
 }
 
 export interface JumoAIResponse {
@@ -29,7 +29,5 @@ export interface JumoAIProvider {
 
   isAvailable(): Promise<boolean>;
 
-  generate(
-    request: JumoAIRequest
-  ): Promise<JumoAIResponse>;
+  generate(request: JumoAIRequest): Promise<JumoAIResponse>;
 }

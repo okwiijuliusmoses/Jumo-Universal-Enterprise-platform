@@ -290,7 +290,7 @@ export class JumoAIAgentRegistry {
       const agentId = `jumo-ai-${spec.name.toLowerCase().replace(/\s+/g, "-")}-${String(i).padStart(3, "0")}`;
       
       // JUMO Visual Logo Identity visual mapping
-      const avatarUrl = `/assets/jumo_logo.svg`; // Approved JUMO logo identity visual
+      const avatarUrl = `/src/experience/branding/JUMO NEW LOGO.png`; // Canonical approved JUMO identity
 
       // Dynamic workloads, health, and recent jobs
       const healthChoices: ('HEALTHY' | 'DEGRADED' | 'OFFLINE')[] = ['HEALTHY', 'HEALTHY', 'HEALTHY', 'HEALTHY', 'DEGRADED'];

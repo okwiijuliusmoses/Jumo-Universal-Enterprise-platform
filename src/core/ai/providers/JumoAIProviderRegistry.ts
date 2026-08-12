@@ -1,43 +1,99 @@
-import type { JumoAIProvider } from './JumoAIProvider';
+import {
+  JumoAIProvider,
+  JumoAIRequest,
+  JumoAIResponse,
+} from "./JumoAIProvider";
+
+export type JumoAIProviderRole =
+  | "PRIMARY_REASONING"
+  | "ENGINEERING"
+  | "LOCAL_FALLBACK";
+
+interface ProviderRegistration {
+  provider: JumoAIProvider;
+  role: JumoAIProviderRole;
+  priority: number;
+  enabled: boolean;
+}
 
 export class JumoAIProviderRegistry {
-  private readonly providers = new Map<string, JumoAIProvider>();
+  private static instance: JumoAIProviderRegistry;
 
-  register(provider: JumoAIProvider): void {
-    if (this.providers.has(provider.providerId)) {
-      throw new Error(
-        `JUMO AI provider already registered: ${provider.providerId}`
-      );
+  private readonly providers: ProviderRegistration[] = [];
+
+  static getInstance(): JumoAIProviderRegistry {
+    if (!this.instance) {
+      this.instance = new JumoAIProviderRegistry();
     }
 
-    this.providers.set(provider.providerId, provider);
+    return this.instance;
   }
 
-  get(providerId: string): JumoAIProvider {
-    const provider = this.providers.get(providerId);
+  register(registration: ProviderRegistration): void {
+    const existing = this.providers.find(
+      (item) =>
+        item.provider.providerId ===
+        registration.provider.providerId,
+    );
 
-    if (!provider) {
-      throw new Error(
-        `JUMO AI provider is not registered: ${providerId}`
-      );
+    if (existing) {
+      Object.assign(existing, registration);
+      return;
     }
 
-    return provider;
+    this.providers.push(registration);
+    this.providers.sort(
+      (a, b) => a.priority - b.priority,
+    );
   }
 
-  list(): JumoAIProvider[] {
-    return Array.from(this.providers.values());
+  getAll(): ProviderRegistration[] {
+    return [...this.providers];
   }
 
-  async available(): Promise<JumoAIProvider[]> {
-    const result: JumoAIProvider[] = [];
+  async resolve(
+    role: JumoAIProviderRole,
+  ): Promise<JumoAIProvider> {
+    const candidates = this.providers
+      .filter(
+        (item) =>
+          item.enabled &&
+          item.role === role,
+      )
+      .sort(
+        (a, b) => a.priority - b.priority,
+      );
 
-    for (const provider of this.providers.values()) {
-      if (await provider.isAvailable()) {
-        result.push(provider);
+    for (const candidate of candidates) {
+      if (await candidate.provider.isAvailable()) {
+        return candidate.provider;
       }
     }
 
-    return result;
+    throw new Error(
+      `No available JUMO AI provider for role ${role}.`,
+    );
+  }
+
+  async generate(
+    role: JumoAIProviderRole,
+    request: JumoAIRequest,
+  ): Promise<JumoAIResponse> {
+    const provider = await this.resolve(role);
+    return provider.generate(request);
+  }
+
+  snapshot() {
+    return this.providers.map((item) => ({
+      providerId: item.provider.providerId,
+      displayName: item.provider.displayName,
+      role: item.role,
+      priority: item.priority,
+      enabled: item.enabled,
+      local: item.provider.local,
+    }));
   }
 }
+
+export const jumoAIProviderRegistry =
+  JumoAIProviderRegistry.getInstance();

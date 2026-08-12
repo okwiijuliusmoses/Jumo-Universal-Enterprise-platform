@@ -5,12 +5,66 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { SovereignOperatingStateService } from "./src/core/runtime/sovereignState";
+import {
+  jumoSharedServices,
+} from "./src/core/platform/shared";
+
 
 async function startServer() {
   const app = express();
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
   app.use(express.json());
+
+  // === JUMO UNIVERSAL SHARED SERVICES FABRIC ===
+
+  app.get("/api/v1/ueos/shared-services", (req, res) => {
+    try {
+      return res.json({
+        ok: true,
+        profile: jumoSharedServices.getProfile(),
+        summary: jumoSharedServices.getSummary(),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to read shared services.",
+      });
+    }
+  });
+
+  app.get("/api/v1/ueos/shared-services/validation", (req, res) => {
+    const validation = jumoSharedServices.validate();
+
+    return res.status(validation.valid ? 200 : 503).json({
+      ok: validation.valid,
+      ...validation,
+    });
+  });
+
+  app.get("/api/v1/ueos/shared-services/:serviceId", (req, res) => {
+    const service = jumoSharedServices.getService(
+      req.params.serviceId,
+    );
+
+    if (!service) {
+      return res.status(404).json({
+        ok: false,
+        error: "Shared service not found.",
+      });
+    }
+
+    return res.json({
+      ok: true,
+      service,
+      resolution: jumoSharedServices.resolve(
+        req.params.serviceId,
+      ),
+    });
+  });
 
   // Health check endpoint
   app.get("/api/health", (req, res) => {
