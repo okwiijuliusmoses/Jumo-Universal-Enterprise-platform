@@ -6,13 +6,17 @@
  * and provides a consistent interface for the 420+ agent workforce.
  */
 
+import { ProviderRegistry, ProviderRecord } from './ProviderRegistry';
+
 export interface JumoAIGatewayRequest {
   agentId: string;
   prompt: string;
   systemInstruction?: string;
   preferredMode?: 'EXTERNAL' | 'SOVEREIGN_LOCAL' | 'AUTO';
+  providerPreference?: 'GEMINI' | 'OPENAI' | 'LOCAL';
   temperature?: number;
   maxOutputTokens?: number;
+  taskTitle?: string;
 }
 
 export interface JumoAIGatewayResponse {
@@ -34,13 +38,10 @@ export interface JumoAIGatewayResponse {
 
 export class JumoAIGateway {
   private static instance: JumoAIGateway;
-  private externalApiKeyConfigured: boolean = false;
-  private currentActiveMode: 'EXTERNAL' | 'LOCAL' = 'LOCAL';
+  private registry: ProviderRegistry;
 
   private constructor() {
-    // Check environment or configuration
-    this.externalApiKeyConfigured = Boolean(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY);
-    this.currentActiveMode = this.externalApiKeyConfigured ? 'EXTERNAL' : 'LOCAL';
+    this.registry = ProviderRegistry.getInstance();
   }
 
   public static getInstance(): JumoAIGateway {
@@ -50,32 +51,63 @@ export class JumoAIGateway {
     return JumoAIGateway.instance;
   }
 
-  public setMode(mode: 'EXTERNAL' | 'LOCAL'): void {
-    this.currentActiveMode = mode;
+  public resolveProvider(request: JumoAIGatewayRequest): { provider: ProviderRecord; executionMode: 'EXTERNAL' | 'LOCAL' | 'FALLBACK'; fallbackReason?: string } {
+    const mode = request.preferredMode || 'AUTO';
+
+    // Explicit Sovereign Local Request
+    if (mode === 'SOVEREIGN_LOCAL') {
+      const localProvider = this.registry.getProvider('LOCAL')!;
+      return { provider: localProvider, executionMode: 'LOCAL' };
+    }
+
+    // Explicit Provider Preference
+    if (request.providerPreference) {
+      const requested = this.registry.getProvider(request.providerPreference as any);
+      if (requested && requested.configured && requested.status === 'HEALTHY') {
+        return { provider: requested, executionMode: 'EXTERNAL' };
+      }
+    }
+
+    // Deterministic Selection from Registry
+    const externalProvider = this.registry.getHealthyExternalProvider();
+
+    if (externalProvider && (mode === 'AUTO' || mode === 'EXTERNAL')) {
+      return { provider: externalProvider, executionMode: 'EXTERNAL' };
+    }
+
+    // Fallback logic
+    const localProvider = this.registry.getProvider('LOCAL')!;
+    const fallbackReason = (mode === 'EXTERNAL' || mode === 'AUTO') && !externalProvider
+      ? 'No external reasoning provider is currently configured with active API credentials. Operating in sovereign local mode.'
+      : undefined;
+
+    return {
+      provider: localProvider,
+      executionMode: mode === 'EXTERNAL' ? 'FALLBACK' : 'LOCAL',
+      fallbackReason
+    };
   }
 
-  public getMode(): 'EXTERNAL' | 'LOCAL' {
-    return this.currentActiveMode;
+  public async executeTask(request: JumoAIGatewayRequest): Promise<JumoAIGatewayResponse> {
+    return this.executeAgentRequest(request);
   }
 
   public async executeAgentRequest(request: JumoAIGatewayRequest): Promise<JumoAIGatewayResponse> {
     const requestId = `AI-REQ-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 1000)}`;
     const timestamp = new Date().toISOString();
-    const mode = request.preferredMode || 'AUTO';
 
-    let useExternal = this.currentActiveMode === 'EXTERNAL';
-    if (mode === 'EXTERNAL') useExternal = true;
-    if (mode === 'SOVEREIGN_LOCAL') useExternal = false;
+    const { provider, executionMode, fallbackReason } = this.resolveProvider(request);
 
-    // Attempt External if requested and configured
-    if (useExternal && this.externalApiKeyConfigured) {
+    if (executionMode === 'EXTERNAL') {
       try {
-        // Execute real external AI gateway call if server-side or available
-        // For client-side / universal safety, proxy or fallback gracefully
         const res = await fetch('/api/v1/ueos/ai/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request)
+          body: JSON.stringify({
+            ...request,
+            providerPreference: provider.providerId,
+            modelPreference: provider.defaultModel
+          })
         });
 
         if (res.ok) {
@@ -86,8 +118,8 @@ export class JumoAIGateway {
               content: data.content,
               metadata: {
                 agentId: request.agentId,
-                provider: data.metadata?.provider || 'google-gemini-external',
-                model: data.metadata?.model || 'gemini-3-flash',
+                provider: data.metadata?.provider || provider.displayName,
+                model: data.metadata?.model || provider.defaultModel,
                 executionMode: 'EXTERNAL',
                 fallbackUsed: false,
                 requestId,
@@ -98,15 +130,11 @@ export class JumoAIGateway {
           }
         }
       } catch (err: any) {
-        // Fall through to local fallback mode on network or API failure
+        this.registry.updateProviderHealth(provider.providerId, 'DEGRADED', err.message);
       }
     }
 
-    // Sovereign / Local Hybrid Fallback Mode
-    const fallbackReason = useExternal && !this.externalApiKeyConfigured 
-      ? 'External API key not configured. Operating in secure local/sovereign hybrid mode.'
-      : 'External provider unreachable or failed. Safely routed to sovereign local execution engine.';
-
+    // Sovereign Local Fallback Execution
     const localContent = `[JUMO SOVEREIGN LOCAL AI - AGENT ${request.agentId}] Processed request securely within sovereign partition. Prompt summary: "${request.prompt.substring(0, 80)}..."`;
 
     return {
@@ -114,11 +142,11 @@ export class JumoAIGateway {
       content: localContent,
       metadata: {
         agentId: request.agentId,
-        provider: 'jumo-sovereign-local-engine',
-        model: 'sovereign-neural-v5',
-        executionMode: useExternal ? 'FALLBACK' : 'LOCAL',
-        fallbackUsed: useExternal,
-        fallbackReason: useExternal ? fallbackReason : undefined,
+        provider: provider.providerId === 'LOCAL' ? provider.displayName : 'JUMO Sovereign Local Engine',
+        model: provider.defaultModel,
+        executionMode: executionMode === 'EXTERNAL' ? 'FALLBACK' : executionMode,
+        fallbackUsed: executionMode === 'FALLBACK' || executionMode === 'EXTERNAL',
+        fallbackReason: fallbackReason || 'External API execution transiently unavailable; routed to sovereign local engine.',
         requestId,
         timestamp,
         tokensUsed: 150
@@ -128,3 +156,4 @@ export class JumoAIGateway {
 }
 
 export const jumoAIGateway = JumoAIGateway.getInstance();
+
