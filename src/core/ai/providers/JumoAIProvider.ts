@@ -1,12 +1,20 @@
+import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
+
 export interface JumoAIRequest {
   message: string;
+  modelId?: string;
+  providerId?: string;
   systemPrompt?: string;
   context?: Record<string, unknown>;
   conversation?: Array<{
     role: "system" | "user" | "assistant";
     content: string;
   }>;
+  temperature?: number;
   reasoningEffort?: "low" | "medium" | "high" | "max";
+  requiredCapabilities?: string[];
+  metadata?: Record<string, unknown>;
 }
 
 export interface JumoAIResponse {
@@ -22,6 +30,17 @@ export interface JumoAIResponse {
   metadata?: Record<string, unknown>;
 }
 
+export interface JumoModelDiscovery {
+  modelId: string;
+  displayName: string;
+  contextLength?: number;
+  capabilities: string[];
+  providerId?: string;
+  configured?: boolean;
+  available?: boolean;
+  verified?: boolean;
+}
+
 export interface JumoAIProvider {
   readonly providerId: string;
   readonly displayName: string;
@@ -29,10 +48,16 @@ export interface JumoAIProvider {
 
   isAvailable(): Promise<boolean>;
 
+  getHealth?(): Promise<{
+    status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE";
+    latencyMs?: number;
+    details?: string;
+  }>;
+
+  discoverModels?(): Promise<JumoModelDiscovery[]>;
+
   generate(request: JumoAIRequest): Promise<JumoAIResponse>;
 }
-<<<<<<< HEAD
-=======
 
 // ==========================================
 // 1. OPENAI PROVIDER ADAPTER
@@ -405,4 +430,3 @@ export class FutureProviderAdapter implements JumoAIProvider {
     throw new Error("Sovereign slots for future plug-in adapters are currently unprovisioned.");
   }
 }
->>>>>>> 6560c08 (Phase 0 Implementation: AI Gateway, Cognitive Workforce, and 32-Stage Automated Orchestrator)
