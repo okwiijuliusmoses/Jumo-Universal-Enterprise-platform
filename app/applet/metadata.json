@@ -1,0 +1,8 @@
+{
+  "name": "JUMO UEOS National Enterprise Factory",
+  "description": "Sovereign Digital Operating Platform and National Manufacturing Hub with Governance, Architecture, and Assurance Studios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
