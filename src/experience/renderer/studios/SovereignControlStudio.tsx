@@ -52,7 +52,7 @@ export const SovereignControlStudio: React.FC = () => {
             {[
               { label: "Active Nodes", value: "1,248", sub: "Global Sovereign Distribution", icon: Globe, color: "text-blue-400" },
               { label: "Treasury Balance", value: "$4.2B", sub: "FAAP Allocated Funds", icon: DollarSign, color: "text-emerald-400" },
-              { label: "AI Load", value: "24.6%", sub: "420+ Agent Cognitive Swarm", icon: Zap, color: "text-amber-400" },
+              { label: "AI Load", value: "24.6%", sub: "Registered Agent Workforce", icon: Zap, color: "text-amber-400" },
             ].map((stat, i) => (
               <div key={i} className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-2">
                 <div className="flex items-center justify-between">

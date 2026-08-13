@@ -442,7 +442,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[9px] font-black tracking-widest px-2.5 py-1 bg-blue-950 text-blue-300 border border-blue-800/60 rounded-full uppercase">ENGINEERING BRAIN</span>
-            <span className="text-[9px] font-black tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900/60 rounded-full uppercase">420+ COGNITIVE SWARM INSTALLED</span>
+            <span className="text-[9px] font-black tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900/60 rounded-full uppercase">COGNITIVE WORKFORCE REGISTERED</span>
           </div>
         </div>
 
@@ -1437,7 +1437,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
                         <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-500 leading-relaxed border border-slate-100 flex items-start gap-2">
                           <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                           <div>
-                            Click the <strong>Query JUMO GPT</strong> button to trigger the 420+ cognitive workforce reasoning node. JUMO GPT will evaluate live dependencies and output official national infrastructure importance records.
+                            Click the <strong>Query JUMO GPT</strong> button to trigger the registered cognitive workforce reasoning node. JUMO GPT will evaluate live dependencies and output official national infrastructure importance records.
                           </div>
                         </div>
                       )}
@@ -1453,7 +1453,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
           </motion.div>
         )}
 
-        {/* TAB 3: COGNITIVE SWARM COMMAND CENTER (420+ AGENT WORKFORCE INTERFACE) */}
+        {/* TAB 3: COGNITIVE WORKFORCE COMMAND CENTER */}
         {primaryTab === 'workforce' && (
           <motion.div 
             key="tab-workforce"
@@ -1631,12 +1631,12 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
             {/* Division-Wise Agent Explorer & Live Laboratory Workspace */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              {/* Left Explorer: Search, Division Filter, and Agent Cards (420+ Workforce registry) */}
+              {/* Left Explorer: Search, Division Filter, and Agent Cards (registered workforce registry) */}
               <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                   <div>
                     <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Authoritative Workforce Explorer</h3>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Filter & select from 420+ certified cognitive agent profiles inside the active registry.</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Filter & select from registered certified cognitive agent profiles inside the active registry.</p>
                   </div>
 
                   <button
@@ -1664,7 +1664,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
                     <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
                     <input
                       type="text"
-                      placeholder="Search 420+ cognitive agents by name, role, tools, or specialization..."
+                      placeholder="Search registered cognitive agents by name, role, tools, or specialization..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 focus:bg-white"

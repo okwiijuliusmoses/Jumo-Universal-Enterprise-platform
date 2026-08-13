@@ -3,7 +3,7 @@
  *
  * Authoritative specification engine for JUMO UEOS.
  * Compiles non-technical enterprise/product requirements into canonical JSON specifications
- * for automatic handoff to Architecture Studio and the 420+ Cognitive Engineering Workforce.
+ * for automatic handoff to Architecture Studio and the registered engineering workforce.
  */
 
 export interface JumoEnterpriseEcosystem {
@@ -32,7 +32,7 @@ export const SHARED_PLATFORM_FOUNDATION_COMPONENTS = [
   { name: 'Immutable Cryptographic Audit Engine', category: 'Audit & Compliance', locked: true },
   { name: 'Data Intelligence & Neural RAG Fabric', category: 'Intelligence', locked: true },
   { name: 'JUMO Cloud & Sovereign Infrastructure Mesh', category: 'Infrastructure', locked: true },
-  { name: 'JUMO GPT & 420+ Cognitive Engineering Workforce', category: 'Cognition', locked: true },
+  { name: 'JUMO GPT & registered engineering workforce', category: 'Cognition', locked: true },
   { name: 'Multi-Region Active Resilience & Disaster Recovery', category: 'Resilience', locked: true }
 ];
 

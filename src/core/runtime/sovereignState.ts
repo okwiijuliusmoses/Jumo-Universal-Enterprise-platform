@@ -159,14 +159,14 @@ export class SovereignOperatingStateService {
           environment: "Production"
         },
         enabledModules: ["Identity", "Core Architecture", "Manufacturing Hub", "FAAP"],
-        enabledPortals: ["Sovereign Control", "Architecture Studio", "Manufacturing Factory"],
+        enabledPortals: [],
         enabledServices: ["JUMO GPT", "Verification Engine", "Audit System"],
         navigation: {
           hierarchy: [],
           roleBasedAccess: {
             "SUPREME_OPERATOR": ["*"],
             "AUDITOR": ["Audit", "Sovereign Control"],
-            "ENGINEER": ["Architecture Studio", "Engineering Studio"]
+            "ENGINEER": []
           },
           featureFlags: {
             "AI_WORKFORCE": true,

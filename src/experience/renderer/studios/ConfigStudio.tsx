@@ -128,7 +128,7 @@ export const ConfigStudio: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
-                    { id: 'ai', label: 'Cognitive Workforce (JUMO GPT)', desc: 'Enable 420+ agent automated engineering swarm.', enabled: true, icon: Cpu },
+                    { id: 'ai', label: 'Cognitive Workforce (JUMO GPT)', desc: 'Enable registered automated engineering workforce.', enabled: true, icon: Cpu },
                     { id: 'analytics', label: 'National Telemetry & Analytics', desc: 'Real-time operational visibility across all nodes.', enabled: true, icon: Zap },
                     { id: 'federation', label: 'Inter-Agency Data Federation', desc: 'Secure data bridge for cross-departmental sharing.', enabled: false, icon: Network },
                     { id: 'erp', label: 'Unified ERP Integration Engine', desc: 'Canonical adapter for SAP, Oracle, and legacy systems.', enabled: true, icon: Layers },

@@ -299,7 +299,7 @@ export class JumoAIAgentRegistry {
       }
     ];
 
-    // Seed 420 active cognitive engineering agents across specializations
+    // Seed active registered cognitive engineering agents across specializations
     for (let i = 1; i <= 420; i++) {
       const specIndex = (i - 1) % specializations.length;
       const spec = specializations[specIndex];
@@ -408,7 +408,7 @@ export class JumoAIAgentRegistry {
           modelAlias
         },
 
-        // Highly-Detailed Operational Extensions for 420+ cognitive agents
+        // Highly-Detailed Operational Extensions for registered cognitive agents
         responsibilities: [
           `Execute structured reasoning tasks inside the ${spec.division} division.`,
           `Validate and compile outputs for the ${spec.name} module.`,

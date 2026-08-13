@@ -292,10 +292,10 @@ export class JumoRuntimeCertificationSuite {
       timestamp: now()
     });
 
-    // 10. 420+ Swarm Workforce Discovery
+    // 10. Swarm Workforce Discovery
     results.push({
       id: "CERT-010",
-      name: "420+ Swarm Workforce Discovery Audit",
+      name: "Swarm Workforce Discovery Audit",
       description: "Validates that the workforce matches exactly the 420 active agent quota.",
       status: "RUNTIME_VERIFIED",
       details: `Swarm capacity successfully discovered: ${registrySize} active, partitioned specialized engineers.`,

@@ -81,7 +81,7 @@ export interface AIAgentRecord {
   // Mandatory data contract payload for UI & verification inspectors
   data?: Record<string, any>;
 
-  // Highly-Detailed Operational Extensions for 420+ cognitive agents
+  // Highly-Detailed Operational Extensions for registered cognitive agents
   responsibilities?: string[];
   requiredInputs?: string[];
   architectureDomains?: string[];

@@ -27,7 +27,7 @@ const PIPELINE_STAGES: { stage: string; statusKey: ManufacturingJobStatus; label
   { stage: "07", statusKey: "ARCHITECTURE_VERIFICATION", label: "Architecture Verification", desc: "Verifying dependency completeness, security controls, and resilience." },
   { stage: "08", statusKey: "ARCHITECTURE_CONTRACT_GENERATION", label: "Architecture Contract Generation", desc: "Locking the authoritative, cryptographically signed contract.", requiresApproval: true },
   { stage: "09", statusKey: "HUMAN_ARCHITECT_APPROVAL", label: "Human Architect Approval", desc: "Mapping sovereign regulatory rules and administrative approval.", requiresApproval: true },
-  { stage: "10", statusKey: "WORKFORCE_ORCHESTRATION", label: "Workforce Orchestration", desc: "Allocating 400+ JUMO GPT cognitive engineering agents to workloads." },
+  { stage: "10", statusKey: "WORKFORCE_ORCHESTRATION", label: "Workforce Orchestration", desc: "Allocating registered engineering agents to manufacturing workloads." },
   { stage: "11", statusKey: "REQUIREMENTS_DECOMPOSITION", label: "Requirements Decomposition", desc: "Decomposing architecture specifications into granular engineering tasks." },
   { stage: "12", statusKey: "SYSTEM_DESIGN", label: "System Design", desc: "Synthesizing micro-services, state machines, and component boundaries." },
   { stage: "13", statusKey: "DATA_ARCHITECTURE", label: "Data Architecture", desc: "Structuring data domains, indexes, and persistence specifications." },

@@ -568,7 +568,7 @@ export const SpecificationStudio: React.FC = () => {
         manufacturingVersion: 'v1.0.0',
         architectureVersion: 'v1.2.0',
         specificationVersion: 'v1.0.0',
-        requiredStudios: ['Digital Specification Studio', 'Architecture Studio', 'Verification Studio'],
+        requiredStudios: ['specification', 'architecture', 'verification'],
         requiredEngineeringDisciplines: ['Systems Architecture', 'Compliance Engineering', 'Database Administration'],
         requiredAgents: ['Chief Sovereign Architect', 'Assurance Specialist'],
         requiredArtifacts: ['Sovereign System Schema', 'Double-Entry Validation Rules'],

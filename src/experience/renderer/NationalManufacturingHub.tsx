@@ -50,7 +50,7 @@ import { architectureEngine } from "../../services/architecture/ArchitectureEngi
 import { ManufacturingJobEngine } from "../../services/factory/ManufacturingJobEngine";
 
 export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { activeWorkspace: HubWorkspace; onNavigate?: (ws: HubWorkspace) => void }) {
-  const [activeWorkspaceState, setActiveWorkspaceState] = useState<HubWorkspace>(activeWorkspace || 'specification');
+  const [activeWorkspaceState, setActiveWorkspaceState] = useState<HubWorkspace>(activeWorkspace);
   const [archContracts, setArchContracts] = useState<ArchitectureContract[]>([]);
   const [jobs, setJobs] = useState<ManufacturingJob[]>([]);
   const [deploymentRecords, setDeploymentRecords] = useState<DeploymentRecord[]>([]);
