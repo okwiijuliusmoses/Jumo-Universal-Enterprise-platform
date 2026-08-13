@@ -274,7 +274,7 @@ We have executed the requested system tasks under the secure local isolation con
    * General reasoning method for high-level intelligence tasks.
    * Routes to the most capable available provider.
    */
-  public async reasoning(request: { message: string; systemPrompt?: string; modelId?: string; temperature?: number }): Promise<{ text: string }> {
+  public async reasoning(request: { message: string; systemPrompt?: string; modelId?: string; temperature?: number; context?: Record<string, any> }): Promise<{ text: string }> {
     const { JumoAIProviderRegistry } = await import("../providers/JumoAIProviderRegistry");
     const registry = JumoAIProviderRegistry.getInstance();
     const vault = JumoSecretVault.getInstance();

@@ -139,7 +139,7 @@ export function TalentRenderer() {
   }
 
   const filteredTalent = talentPool.filter(emp => {
-    const matchesSearch = em(p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = (emp.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (emp.role || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (emp.id || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesNode = selectedNode === "ALL" || emp.node === selectedNode;

@@ -212,6 +212,163 @@ export interface CoordinationEvent {
   payload: any;
 }
 
+export interface InstitutionalDomainConfig {
+  institutionId: string;
+  tenantId: string;
+  primaryDomain: string;
+  secondaryDomains: string[];
+  subdomains: {
+    erp: string;
+    auth: string;
+    api: string;
+    ai: string;
+    admin: string;
+  };
+  routingPolicy: 'DIRECT' | 'LOAD_BALANCED' | 'CDN_ACCELERATED' | 'AIR_GAPPED';
+  sslCertStatus: 'VALID' | 'PROVISIONING' | 'EXPIRED' | 'RENEWAL_REQUIRED';
+  dnsStatus: 'CONFIGURED' | 'PENDING' | 'VERIFIED' | 'PROPAGATING';
+  environment: 'PRODUCTION' | 'STAGING' | 'DEVELOPMENT' | 'LOCAL';
+  deploymentTarget: 'CLOUD' | 'INSTITUTIONAL_SERVER' | 'HYBRID' | 'EDGE' | 'LOCAL_RUNTIME';
+  verificationToken: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIProviderStatus {
+  providerId: 'gemini' | 'openai' | 'copilot' | 'jumo_local';
+  name: string;
+  type: 'LOCAL' | 'EXTERNAL';
+  status: 'HEALTHY' | 'DEGRADED' | 'QUOTA_EXHAUSTED' | 'OFFLINE';
+  latencyMs: number;
+  errorRate: number;
+  activeModel: string;
+  supportedModels: string[];
+  isAvailable: boolean;
+}
+
+export interface AIGatewayState {
+  registeredProviders: AIProviderStatus[];
+  activePrimaryProvider: 'gemini' | 'openai' | 'copilot' | 'jumo_local';
+  fallbackProviderOrder: Array<'gemini' | 'openai' | 'copilot' | 'jumo_local'>;
+  localReasoningStatus: 'ENABLED' | 'STANDBY' | 'DISABLED';
+  reasoningMode: 'HYBRID_AUTONOMOUS' | 'LOCAL_ONLY' | 'EXTERNAL_PREFERRED';
+  isLocalRegistered: boolean;
+  gatewayHealth: 'OPERATIONAL' | 'DEGRADED' | 'FAILOVER_ACTIVE';
+  totalInferenceRequests: number;
+  failedInferenceRequests: number;
+}
+
+export interface ProviderQuotaMetrics {
+  providerId: 'gemini' | 'openai' | 'copilot' | 'jumo_local';
+  tokensUsed: number;
+  tokenLimit: number;
+  requestsUsed: number;
+  requestLimit: number;
+  rateLimitPerMin: number;
+  quotaResetTimestamp: string;
+  isExhausted: boolean;
+  status: 'NORMAL' | 'WARNING' | 'EXHAUSTED';
+}
+
+export interface ModelEvolutionRecord {
+  id: string;
+  provider: string;
+  modelName: string;
+  releaseDate: string;
+  discoveryStatus: 'DISCOVERED' | 'TESTING' | 'BENCHMARKING' | 'SANDBOXED' | 'APPROVED' | 'PROMOTED' | 'REJECTED';
+  capabilityScore: number;
+  benchmarkLatencyMs: number;
+  securityScore: number;
+  architectureCompatibilityScore: number;
+  approvalPolicy: 'AUTO_DETECT' | 'AUTO_TEST' | 'AUTO_BENCHMARK' | 'AUTO_APPROVE' | 'HUMAN_APPROVAL' | 'AUTO_ROLLOUT' | 'ROLLBACK';
+  sandboxResult: string;
+  timestamp: string;
+}
+
+export interface AgentContract {
+  agentId: string;
+  name: string;
+  role: 'GOVERNANCE' | 'MANUFACTURING' | 'ARCHITECTURE' | 'SECURITY' | 'VERIFICATION' | 'FINANCE' | 'EDUCATION' | 'MAINTENANCE' | 'SUPPORT';
+  purpose: string;
+  capabilities: string[];
+  tools: string[];
+  permissions: string[];
+  knowledgeSources: string[];
+  reasoningPolicy: string;
+  primaryModel: string;
+  fallbackModels: string[];
+  localModel: string;
+  performanceSpec: { minAccuracyPercentage: number; maxLatencyMs: number };
+  securitySpec: { isolationLevel: string; dataBoundary: string };
+  status: 'ACTIVE' | 'STANDBY' | 'MAINTENANCE' | 'DEGRADED';
+  version: string;
+}
+
+export interface MaintenanceAuthorizationToken {
+  tokenId: string;
+  institutionId: string;
+  erpId: string;
+  environment: string;
+  scope: string;
+  permissions: string[];
+  issuedAt: string;
+  expiresAt: string;
+  isRevoked: boolean;
+  signature: string;
+}
+
+export interface AutonomousMaintenanceSession {
+  id: string;
+  institutionId: string;
+  erpId: string;
+  component: string;
+  fingerprint: string;
+  authToken: MaintenanceAuthorizationToken;
+  stage: 'DETECT' | 'DIAGNOSE' | 'PLAN' | 'VERIFY' | 'REPAIR' | 'TEST' | 'DEPLOY' | 'MONITOR' | 'COMPLETED' | 'FAILED' | 'ROLLED_BACK';
+  repairLevel: 0 | 1 | 2 | 3 | 4 | 5; // 0: Observe, 1: Auto Safe Recovery, 2: Auto Non-Code Repair, 3: AI Code Repair, 4: Controlled Production Repair, 5: Emergency Rollback
+  errorLog: string;
+  rootCauseAnalysis: string;
+  repairPlan: string[];
+  patchCode?: string;
+  testResults: Array<{ testName: string; passed: boolean; output: string }>;
+  assignedAgents: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StudioSettings {
+  studioId: string;
+  runtimeSettings: Record<string, any>;
+  workflowSettings: Record<string, any>;
+  agentSettings: Record<string, any>;
+  securitySettings: Record<string, any>;
+  automationSettings: Record<string, any>;
+  verificationSettings: Record<string, any>;
+  maintenanceSettings: Record<string, any>;
+}
+
+export interface ProductVersionControl {
+  productVersion: string;
+  architectureVersion: string;
+  runtimeVersion: string;
+  agentVersion: string;
+  aiCompatibilityVersion: string;
+  securityVersion: string;
+  schemaVersion: string;
+  lastCompatibilityCheck: string;
+  updateChannel: 'STABLE' | 'LTS' | 'BETA' | 'CANARY';
+  autoUpdatePolicy: 'STAGED_PROMOTION' | 'MANUAL_APPROVAL' | 'IMMEDIATE';
+}
+
+export interface OfflineSyncStatus {
+  isOnline: boolean;
+  lastSyncTimestamp: string;
+  pendingLocalOperations: number;
+  reconciliationStatus: 'IN_SYNC' | 'PENDING_SYNC' | 'RECONCILING' | 'SYNC_ERROR';
+  offlineStorageUsageBytes: number;
+}
+
 export interface SovereignState {
   branding: ApplicationBranding;
   installation: InstallationConfig;
@@ -235,6 +392,18 @@ export interface SovereignState {
   assets: LifecycleAsset[];
   archLayers?: JumoArchitectureLayer[];
   expansionTraces: ArchitectureExpansionTrace[];
+  
+  // AUTONOMOUS INSTITUTIONAL OPERATIONS & LIFECYCLE ARCHITECTURE EXTENSIONS
+  domainConfig: InstitutionalDomainConfig;
+  aiGateway: AIGatewayState;
+  providerQuotas: ProviderQuotaMetrics[];
+  modelEvolution: ModelEvolutionRecord[];
+  agentContracts: AgentContract[];
+  maintenanceSessions: AutonomousMaintenanceSession[];
+  studioSettings: Record<string, StudioSettings>;
+  productVersion: ProductVersionControl;
+  offlineSync: OfflineSyncStatus;
+
   counters: {
     audit: number;
     event: number;
@@ -245,6 +414,7 @@ export interface SovereignState {
     deployment: number;
     failure: number;
     certification: number;
+    maintenance: number;
   };
   cryptographicKeys: {
     primaryKey: string;

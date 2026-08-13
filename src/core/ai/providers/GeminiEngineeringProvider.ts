@@ -30,6 +30,21 @@ export class GeminiEngineeringProvider implements JumoAIProvider {
     return Boolean(this.getClient());
   }
 
+  async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
+    const available = await this.isAvailable();
+    return {
+      status: available ? "HEALTHY" : "UNAVAILABLE",
+      details: available ? "Gemini API key configured" : "Gemini API key missing"
+    };
+  }
+
+  async discoverModels(): Promise<Array<{ modelId: string; displayName: string; contextLength: number; capabilities: string[] }>> {
+    return [
+      { modelId: "gemini-3.6-flash", displayName: "Gemini 3.6 Flash", contextLength: 1000000, capabilities: ["reasoning", "speed", "multimodal"] },
+      { modelId: "gemini-2.5-pro", displayName: "Gemini 2.5 Pro", contextLength: 2000000, capabilities: ["complex-reasoning", "coding"] }
+    ];
+  }
+
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const client = this.getClient();
 

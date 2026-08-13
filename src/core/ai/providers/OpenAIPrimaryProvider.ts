@@ -30,6 +30,20 @@ export class OpenAIPrimaryProvider implements JumoAIProvider {
     return Boolean(this.getClient());
   }
 
+  async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
+    const available = await this.isAvailable();
+    return {
+      status: available ? "HEALTHY" : "UNAVAILABLE",
+      details: available ? "OpenAI API key configured" : "OpenAI API key missing"
+    };
+  }
+
+  async discoverModels(): Promise<Array<{ modelId: string; displayName: string; contextLength: number; capabilities: string[] }>> {
+    return [
+      { modelId: "gpt-4o", displayName: "OpenAI GPT-4o", contextLength: 128000, capabilities: ["reasoning", "coding", "multimodal"] }
+    ];
+  }
+
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const client = this.getClient();
 

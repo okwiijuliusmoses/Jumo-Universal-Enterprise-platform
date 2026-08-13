@@ -15,6 +15,20 @@ export class CopilotEngineeringProvider implements JumoAIProvider {
     );
   }
 
+  async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
+    const available = await this.isAvailable();
+    return {
+      status: available ? "HEALTHY" : "UNAVAILABLE",
+      details: available ? "Copilot endpoint configured" : "Copilot endpoint missing"
+    };
+  }
+
+  async discoverModels(): Promise<Array<{ modelId: string; displayName: string; contextLength: number; capabilities: string[] }>> {
+    return [
+      { modelId: "copilot-enterprise", displayName: "Copilot Enterprise", contextLength: 128000, capabilities: ["reasoning", "coding"] }
+    ];
+  }
+
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const endpoint =
       process.env.JUMO_COPILOT_ENDPOINT?.trim();

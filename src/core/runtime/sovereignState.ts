@@ -52,7 +52,16 @@ import {
   InstallationConfig,
   AgentWorkLog,
   CoordinationEvent,
-  SovereignState
+  SovereignState,
+  InstitutionalDomainConfig,
+  AIGatewayState,
+  ProviderQuotaMetrics,
+  ModelEvolutionRecord,
+  AgentContract,
+  AutonomousMaintenanceSession,
+  StudioSettings,
+  ProductVersionControl,
+  OfflineSyncStatus
 } from "./sovereignState.types";
 
 export type { 
@@ -70,7 +79,16 @@ export type {
   InstallationConfig,
   AgentWorkLog,
   CoordinationEvent,
-  SovereignState
+  SovereignState,
+  InstitutionalDomainConfig,
+  AIGatewayState,
+  ProviderQuotaMetrics,
+  ModelEvolutionRecord,
+  AgentContract,
+  AutonomousMaintenanceSession,
+  StudioSettings,
+  ProductVersionControl,
+  OfflineSyncStatus
 };
 
 
@@ -243,6 +261,226 @@ export class SovereignOperatingStateService {
       assets: [],
       agentWorkLogs: [],
       expansionTraces: [],
+
+      // AUTONOMOUS INSTITUTIONAL OPERATIONS & LIFECYCLE ARCHITECTURE EXTENSIONS
+      domainConfig: {
+        institutionId: "inst-nea-01",
+        tenantId: "tenant-primary-01",
+        primaryDomain: "nea.jumo.gov",
+        secondaryDomains: ["sovereign.jumo.gov", "portal.nea.gov"],
+        subdomains: {
+          erp: "erp.nea.jumo.gov",
+          auth: "auth.nea.jumo.gov",
+          api: "api.nea.jumo.gov",
+          ai: "ai.nea.jumo.gov",
+          admin: "admin.nea.jumo.gov"
+        },
+        routingPolicy: "LOAD_BALANCED",
+        sslCertStatus: "VALID",
+        dnsStatus: "VERIFIED",
+        environment: "PRODUCTION",
+        deploymentTarget: "HYBRID",
+        verificationToken: "JUMO-VERIFY-99812-3211",
+        isVerified: true,
+        createdAt: nowStr,
+        updatedAt: nowStr
+      },
+      aiGateway: {
+        registeredProviders: [
+          {
+            providerId: "gemini",
+            name: "Google Gemini 3.6 Flash / Pro",
+            type: "EXTERNAL",
+            status: "HEALTHY",
+            latencyMs: 120,
+            errorRate: 0.01,
+            activeModel: "gemini-3.6-flash",
+            supportedModels: ["gemini-3.6-flash", "gemini-3.5-pro", "gemini-1.5-pro"],
+            isAvailable: true
+          },
+          {
+            providerId: "openai",
+            name: "OpenAI GPT-4o Enterprise",
+            type: "EXTERNAL",
+            status: "HEALTHY",
+            latencyMs: 140,
+            errorRate: 0.02,
+            activeModel: "gpt-4o",
+            supportedModels: ["gpt-4o", "gpt-4o-mini", "o1-mini"],
+            isAvailable: true
+          },
+          {
+            providerId: "copilot",
+            name: "Microsoft Copilot Reasoning Provider",
+            type: "EXTERNAL",
+            status: "HEALTHY",
+            latencyMs: 160,
+            errorRate: 0.03,
+            activeModel: "copilot-enterprise",
+            supportedModels: ["copilot-enterprise"],
+            isAvailable: true
+          },
+          {
+            providerId: "jumo_local",
+            name: "JUMO Local Sovereign Reasoning Engine",
+            type: "LOCAL",
+            status: "HEALTHY",
+            latencyMs: 15,
+            errorRate: 0.0,
+            activeModel: "jumo-local-v1",
+            supportedModels: ["jumo-local-v1", "jumo-offline-core"],
+            isAvailable: true
+          }
+        ],
+        activePrimaryProvider: "gemini",
+        fallbackProviderOrder: ["gemini", "openai", "copilot", "jumo_local"],
+        localReasoningStatus: "ENABLED",
+        reasoningMode: "HYBRID_AUTONOMOUS",
+        isLocalRegistered: true,
+        gatewayHealth: "OPERATIONAL",
+        totalInferenceRequests: 1420,
+        failedInferenceRequests: 2
+      },
+      providerQuotas: [
+        {
+          providerId: "gemini",
+          tokensUsed: 1450000,
+          tokenLimit: 10000000,
+          requestsUsed: 2400,
+          requestLimit: 10000,
+          rateLimitPerMin: 1000,
+          quotaResetTimestamp: new Date(Date.now() + 86400000).toISOString(),
+          isExhausted: false,
+          status: "NORMAL"
+        },
+        {
+          providerId: "openai",
+          tokensUsed: 890000,
+          tokenLimit: 5000000,
+          requestsUsed: 1200,
+          requestLimit: 5000,
+          rateLimitPerMin: 500,
+          quotaResetTimestamp: new Date(Date.now() + 86400000).toISOString(),
+          isExhausted: false,
+          status: "NORMAL"
+        },
+        {
+          providerId: "jumo_local",
+          tokensUsed: 0,
+          tokenLimit: 999999999,
+          requestsUsed: 420,
+          requestLimit: 999999999,
+          rateLimitPerMin: 10000,
+          quotaResetTimestamp: new Date(Date.now() + 86400000).toISOString(),
+          isExhausted: false,
+          status: "NORMAL"
+        }
+      ],
+      modelEvolution: [
+        {
+          id: "mev-01",
+          provider: "Google",
+          modelName: "gemini-3.6-flash",
+          releaseDate: "2026-08-01",
+          discoveryStatus: "PROMOTED",
+          capabilityScore: 98.4,
+          benchmarkLatencyMs: 115,
+          securityScore: 99.8,
+          architectureCompatibilityScore: 100.0,
+          approvalPolicy: "AUTO_APPROVE",
+          sandboxResult: "PASS - All 140 UEOS benchmark suites green",
+          timestamp: nowStr
+        }
+      ],
+      agentContracts: [
+        {
+          agentId: "ag-contract-gov",
+          name: "Governance Agent",
+          role: "GOVERNANCE",
+          purpose: "Enforce institutional policy, compliance, audit trails, and ledger integrity.",
+          capabilities: ["Policy Evaluation", "Audit Logging", "Compliance Verification", "Ledger Guarding"],
+          tools: ["GovernanceEngine", "SovereignGovernanceRegistry", "AuditSystem"],
+          permissions: ["READ_GOVERNANCE", "WRITE_AUDIT", "ENFORCE_POLICY"],
+          knowledgeSources: ["NationalEnterpriseStandard", "SovereignState"],
+          reasoningPolicy: "STRICT_COMPLIANCE",
+          primaryModel: "gemini-3.6-flash",
+          fallbackModels: ["gpt-4o", "jumo-local-v1"],
+          localModel: "jumo-local-v1",
+          performanceSpec: { minAccuracyPercentage: 99.5, maxLatencyMs: 250 },
+          securitySpec: { isolationLevel: "SOVEREIGN_TENANT", dataBoundary: "RESTRICTED" },
+          status: "ACTIVE",
+          version: "1.0.0"
+        },
+        {
+          agentId: "ag-contract-mfg",
+          name: "Manufacturing Agent",
+          role: "MANUFACTURING",
+          purpose: "Orchestrate digital product manufacturing, build suites, and module generation.",
+          capabilities: ["ERP Manufacturing", "Code Compilation", "Module Synthesis"],
+          tools: ["DigitalProductManufacturingOrchestrator", "ManufacturingEngine"],
+          permissions: ["WRITE_BLUEPRINT", "EXECUTE_BUILD"],
+          knowledgeSources: ["ERPFactoryEngine", "UniversalHubRegistry"],
+          reasoningPolicy: "DETERMINISTIC_MANUFACTURING",
+          primaryModel: "gemini-3.6-flash",
+          fallbackModels: ["gpt-4o", "jumo-local-v1"],
+          localModel: "jumo-local-v1",
+          performanceSpec: { minAccuracyPercentage: 99.0, maxLatencyMs: 300 },
+          securitySpec: { isolationLevel: "SOVEREIGN_TENANT", dataBoundary: "RESTRICTED" },
+          status: "ACTIVE",
+          version: "1.0.0"
+        },
+        {
+          agentId: "ag-contract-maint",
+          name: "Autonomous Maintenance Agent",
+          role: "MAINTENANCE",
+          purpose: "Detect, diagnose, plan, verify, repair, test, deploy, monitor, and rollback institutional faults.",
+          capabilities: ["Exception Fingerprinting", "RCA Engine", "Patch Generation", "26-Step Pipeline"],
+          tools: ["JumoAutonomousMaintenanceEngine", "JumoMaintenanceManufacturingPipeline"],
+          permissions: ["DIAGNOSE_SYSTEM", "APPLY_PATCH", "EXECUTE_ROLLBACK"],
+          knowledgeSources: ["UEOSDiagnostics", "SovereignStateLogs"],
+          reasoningPolicy: "SELF_HEALING_WITH_GUARDRAILS",
+          primaryModel: "gemini-3.6-flash",
+          fallbackModels: ["gpt-4o", "jumo-local-v1"],
+          localModel: "jumo-local-v1",
+          performanceSpec: { minAccuracyPercentage: 99.9, maxLatencyMs: 200 },
+          securitySpec: { isolationLevel: "SOVEREIGN_TENANT", dataBoundary: "SCOPED_MAINTENANCE_TOKEN" },
+          status: "ACTIVE",
+          version: "1.0.0"
+        }
+      ],
+      maintenanceSessions: [],
+      studioSettings: {
+        "GovernanceStudio": {
+          studioId: "GovernanceStudio",
+          runtimeSettings: { autoEnforcePolicies: true, auditRetentionDays: 365 },
+          workflowSettings: { approvalLevels: 3, requireDualSignoff: true },
+          agentSettings: { assignedAgents: ["ag-contract-gov"] },
+          securitySettings: { zeroTrustEnforced: true, encryptionAlgorithm: "ECDSA P-384" },
+          automationSettings: { autoAuditSync: true },
+          verificationSettings: { verifyOnEveryStateChange: true },
+          maintenanceSettings: { autoSelfHealLevel: 3 }
+        }
+      },
+      productVersion: {
+        productVersion: "2.5.0-SOVEREIGN",
+        architectureVersion: "ARCH-130-LOCKED",
+        runtimeVersion: "UEOS-KERNEL-v1.4",
+        agentVersion: "AGENT-V3",
+        aiCompatibilityVersion: "AI-COMPAT-2026.8",
+        securityVersion: "SEC-ZERO-TRUST-V2",
+        schemaVersion: "SCHEMA-V4",
+        lastCompatibilityCheck: nowStr,
+        updateChannel: "STABLE",
+        autoUpdatePolicy: "STAGED_PROMOTION"
+      },
+      offlineSync: {
+        isOnline: true,
+        lastSyncTimestamp: nowStr,
+        pendingLocalOperations: 0,
+        reconciliationStatus: "IN_SYNC",
+        offlineStorageUsageBytes: 1048576
+      },
+
       counters: {
         audit: 1,
         event: 1,
@@ -252,7 +490,8 @@ export class SovereignOperatingStateService {
         artifact: 1,
         deployment: 1,
         failure: 1,
-        certification: 1
+        certification: 1,
+        maintenance: 1
       },
       cryptographicKeys: {
         primaryKey: "SHA256:06dfbc2a8e8b919feae99a0d39c3a2aeebe5035e8985df1932a7a6c96fce30f2",
@@ -268,7 +507,22 @@ export class SovereignOperatingStateService {
     try {
       if (nodeFs?.existsSync(STATE_FILE_PATH)) {
         const fileContent = nodeFs?.readFileSync(STATE_FILE_PATH, "utf-8");
-        this.state = JSON.parse(fileContent);
+        const loaded = JSON.parse(fileContent);
+        const defaults = this.getInitialState();
+        this.state = {
+          ...defaults,
+          ...loaded,
+          domainConfig: loaded.domainConfig || defaults.domainConfig,
+          aiGateway: loaded.aiGateway || defaults.aiGateway,
+          providerQuotas: loaded.providerQuotas || defaults.providerQuotas,
+          modelEvolution: loaded.modelEvolution || defaults.modelEvolution,
+          agentContracts: loaded.agentContracts || defaults.agentContracts,
+          maintenanceSessions: loaded.maintenanceSessions || defaults.maintenanceSessions,
+          studioSettings: loaded.studioSettings || defaults.studioSettings,
+          productVersion: loaded.productVersion || defaults.productVersion,
+          offlineSync: loaded.offlineSync || defaults.offlineSync,
+          counters: { ...defaults.counters, ...loaded.counters }
+        };
         console.log(`[STATE_SERVICE] Loaded sovereign state successfully from ${STATE_FILE_PATH}`);
       } else {
         this.state = this.getInitialState();
@@ -322,6 +576,15 @@ export class SovereignOperatingStateService {
     return { job, slot };
   }
 
+  public static updateState(updater: (draft: SovereignState) => void) {
+    if (!this.state) {
+      this.state = this.getState();
+    }
+    updater(this.state);
+    this.saveState();
+    return this.state;
+  }
+
   public static getState(): SovereignState {
     const s = this.state || this.getInitialState();
     // Authoritative Runtime Normalization Boundary
@@ -348,6 +611,15 @@ export class SovereignOperatingStateService {
       expansionTraces: s.expansionTraces ?? [],
       branding: s.branding ?? this.getInitialState().branding,
       installation: s.installation ?? this.getInitialState().installation,
+      domainConfig: s.domainConfig ?? this.getInitialState().domainConfig,
+      aiGateway: s.aiGateway ?? this.getInitialState().aiGateway,
+      providerQuotas: s.providerQuotas ?? this.getInitialState().providerQuotas,
+      modelEvolution: s.modelEvolution ?? this.getInitialState().modelEvolution,
+      agentContracts: s.agentContracts ?? this.getInitialState().agentContracts,
+      maintenanceSessions: s.maintenanceSessions ?? this.getInitialState().maintenanceSessions,
+      studioSettings: s.studioSettings ?? this.getInitialState().studioSettings,
+      productVersion: s.productVersion ?? this.getInitialState().productVersion,
+      offlineSync: s.offlineSync ?? this.getInitialState().offlineSync,
       archLayers: JUMO_HYBRID_ARCHITECTURE_REGISTRY.all()
     };
   }
