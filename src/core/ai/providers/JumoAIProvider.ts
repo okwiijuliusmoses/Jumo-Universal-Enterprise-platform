@@ -1,20 +1,21 @@
-import OpenAI from "openai";
+// JUMO UEOS — JUMO AI Providers Layer
+// Unified contract and concrete adapters for Google Gemini, OpenAI, Copilot/Microsoft, and JUMO Local Engines.
+
 import { GoogleGenAI } from "@google/genai";
+import { OpenAI } from "openai";
+import { JumoSecretVault } from "../../security/JumoSecretVault";
 
 export interface JumoAIRequest {
   message: string;
-  modelId?: string;
-  providerId?: string;
   systemPrompt?: string;
   context?: Record<string, unknown>;
   conversation?: Array<{
     role: "system" | "user" | "assistant";
     content: string;
   }>;
-  temperature?: number;
   reasoningEffort?: "low" | "medium" | "high" | "max";
-  requiredCapabilities?: string[];
-  metadata?: Record<string, unknown>;
+  modelId?: string;
+  temperature?: number;
 }
 
 export interface JumoAIResponse {
@@ -28,17 +29,14 @@ export interface JumoAIResponse {
     totalTokens?: number;
   };
   metadata?: Record<string, unknown>;
+  trace?: string[];
 }
 
 export interface JumoModelDiscovery {
   modelId: string;
   displayName: string;
-  contextLength?: number;
+  contextLength: number;
   capabilities: string[];
-  providerId?: string;
-  configured?: boolean;
-  available?: boolean;
-  verified?: boolean;
 }
 
 export interface JumoAIProvider {
@@ -47,15 +45,8 @@ export interface JumoAIProvider {
   readonly local: boolean;
 
   isAvailable(): Promise<boolean>;
-
-  getHealth?(): Promise<{
-    status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE";
-    latencyMs?: number;
-    details?: string;
-  }>;
-
-  discoverModels?(): Promise<JumoModelDiscovery[]>;
-
+  getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }>;
+  discoverModels(): Promise<JumoModelDiscovery[]>;
   generate(request: JumoAIRequest): Promise<JumoAIResponse>;
 }
 
@@ -68,25 +59,26 @@ export class OpenAIProvider implements JumoAIProvider {
   readonly local = false;
 
   async isAvailable(): Promise<boolean> {
-    return !!process.env.OPENAI_API_KEY;
+    return !!JumoSecretVault.getInstance().getOpenAIKey();
   }
 
   async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
-    if (!process.env.OPENAI_API_KEY) {
-      return { status: "UNAVAILABLE", details: "API Key (OPENAI_API_KEY) is missing in environment variables." };
+    const vault = JumoSecretVault.getInstance();
+    const key = vault.getOpenAIKey();
+    if (!key) {
+      return { status: "UNAVAILABLE", details: "API Key (JUMO_OPENAI_API_KEY) is missing in system secret vault." };
     }
     const start = Date.now();
     try {
+      const openai = new OpenAI({ apiKey: key });
+      const model = vault.getOpenAIModel();
       // Small verification request to check endpoint health
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-      const model = process.env.OPENAI_MODEL || "gpt-5.6-sol";
-      // Use a lightweight model check if possible, or a small chat completion
       await openai.chat.completions.create({
-        model: model.includes("gpt-5") ? "gpt-4o" : model, // Fallback check if gpt-5 isn't real yet
+        model: model,
         messages: [{ role: "user", content: "ping" }],
         max_tokens: 1
       });
-      return { status: "HEALTHY", latencyMs: Date.now() - start, details: "Verified OpenAI connectivity and generation endpoints." };
+      return { status: "HEALTHY", latencyMs: Date.now() - start, details: `Verified OpenAI connectivity. Model: ${model}` };
     } catch (err: any) {
       return { status: "DEGRADED", latencyMs: Date.now() - start, details: `Authentication error or service degraded: ${err.message}` };
     }
@@ -94,20 +86,22 @@ export class OpenAIProvider implements JumoAIProvider {
 
   async discoverModels(): Promise<JumoModelDiscovery[]> {
     return [
-      { modelId: "gpt-5.6-sol", displayName: "GPT-5.6 Sol (Reasoning Flagship)", contextLength: 128000, capabilities: ["reasoning", "complex-analysis", "structured-output"] },
-      { modelId: "gpt-5.6-luna", displayName: "GPT-5.6 Luna (Fast Tooling)", contextLength: 64000, capabilities: ["tooling", "high-velocity", "embeddings"] },
-      { modelId: "gpt-4o", displayName: "GPT-4o standard", contextLength: 128000, capabilities: ["multimodal", "fast-completions"] }
+      { modelId: "gpt-4o", displayName: "GPT-4o (High-Performance)", contextLength: 128000, capabilities: ["multimodal", "fast-completions", "tooling"] },
+      { modelId: "o1-preview", displayName: "OpenAI o1 Preview (Complex Reasoning)", contextLength: 128000, capabilities: ["reasoning", "complex-analysis", "structured-output"] },
+      { modelId: "o1-mini", displayName: "OpenAI o1 Mini (Fast Reasoning)", contextLength: 128000, capabilities: ["reasoning", "high-velocity"] }
     ];
   }
 
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const start = Date.now();
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error("Cannot execute: OPENAI_API_KEY is not configured.");
+    const vault = JumoSecretVault.getInstance();
+    const key = vault.getOpenAIKey();
+    if (!key) {
+      throw new Error("Cannot execute: JUMO_OPENAI_API_KEY is not configured.");
     }
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const model = request.modelId || process.env.OPENAI_MODEL || "gpt-5.6-sol";
+    const openai = new OpenAI({ apiKey: key });
+    const model = request.modelId || vault.getOpenAIModel();
     const sysPrompt = request.systemPrompt || "You are JUMO GPT Sovereign Intelligence. Respond accurately and structured.";
     
     const messages: any[] = [{ role: "system", content: sysPrompt }];
@@ -153,29 +147,30 @@ export class GeminiProvider implements JumoAIProvider {
   readonly local = false;
 
   async isAvailable(): Promise<boolean> {
-    return !!process.env.GEMINI_API_KEY;
+    return !!JumoSecretVault.getInstance().getGeminiKey();
   }
 
   async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
-    if (!process.env.GEMINI_API_KEY) {
-      return { status: "UNAVAILABLE", details: "API Key (GEMINI_API_KEY) is missing in environment variables." };
+    const vault = JumoSecretVault.getInstance();
+    const key = vault.getGeminiKey();
+    if (!key) {
+      return { status: "UNAVAILABLE", details: "API Key (JUMO_GEMINI_API_KEY) is missing in system secret vault." };
     }
     const start = Date.now();
     try {
-      const ai = new GoogleGenAI({
-        apiKey: process.env.GEMINI_API_KEY,
-        httpOptions: {
-          headers: { "User-Agent": "aistudio-build" }
-        }
+      const ai = new GoogleGenAI({ 
+        apiKey: key,
+        httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
       });
-      const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+      const modelName = vault.getGeminiModel();
+      
       // Quick request to verify credentials validity
       await ai.models.generateContent({
-        model: model,
-        contents: "ping",
+        model: modelName,
+        contents: [{ role: "user", parts: [{ text: "ping" }] }],
         config: { maxOutputTokens: 1 }
       });
-      return { status: "HEALTHY", latencyMs: Date.now() - start, details: "Verified Google GenAI connectivity and generation endpoints." };
+      return { status: "HEALTHY", latencyMs: Date.now() - start, details: `Verified Google GenAI connectivity. Model: ${modelName}` };
     } catch (err: any) {
       return { status: "DEGRADED", latencyMs: Date.now() - start, details: `Credential degradation or network block: ${err.message}` };
     }
@@ -183,69 +178,62 @@ export class GeminiProvider implements JumoAIProvider {
 
   async discoverModels(): Promise<JumoModelDiscovery[]> {
     return [
-      { modelId: "gemini-3.6-flash", displayName: "Gemini 3.6 Flash (Fast Agentic Execution)", contextLength: 1048576, capabilities: ["fast-agentic-loops", "tooling", "speed", "coding-loops"] },
-      { modelId: "gemini-3.1-pro-preview", displayName: "Gemini 3.1 Pro Preview (Architectural Reasoning)", contextLength: 2097152, capabilities: ["deep-reasoning", "architectural-verification", "software-engineering"] }
+      { modelId: "gemini-1.5-flash", displayName: "Gemini 1.5 Flash (Fast Agentic Execution)", contextLength: 1048576, capabilities: ["fast-agentic-loops", "tooling", "speed", "coding-loops"] },
+      { modelId: "gemini-1.5-pro", displayName: "Gemini 1.5 Pro (Architectural Reasoning)", contextLength: 2097152, capabilities: ["deep-reasoning", "architectural-verification", "software-engineering"] }
     ];
   }
 
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const start = Date.now();
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error("Cannot execute: GEMINI_API_KEY is not configured.");
+    const vault = JumoSecretVault.getInstance();
+    const key = vault.getGeminiKey();
+    if (!key) {
+      throw new Error("Cannot execute: JUMO_GEMINI_API_KEY is not configured.");
     }
 
     try {
-      const ai = new GoogleGenAI({
-        apiKey: process.env.GEMINI_API_KEY,
-        httpOptions: {
-          headers: { "User-Agent": "aistudio-build" }
+      const ai = new GoogleGenAI({ 
+        apiKey: key,
+        httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+      });
+
+      const modelName = request.modelId || vault.getGeminiModel();
+      
+      const contents: any[] = [];
+      if (request.conversation) {
+        request.conversation.forEach(c => {
+          contents.push({
+            role: c.role === "assistant" ? "model" : c.role,
+            parts: [{ text: c.content }]
+          });
+        });
+      }
+      contents.push({
+        role: "user",
+        parts: [{ text: request.message }]
+      });
+
+      const result = await ai.models.generateContent({
+        model: modelName,
+        contents: contents,
+        config: {
+          systemInstruction: request.systemPrompt || "You are JUMO GPT Sovereign Intelligence.",
+          temperature: request.temperature ?? 0.2,
         }
       });
 
-      const model = request.modelId || process.env.GEMINI_MODEL || "gemini-3.6-flash";
-      const sysPrompt = request.systemPrompt || "You are JUMO GPT Sovereign Intelligence.";
-      const contextStr = request.context ? `\n\nContext:\n${JSON.stringify(request.context)}` : "";
-      const prompt = `${sysPrompt}${contextStr}\n\nUser Input: ${request.message}`;
-
-      let response;
-      let lastErr: any = null;
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          response = await ai.models.generateContent({
-            model: model,
-            contents: prompt,
-            config: {
-              temperature: request.temperature ?? 0.2,
-            }
-          });
-          if (response && response.text) {
-            lastErr = null;
-            break;
-          }
-        } catch (err: any) {
-          lastErr = err;
-          if (attempt < 3) {
-            await new Promise(r => setTimeout(r, 500 * attempt));
-          }
-        }
-      }
-
-      if (lastErr || !response?.text) {
-        throw new Error(`Gemini Provider execution failed after 3 attempts: [${lastErr?.status || "API_ERROR"}] ${lastErr?.message || "Empty response"}`);
-      }
-
-      const text = response.text || "";
+      const text = result.text || "";
       const latencyMs = Date.now() - start;
 
       return {
         text,
-        modelId: model,
+        modelId: modelName,
         providerId: this.providerId,
         reasoning: true,
         usage: {
-          inputTokens: Math.floor(prompt.length / 4),
-          outputTokens: Math.floor(text.length / 4),
-          totalTokens: Math.floor((prompt.length + text.length) / 4)
+          inputTokens: result.usageMetadata?.promptTokenCount,
+          outputTokens: result.usageMetadata?.candidatesTokenCount,
+          totalTokens: result.usageMetadata?.totalTokenCount
         },
         metadata: { latencyMs }
       };
@@ -264,16 +252,27 @@ export class CopilotProvider implements JumoAIProvider {
   readonly local = false;
 
   async isAvailable(): Promise<boolean> {
-    return !!process.env.COPILOT_PROVIDER_ENDPOINT;
+    const vault = JumoSecretVault.getInstance();
+    return !!vault.getCopilotProviderEndpoint() && !!vault.getCopilotKey();
   }
 
   async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
-    if (!process.env.COPILOT_PROVIDER_ENDPOINT) {
-      return { status: "UNAVAILABLE", details: "Copilot Endpoint (COPILOT_PROVIDER_ENDPOINT) is not configured." };
+    const vault = JumoSecretVault.getInstance();
+    const endpoint = vault.getCopilotProviderEndpoint();
+    const key = vault.getCopilotKey();
+    if (!endpoint) {
+      return { status: "UNAVAILABLE", details: "Copilot Endpoint (JUMO_COPILOT_PROVIDER_ENDPOINT) is not configured." };
+    }
+    if (!key) {
+      return { status: "UNAVAILABLE", details: "Copilot Key (JUMO_COPILOT_API_KEY) is not configured in the vault." };
     }
     const start = Date.now();
     try {
-      const res = await fetch(`${process.env.COPILOT_PROVIDER_ENDPOINT}/health`, { method: "GET" });
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (key) {
+        headers["Authorization"] = `Bearer ${key}`;
+      }
+      const res = await fetch(`${endpoint}/health`, { method: "GET", headers });
       if (res.ok) {
         return { status: "HEALTHY", latencyMs: Date.now() - start, details: "Copilot endpoint reachable and verified." };
       }
@@ -291,13 +290,15 @@ export class CopilotProvider implements JumoAIProvider {
 
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const start = Date.now();
-    const endpoint = process.env.COPILOT_PROVIDER_ENDPOINT;
+    const vault = JumoSecretVault.getInstance();
+    const endpoint = vault.getCopilotProviderEndpoint();
+    const key = vault.getCopilotKey();
     if (!endpoint) {
-      throw new Error("Cannot execute: COPILOT_PROVIDER_ENDPOINT is not configured.");
+      throw new Error("Cannot execute: JUMO_COPILOT_PROVIDER_ENDPOINT is not configured.");
     }
 
     try {
-      const model = process.env.COPILOT_MODEL || "copilot-intelligent-mesh";
+      const model = request.modelId || vault.getCopilotModel();
       const payload = {
         model,
         messages: [
@@ -307,9 +308,14 @@ export class CopilotProvider implements JumoAIProvider {
         temperature: request.temperature ?? 0.2
       };
 
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (key) {
+        headers["Authorization"] = `Bearer ${key}`;
+      }
+
       const res = await fetch(`${endpoint}/chat/completions`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(payload)
       });
 

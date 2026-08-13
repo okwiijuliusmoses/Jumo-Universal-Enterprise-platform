@@ -6,6 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import { OpenAI } from "openai";
 import { AIAgentRecord } from "../types/JumoAITypes";
 import { SovereignOperatingStateService } from "../../runtime/sovereignState";
+import { JumoSecretVault } from "../../security/JumoSecretVault";
 
 export interface AIProviderConfig {
   mode: "LIVE" | "HYBRID" | "AIR-GAP";
@@ -51,19 +52,17 @@ export class JumoAIProviderGateway {
    * Load active provider configurations dynamically from environment variables
    */
   public getConfig(): AIProviderConfig {
-    const mode = (process.env.AI_PROVIDER_MODE || "HYBRID") as "LIVE" | "HYBRID" | "AIR-GAP";
-    const reasoningPolicy = (process.env.AI_REASONING_POLICY || "BALANCED") as "CRITICAL_ARCH_PREFER_OPENAI" | "COST_SENSITIVE" | "BALANCED";
-    
+    const vault = JumoSecretVault.getInstance();
     return {
-      mode,
-      reasoningPolicy,
-      openaiKey: process.env.OPENAI_API_KEY,
-      openaiModel: process.env.OPENAI_MODEL || "gpt-5.6-sol",
-      geminiKey: process.env.GEMINI_API_KEY,
-      geminiModel: process.env.GEMINI_MODEL || "gemini-3.6-flash",
-      timeoutMs: parseInt(process.env.AI_TIMEOUT_MS || "15000", 10),
-      maxRetries: parseInt(process.env.AI_MAX_RETRIES || "3", 10),
-      maxConcurrency: parseInt(process.env.AI_MAX_CONCURRENCY || "5", 10),
+      mode: vault.getAIProviderMode(),
+      reasoningPolicy: vault.getAIReasoningPolicy(),
+      openaiKey: vault.getOpenAIKey(),
+      openaiModel: vault.getOpenAIModel(),
+      geminiKey: vault.getGeminiKey(),
+      geminiModel: vault.getGeminiModel(),
+      timeoutMs: vault.getAITimeoutMs(),
+      maxRetries: vault.getAIMaxRetries(),
+      maxConcurrency: vault.getAIMaxConcurrency(),
     };
   }
 
@@ -97,12 +96,7 @@ export class JumoAIProviderGateway {
         continue;
       }
       
-      const health = typeof p.getHealth === "function"
-      ? await p.getHealth()
-      : {
-          status: "HEALTHY" as const,
-          details: "Provider does not expose an explicit health probe.",
-        };
+      const health = await p.getHealth();
       if (health.status === "HEALTHY") {
         healthyProviders.push(p);
       } else {
@@ -134,20 +128,26 @@ export class JumoAIProviderGateway {
           targetProviderId = bestProvider.providerId;
           trace.push(`[GATEWAY] Preferred provider unavailable or unhealthy. Routing to highest priority alternative: ${targetProviderId}`);
         } else {
-          targetProviderId = "JUMO_LOCAL";
-          trace.push(`[GATEWAY] No healthy remote providers available. Using local reasoning fallback.`);
+          trace.push(`[GATEWAY] No healthy remote providers available. Provider health check failed.`);
+          return {
+            success: false,
+            provider: "NONE" as any,
+            modelUsed: "UNKNOWN",
+            executionMode: config.mode,
+            agentId: agent.agentId,
+            agentName: agent.jumoName,
+            taskTitle,
+            output: `EXTERNAL_PROVIDER_UNAVAILABLE: No external AI providers are currently configured and reachable. Please configure API keys and ensure network connectivity.`,
+            latencyMs: Date.now() - startTime,
+            evidenceHash: "ev_failed",
+            timestamp: new Date().toISOString(),
+            trace
+          };
         }
       }
     }
 
     const provider = registry.get(targetProviderId);
-
-    if (!provider) {
-      throw new Error(
-        `[AI_GATEWAY] Provider "${targetProviderId}" is not registered or enabled.`,
-      );
-    }
-
     let success = false;
     let output = "";
 
@@ -164,30 +164,16 @@ export class JumoAIProviderGateway {
       trace.push(`[${targetProviderId}] Successfully received remote reasoning block.`);
     } catch (err: any) {
       trace.push(`[ERROR] Provider ${targetProviderId} failed: ${err.message}`);
-      
-      const isQuotaError = err.message.includes("resource_exhausted") || err.message.includes("Quota exceeded");
-      
-      if (isQuotaError || config.mode === "HYBRID" || agent.modelPolicy.offlineFallbackEnabled) {
-        trace.push(`[GATEWAY] ${isQuotaError ? "Quota exhausted. " : ""}HYBRID fallback active. Transferring task to local air-gapped sovereign engine.`);
+      if (config.mode === "HYBRID" && agent.modelPolicy.offlineFallbackEnabled) {
+        trace.push(`[GATEWAY] HYBRID fallback active. Transferring task to local air-gapped sovereign engine.`);
         const localProvider = registry.get("JUMO_LOCAL");
-
-        if (!localProvider) {
-          throw new Error(
-            "[AI_GATEWAY] JUMO_LOCAL fallback provider is not registered or enabled.",
-          );
-        }
-
-        const res = await localProvider.generate({
-          message: prompt,
-          systemPrompt: `Agent Role: ${agent.role}`,
-          context,
-        });
+        const res = await localProvider.generate({ message: prompt, systemPrompt: `Agent Role: ${agent.role}`, context });
         output = res.text;
         success = true;
         targetProviderId = "JUMO_LOCAL";
       } else {
-        trace.push(`[GATEWAY] Task terminated. Offline fallback disabled for critical live policy.`);
-        output = `CRITICAL ARCHITECTURE DISCOVERY CONNECTION FAIL: Remote provider is unreachable and offline fallback policy is prohibited. Details: ${err.message}`;
+        trace.push(`[GATEWAY] Task terminated. Execution failed and fallback is disabled or running in strict mode.`);
+        output = `EXTERNAL_PROVIDER_EXECUTION_FAILED: Remote provider returned an error: ${err.message}`;
         success = false;
       }
     }
@@ -226,27 +212,6 @@ export class JumoAIProviderGateway {
     );
 
     return result;
-  }
-
-  /**
-   * High-quality deterministic reasoning block for specific architecture discovery
-   */
-  public async reasoning(params: { message: string; systemPrompt?: string; context?: any }): Promise<{ text: string }> {
-    const { JumoAIAgentRegistry } = await import("../registry/JumoAIAgentRegistry");
-    const architect = JumoAIAgentRegistry.getAgentsByDivision("ARCHITECTURE")[0];
-    
-    if (!architect) {
-      throw new Error("[AI_GATEWAY] No Architecture specialist agents found to perform reasoning.");
-    }
-
-    const result = await this.executeAgentTask(
-      architect,
-      "Architectural Reasoning",
-      params.message,
-      params.context
-    );
-
-    return { text: result.output };
   }
 
   /**
@@ -303,5 +268,28 @@ We have executed the requested system tasks under the secure local isolation con
 - **Capabilities Deployed:** ${agent.capabilities.slice(0, 3).join(", ")}
 - **Evidence Reference:** Approved on Secure Ingress Sandbox.
 - **Verification Hash:** Verified against local baseline.`;
+  }
+
+  /**
+   * General reasoning method for high-level intelligence tasks.
+   * Routes to the most capable available provider.
+   */
+  public async reasoning(request: { message: string; systemPrompt?: string; modelId?: string; temperature?: number }): Promise<{ text: string }> {
+    const { JumoAIProviderRegistry } = await import("../providers/JumoAIProviderRegistry");
+    const registry = JumoAIProviderRegistry.getInstance();
+    const vault = JumoSecretVault.getInstance();
+    
+    // Default priority: OPENAI -> GEMINI -> LOCAL for JUMO GPT role alignment
+    const providerId = vault.getOpenAIKey() ? "OPENAI" : (vault.getGeminiKey() ? "GEMINI" : "JUMO_LOCAL");
+    const provider = registry.get(providerId);
+    
+    const result = await provider.generate({
+      message: request.message,
+      systemPrompt: request.systemPrompt,
+      modelId: request.modelId,
+      temperature: request.temperature
+    });
+    
+    return { text: result.text };
   }
 }

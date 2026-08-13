@@ -10,9 +10,6 @@ import {
   Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical, Zap, Database, BookOpen,
   ShieldCheck, Activity, RefreshCcw, CreditCard
 } from "lucide-react";
-import { JumoBrandingService } from "../../core/runtime/JumoBrandingService";
-import { JumoAppletIdentityService } from "../../core/runtime/JumoAppletIdentityService";
-import { useSovereignState } from "../../hooks/useSovereignState";
 import { NationalManufacturingHub, HubWorkspace } from "../renderer/NationalManufacturingHub";
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
@@ -32,12 +29,6 @@ interface UEOSShellProps {
 }
 
 export function UEOSShell({ user, onLogout }: UEOSShellProps) {
-  const { state } = useSovereignState();
-  
-  // Branding and Identity
-  const branding = JumoBrandingService.getBranding();
-  const identity = JumoAppletIdentityService.getConfig();
-
   // === 1. BASIC SHELL STATES ===
   const [activeTab, setActiveTab] = useState<HubWorkspace>(() => {
     const saved = localStorage.getItem("jumo_ueos_active_workspace");
@@ -425,22 +416,45 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Host brand identity */}
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/20">
-              {branding.name.charAt(0)}
+              J
             </div>
             <div className="min-w-0">
-              <span className="font-extrabold tracking-tight text-slate-100 text-xs block uppercase">{branding.name}</span>
-              <span className="text-[8px] font-bold text-blue-400 uppercase tracking-widest block leading-none">{branding.productIdentity}</span>
+              <span className="font-extrabold tracking-tight text-slate-100 text-xs block">JUMO UEOS</span>
+              <span className="text-[8px] font-bold text-blue-400 uppercase tracking-widest block leading-none">Sovereign Command</span>
             </div>
           </div>
         </div>
 
-        {/* Middle: Integrated Search Trigger Bar removed per instructions */}
+        {/* Middle: Integrated Search Trigger Bar */}
         <div className="flex-1 max-w-md mx-4 lg:mx-8">
+          <button
+            onClick={() => setCommandPaletteOpen(true)}
+            className="w-full h-9 bg-blue-900/40 hover:bg-blue-900/60 border border-blue-850/60 rounded-xl px-3 flex items-center justify-between text-blue-100 text-xs font-bold transition-all text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+            title="Search registries and commands (Ctrl + K)"
+          >
+            <div className="flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-blue-300" />
+              <span className="text-blue-200">Search ecosystems, products, commands...</span>
+            </div>
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-blue-950 border border-blue-800 text-blue-300 font-bold rounded-lg text-[9px] shadow-2xs font-mono uppercase">
+              Ctrl K
+            </kbd>
+          </button>
         </div>
 
-        {/* Right Side: Settings and Identity */}
+        {/* Right Side: Keyboard Guide, Settings, and Identity */}
         <div className="flex items-center gap-2">
           
+          {/* Keyboard Help Guide */}
+          <button
+            onClick={() => setKeyboardGuideOpen(true)}
+            className="p-2 rounded-xl text-blue-200 hover:text-white hover:bg-blue-900/50 cursor-pointer transition-colors"
+            title="Keyboard Shortcuts Guide (Ctrl + /)"
+            aria-label="Shortcuts Help"
+          >
+            <Keyboard className="w-4 h-4" />
+          </button>
+
           {/* Unified Settings Gear */}
           <button
             onClick={() => setSettingsOpen(true)}
@@ -549,7 +563,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Mini system footprint at sidebar bottom */}
           <div className="p-3 border-t border-slate-100 bg-slate-50/50 text-center">
             <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block">
-              {!sidebarCollapsed ? JumoAppletIdentityService.getInstitutionalStamp() : identity.institution.acronym}
+              {!sidebarCollapsed ? "JUMO CORE v6" : "V6"}
             </span>
           </div>
         </aside>
@@ -579,9 +593,9 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 bg-slate-900 text-white rounded-lg flex items-center justify-center font-black text-xs">
-                        {branding.name.charAt(0)}
+                        J
                       </div>
-                      <span className="font-extrabold text-xs text-slate-900">{branding.name}</span>
+                      <span className="font-extrabold text-xs text-slate-900">JUMO UEOS</span>
                     </div>
                     <button 
                       onClick={() => setMobileSidebarOpen(false)}

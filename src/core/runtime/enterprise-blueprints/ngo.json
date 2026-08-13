@@ -1,0 +1,212 @@
+{
+  "id": "ngo-national-platform",
+  "aliases": ["ngo-national-platform", "ngo-erp", "NGO_NATIONAL_TEMPLATE"],
+  "version": "5.0.0-SOVEREIGN-ENGINE",
+  "approvalStatus": "APPROVED",
+  "name": "National NGO & Humanitarian Program Platform",
+  "ecosystem": "NGO & Humanitarian Development",
+  "ecosystemId": "humanitarian-ngo",
+  "governanceModel": "Board of Trustees & Donor Governance",
+  "institutionTypes": [
+    "International Humanitarian NGO",
+    "National Development Organization",
+    "Civil Society Alliance",
+    "Charitable Trust / Foundation"
+  ],
+  "description": "Multi-country NGO, grant management, field project tracking, beneficiary registry, and donor audit operating platform.",
+  "publicExperience": {
+    "publicDomainSuffix": ".ngo.jumo.platform",
+    "tagline": "Transparent Humanitarian Action & Sovereign Grant Governance",
+    "announcements": [
+      "Annual Humanitarian Impact Report Published",
+      "Global Innovation Fund Grant Call for Proposals",
+      "Emergency Disaster Relief Fund Active"
+    ],
+    "publicServices": [
+      "Public Grant Transparency Portal",
+      "Field Program Impact Tracker",
+      "Donor Verification Registry",
+      "Volunteer Application Gateway"
+    ],
+    "actionButtons": [
+      { "label": "Donor & Partner Portal", "action": "login_donor", "type": "primary" },
+      { "label": "Field Worker Login", "action": "login_field", "type": "secondary" },
+      { "label": "Executive Board Login", "action": "login_board", "type": "outline" },
+      { "label": "Apply for Project Funding", "action": "apply_funding", "type": "primary" }
+    ]
+  },
+  "governanceStructure": {
+    "title": "Board of Trustees",
+    "role": "Supreme Fiduciary Assembly",
+    "subNodes": [
+      {
+        "title": "Executive Director & Country Directors",
+        "role": "Global & Regional Management",
+        "subNodes": [
+          { "title": "Program & Monitoring Directorate", "role": "Field Execution & M&E" },
+          { "title": "Grants & Donor Treasury", "role": "FAAP Multi-Currency Grant Auditing" },
+          { "title": "Procurement & Logistics", "role": "Humanitarian Supply Chain" }
+        ]
+      }
+    ]
+  },
+  "organizationalStructure": {
+    "title": "Board of Trustees",
+    "role": "Supreme Fiduciary Assembly",
+    "subNodes": [
+      {
+        "title": "Executive Director & Country Directors",
+        "role": "Global & Regional Management",
+        "subNodes": [
+          { "title": "Program & Monitoring Directorate", "role": "Field Execution & M&E" },
+          { "title": "Grants & Donor Treasury", "role": "FAAP Multi-Currency Grant Auditing" },
+          { "title": "Procurement & Logistics", "role": "Humanitarian Supply Chain" }
+        ]
+      }
+    ]
+  },
+  "portals": [
+    {
+      "id": "executive",
+      "name": "Executive Board & Trustee Portal",
+      "role": "Board Trustee / Country Director",
+      "description": "Strategic oversight, audit committee reports, ESG metrics, and AI compliance assistant.",
+      "modules": ["Executive Dashboard", "Global Program Map", "FAAP Audit Vault", "AI Grant Advisor"],
+      "permissions": ["board:all", "audit:master"],
+      "workflows": ["Annual Budget Approval", "Risk Mitigation Audit"]
+    },
+    {
+      "id": "staff",
+      "name": "Field Officer & Program Staff Portal",
+      "role": "Field Officer / M&E Specialist",
+      "description": "Beneficiary enrollment, offline field data logging, relief distribution, and progress photos.",
+      "modules": ["Beneficiary Registry", "Relief Distribution", "Field Logbook", "Expense Claims"],
+      "permissions": ["field:write", "beneficiary:enroll"],
+      "workflows": ["Beneficiary Verification & Aid Distribution", "Field Expense Claim"]
+    },
+    {
+      "id": "department",
+      "name": "Grants, Procurement & Finance Workspace Portal",
+      "role": "Grants Manager / Finance Director / Procurement Officer",
+      "description": "Multi-currency FAAP ledger, grant allocation tracking, procurement, and payroll.",
+      "modules": ["FAAP Multi-Currency Ledger", "Grant Allocation Matrix", "Procurement", "Payroll"],
+      "permissions": ["faap:write", "grant:allocate"],
+      "workflows": ["Grant Allocation & FAAP Posting", "Procurement Tender Approval"]
+    },
+    {
+      "id": "public",
+      "name": "Humanitarian Public Experience Portal",
+      "role": "Public / Visitor / Volunteer",
+      "description": "Public transparency portal, project impact maps, donation gateway, and annual reports.",
+      "modules": ["Public Impact Map", "Donation Gateway", "Annual Reports", "Volunteer Portal"],
+      "permissions": ["public:read", "donate:submit"],
+      "workflows": ["Public Donation Processing", "Volunteer Application"]
+    },
+    {
+      "id": "donor",
+      "name": "Donor & Institutional Partner Portal",
+      "role": "Institutional Donor / Partner",
+      "description": "Real-time grant tracking, financial audit reports, milestone verification, and compliance certificates.",
+      "modules": ["Grant Balance Ledger", "Milestone Auditor", "Financial Statements", "Compliance Vault"],
+      "permissions": ["donor:read", "grant:audit"],
+      "workflows": ["Grant Milestone Sign-off", "Tranche Release Request"]
+    }
+  ],
+  "departments": [
+    "Executive Director & Board Office",
+    "Grants & Financial Compliance Directorate",
+    "Humanitarian Programs & M&E Directorate",
+    "Field Logistics & Procurement",
+    "Donor Relations & Communications"
+  ],
+  "roles": [
+    "EXECUTIVE_DIRECTOR",
+    "COUNTRY_DIRECTOR",
+    "GRANTS_MANAGER",
+    "FIELD_OFFICER",
+    "M_AND_E_SPECIALIST",
+    "PROCUREMENT_HEAD",
+    "DONOR_REPRESENTATIVE",
+    "BENEFICIARY"
+  ],
+  "modules": [
+    "Multi-Currency Grant Management Engine",
+    "Field Program & M&E Tracking Ledger",
+    "Beneficiary Identity & Distribution Registry",
+    "FAAP Humanitarian Treasury Ledger",
+    "Humanitarian Supply Chain & Procurement",
+    "Donor Compliance & Audit Vault"
+  ],
+  "components": [
+    "Global Impact Heatmap",
+    "Grant Allocation Waterfall",
+    "Beneficiary Relief Kanban",
+    "FAAP Multi-Currency Ledger View",
+    "Donor Milestone Audit Matrix"
+  ],
+  "forms": [
+    "Grant Funding Application",
+    "Field Beneficiary Enrollment Form",
+    "Relief Distribution Receipt Form",
+    "Project Expense Claim Form",
+    "Donor Milestone Sign-off Form"
+  ],
+  "workflows": [
+    "Grant Application Vetting & Tranche Release",
+    "Field Expense Verification & FAAP Post",
+    "Beneficiary Aid Distribution Audit",
+    "Donor Compliance Review & Sign-off"
+  ],
+  "reports": [
+    "Humanitarian Program Impact Report",
+    "FAAP Grant Utilization & Audit Statement",
+    "Beneficiary Relief Distribution Summary",
+    "Donor Compliance & Financial Return"
+  ],
+  "dashboards": [
+    "Board Executive Dashboard",
+    "Field Operations & M&E Dashboard",
+    "Grants & Treasury Dashboard",
+    "Donor Partner Dashboard"
+  ],
+  "aiAgents": [
+    "Grant & Humanitarian M&E AI Copilot",
+    "FAAP Multi-Currency Donor Auditor AI"
+  ],
+  "integrations": [
+    "FAAP Multi-Currency Payment Gateway",
+    "Satellite Field Mapping API",
+    "Donor Compliance Verification API"
+  ],
+  "apps": [
+    "Humanitarian Public Portal",
+    "Donor & Partner Portal",
+    "Field Operations Portal",
+    "Grants & Finance Portal",
+    "Executive Board Portal"
+  ],
+  "services": [
+    "FAAP Multi-Currency Treasury Service",
+    "Field Data Sync Service",
+    "Identity & Zero-Trust Auth Service",
+    "Grants Compliance Service",
+    "Humanitarian AI Advisor"
+  ],
+  "securityPolicies": {
+    "dataSegregation": "Grant & Country Field Isolation",
+    "authPolicy": "Multi-Tenant Donor & Staff RBAC",
+    "encryptionLevel": "AES-256 Field Cryptography",
+    "rbacRoles": [
+      "EXECUTIVE_DIRECTOR",
+      "GRANTS_MANAGER",
+      "FIELD_OFFICER",
+      "DONOR_REPRESENTATIVE"
+    ]
+  },
+  "securityProfile": {
+    "dataSegregation": "Grant & Country Field Isolation",
+    "authPolicy": "Multi-Tenant Donor & Staff RBAC",
+    "encryptionLevel": "AES-256 Field Cryptography"
+  },
+  "aiProfile": "humanitarian-ngo-ai"
+}

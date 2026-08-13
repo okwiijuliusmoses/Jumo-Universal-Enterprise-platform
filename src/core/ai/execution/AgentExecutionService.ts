@@ -2,8 +2,8 @@
 // Orchestrates the 12-step cognitive workforce lifecycle with real state persistence.
 
 import { JumoAIAgentRegistry } from "../registry/JumoAIAgentRegistry";
-import { SovereignOperatingStateService } from "../../runtime/sovereignState";
-import { AIAgentRecord, AgentLifecycleStatus, AgentWorkLog } from "../types/JumoAITypes";
+import { SovereignOperatingStateService, AgentWorkLog } from "../../runtime/sovereignState";
+import { AIAgentRecord, AgentLifecycleStatus } from "../types/JumoAITypes";
 import { JumoAIProviderGateway } from "../gateway/JumoAIProviderGateway";
 
 export interface AgentTaskRequest {
@@ -39,7 +39,7 @@ export class AgentExecutionService {
       }
     } else {
       agent.modelPolicy = {
-        preferredProvider: "GOOGLE_GENAI",
+        preferredProvider: "GEMINI",
         modelAlias: "gemini-3.6-flash",
         maxOutputTokens: 4096,
         temperature: 0.1,
@@ -47,22 +47,20 @@ export class AgentExecutionService {
       };
     }
 
-    // Ensure the authoritative agent contract is normalized.
-    agent.capabilities = Array.isArray(agent.capabilities)
-      ? agent.capabilities
-      : ["Verification Loop Audit"];
-
-    agent.authorizedTools = Array.isArray(agent.authorizedTools)
-      ? agent.authorizedTools
-      : ["writeLog"];
-
-    agent.architectureConstraints = Array.isArray(agent.architectureConstraints)
-      ? agent.architectureConstraints
-      : [];
-
-    agent.executionHistory = Array.isArray(agent.executionHistory)
-      ? agent.executionHistory
-      : [];
+    // Ensure data contract is non-undefined
+    agent.data = agent.data || {
+      displayName: agent.displayName || agent.jumoName || "AI Specialist",
+      jumoName: agent.jumoName || agent.displayName || "JUMO AI Agent",
+      specialization: agent.specialization || "Sovereign Engineering",
+      role: agent.role || "Specialist Agent",
+      status: agent.status || "AVAILABLE",
+      division: agent.division || "ENGINEERING",
+      assignedSkills: agent.capabilities,
+      capabilities: agent.capabilities,
+      authorizedTools: agent.authorizedTools,
+      latestInsight: agent.executionHistory[agent.executionHistory.length - 1] || "Agent contract verified.",
+      modelAlias: agent.modelPolicy.modelAlias
+    };
 
     return agent;
   }
@@ -81,12 +79,13 @@ export class AgentExecutionService {
     const workLogId = `WORK-LOG-${Date.now().toString(36).toUpperCase()}`;
 
     // Step 1 & 2: Verify Status (Assuming already REGISTERED & AVAILABLE)
-    if (agent.health === 'OFFLINE') {
+    if (agent.status === 'BLOCKED' || agent.health === 'OFFLINE') {
       throw new Error(`Agent ${request.agentId} is currently unavailable for execution.`);
     }
 
     // Step 3: ASSIGNED
-        JumoAIAgentRegistry.assignAgentToJob(request.agentId, request.jobId);
+    JumoAIAgentRegistry.updateAgentStatus(request.agentId, 'ASSIGNED');
+    JumoAIAgentRegistry.assignAgentToJob(request.agentId, request.jobId);
 
     // Step 4: TASK CREATED & Step 5: TASK STARTED
     const workLog: AgentWorkLog = {
@@ -151,7 +150,8 @@ TASK: ${request.task}`;
     // Step 10: EVIDENCE CREATED (Already handled by gateway)
     
     // Step 11: TASK COMPLETED
-        JumoAIAgentRegistry.releaseAgentFromJob(request.agentId, request.jobId, aiResult.success);
+    JumoAIAgentRegistry.updateAgentStatus(request.agentId, workLog.status === 'COMPLETED' ? 'COMPLETED' : 'FAILED');
+    JumoAIAgentRegistry.releaseAgentFromJob(request.agentId, request.jobId, aiResult.success);
 
     // Step 12: WORK LOG PERSISTED
     SovereignOperatingStateService.logAgentWork(workLog, actor);

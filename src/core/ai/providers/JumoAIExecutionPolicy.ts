@@ -5,7 +5,7 @@ export interface JumoAIExecutionPolicy {
 }
 
 export const JUMO_AI_EXECUTION_POLICY: JumoAIExecutionPolicy = {
-  localOnly: true,
-  allowExternalFallback: false,
-  requireHumanApprovalForExternal: true,
+  localOnly: false,
+  allowExternalFallback: true,
+  requireHumanApprovalForExternal: false,
 };

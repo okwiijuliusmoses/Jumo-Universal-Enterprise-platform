@@ -1,134 +1,51 @@
-import {
-  JumoAIProvider,
-  JumoAIRequest,
-  JumoAIResponse,
-} from "./JumoAIProvider";
+// JUMO UEOS — JUMO AI Provider Registry
+// Active registry and singleton tracking for registered sovereign intelligence reasoning adapters.
 
-export type JumoAIProviderRole =
-  | "PRIMARY_REASONING"
-  | "ENGINEERING"
-  | "LOCAL_FALLBACK";
-
-interface ProviderRegistration {
-  provider: JumoAIProvider;
-  role: JumoAIProviderRole;
-  priority: number;
-  enabled: boolean;
-}
+import { JumoAIProvider, OpenAIProvider, GeminiProvider, CopilotProvider, JumoLocalReasoningProvider, FutureProviderAdapter } from "./JumoAIProvider";
 
 export class JumoAIProviderRegistry {
   private static instance: JumoAIProviderRegistry;
+  private readonly providers = new Map<string, JumoAIProvider>();
 
-  private readonly providers: ProviderRegistration[] = [];
+  private constructor() {
+    // Automatically seed the 5 standard provider adapters
+    this.register(new OpenAIProvider());
+    this.register(new GeminiProvider());
+    this.register(new CopilotProvider());
+    this.register(new JumoLocalReasoningProvider());
+    this.register(new FutureProviderAdapter());
+  }
 
-  static getInstance(): JumoAIProviderRegistry {
-    if (!this.instance) {
-      this.instance = new JumoAIProviderRegistry();
+  public static getInstance(): JumoAIProviderRegistry {
+    if (!JumoAIProviderRegistry.instance) {
+      JumoAIProviderRegistry.instance = new JumoAIProviderRegistry();
     }
-
-    return this.instance;
+    return JumoAIProviderRegistry.instance;
   }
 
-  register(registration: ProviderRegistration): void {
-    const existing = this.providers.find(
-      (item) =>
-        item.provider.providerId ===
-        registration.provider.providerId,
-    );
+  register(provider: JumoAIProvider): void {
+    this.providers.set(provider.providerId, provider);
+  }
 
-    if (existing) {
-      Object.assign(existing, registration);
-      return;
+  get(providerId: string): JumoAIProvider {
+    const provider = this.providers.get(providerId);
+    if (!provider) {
+      throw new Error(`JUMO AI provider is not registered: ${providerId}`);
     }
-
-    this.providers.push(registration);
-    this.providers.sort(
-      (a, b) => a.priority - b.priority,
-    );
+    return provider;
   }
 
-  getAll(): ProviderRegistration[] {
-    return [...this.providers];
-  }
-
-  /**
-   * Gateway compatibility surface.
-   * Returns the concrete registered providers, not their registration wrappers.
-   */
   list(): JumoAIProvider[] {
-    return this.providers
-      .filter((item) => item.enabled)
-      .map((item) => item.provider);
+    return Array.from(this.providers.values());
   }
 
-  /**
-   * Resolve a concrete provider by canonical gateway ID or
-   * by its registered provider ID.
-   *
-   * Canonical gateway IDs are intentionally kept separate from
-   * the provider implementation IDs.
-   */
-  get(providerId: string): JumoAIProvider | undefined {
-    const aliases: Record<string, string> = {
-      OPENAI: "openai-primary",
-      GEMINI: "gemini-engineering",
-      COPILOT: "copilot-engineering",
-      JUMO_LOCAL: "jumo-local",
-      JUMO_RUNTIME: "jumo-runtime",
-    };
-
-    const resolvedId = aliases[providerId] ?? providerId;
-
-    return this.providers.find(
-      (item) =>
-        item.enabled &&
-        item.provider.providerId === resolvedId,
-    )?.provider;
-  }
-
-  async resolve(
-    role: JumoAIProviderRole,
-  ): Promise<JumoAIProvider> {
-    const candidates = this.providers
-      .filter(
-        (item) =>
-          item.enabled &&
-          item.role === role,
-      )
-      .sort(
-        (a, b) => a.priority - b.priority,
-      );
-
-    for (const candidate of candidates) {
-      if (await candidate.provider.isAvailable()) {
-        return candidate.provider;
+  async available(): Promise<JumoAIProvider[]> {
+    const result: JumoAIProvider[] = [];
+    for (const provider of this.providers.values()) {
+      if (await provider.isAvailable()) {
+        result.push(provider);
       }
     }
-
-    throw new Error(
-      `No available JUMO AI provider for role ${role}.`,
-    );
-  }
-
-  async generate(
-    role: JumoAIProviderRole,
-    request: JumoAIRequest,
-  ): Promise<JumoAIResponse> {
-    const provider = await this.resolve(role);
-    return provider.generate(request);
-  }
-
-  snapshot() {
-    return this.providers.map((item) => ({
-      providerId: item.provider.providerId,
-      displayName: item.provider.displayName,
-      role: item.role,
-      priority: item.priority,
-      enabled: item.enabled,
-      local: item.provider.local,
-    }));
+    return result;
   }
 }
-
-export const jumoAIProviderRegistry =
-  JumoAIProviderRegistry.getInstance();
