@@ -1,0 +1,82 @@
+src/core/ai/financialAuditor.ts:29:      const key = JumoSecretVault.getInstance().getGeminiKey();
+src/core/ai/gateway/JumoModelGateway.ts:49:      isOfflineFallback: result.provider === "JUMO_LOCAL",
+src/core/ai/gateway/JumoAIProviderGateway.ts:25:  provider: "OPENAI" | "GEMINI" | "JUMO_LOCAL";
+src/core/ai/gateway/JumoAIProviderGateway.ts:59:      openaiKey: vault.getOpenAIKey(),
+src/core/ai/gateway/JumoAIProviderGateway.ts:61:      geminiKey: vault.getGeminiKey(),
+src/core/ai/gateway/JumoAIProviderGateway.ts:86:    const { JumoAIProviderRegistry } = await import("../providers/JumoAIProviderRegistry");
+src/core/ai/gateway/JumoAIProviderGateway.ts:87:    const registry = JumoAIProviderRegistry.getInstance();
+src/core/ai/gateway/JumoAIProviderGateway.ts:109:    let targetProviderId = "JUMO_LOCAL";
+src/core/ai/gateway/JumoAIProviderGateway.ts:112:      targetProviderId = "JUMO_LOCAL";
+src/core/ai/gateway/JumoAIProviderGateway.ts:115:      const preferred = agent.modelPolicy.preferredProvider;
+src/core/ai/gateway/JumoAIProviderGateway.ts:169:        const localProvider = registry.get("JUMO_LOCAL");
+src/core/ai/gateway/JumoAIProviderGateway.ts:173:        targetProviderId = "JUMO_LOCAL";
+src/core/ai/gateway/JumoAIProviderGateway.ts:278:    const { JumoAIProviderRegistry } = await import("../providers/JumoAIProviderRegistry");
+src/core/ai/gateway/JumoAIProviderGateway.ts:279:    const registry = JumoAIProviderRegistry.getInstance();
+src/core/ai/gateway/JumoAIProviderGateway.ts:283:    const providerId = vault.getOpenAIKey() ? "OPENAI" : (vault.getGeminiKey() ? "GEMINI" : "JUMO_LOCAL");
+src/core/ai/orchestrator/JumoCognitiveWorkforceOrchestrator.ts:138:          const providerId = agent.modelPolicy.preferredProvider === "OPENAI" ? "OPENAI" : "GEMINI";
+src/core/ai/registry/JumoAIAgentRegistry.ts:318:      const modelAlias = "gemini-3.6-flash";
+src/core/ai/registry/JumoAIAgentRegistry.ts:362:          preferredProvider: i % 2 === 0 ? "GEMINI" : "OPENAI",
+src/core/ai/registry/JumoAIAgentRegistry.ts:363:          modelAlias,
+src/core/ai/registry/JumoAIAgentRegistry.ts:408:          modelAlias
+src/core/ai/registry/JumoAIAgentRegistry.ts:602:          preferredProvider: 'GOOGLE_GENAI',
+src/core/ai/registry/JumoAIAgentRegistry.ts:603:          modelAlias: 'gemini-3.6-flash',
+src/core/ai/registry/JumoAIAgentRegistry.ts:626:          modelAlias: 'gemini-3.6-flash'
+src/core/ai/types/JumoAITypes.ts:33:  preferredProvider: 'GOOGLE_GENAI' | 'JUMO_LOCAL_RUNTIME' | 'CUSTOM_HYBRID' | 'OPENAI' | 'GEMINI' | 'COPILOT' | 'JUMO_LOCAL';
+src/core/ai/types/JumoAITypes.ts:34:  modelAlias: string; // e.g. 'gemini-3.6-flash', 'gemini-3.1-pro-preview'
+src/core/ai/providers/JumoAIProvider.ts:47:  isAvailable(): Promise<boolean>;
+src/core/ai/providers/JumoAIProvider.ts:61:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/JumoAIProvider.ts:62:    return !!JumoSecretVault.getInstance().getOpenAIKey();
+src/core/ai/providers/JumoAIProvider.ts:67:    const key = vault.getOpenAIKey();
+src/core/ai/providers/JumoAIProvider.ts:98:    const key = vault.getOpenAIKey();
+src/core/ai/providers/JumoAIProvider.ts:149:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/JumoAIProvider.ts:150:    return !!JumoSecretVault.getInstance().getGeminiKey();
+src/core/ai/providers/JumoAIProvider.ts:155:    const key = vault.getGeminiKey();
+src/core/ai/providers/JumoAIProvider.ts:189:    const key = vault.getGeminiKey();
+src/core/ai/providers/JumoAIProvider.ts:254:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/JumoAIProvider.ts:352:  readonly providerId = "JUMO_LOCAL";
+src/core/ai/providers/JumoAIProvider.ts:356:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/JumoAIProvider.ts:423:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/JumoAIProviderRegistry.ts:6:export class JumoAIProviderRegistry {
+src/core/ai/providers/JumoAIProviderRegistry.ts:7:  private static instance: JumoAIProviderRegistry;
+src/core/ai/providers/JumoAIProviderRegistry.ts:12:    this.register(new OpenAIProvider());
+src/core/ai/providers/JumoAIProviderRegistry.ts:13:    this.register(new GeminiProvider());
+src/core/ai/providers/JumoAIProviderRegistry.ts:14:    this.register(new CopilotProvider());
+src/core/ai/providers/JumoAIProviderRegistry.ts:15:    this.register(new JumoLocalReasoningProvider());
+src/core/ai/providers/JumoAIProviderRegistry.ts:16:    this.register(new FutureProviderAdapter());
+src/core/ai/providers/JumoAIProviderRegistry.ts:19:  public static getInstance(): JumoAIProviderRegistry {
+src/core/ai/providers/JumoAIProviderRegistry.ts:20:    if (!JumoAIProviderRegistry.instance) {
+src/core/ai/providers/JumoAIProviderRegistry.ts:21:      JumoAIProviderRegistry.instance = new JumoAIProviderRegistry();
+src/core/ai/providers/JumoAIProviderRegistry.ts:23:    return JumoAIProviderRegistry.instance;
+src/core/ai/providers/JumoAIProviderRegistry.ts:26:  register(provider: JumoAIProvider): void {
+src/core/ai/providers/JumoAIProviderRegistry.ts:45:      if (await provider.isAvailable()) {
+src/core/ai/providers/JumoModelRegistry.ts:64:    providerId: 'JUMO_LOCAL',
+src/core/ai/providers/OpenAIPrimaryProvider.ts:29:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/OpenAIPrimaryProvider.ts:34:    const available = await this.isAvailable();
+src/core/ai/providers/GeminiEngineeringProvider.ts:29:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/GeminiEngineeringProvider.ts:34:    const available = await this.isAvailable();
+src/core/ai/providers/CopilotEngineeringProvider.ts:12:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/CopilotEngineeringProvider.ts:19:    const available = await this.isAvailable();
+src/core/ai/providers/LocalJumoProvider.ts:12:  async isAvailable(): Promise<boolean> {
+src/core/ai/providers/index.ts:6:export * from "./JumoAIProviderRegistry";
+src/core/ai/runtime/JumoAIRuntime.ts:53:  bindProvider(provider: JumoAIProvider): void {
+src/core/ai/runtime/JumoAIRuntime.ts:96:    const available = await this.provider.isAvailable();
+src/core/ai/verification/JumoAIVerificationDetectionRegistry.ts:473:        this.register({
+src/core/ai/verification/JumoAIVerificationDetectionRegistry.ts:530:  public register(
+src/core/ai/universal/JumoUniversalIntelligence.ts:138:  registerProvider(
+src/core/ai/universal/JumoUniversalInspectionRegistry.ts:15:  register(
+src/core/ai/universal/JumoUniversalInspectionBootstrap.ts:21:  jumoUniversalInspectionRegistry.register(
+src/core/ai/universal/JumoUniversalInspectionBootstrap.ts:27:  jumoUniversalInspectionRegistry.register(
+src/core/ai/execution/AgentExecutionService.ts:37:      if (!agent.modelPolicy.modelAlias || agent.modelPolicy.modelAlias.includes("gemini-2.5") || agent.modelPolicy.modelAlias.includes("gemini-3.1")) {
+src/core/ai/execution/AgentExecutionService.ts:38:        agent.modelPolicy.modelAlias = "gemini-3.6-flash";
+src/core/ai/execution/AgentExecutionService.ts:42:        preferredProvider: "GEMINI",
+src/core/ai/execution/AgentExecutionService.ts:43:        modelAlias: "gemini-3.6-flash",
+src/core/ai/execution/AgentExecutionService.ts:62:      modelAlias: agent.modelPolicy.modelAlias
+src/core/ai/execution/AgentExecutionService.ts:102:      providerUsed: agent.modelPolicy.preferredProvider,
+src/core/ai/JumoAIGatewayEngine.ts:11:  preferredProvider?: 'gemini' | 'openai' | 'copilot' | 'jumo_local';
+src/core/ai/JumoAIGatewayEngine.ts:27:   * Guarantees JUMO_LOCAL is registered and healthy with explicit health and fallback state.
+src/core/ai/JumoAIGatewayEngine.ts:68:    } else if (req.preferredProvider) {
+src/core/ai/JumoAIGatewayEngine.ts:69:      providerCandidates = [req.preferredProvider, ...gateway.fallbackProviderOrder.filter(p => p !== req.preferredProvider)];
+src/core/ai/JumoAIGatewayEngine.ts:86:        if (provId === 'jumo_local' && req.preferredProvider && req.preferredProvider !== 'jumo_local') {
+src/core/ai/certification/JumoRuntimeCertificationSuite.ts:4:import { JumoAIProviderRegistry } from "../providers/JumoAIProviderRegistry";
+src/core/ai/certification/JumoRuntimeCertificationSuite.ts:44:    const registry = JumoAIProviderRegistry.getInstance();
+src/core/ai/certification/JumoRuntimeCertificationSuite.ts:150:        else if (p.providerId === "JUMO_LOCAL") {

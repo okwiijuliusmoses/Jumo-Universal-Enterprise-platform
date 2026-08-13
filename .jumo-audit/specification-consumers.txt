@@ -1,0 +1,8 @@
+src/core/manufacturing/JumoProductSpecification.ts
+src/core/manufacturing/JumoPackageEngine.ts
+src/core/manufacturing/JumoProductFactory.ts
+src/core/manufacturing/JumoManufacturingPipeline.ts
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts
+src/experience/renderer/studios/SpecificationStudio.tsx
+src/types/specification.ts

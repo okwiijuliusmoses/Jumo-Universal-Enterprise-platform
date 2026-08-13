@@ -1,0 +1,62 @@
+src/core/runtime/sovereignState.ts:162:        enabledPortals: [],
+src/core/runtime/sovereignState.ts:452:      studioSettings: {
+src/core/runtime/sovereignState.ts:521:          studioSettings: loaded.studioSettings || defaults.studioSettings,
+src/core/runtime/sovereignState.ts:620:      studioSettings: s.studioSettings ?? this.getInitialState().studioSettings,
+src/core/runtime/sovereignState.types.ts:170:  enabledPortals: string[];
+src/core/runtime/sovereignState.types.ts:403:  studioSettings: Record<string, StudioSettings>;
+src/core/manufacturing/JumoProductSpecification.ts:54:export interface JumoProductSpecification {
+src/core/manufacturing/JumoPackageEngine.ts:6:  JumoProductSpecification,
+src/core/manufacturing/JumoPackageEngine.ts:7:} from './JumoProductSpecification';
+src/core/manufacturing/JumoPackageEngine.ts:34:    specification: JumoProductSpecification
+src/core/manufacturing/JumoProductFactory.ts:2:  JumoProductSpecification,
+src/core/manufacturing/JumoProductFactory.ts:3:} from './JumoProductSpecification';
+src/core/manufacturing/JumoProductFactory.ts:37:    specification: JumoProductSpecification
+src/core/manufacturing/JumoProductFactory.ts:70:    specification: JumoProductSpecification
+src/core/manufacturing/JumoManufacturingPipeline.ts:2:  JumoProductSpecification,
+src/core/manufacturing/JumoManufacturingPipeline.ts:3:} from './JumoProductSpecification';
+src/core/manufacturing/JumoManufacturingPipeline.ts:42:    specification: JumoProductSpecification
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:77:export class JumoDigitalSpecificationEngine {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:313:  new JumoDigitalSpecificationEngine();
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:117:  enabledPortals: string[];
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:120:export interface JumoInstitutionalDigitalSpecification {
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:2:  JumoInstitutionalDigitalSpecification,
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:3:} from "./JumoInstitutionalDigitalSpecification";
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:7:    new Map<string, JumoInstitutionalDigitalSpecification>();
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:11:      JumoInstitutionalDigitalSpecification,
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:14:  ): JumoInstitutionalDigitalSpecification {
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:17:    const specification: JumoInstitutionalDigitalSpecification = {
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:32:  ): JumoInstitutionalDigitalSpecification | undefined {
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:36:  public list(): JumoInstitutionalDigitalSpecification[] {
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:41:    specification: JumoInstitutionalDigitalSpecification,
+src/core/manufacturing/specification/JumoInstitutionalSpecificationEngine.ts:77:    specification: JumoInstitutionalDigitalSpecification,
+src/core/manufacturing/ai/JumoAISpecificationArchitect.ts:3:  JumoDigitalSpecificationEngine,
+src/core/manufacturing/ai/JumoAISpecificationArchitect.ts:4:} from '../specification/JumoDigitalSpecificationEngine';
+src/core/manufacturing/ai/JumoAISpecificationArchitect.ts:40:    private readonly specificationEngine: JumoDigitalSpecificationEngine,
+src/core/manufacturing/lifecycle/JumoDigitalManufacturingLifecycle.ts:2:  JumoDigitalSpecificationEngine,
+src/core/manufacturing/lifecycle/JumoDigitalManufacturingLifecycle.ts:3:} from '../specification/JumoDigitalSpecificationEngine';
+src/core/manufacturing/lifecycle/JumoDigitalManufacturingLifecycle.ts:55:    private readonly specificationEngine: JumoDigitalSpecificationEngine,
+src/core/manufacturing/JumoDigitalManufacturingPlatform.ts:5:} from './specification/JumoDigitalSpecificationEngine';
+src/core/manufacturing/JumoManufacturingCatalog.ts:23:  JumoDigitalSpecificationEngine,
+src/core/manufacturing/JumoManufacturingCatalog.ts:24:} from './specification/JumoDigitalSpecificationEngine';
+src/core/manufacturing/JumoManufacturingCatalog.ts:542:  specification: JumoDigitalSpecificationEngine,
+src/core/manufacturing/configuration/JumoInstitutionConfigurationEngine.ts:7:  enabledPortals: string[];
+src/core/specification/index.ts:3:export * from './JumoSpecificationCompiler';
+src/core/specification/JumoSpecificationCompiler.ts:1092:export class JumoSpecificationCompiler {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:79:export interface UnifiedProductSpecification {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:152:export function createUnifiedProductSpecification(
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:153:  overrides: Partial<UnifiedProductSpecification> = {}
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:154:): UnifiedProductSpecification {
+src/experience/renderer/NationalManufacturingHub.tsx:36:import { SpecificationStudio } from "./studios/SpecificationStudio";
+src/experience/renderer/NationalManufacturingHub.tsx:91:            <SpecificationStudio />
+src/experience/renderer/NationalManufacturingHub.tsx:180:            <SpecificationStudio />
+src/experience/renderer/ecosystem/EcosystemWorkspace.tsx:8:import { JumoSpecificationCompiler } from '../../../core/specification/JumoSpecificationCompiler';
+src/experience/renderer/ecosystem/EcosystemWorkspace.tsx:46:    const compiledSpec = JumoSpecificationCompiler.compileSpecification({
+src/experience/renderer/studios/ConfigStudio.tsx:9:export const ConfigStudio: React.FC = () => {
+src/experience/renderer/studios/SpecificationStudio.tsx:17:  ImplementationGradeSpecificationContract,
+src/experience/renderer/studios/SpecificationStudio.tsx:23:export const SpecificationStudio: React.FC = () => {
+src/experience/renderer/studios/SpecificationStudio.tsx:477:  const compileFinalContract = (): ImplementationGradeSpecificationContract => {
+src/types/specification.ts:24:export interface ProductSpecificationSchema {
+src/types/specification.ts:30:export interface ImplementationGradeSpecificationContract {
+src/types/specification.ts:417:export const ERP_SCHEMA: ProductSpecificationSchema = {
+src/types/specification.ts:473:export const COMMERCIAL_SCHEMA: ProductSpecificationSchema = {
+src/types/specification.ts:500:export const SOFTWARE_SCHEMA: ProductSpecificationSchema = {

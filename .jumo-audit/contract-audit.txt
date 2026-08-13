@@ -1,0 +1,85 @@
+src/core/ai/gateway/JumoAIProviderGateway.ts:115:      const preferred = agent.modelPolicy.preferredProvider;
+src/core/ai/gateway/JumoAIProviderGateway.ts:158:        temperature: agent.modelPolicy.temperature,
+src/core/ai/gateway/JumoAIProviderGateway.ts:167:      if (config.mode === "HYBRID" && agent.modelPolicy.offlineFallbackEnabled) {
+src/core/ai/orchestrator/JumoCognitiveWorkforceOrchestrator.ts:138:          const providerId = agent.modelPolicy.preferredProvider === "OPENAI" ? "OPENAI" : "GEMINI";
+src/core/ai/registry/JumoAIAgentRegistry.ts:361:        modelPolicy: {
+src/core/ai/registry/JumoAIAgentRegistry.ts:362:          preferredProvider: i % 2 === 0 ? "GEMINI" : "OPENAI",
+src/core/ai/registry/JumoAIAgentRegistry.ts:601:        modelPolicy: {
+src/core/ai/registry/JumoAIAgentRegistry.ts:602:          preferredProvider: 'GOOGLE_GENAI',
+src/core/ai/types/JumoAITypes.ts:33:  preferredProvider: 'GOOGLE_GENAI' | 'JUMO_LOCAL_RUNTIME' | 'CUSTOM_HYBRID' | 'OPENAI' | 'GEMINI' | 'COPILOT' | 'JUMO_LOCAL';
+src/core/ai/types/JumoAITypes.ts:58:  modelPolicy: ModelPolicy;
+src/core/ai/execution/AgentExecutionService.ts:36:    if (agent.modelPolicy) {
+src/core/ai/execution/AgentExecutionService.ts:37:      if (!agent.modelPolicy.modelAlias || agent.modelPolicy.modelAlias.includes("gemini-2.5") || agent.modelPolicy.modelAlias.includes("gemini-3.1")) {
+src/core/ai/execution/AgentExecutionService.ts:38:        agent.modelPolicy.modelAlias = "gemini-3.6-flash";
+src/core/ai/execution/AgentExecutionService.ts:41:      agent.modelPolicy = {
+src/core/ai/execution/AgentExecutionService.ts:42:        preferredProvider: "GEMINI",
+src/core/ai/execution/AgentExecutionService.ts:62:      modelAlias: agent.modelPolicy.modelAlias
+src/core/ai/execution/AgentExecutionService.ts:102:      providerUsed: agent.modelPolicy.preferredProvider,
+src/core/ai/JumoAIGatewayEngine.ts:11:  preferredProvider?: 'gemini' | 'openai' | 'copilot' | 'jumo_local';
+src/core/ai/JumoAIGatewayEngine.ts:68:    } else if (req.preferredProvider) {
+src/core/ai/JumoAIGatewayEngine.ts:69:      providerCandidates = [req.preferredProvider, ...gateway.fallbackProviderOrder.filter(p => p !== req.preferredProvider)];
+src/core/ai/JumoAIGatewayEngine.ts:86:        if (provId === 'jumo_local' && req.preferredProvider && req.preferredProvider !== 'jumo_local') {
+src/core/runtime/configurationEngine.ts:19:export interface RuntimeConfiguration {
+src/core/runtime/sovereignState.ts:134:        portalAppearance: "PRO_DASHBOARD",
+src/core/runtime/sovereignState.ts:135:        navigationAppearance: "SIDEBAR_LEFT",
+src/core/runtime/sovereignState.ts:162:        enabledPortals: [],
+src/core/runtime/sovereignState.ts:201:          modelPolicy: { modelAlias: "Flash-v3", isolationLevel: "TENANT" } 
+src/core/runtime/sovereignState.ts:452:      studioSettings: {
+src/core/runtime/sovereignState.ts:521:          studioSettings: loaded.studioSettings || defaults.studioSettings,
+src/core/runtime/sovereignState.ts:620:      studioSettings: s.studioSettings ?? this.getInitialState().studioSettings,
+src/core/runtime/sovereignState.types.ts:141:  portalAppearance: string;
+src/core/runtime/sovereignState.types.ts:142:  navigationAppearance: string;
+src/core/runtime/sovereignState.types.ts:170:  enabledPortals: string[];
+src/core/runtime/sovereignState.types.ts:403:  studioSettings: Record<string, StudioSettings>;
+src/core/factory/registry/HubRegistryTypes.ts:269:  modelPolicy?: any;
+src/core/platform/configuration/JumoProductConfigurationEngine.ts:1:export interface JumoProductConfiguration {
+src/core/platform/shared/JumoSharedEnterpriseServices.ts:32:export interface JumoSharedServiceConfiguration {
+src/core/platform/shared/JumoSharedServices.ts:59:export interface JumoProviderConfiguration {
+src/core/manufacturing/JumoProductSpecification.ts:54:export interface JumoProductSpecification {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:1:export type SpecificationFieldType =
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:15:export interface SpecificationOption {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:22:export interface SpecificationField {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:33:export interface SpecificationSchema {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:42:export interface EnterpriseSpecification {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:59:export interface SpecificationIssue {
+src/core/manufacturing/specification/JumoDigitalSpecificationEngine.ts:68:export interface SpecificationAnalysis {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:12:export interface InstitutionalGovernanceSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:26:export interface InstitutionalOperationalSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:38:export interface InstitutionalDataSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:49:export interface InstitutionalIntegrationSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:60:export interface InstitutionalSecuritySpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:73:export interface InstitutionalAISpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:84:export interface InstitutionalInstallationSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:97:export interface InstitutionalConfigurationSpecification {
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:117:  enabledPortals: string[];
+src/core/manufacturing/specification/JumoInstitutionalDigitalSpecification.ts:120:export interface JumoInstitutionalDigitalSpecification {
+src/core/manufacturing/configuration/JumoInstitutionConfigurationEngine.ts:1:export interface InstitutionalConfiguration {
+src/core/manufacturing/configuration/JumoInstitutionConfigurationEngine.ts:7:  enabledPortals: string[];
+src/core/manufacturing/configuration/JumoInstitutionConfigurationEngine.ts:16:export interface ConfigurationResult {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:25:export type SpecificationPackage =
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:30:export type SpecificationStatus =
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:44:export type SpecificationFindingStatus =
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:49:export interface SpecificationFieldDefinition {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:61:export interface SpecificationQuestion {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:110:export interface JumoEnterpriseSpecification {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:151:export interface SpecificationRecommendation {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:162:export interface SpecificationFinding {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:172:export interface SpecificationVerificationResult {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:180:export interface JumoSpecificationBlueprint {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:199:export interface JumoSpecificationRule {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:210:export interface JumoSpecificationContext {
+src/core/specification/JumoAIGuidedSpecificationEngine.ts:221:export interface JumoAIGuidedSpecificationReport {
+src/core/specification/JumoGovernmentEnterpriseScale.ts:13:export interface EnterpriseInstanceScaleSpecification {
+src/core/specification/JumoSpecificationCompiler.ts:997:export interface CanonicalEcosystemSpecification {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:39:export interface UnifiedAIConfiguration {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:54:export interface UnifiedNavigationConfiguration {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:60:export interface UnifiedArchitectureConfiguration {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:70:export interface UnifiedManufacturingConfiguration {
+src/core/specification/JumoUnifiedProductSpecificationContract.ts:79:export interface UnifiedProductSpecification {
+src/experience/renderer/AIGatewayRenderer.tsx:175:                <span className="text-[10px] font-bold text-slate-400">{agent.modelPolicy.modelAlias}</span>
+src/experience/renderer/specification/DigitalEcosystemSpecificationForm.tsx:7:export interface EcosystemSpecification {
+src/experience/renderer/studios/ArchitectureStudio.tsx:1763:                              <span className="font-mono font-bold text-blue-700">{agent.modelPolicy?.modelAlias || 'gpt-5.6-sol'}</span>
+src/experience/renderer/studios/ArchitectureStudio.tsx:1858:                                  <p className="text-[9px] text-slate-400 font-mono">Routing through {selectedAgentForLab.modelPolicy?.preferredProvider || "JUMO_GATEWAY"}</p>
+src/types/specification.ts:17:export interface SpecificationSectionSchema {
+src/types/specification.ts:24:export interface ProductSpecificationSchema {
+src/types/specification.ts:30:export interface ImplementationGradeSpecificationContract {
