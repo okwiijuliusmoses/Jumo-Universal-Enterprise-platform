@@ -4,10 +4,16 @@
  * Authoritative bridge between Experience Layer and Kernel Runtime API.
  */
 export class UEOSRuntimeClient {
-  private static BASE_URL = "/api/ueos/registry";
+  private static BASE_URL = "/api/v1/ueos/registry";
 
   static {
     console.log('[JUMO BOOT 10] UEOS runtime initialized');
+  }
+
+  static async fetchWorkforce() {
+    const response = await fetch(`${this.BASE_URL}/workforce`);
+    if (!response.ok) throw new Error("Failed to fetch workforce registry");
+    return response.json();
   }
 
   static async fetchDashboardMetrics() {

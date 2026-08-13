@@ -23,14 +23,25 @@ interface DeploymentStudioProps {
   slots: DeploymentSlot[];
   isDeploying: boolean;
   deploymentLogs: string[];
+  onScaleSlot?: (slotId: string, cpu: number, memory: number) => void;
+  onTogglePowerSlot?: (slotId: string) => void;
+  onDeploySlot?: (slotId: string, jobId: string) => void;
+  jobs?: any[];
 }
 
 export const DeploymentStudio: React.FC<DeploymentStudioProps> = ({
   records,
   slots,
   isDeploying,
-  deploymentLogs
+  deploymentLogs,
+  onScaleSlot,
+  onTogglePowerSlot,
+  onDeploySlot,
+  jobs = []
 }) => {
+  const [selectedJobId, setSelectedJobId] = React.useState<string>("");
+
+  const healthyJobs = (jobs ?? []).filter(j => j.status === 'RUNTIME_ACTIVE' || j.status === 'CERTIFYING' || j.status === 'DEPLOYING' || j.status === 'VERIFYING');
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -109,15 +120,40 @@ export const DeploymentStudio: React.FC<DeploymentStudioProps> = ({
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-                  <button className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all cursor-pointer">
-                    <Activity className="w-3.5 h-3.5" />
+                  <button 
+                    onClick={() => onTogglePowerSlot?.(slot.id)}
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${slot.health === 'OFFLINE' ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'}`}
+                    title={slot.health === 'OFFLINE' ? "Power ON" : "Power OFF"}
+                  >
+                    <Zap className="w-3.5 h-3.5" />
                   </button>
-                  <button className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all cursor-pointer">
+                  <button 
+                    onClick={() => onScaleSlot?.(slot.id, Math.min(100, slot.cpu + 10), Math.min(100, slot.memory + 10))}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all cursor-pointer"
+                    title="Scale Up (+10%)"
+                  >
                     <Sliders className="w-3.5 h-3.5" />
                   </button>
-                  <button className="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-blue-600 transition-all cursor-pointer">
-                    Manage Node
-                  </button>
+                  
+                  <div className="flex-1 flex items-center gap-2 ml-4">
+                    <select 
+                      value={selectedJobId}
+                      onChange={(e) => setSelectedJobId(e.target.value)}
+                      className="bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-2 py-1 text-[9px] font-bold outline-hidden flex-1"
+                    >
+                      <option value="">Select Release...</option>
+                      {healthyJobs.map(j => (
+                        <option key={j.id} value={j.id}>{j.title} (v{j.version})</option>
+                      ))}
+                    </select>
+                    <button 
+                      disabled={isDeploying || !selectedJobId}
+                      onClick={() => onDeploySlot?.(slot.id, selectedJobId)}
+                      className="px-3 py-1.5 bg-slate-900 disabled:bg-slate-300 text-white rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-blue-600 transition-all cursor-pointer"
+                    >
+                      {isDeploying ? 'Deploying...' : 'Deploy'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

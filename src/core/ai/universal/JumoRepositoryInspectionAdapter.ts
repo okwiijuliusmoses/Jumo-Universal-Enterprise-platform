@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { JumoSecretVault } from '../../security/JumoSecretVault';
 
 import type {
   IntelligenceEvidence,
@@ -66,7 +67,6 @@ export class JumoRepositoryInspectionAdapter
 
 export function createRepositoryInspectionAdapter(): JumoRepositoryInspectionAdapter {
   return new JumoRepositoryInspectionAdapter(
-    process.env.JUMO_REPOSITORY_ROOT ||
-      path.resolve(process.cwd())
+    JumoSecretVault.getInstance().getRepositoryRoot()
   );
 }

@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { JumoSecretVault } from '../../security/JumoSecretVault';
 
 export type IntelligenceMode =
   | 'ANALYSIS'
@@ -215,8 +216,7 @@ export class JumoUniversalIntelligence {
     }
 
     const providerId =
-      process.env.JUMO_UNIVERSAL_AI_PROVIDER?.trim() ||
-      'openai';
+      JumoSecretVault.getInstance().getUniversalAiProvider();
 
     const provider = this.providers.get(providerId);
 

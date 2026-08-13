@@ -21,25 +21,7 @@ export function PlatformInstanceRenderer({
   const [selectedInstanceForOps, setSelectedInstanceForOps] = useState<any>(null);
   const [activeConfigTab, setActiveConfigTab] = useState<"lifecycle" | "identity" | "branding" | "security" | "api">("lifecycle");
 
-  const defaultInstitutions = [
-    {
-      id: "inst-abc-uni",
-      name: "ABC National University",
-      domain: "abc.jumo.net",
-      platform: "University National ERP",
-      ecosystem: "Education",
-      country: "Uganda",
-      status: "Active",
-      usersCount: "15,000",
-      modulesCount: 245,
-      aiAgentsCount: 30,
-      workflowsCount: 420,
-      databaseStatus: "PostgreSQL - Healthy",
-      securityProfile: "AEGIS Zero-Trust Active",
-      lastAudit: "Today, 04:12"
-    },
-    // ... other defaults
-  ];
+  const defaultInstitutions: any[] = [];
 
   const loadInstances = async () => {
     setIsLoading(true);

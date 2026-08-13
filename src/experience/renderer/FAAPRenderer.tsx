@@ -380,7 +380,7 @@ export function FAAPRenderer() {
 
   useEffect(() => {
     const savedQueue = Number(
-      window.localStorage.getItem("faap-offline-queue") || "0"
+      (() => { try { return window.localStorage.getItem("faap-offline-queue") || "0"; } catch(e) { return "0"; } })()
     );
     setOfflineQueue(savedQueue);
   }, []);
@@ -388,7 +388,7 @@ export function FAAPRenderer() {
   const pushQueue = (operation: string) => {
     const next = offlineQueue + 1;
     setOfflineQueue(next);
-    window.localStorage.setItem("faap-offline-queue", String(next));
+    try { window.localStorage.setItem("faap-offline-queue", String(next)); } catch (e) {}
     setNotification(`${operation} queued for hybrid synchronization.`);
     window.setTimeout(() => setNotification(""), 3500);
   };
@@ -400,7 +400,7 @@ export function FAAPRenderer() {
     await new Promise((resolve) => setTimeout(resolve, 900));
 
     setOfflineQueue(0);
-    window.localStorage.setItem("faap-offline-queue", "0");
+    try { window.localStorage.setItem("faap-offline-queue", "0"); } catch (e) {}
     setSyncing(false);
     setNotification("FAAP synchronization completed successfully.");
     window.setTimeout(() => setNotification(""), 3500);

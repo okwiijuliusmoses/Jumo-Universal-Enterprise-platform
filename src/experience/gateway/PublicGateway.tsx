@@ -16,7 +16,7 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
   const profiles = [
     {
       id: "admin",
-      name: "Hon. Minister Julius Moses",
+      name: "Sovereign Operator Alpha",
       clearance: "LEVEL-10-NATIONAL",
       role: "Sovereign Operator",
       avatar: "SO",
@@ -24,7 +24,7 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
     },
     {
       id: "architect",
-      name: "Dr. Evelyn Vance",
+      name: "Sovereign Lead Architect",
       clearance: "LEVEL-08-ARCHITECT",
       role: "Sovereign Lead Architect",
       avatar: "LA",
@@ -32,7 +32,7 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
     },
     {
       id: "security",
-      name: "Col. Marcus Thorne",
+      name: "AEGIS Security Guardian",
       clearance: "LEVEL-09-SECURITY",
       role: "AEGIS Security Guardian",
       avatar: "SG",

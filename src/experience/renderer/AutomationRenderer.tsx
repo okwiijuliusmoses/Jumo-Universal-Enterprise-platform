@@ -4,21 +4,31 @@ import { Workflow, Bot, Zap, Loader2, BrainCircuit } from "lucide-react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
 
 export function AutomationRenderer() {
+  const [agents, setAgents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
+    async function load() {
+      try {
+        const data = await UEOSRuntimeClient.fetchWorkforce();
+        setAgents(data || []);
+      } catch (err) {
+        console.error("Failed to load workforce", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    load();
   }, []);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-96"><Loader2 className="w-8 h-8 animate-spin text-amber-600" /></div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-96 gap-4">
+        <BrainCircuit className="w-10 h-10 text-amber-600 animate-pulse" />
+        <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Activating Automation Workforce...</span>
+      </div>
+    );
   }
-
-  const agents = [
-    { name: "Process Designer AI", status: "Active" },
-    { name: "Automation Engineer AI", status: "Operational" },
-  ];
 
   return (
     <div className="space-y-12 animate-in fade-in duration-500 pb-20">
@@ -34,13 +44,13 @@ export function AutomationRenderer() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {agents.map((agent) => (
-          <div key={agent.name} className="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-sm hover:shadow-2xl transition-all group flex items-center gap-8">
+          <div key={agent.jumoName} className="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-sm hover:shadow-2xl transition-all group flex items-center gap-8">
             <div className="w-20 h-20 bg-amber-50 text-amber-600 rounded-[2.5rem] flex items-center justify-center">
               <BrainCircuit className="w-10 h-10" />
             </div>
             <div>
-                <h4 className="text-lg font-black text-slate-900 tracking-tight italic mb-1">{agent.name}</h4>
-                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest block mb-4">{agent.status}</span>
+                <h4 className="text-lg font-black text-slate-900 tracking-tight italic mb-1">{agent.displayName}</h4>
+                <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest block mb-4">{agent.status} • {agent.role}</span>
                 <button className="py-3 px-6 bg-slate-900 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-widest hover:bg-amber-600 transition-all">
                 Configure
                 </button>

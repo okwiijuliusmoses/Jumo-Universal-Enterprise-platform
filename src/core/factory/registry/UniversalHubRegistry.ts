@@ -160,112 +160,7 @@ export class UniversalHubRegistry {
    */
   private static seedInitialAuthoritativeRegistries() {
     // 1. ERP Ecosystem Registry Baseline
-    const erpEcosystems: ERPEcosystemRegistryRecord[] = [
-      {
-        registryId: "erp-sacco",
-        name: "SACCO Microfinance & Credit Engine",
-        category: "ERP_ECOSYSTEM",
-        lifecycleState: "OPERATIONAL",
-        version: "v4.2.0-SOVEREIGN",
-        repository: "Jumo-Universal-Enterprise-platform",
-        branch: "manufacturing-hub-architecture",
-        implementationVersion: "v4.2.0",
-        architectureBaseline: "eefd3bc",
-        dependencies: ["prod-faap", "prod-pay", "prod-identity"],
-        capabilities: ["Credit Scoring", "Savings Deposits", "Mobile Money Integration", "FAAP Ledger Posting"],
-        services: ["SACCOLedgerService", "CreditScoringDaemon", "MobileMoneyGateway"],
-        apis: ["/api/sacco/deposits", "/api/sacco/loans", "/api/sacco/members"],
-        testStatus: "PASSED",
-        deploymentStatus: "DEPLOYED",
-        upgradeStatus: "UP_TO_DATE",
-        maintenanceStatus: "HEALTHY",
-        verificationStatus: "VERIFIED",
-        lastAuditTimestamp: new Date().toISOString(),
-        supportedTemplates: ["sacco-core-template", "microfinance-agency-template"],
-        supportedModules: ["Member Management", "Loan Origination", "FAAP General Ledger"],
-        supportedPortals: ["Executive Board Portal", "Loan Officer Portal", "Member Portal"],
-        supportedWorkflows: ["Loan Approval Workflow", "Deposit Reconciliation Workflow"],
-        governanceModel: "Sovereign Financial Board Governance"
-      },
-      {
-        registryId: "erp-municipal",
-        name: "Sovereign Municipal Governance ERP",
-        category: "ERP_ECOSYSTEM",
-        lifecycleState: "OPERATIONAL",
-        version: "v3.8.1-GOV",
-        repository: "Jumo-Universal-Enterprise-platform",
-        branch: "manufacturing-hub-architecture",
-        implementationVersion: "v3.8.1",
-        architectureBaseline: "eefd3bc",
-        dependencies: ["prod-faap", "prod-pay", "prod-document"],
-        capabilities: ["Land Property Rates", "Business Permitting", "Municipal Revenue Collection", "Public Utility Billing"],
-        services: ["MunicipalRevenueService", "PropertyCadastreService", "PublicBillingEngine"],
-        apis: ["/api/municipal/rates", "/api/municipal/permits", "/api/municipal/citizens"],
-        testStatus: "PASSED",
-        deploymentStatus: "DEPLOYED",
-        upgradeStatus: "UP_TO_DATE",
-        maintenanceStatus: "HEALTHY",
-        verificationStatus: "VERIFIED",
-        lastAuditTimestamp: new Date().toISOString(),
-        supportedTemplates: ["municipal-city-template", "county-governance-template"],
-        supportedModules: ["Revenue Collection", "Land Registry", "FAAP Municipal Accounting"],
-        supportedPortals: ["Mayor & Council Portal", "Tax Collector Portal", "Citizen Portal"],
-        supportedWorkflows: ["Business Permit Issuance Workflow", "Property Tax Assessment Workflow"],
-        governanceModel: "Public Executive Council Governance"
-      },
-      {
-        registryId: "erp-healthcare",
-        name: "National Healthcare & Patient Records ERP",
-        category: "ERP_ECOSYSTEM",
-        lifecycleState: "OPERATIONAL",
-        version: "v2.9.5-EHR",
-        repository: "Jumo-Universal-Enterprise-platform",
-        branch: "manufacturing-hub-architecture",
-        implementationVersion: "v2.9.5",
-        architectureBaseline: "eefd3bc",
-        dependencies: ["prod-identity", "prod-data", "prod-faap"],
-        capabilities: ["EHR Encryption", "National Claims Queuing", "Dispensary Inventory", "Hospital Bed Management"],
-        services: ["EHRRecordService", "NationalClaimsEngine", "PharmacyInventoryDaemon"],
-        apis: ["/api/health/patients", "/api/health/claims", "/api/health/prescriptions"],
-        testStatus: "PASSED",
-        deploymentStatus: "DEPLOYED",
-        upgradeStatus: "UP_TO_DATE",
-        maintenanceStatus: "HEALTHY",
-        verificationStatus: "VERIFIED",
-        lastAuditTimestamp: new Date().toISOString(),
-        supportedTemplates: ["national-hospital-template", "district-clinic-template"],
-        supportedModules: ["Patient Registration", "EHR Clinical Records", "Pharmacy Inventory"],
-        supportedPortals: ["Hospital Director Portal", "Doctor & Nurse Portal", "Patient Health Portal"],
-        supportedWorkflows: ["Patient Triage Workflow", "Insurance Claim Audit Workflow"],
-        governanceModel: "Ministry of Health Regulatory Governance"
-      },
-      {
-        registryId: "erp-agri",
-        name: "Agri-Cooperative Ledger & Supply ERP",
-        category: "ERP_ECOSYSTEM",
-        lifecycleState: "OPERATIONAL",
-        version: "v2.1.0-AGRI",
-        repository: "Jumo-Universal-Enterprise-platform",
-        branch: "manufacturing-hub-architecture",
-        implementationVersion: "v2.1.0",
-        architectureBaseline: "eefd3bc",
-        dependencies: ["prod-faap", "prod-pay"],
-        capabilities: ["Produce Weighing Integration", "Supply Chain Tracking", "Farmer Payout Clearing", "Fertilizer Subsidy Registry"],
-        services: ["AgriSupplyService", "FarmerPayoutEngine", "ProduceWeighbridgeService"],
-        apis: ["/api/agri/produce", "/api/agri/farmers", "/api/agri/payouts"],
-        testStatus: "PASSED",
-        deploymentStatus: "DEPLOYED",
-        upgradeStatus: "UP_TO_DATE",
-        maintenanceStatus: "HEALTHY",
-        verificationStatus: "VERIFIED",
-        lastAuditTimestamp: new Date().toISOString(),
-        supportedTemplates: ["coffee-coop-template", "grain-silo-template"],
-        supportedModules: ["Produce Intake", "Farmer Ledger", "FAAP Payout Clearing"],
-        supportedPortals: ["Coop Board Portal", "Weighbridge Operator Portal", "Farmer Mobile Portal"],
-        supportedWorkflows: ["Produce Delivery Payout Workflow", "Subsidy Token Redemption Workflow"],
-        governanceModel: "Cooperative Union Governance"
-      }
-    ];
+    const erpEcosystems: ERPEcosystemRegistryRecord[] = [];
 
     erpEcosystems.forEach(e => this.masterRecords.set(e.registryId, e));
 
@@ -423,33 +318,7 @@ export class UniversalHubRegistry {
 
     jumoCloudEcosystems.forEach(c => this.masterRecords.set(c.registryId, c));
 
-    // Seed initial compiler blueprints
-    this.blueprints.set("bp-sacco-v4", {
-      blueprintId: "bp-sacco-v4",
-      name: "SACCO Financial Microservice Core Blueprint",
-      type: "Financial Engine",
-      version: "v4.2.0",
-      lastBuildTime: new Date().toLocaleTimeString(),
-      compilerStatus: "OK"
-    });
-
-    this.blueprints.set("bp-aegis-v4", {
-      blueprintId: "bp-aegis-v4",
-      name: "Sovereign Cybersecurity Daemon Blueprint",
-      type: "Security Daemon",
-      version: "v4.0.1",
-      lastBuildTime: new Date().toLocaleTimeString(),
-      compilerStatus: "OK"
-    });
-
-    this.blueprints.set("bp-cloud-v3", {
-      blueprintId: "bp-cloud-v3",
-      name: "Hypervisor Container Router Blueprint",
-      type: "Cloud Core",
-      version: "v3.5.0",
-      lastBuildTime: new Date().toLocaleTimeString(),
-      compilerStatus: "OK"
-    });
+    // Seed initial compiler blueprints (empty for clean boot state)
   }
 
   // 1. ERP ECOSYSTEM REGISTRY ACCESSORS

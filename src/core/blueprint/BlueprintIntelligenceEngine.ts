@@ -153,7 +153,7 @@ function createPlatformBlueprint(id: string, name: string, ecosystemId: string, 
   };
 }
 
-const ALL_18_ERP_PLATFORMS: Record<string, ERPTemplateDefinition> = {
+const ALL_10_PLATFORM_BLUEPRINTS: Record<string, ERPTemplateDefinition> = {
   // 1. Education
   "university-erp": universityBlueprint as unknown as ERPTemplateDefinition,
   "education-national-platform": universityBlueprint as unknown as ERPTemplateDefinition,
@@ -165,49 +165,25 @@ const ALL_18_ERP_PLATFORMS: Record<string, ERPTemplateDefinition> = {
   "government-national-platform": governmentBlueprint as unknown as ERPTemplateDefinition,
 
   // 4. Banking
-  "banking-national-platform": createPlatformBlueprint("banking-national-platform", "Banking & Financial Institutions Enterprise Platform", "financial", "JUMO BANK-NATIONAL ERP", "banking"),
+  "banking-national-platform": createPlatformBlueprint("banking-national-platform", "Banking & Financial Institutions Enterprise Platform", "financial", "JUMO BANK-NATIONAL PLATFORM", "banking"),
 
   // 5. SACCO
   "sacco-national-platform": saccoBlueprint as unknown as ERPTemplateDefinition,
 
   // 6. Manufacturing
-  "manufacturing-national-platform": createPlatformBlueprint("manufacturing-national-platform", "Manufacturing & Industrial Enterprise Platform", "industrial", "JUMO MFG-NATIONAL ERP", "manufacturing"),
+  "manufacturing-national-platform": createPlatformBlueprint("manufacturing-national-platform", "Manufacturing & Industrial Enterprise Platform", "industrial", "JUMO MFG-NATIONAL PLATFORM", "manufacturing"),
 
   // 7. Agriculture
-  "agriculture-national-platform": createPlatformBlueprint("agriculture-national-platform", "Agriculture & Agribusiness National Platform", "agriculture", "JUMO AGRI-NATIONAL ERP", "agriculture"),
+  "agriculture-national-platform": createPlatformBlueprint("agriculture-national-platform", "Agriculture & Agribusiness National Platform", "agriculture", "JUMO AGRI-NATIONAL PLATFORM", "agriculture"),
 
   // 8. Hospitality
-  "hospitality-national-platform": createPlatformBlueprint("hospitality-national-platform", "Hospitality & Tourism National Platform", "services", "JUMO HOSPITALITY ERP", "hospitality"),
+  "hospitality-national-platform": createPlatformBlueprint("hospitality-national-platform", "Hospitality & Tourism National Platform", "services", "JUMO HOSPITALITY PLATFORM", "hospitality"),
 
   // 9. Corporate
-  "corporate-national-platform": createPlatformBlueprint("corporate-national-platform", "Corporate & Commercial Enterprise Platform", "corporate", "JUMO CORP-NATIONAL ERP", "corporate"),
+  "corporate-national-platform": createPlatformBlueprint("corporate-national-platform", "Corporate & Commercial Enterprise Platform", "corporate", "JUMO CORP-NATIONAL PLATFORM", "corporate"),
 
   // 10. Legal
-  "legal-national-platform": createPlatformBlueprint("legal-national-platform", "Legal & Judiciary National Platform", "government", "JUMO LEGAL-NATIONAL ERP", "legal"),
-
-  // 11. Religious / Church
-  "church-national-platform": churchBlueprint as unknown as ERPTemplateDefinition,
-
-  // 12. NGO
-  "ngo-national-platform": ngoBlueprint as unknown as ERPTemplateDefinition,
-
-  // 13. Logistics
-  "logistics-national-platform": createPlatformBlueprint("logistics-national-platform", "Logistics & Supply Chain National Platform", "logistics", "JUMO LOGISTICS ERP", "logistics"),
-
-  // 14. Real Estate
-  "realestate-national-platform": createPlatformBlueprint("realestate-national-platform", "Real Estate & Property National Platform", "property", "JUMO PROPERTY ERP", "realestate"),
-
-  // 15. Telecom
-  "telecom-national-platform": createPlatformBlueprint("telecom-national-platform", "Telecom & Connectivity National Platform", "telecom", "JUMO TELECOM ERP", "telecom"),
-
-  // 16. Insurance
-  "insurance-national-platform": createPlatformBlueprint("insurance-national-platform", "Insurance & Actuarial National Platform", "financial", "JUMO INSURANCE ERP", "insurance"),
-
-  // 17. Retail
-  "retail-national-platform": createPlatformBlueprint("retail-national-platform", "Retail & Commerce National Platform", "commerce", "JUMO RETAIL ERP", "retail"),
-
-  // 18. Research
-  "research-national-platform": createPlatformBlueprint("research-national-platform", "Research & Innovation National Platform", "education", "JUMO RESEARCH ERP", "research")
+  "legal-national-platform": createPlatformBlueprint("legal-national-platform", "Legal & Judiciary National Platform", "government", "JUMO LEGAL-NATIONAL PLATFORM", "legal")
 };
 
 export class BlueprintIntelligenceEngine {
@@ -215,10 +191,10 @@ export class BlueprintIntelligenceEngine {
    * Retrieve a static blueprint by ID or alias
    */
   static getBlueprint(templateId: string): ERPTemplateDefinition | undefined {
-    if (ALL_18_ERP_PLATFORMS[templateId]) {
-      return ALL_18_ERP_PLATFORMS[templateId];
+    if (ALL_10_PLATFORM_BLUEPRINTS[templateId]) {
+      return ALL_10_PLATFORM_BLUEPRINTS[templateId];
     }
-    const found = Object.values(ALL_18_ERP_PLATFORMS).find(bp => 
+    const found = Object.values(ALL_10_PLATFORM_BLUEPRINTS).find(bp => 
       bp.id === templateId || (bp.aliases && bp.aliases.includes(templateId))
     );
     return found;
@@ -228,7 +204,7 @@ export class BlueprintIntelligenceEngine {
    * Get all registered static blueprints
    */
   static getAllBlueprints(): ERPTemplateDefinition[] {
-    return Object.values(ALL_18_ERP_PLATFORMS);
+    return Object.values(ALL_10_PLATFORM_BLUEPRINTS);
   }
 
   /**
@@ -241,7 +217,7 @@ export class BlueprintIntelligenceEngine {
     const name = input.institutionName || `${input.institutionType.toUpperCase()} Sovereign Platform`;
 
     // Match closest blueprint
-    let baseBlueprint: ERPTemplateDefinition = this.getBlueprint(`${typeKey}-national-platform`) || ALL_18_ERP_PLATFORMS["corporate-national-platform"];
+    let baseBlueprint: ERPTemplateDefinition = this.getBlueprint(`${typeKey}-national-platform`) || ALL_10_PLATFORM_BLUEPRINTS["corporate-national-platform"];
 
     const templateId = `custom-${typeKey}-${Date.now()}`;
     const branchInfo = input.branchCount ? ` (${input.branchCount} Branches / Campuses)` : "";

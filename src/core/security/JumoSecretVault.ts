@@ -88,6 +88,10 @@ export class JumoSecretVault {
     return process.env.JUMO_PROVIDER_WEBHOOK_SECRET || "";
   }
 
+  public getDigitalPayIdentitySecret(): string {
+    return process.env.JUMO_DIGITAL_PAY_IDENTITY_SECRET || process.env.DIGITAL_PAY_IDENTITY_SECRET || "JUMO-DEVELOPMENT-IDENTITY-SECRET-CHANGE-ME-32";
+  }
+
   // ==========================================
   // CONFIGURATIONS ACCESSORS
   // ==========================================
@@ -173,6 +177,15 @@ export class JumoSecretVault {
     const val = process.env.JUMO_SOVEREIGN_LEDGER_ENABLED;
     if (val === undefined) return true;
     return val === "true";
+  }
+
+  public getUniversalAiProvider(): string {
+    return process.env.JUMO_UNIVERSAL_AI_PROVIDER || "openai";
+  }
+
+  public getRepositoryRoot(): string {
+    const path = require("path");
+    return process.env.JUMO_REPOSITORY_ROOT || path.resolve(process.cwd());
   }
 
   public getArchitectureExpansionLevel(): "MIN" | "BALANCED" | "MAX" {

@@ -4,7 +4,6 @@ import {
   Sparkles, MessageSquare, Send, X, Bot, User, Cpu, 
   Layers, AlertCircle, CheckCircle2, ChevronDown, RefreshCw, Zap
 } from 'lucide-react';
-import { ReasoningPlanStep } from '../../core/ai/conversational/GeneralPurposeReasoningAI';
 import { StructuredAIResponseRenderer } from '../renderer/components/StructuredAIResponseRenderer';
 
 interface ChatMessage {
@@ -12,27 +11,23 @@ interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
-  plan?: ReasoningPlanStep[];
-  understoodIntent?: string;
-  delegation?: {
-    required: boolean;
-    agentId?: string;
-    reason?: string;
-  };
+  metadata?: any;
 }
 
 interface JumoFloatingAssistantProps {
   activeStudio: string;
   activeJobId?: string | null;
   activeJobStage?: string | null;
+  variant?: 'floating' | 'embedded';
 }
 
 export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
   activeStudio,
   activeJobId: propActiveJobId,
-  activeJobStage: propActiveJobStage
+  activeJobStage: propActiveJobStage,
+  variant = 'floating'
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(variant === 'embedded');
   const [inputMessage, setInputMessage] = useState('');
   const [selectedMode, setSelectedMode] = useState<'conversation' | 'architecture' | 'planning' | 'analysis' | 'decision' | 'delegation'>('conversation');
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -137,9 +132,6 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
           role: 'assistant',
           content: resObj.response,
           timestamp: new Date(resObj.timestamp || Date.now()).toLocaleTimeString(),
-          plan: resObj.plan,
-          understoodIntent: resObj.understoodIntent,
-          delegation: resObj.delegation
         }]);
       } else {
         throw new Error(data.error || 'Unknown reasoning failure.');
@@ -177,7 +169,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
   ] as const;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans" id="jumo-floating-assistant-container">
+    <div className={variant === 'floating' ? "fixed bottom-6 right-6 z-50 font-sans" : "relative z-10 font-sans w-full h-full"} id="jumo-floating-assistant-container">
       {/* Expandable Chat Window */}
       <AnimatePresence>
         {isOpen && (
@@ -186,7 +178,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="w-96 h-[540px] bg-white rounded-2xl border border-slate-200/80 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className={`${variant === 'floating' ? 'w-96 h-[540px] mb-4' : 'w-full h-full min-h-[500px]'} bg-white rounded-2xl border border-slate-200/80 shadow-2xl flex flex-col overflow-hidden`}
           >
             {/* Header */}
             <div className="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
@@ -259,52 +251,6 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
                         <StructuredAIResponseRenderer response={msg.content} theme="light" />
                       )}
                     </div>
-
-                    {/* Render Intent interpretation if available */}
-                    {msg.understoodIntent && (
-                      <div className="text-[9px] text-slate-400 font-bold bg-slate-100/80 px-2.5 py-1 rounded-lg border border-slate-200/50 uppercase inline-block">
-                        Intent: {msg.understoodIntent}
-                      </div>
-                    )}
-
-                    {/* Render steps/plans if returned by reasoning model */}
-                    {msg.plan && msg.plan.length > 0 && (
-                      <div className="mt-2 space-y-1.5 p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                        <div className="flex items-center gap-1 border-b border-slate-100 pb-1.5 mb-1.5">
-                          <Cpu className="w-3 h-3 text-blue-600" />
-                          <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest">Reasoned Action Plan</span>
-                        </div>
-                        {msg.plan.map((step) => (
-                          <div key={step.id} className="flex items-start gap-2 text-[10px]">
-                            <div className="mt-0.5">
-                              {step.status === 'READY' ? (
-                                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                              ) : step.status === 'BLOCKED' ? (
-                                <AlertCircle className="w-3 h-3 text-rose-500" />
-                              ) : (
-                                <div className="w-3 h-3 rounded-full border-2 border-slate-300"></div>
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-extrabold text-slate-800">{step.title}</div>
-                              <div className="text-slate-500 text-[9px] leading-snug">{step.description}</div>
-                              <span className="text-[8px] font-black uppercase text-blue-600 bg-blue-50/50 border border-blue-100/50 px-1.5 py-0.5 rounded-md mt-1 inline-block">
-                                Owner: {step.responsibleLayer}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Render Delegation if specified */}
-                    {msg.delegation?.required && (
-                      <div className="mt-1.5 bg-indigo-50 border border-indigo-100 p-2 rounded-xl text-[9px] text-indigo-700 font-bold flex items-center gap-1.5">
-                        <Sparkles className="w-3 h-3 text-indigo-600" />
-                        <span>Workforce Delegated: {msg.delegation.agentId} ({msg.delegation.reason})</span>
-                      </div>
-                    )}
-
                     <span className="text-[8px] text-slate-400 font-medium block uppercase px-1">
                       {msg.timestamp}
                     </span>
@@ -398,21 +344,23 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
       </AnimatePresence>
 
       {/* Floating Toggle Bubble */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-slate-950 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-500/10 cursor-pointer focus:outline-none border-2 border-slate-800"
-      >
-        {isOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <div className="relative">
-            <Sparkles className="w-6 h-6 text-white animate-pulse" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-slate-950"></span>
-          </div>
-        )}
-      </motion.button>
+      {variant === 'floating' && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-14 h-14 bg-slate-950 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-500/10 cursor-pointer focus:outline-none border-2 border-slate-800"
+        >
+          {isOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <div className="relative">
+              <Sparkles className="w-6 h-6 text-white animate-pulse" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-slate-950"></span>
+            </div>
+          )}
+        </motion.button>
+      )}
     </div>
   );
 };

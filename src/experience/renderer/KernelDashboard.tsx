@@ -40,18 +40,30 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
 
     async function loadLockData() {
       try {
+        const fetchJson = async (url: string) => {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) return { success: false };
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) return { success: false };
+            return await res.json();
+          } catch {
+            return { success: false };
+          }
+        };
+
         const [lockRes, planRes, smRes, certRes] = await Promise.all([
-          fetch("/api/ueos/kernel/architecture-lock").then(r => r.json()),
-          fetch("/api/ueos/kernel/factory-migration-plan").then(r => r.json()),
-          fetch("/api/ueos/kernel/provisioning-state-machine").then(r => r.json()),
-          fetch("/api/ueos/kernel/shared-platform-certification").then(r => r.json())
+          fetchJson("/api/v1/ueos/kernel/architecture-lock"),
+          fetchJson("/api/v1/ueos/kernel/factory-migration-plan"),
+          fetchJson("/api/v1/ueos/kernel/provisioning-state-machine"),
+          fetchJson("/api/v1/ueos/kernel/shared-platform-certification")
         ]);
-        if (lockRes.success) setLockData(lockRes);
-        if (planRes.success) setMigrationPlan(planRes.plan);
-        if (smRes.success) setStateMachine(smRes.stateMachine);
-        if (certRes.success) setCertificationData(certRes);
+        if (lockRes && lockRes.success) setLockData(lockRes);
+        if (planRes && planRes.success) setMigrationPlan(planRes.plan);
+        if (smRes && smRes.success) setStateMachine(smRes.stateMachine);
+        if (certRes && certRes.success) setCertificationData(certRes);
       } catch (err) {
-        console.error("Failed to load architecture lock telemetry:", err);
+        console.warn("Telemetry polling warning:", err);
       }
     }
 
@@ -61,7 +73,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
     // Simulation of live updates
     const interval = setInterval(() => {
       setAiInsight(prev => prev.includes("No anomalies") 
-        ? "AI Insight: Higher Education Directorate requested a new ERP certification for University ERP v5.2. Approval recommended."
+        ? "AI Insight: New platform architecture configuration ready for review."
         : "Analyzing national infrastructure telemetry... No anomalies detected in the last 24 hours."
       );
     }, 15000);
@@ -595,12 +607,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
           </div>
 
           <div className="space-y-4">
-            {[
-              { id: "AP-901", title: "National Hospital Network AEGIS Key Rotation", requester: "Ministry of Health SecOps", category: "Security", status: "PENDING", tab: "security" },
-              { id: "AP-902", title: "JUMO Reasoning Model v14.0 Fine-Tuning", requester: "AI Governance Board", category: "AI Model", status: "PENDING", tab: "ai" },
-              { id: "AP-903", title: "SACCO Ledger Kernel Update v13.4", requester: "FAAP Treasury Engine", category: "Platform", status: "PENDING", tab: "templates" },
-              { id: "AP-904", title: "University ERP Manufacturing Request", requester: "Higher Education Directorate", category: "Manufacturing", status: "PENDING", tab: "factory" },
-            ].map((app) => (
+            {[].map((app: any) => (
               <div key={app.id} className="group p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100 flex items-center justify-between hover:bg-white hover:border-blue-200 hover:shadow-2xl transition-all">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">

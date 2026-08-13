@@ -24,13 +24,7 @@ export function SecurityRegistryRenderer() {
 
   // SOC Live Terminal Feed Logs
   const [terminalLogs, setTerminalLogs] = useState<Array<{ id: string; msg: string; type: "info" | "warn" | "error" | "success"; time: string }>>([]);
-  const [liveThreatFeed, setLiveThreatFeed] = useState<Array<{ id: string; target: string; type: string; ip: string; status: string; severity: string }>>([
-    { id: "AEG-TX-902", target: "FAAP Treasury Core", type: "SQL Injection Probe", ip: "192.168.42.105", status: "BLOCKED", severity: "HIGH" },
-    { id: "AEG-TX-903", target: "Identity Verification API", type: "Brute Force Attempt", ip: "10.0.4.192", status: "MITIGATED", severity: "HIGH" },
-    { id: "AEG-TX-904", target: "University ERP Branch-1", type: "Header Mismatch Probe", ip: "172.16.89.4", status: "VERIFIED", severity: "LOW" },
-    { id: "AEG-TX-905", target: "NGO ERP Donor Cluster", type: "Rapid Query Scan", ip: "197.210.64.12", status: "BLOCKED", severity: "MEDIUM" },
-    { id: "AEG-TX-906", target: "Banking Portal Gateway", type: "XSS Infiltration Attempt", ip: "102.89.3.44", status: "MITIGATED", severity: "HIGH" }
-  ]);
+  const [liveThreatFeed, setLiveThreatFeed] = useState<Array<{ id: string; target: string; type: string; ip: string; status: string; severity: string }>>([]);
 
   // IAM Users & Roles State
   const [iamUsers, setIamUsers] = useState([
@@ -79,14 +73,26 @@ export function SecurityRegistryRenderer() {
   // Load backend secrets and diagnostics
   const loadVaultData = async () => {
     try {
+      const fetchJson = async (url: string) => {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          const contentType = res.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      };
+
       const [secs, diags] = await Promise.all([
-        fetch("/api/ueos/secrets").then(r => r.json()),
-        fetch("/api/ueos/secrets/diagnostics").then(r => r.json())
+        fetchJson("/api/v1/ueos/secrets"),
+        fetchJson("/api/v1/ueos/secrets/diagnostics")
       ]);
-      setSecretsList(secs || []);
-      setVaultDiagnostics(diags || null);
+      if (secs && secs.secrets) setSecretsList(secs.secrets);
+      if (diags && diags.diagnostics) setVaultDiagnostics(diags.diagnostics);
     } catch (err) {
-      console.error("Failed to load AEGIS vault configurations", err);
+      console.warn("AEGIS vault data poll warning:", err);
     }
   };
 

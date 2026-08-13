@@ -154,7 +154,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   };
 
   const handleParent = () => {
-    navigateTo("overview");
+    navigateTo("specification");
   };
 
   // === 9. UNIFIED KEYBOARD CONTROLLER ===
@@ -402,8 +402,8 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => navigateTo("overview")}
-              className={`p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer ${activeTab === "overview" ? "bg-blue-600 text-white shadow-xs" : ""}`}
+              onClick={() => navigateTo("specification")}
+              className={`p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer ${activeTab === "specification" ? "bg-blue-600 text-white shadow-xs" : ""}`}
               title="Sovereign Command Center"
               aria-label="Command Center Home"
             >

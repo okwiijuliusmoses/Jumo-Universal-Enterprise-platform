@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { LedgerRepository, AuditLogRepository } from "../../repositories/repositories";
 import { faapService, FinancialTransaction } from "../../platforms/faap/faapService";
+import { JumoSecretVault } from "../security/JumoSecretVault";
 
 export interface LedgerAuditResult {
   isAuditHealthy: boolean;
@@ -25,9 +26,9 @@ export class FinancialAuditor {
 
   private getAI(): GoogleGenAI {
     if (!this.aiInstance) {
-      const key = process.env.GEMINI_API_KEY;
+      const key = JumoSecretVault.getInstance().getGeminiKey();
       if (!key) {
-        throw new Error("GEMINI_API_KEY is not defined. Please add your key in the Settings panel.");
+        throw new Error("JUMO_GEMINI_API_KEY is not defined. Please add your key in the Settings panel.");
       }
       this.aiInstance = new GoogleGenAI({
         apiKey: key,
@@ -121,16 +122,7 @@ Ensure you verify standard accounting principles:
       return parsedResult;
     } catch (error: any) {
       console.error("[AUDITOR_ERROR] Cognitive audit execution failed:", error);
-      // Failover safely to a rule-based mock matching interface signature
-      return {
-        isAuditHealthy: true,
-        score: 95,
-        discrepancies: [],
-        anomalies: [
-          { txId: "TX-GENERIC", description: `Failover triggered due to error: ${error.message}`, riskLevel: "Low" }
-        ],
-        recommendation: "Review manual double-entry ledgers. Cognitive models are temporarily running in local failover state."
-      };
+      throw new Error(`Cognitive audit failed: ${error.message}`);
     }
   }
 }

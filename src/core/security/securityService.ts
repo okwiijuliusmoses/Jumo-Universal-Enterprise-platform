@@ -1,4 +1,5 @@
 import { Buffer } from "buffer";
+import { JumoSecretVault } from "./JumoSecretVault";
 const isBrowser = typeof window !== "undefined";
 let crypto: any = null;
 if (!isBrowser) {
@@ -161,7 +162,9 @@ export class SecurityService {
   public encryptSecret(text: string, secretKeyHex?: string): string {
     try {
       if (crypto && typeof crypto.scryptSync === "function") {
-        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
+        const vault = JumoSecretVault.getInstance();
+        const masterKey = vault.getJwtSecret() || "jumo_master_default_salt_key_0123";
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(masterKey, "salt", 32);
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
         let encrypted = cipher.update(text, "utf8", "hex");
@@ -186,7 +189,9 @@ export class SecurityService {
         const parts = cipherText.split(":");
         const iv = Buffer.from(parts[0], "hex");
         const encryptedText = parts[1];
-        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(process.env.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
+        const vault = JumoSecretVault.getInstance();
+        const masterKey = vault.getJwtSecret() || "jumo_master_default_salt_key_0123";
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(masterKey, "salt", 32);
         const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
         let decrypted = decipher.update(encryptedText, "hex", "utf8");
         decrypted += decipher.final("utf8");

@@ -50,189 +50,157 @@ const L = (
 });
 
 const INITIAL_JUMO_HYBRID_ARCHITECTURE_LAYERS: JumoArchitectureLayer[] = [
+  // 1. KERNEL & PLATFORM FOUNDATION (12 layers)
+  L("L001", "Platform Kernel", "Sovereign Microkernel Core", "Provides zero-trust memory management, process isolation and low-level system call dispatching.", "architecture", [], "FOUNDATION", false, true),
+  L("L002", "Platform Kernel", "System Event Bus & Event Loop", "Async event distribution backbone supporting reactive state changes across microservices.", "architecture", ["L001"], "FOUNDATION", false, true),
+  L("L003", "Platform Kernel", "Tenant Isolation Engine", "Cryptographic container and memory space partitioning for multi-tenant isolation.", "architecture", ["L001"], "FOUNDATION", false, true),
+  L("L004", "Platform Kernel", "Dynamic Module Loader", "Loads, initializes, and hot-swaps compiled WebAssembly and ESM modules safely.", "architecture", ["L001"], "FOUNDATION", false, true),
+  L("L005", "Platform Kernel", "Config & Environment Registry", "Strict schema-validated environment variable and dynamic configuration resolution.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L006", "Platform Kernel", "Time Sync & Vector Clock Service", "Distributed clock synchronization for immutable audit timestamps.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L007", "Platform Kernel", "Kernel Memory Allocation Guard", "Monitors heap bounds and prevents buffer overflows and memory leaks.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L008", "Platform Kernel", "Sovereign IPC Gateway", "Secure inter-process communication protocol between platform subsystem daemons.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L009", "Platform Kernel", "System Health Pulse Daemon", "Continuous heartbeat checker for kernel subsystems and runtime daemons.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L010", "Platform Kernel", "Core Serializer & Protocol Buffers", "High-efficiency binary serialization format for internal RPC payloads.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L011", "Platform Kernel", "System Error & Exception Router", "Centralized trap handler converting runtime exceptions into actionable telemetry events.", "architecture", ["L001"], "ACTIVE", false, true),
+  L("L012", "Platform Kernel", "Kernel Shutdown & Failover Handler", "Orchestrates graceful degradation and state snapshotting on panic conditions.", "architecture", ["L001"], "ACTIVE", false, true),
 
-/* ============================================================
- * 001–010 — HUMAN / REASONING FOUNDATION
- * ============================================================ */
-L('L001','REASONING','Conversational Reasoning','Human-facing general-purpose conversation and broad reasoning.','JUMO Conversational Reasoning Studio',[], 'FOUNDATION',true),
-L('L002','REASONING','Instruction Interpretation','Convert natural-language instructions into structured intent.','JUMO Conversational Reasoning Studio',['L001'],'FOUNDATION',true),
-L('L003','REASONING','Architecture Planning','Plan systems, platforms, products and architectural changes.','JUMO Conversational Reasoning Studio',['L001','L002'],'ACTIVE',true),
-L('L004','REASONING','Requirement Extraction','Extract explicit and implicit requirements.','JUMO Conversational Reasoning Studio',['L002']),
-L('L005','REASONING','Constraint Analysis','Identify technical, governance and business constraints.','JUMO Conversational Reasoning Studio',['L002']),
-L('L006','REASONING','Dependency Reasoning','Determine architectural dependencies.','JUMO Conversational Reasoning Studio',['L003']),
-L('L007','REASONING','Risk Reasoning','Identify implementation and operational risks.','JUMO Conversational Reasoning Studio',['L003']),
-L('L008','REASONING','Decision Support','Compare alternatives and recommend decisions.','JUMO Conversational Reasoning Studio',['L003']),
-L('L009','REASONING','Architecture Memory','Maintain approved architectural decisions and context.','JUMO Conversational Reasoning Studio',['L001']),
-L('L010','REASONING','Human Approval Boundary','Identify decisions requiring human authority.','JUMO Conversational Reasoning Studio',['L008']),
+  // 2. DIGITAL IDENTITY, RBAC & ZERO-TRUST IAM (12 layers)
+  L("L013", "Identity & IAM", "Sovereign Identity Provider (IdP)", "Centralized OAuth2 / OpenID Connect authority issuing cryptographically signed tokens.", "security_soc", ["L001"], "ACTIVE", true, true),
+  L("L014", "Identity & IAM", "Role-Based Access Control (RBAC) Engine", "Enforces matrix-based roles and privilege hierarchies across system routes.", "security_soc", ["L013"], "ACTIVE", true, true),
+  L("L015", "Identity & IAM", "Attribute-Based Access Control (ABAC) Validator", "Dynamic policy evaluation engine inspecting user attributes, IP, location, and time.", "security_soc", ["L014"], "ACTIVE", false, true),
+  L("L016", "Identity & IAM", "Multi-Factor Authentication (MFA) Service", "Supports TOTP, FIDO2/WebAuthn hardware keys, and SMS OTP verification.", "security_soc", ["L013"], "ACTIVE", true, true),
+  L("L017", "Identity & IAM", "Session Token Management Daemon", "Manages JWT lifecycle, token rotation, and instant session revocation lists.", "security_soc", ["L013"], "ACTIVE", false, true),
+  L("L018", "Identity & IAM", "User Lifecycle & Provisioning Gateway", "Handles user onboarding, offboarding, department binding, and credential resets.", "security_soc", ["L013"], "ACTIVE", true, true),
+  L("L019", "Identity & IAM", "Biometric Identity Verification Service", "Validates facial and fingerprint biometric templates against national registries.", "security_soc", ["L013"], "PLANNED", true, true),
+  L("L020", "Identity & IAM", "Federated Enterprise Identity Bridge", "Interoperability gateway connecting SAML2 / Active Directory / LDAP servers.", "security_soc", ["L013"], "INTEGRATION", false, true),
+  L("L021", "Identity & IAM", "Delegated Admin & Impersonation Audit", "Allows authorized administrators temporary scoped access with mandatory audit trails.", "security_soc", ["L014"], "GOVERNED", true, true),
+  L("L022", "Identity & IAM", "Zero-Trust Device Fingerprinting Engine", "Evaluates hardware signatures and posture compliance before session elevation.", "security_soc", ["L015"], "ACTIVE", false, true),
+  L("L023", "Identity & IAM", "API Key & Access Token Registry", "Issues, scopes, and throttles service-to-service API tokens for external integrations.", "security_soc", ["L013"], "ACTIVE", false, true),
+  L("L024", "Identity & IAM", "Sovereign DID & Verifiable Credential Issuer", "Generates decentralized identifiers and tamper-proof digital certificates.", "security_soc", ["L013"], "GOVERNED", true, true),
 
-/* ============================================================
- * 011–020 — AI GATEWAY / MODEL ORCHESTRATION
- * ============================================================ */
-L('L011','AI','JUMO AI Gateway','Authoritative gateway between UEOS and AI providers.','JUMO Intelligence Studio',['L001'],'FOUNDATION'),
-L('L012','AI','Model Registry','Register approved AI models and capabilities.','JUMO Intelligence Studio',['L011']),
-L('L013','AI','Provider Registry','Register external and sovereign providers.','JUMO Intelligence Studio',['L011']),
-L('L014','AI','Model Routing','Select models according to task requirements.','JUMO Intelligence Studio',['L012','L013']),
-L('L015','AI','Reasoning Routing','Route broad reasoning to the approved reasoning model.','JUMO Intelligence Studio',['L014']),
-L('L016','AI','Agent Routing','Route specialized work to appropriate agents.','JUMO Intelligence Studio',['L014']),
-L('L017','AI','Context Injection','Supply authorized UEOS context to AI.','JUMO Intelligence Studio',['L009','L011']),
-L('L018','AI','Prompt Policy','Govern system instructions and model contracts.','JUMO Intelligence Studio',['L011']),
-L('L019','AI','AI Safety Boundary','Prevent unauthorized AI execution.','JUMO Intelligence Studio',['L018']),
-L('L020','AI','AI Evaluation','Measure quality, reliability and policy compliance.','JUMO Intelligence Studio',['L012']),
+  // 3. DATA DOMAIN, PERSISTENCE & STORAGE (14 layers)
+  L("L025", "Data Architecture", "Relational Database Engine (PostgreSQL / SQLite)", "ACID-compliant relational ledger for core transactional business entities.", "schema_migration", ["L001"], "FOUNDATION", false, true),
+  L("L026", "Data Architecture", "ORM & Schema Migration Compiler", "Automated Drizzle/Prisma schema migration generator and type-safe query compiler.", "schema_migration", ["L025"], "ACTIVE", false, true),
+  L("L027", "Data Architecture", "In-Memory Cache & Key-Value Layer (Redis)", "Ultra-fast volatile caching layer for session states, rate limits, and lookup tables.", "schema_migration", ["L001"], "ACTIVE", false, true),
+  L("L028", "Data Architecture", "Document & JSON Blob Store", "Flexible schema-less store for raw intake specifications, audit logs, and dynamic forms.", "schema_migration", ["L001"], "ACTIVE", false, true),
+  L("L029", "Data Architecture", "Encrypted Object Storage Gateway (S3/Blob)", "MinIO/S3 compatible encrypted file storage for uploaded documents and media assets.", "schema_migration", ["L001"], "ACTIVE", false, true),
+  L("L030", "Data Architecture", "Event Sourcing & Change Data Capture (CDC)", "Captures database transaction logs into immutable append-only event streams.", "schema_migration", ["L025"], "GOVERNED", false, true),
+  L("L031", "Data Architecture", "Data Residency & Partitioning Enforcer", "Ensures sensitive data remains stored strictly within sovereign regional boundaries.", "schema_migration", ["L025"], "GOVERNED", false, true),
+  L("L032", "Data Architecture", "Full-Text Search & Indexing Engine", "High-performance inverted index generator for global searching across entity records.", "schema_migration", ["L025"], "ACTIVE", true, true),
+  L("L033", "Data Architecture", "Database Connection Pooling Controller", "Manages pool scaling, idle timeouts, and query queue balancing under heavy load.", "schema_migration", ["L025"], "ACTIVE", false, true),
+  L("L034", "Data Architecture", "Field-Level Encryption Transceiver", "Transparently encrypts sensitive PII/financial columns before disk write operations.", "schema_migration", ["L025"], "ACTIVE", false, true),
+  L("L035", "Data Architecture", "Data Anonymization & Sanitization Guard", "Strips sensitive identification markers before passing data to analytics engines.", "schema_migration", ["L028"], "ACTIVE", false, true),
+  L("L036", "Data Architecture", "Time-Series Telemetry Store", "High-density append-only database for system metrics, CPU telemetry, and traffic logs.", "schema_migration", ["L001"], "ACTIVE", false, true),
+  L("L037", "Data Architecture", "Database Snapshot & Automated Dump Engine", "Scheduled incremental backups with point-in-time recovery verification.", "schema_migration", ["L025"], "ACTIVE", false, true),
+  L("L038", "Data Architecture", "Vector Embedding Database Bridge", "Stores high-dimensional vector embeddings for AI semantic search and RAG workflows.", "schema_migration", ["L028"], "ACTIVE", false, true),
 
-/* ============================================================
- * 021–030 — AGENT WORKFORCE
- * ============================================================ */
-L('L021','AGENTS','Agent Registry','Authoritative registry of JUMO specialized agents.','JUMO Agent Workforce Studio',['L016']),
-L('L022','AGENTS','Agent Identity','Identity and credentials for agents.','JUMO Agent Workforce Studio',['L021']),
-L('L023','AGENTS','Agent Skills','Declare agent capabilities.','JUMO Agent Workforce Studio',['L021']),
-L('L024','AGENTS','Agent Delegation','Delegate tasks from reasoning to agents.','JUMO Agent Workforce Studio',['L016','L021']),
-L('L025','AGENTS','Agent Supervision','Monitor delegated agent work.','JUMO Agent Workforce Studio',['L024']),
-L('L026','AGENTS','Agent Scheduling','Schedule agent workloads.','JUMO Agent Workforce Studio',['L024']),
-L('L027','AGENTS','Agent Collaboration','Coordinate multiple agents.','JUMO Agent Workforce Studio',['L025']),
-L('L028','AGENTS','Agent Evidence','Capture evidence produced by agents.','JUMO Agent Workforce Studio',['L025']),
-L('L029','AGENTS','Agent Failure Recovery','Recover failed agent tasks.','JUMO Agent Workforce Studio',['L025']),
-L('L030','AGENTS','Agent Retirement','Deactivate and retire obsolete agents.','JUMO Agent Workforce Studio',['L021']),
+  // 4. API GATEWAY, SERVICE MESH & INTEROPERABILITY (12 layers)
+  L("L039", "API & Integration", "Sovereign Ingress API Gateway", "Central routing proxy enforcing TLS termination, CORS, and endpoint dispatch.", "provisioning", ["L001"], "FOUNDATION", false, true),
+  L("L040", "API & Integration", "Rate Limiting & Throttling Controller", "Prevents DDoS and abuse via token-bucket algorithm per IP, user, and API key.", "provisioning", ["L039"], "ACTIVE", false, true),
+  L("L041", "API & Integration", "OpenAPI Specification Generator", "Dynamically compiles live Swagger/OpenAPI documentation from route definitions.", "provisioning", ["L039"], "ACTIVE", true, true),
+  L("L042", "API & Integration", "GraphQL Query Engine & Schema Router", "Flexible GraphQL endpoint compiler with query complexity depth limiting.", "provisioning", ["L039"], "PLANNED", false, true),
+  L("L043", "API & Integration", "gRPC Inter-Service RPC Router", "High-throughput binary RPC protocol for ultra-low latency service communications.", "provisioning", ["L039"], "ACTIVE", false, true),
+  L("L044", "API & Integration", "Webhook Delivery & Retry Engine", "Asynchronous event delivery agent with exponential backoff and dead-letter queues.", "provisioning", ["L002"], "ACTIVE", false, true),
+  L("L045", "API & Integration", "ISO 20022 Financial Messaging Adapter", "Standardized banking & payments wire message parser and serializer.", "provisioning", ["L039"], "INTEGRATION", false, true),
+  L("L046", "API & Integration", "Government Interoperability Enterprise Service Bus", "Bridge connecting national ID systems, tax authorities, and land registries.", "provisioning", ["L039"], "INTEGRATION", true, true),
+  L("L047", "API & Integration", "API Payload Transformation Pipeline", "Converts XML, CSV, legacy JSON into canonical platform domain objects.", "provisioning", ["L039"], "ACTIVE", false, true),
+  L("L048", "API & Integration", "Circuit Breaker & Resilience Proxy", "Monitors downstream API health and opens circuits automatically on high error rates.", "provisioning", ["L039"], "ACTIVE", false, true),
+  L("L049", "API & Integration", "Reverse Proxy & TLS Termination Daemon", "SSL/TLS handshake accelerator supporting TLS 1.3 and custom certificates.", "provisioning", ["L039"], "ACTIVE", false, true),
+  L("L050", "API & Integration", "Integration Sandbox & Mock Simulator", "Provides simulated endpoints for offline testing of external third-party integrations.", "provisioning", ["L039"], "ACTIVE", true, true),
 
-/* ============================================================
- * 031–040 — ARCHITECTURE
- * ============================================================ */
-L('L031','ARCHITECTURE','Architecture Registry','Authoritative architecture repository.','JUMO Architecture & Systems Studio',['L003']),
-L('L032','ARCHITECTURE','System Model','Model complete JUMO systems.','JUMO Architecture & Systems Studio',['L031']),
-L('L033','ARCHITECTURE','Component Model','Model reusable components.','JUMO Architecture & Systems Studio',['L032']),
-L('L034','ARCHITECTURE','Service Model','Model services and APIs.','JUMO Architecture & Systems Studio',['L032']),
-L('L035','ARCHITECTURE','Domain Model','Model bounded enterprise domains.','JUMO Architecture & Systems Studio',['L032']),
-L('L036','ARCHITECTURE','Dependency Graph','Visualize system dependencies.','JUMO Architecture & Systems Studio',['L033','L034']),
-L('L037','ARCHITECTURE','Boundary Enforcement','Prevent domain and runtime boundary violations.','JUMO Architecture & Systems Studio',['L035']),
-L('L038','ARCHITECTURE','Architecture Contracts','Create enforceable architecture contracts.','JUMO Architecture & Systems Studio',['L031']),
-L('L039','ARCHITECTURE','Architecture Validation','Validate designs before implementation.','JUMO Architecture & Systems Studio',['L038']),
-L('L040','ARCHITECTURE','Architecture Diff','Compare architecture versions.','JUMO Architecture & Systems Studio',['L031']),
+  // 5. SECURITY ENGINEERING & CRYPTOGRAPHIC CORE (12 layers)
+  L("L051", "Security Engineering", "Hardware Security Module (HSM) Vault Interface", "Manages master keys, root certificates, and hardware-level cryptographic operations.", "security_soc", ["L001"], "FOUNDATION", false, true),
+  L("L052", "Security Engineering", "Zero-Trust Network Perimeter Controller", "Enforces micro-segmentation, mutual TLS (mTLS), and strict packet verification.", "security_soc", ["L051"], "ACTIVE", false, true),
+  L("L053", "Security Engineering", "Cryptographic Signature & Signing Engine", "Signs build artifacts, architecture contracts, and official documents with ECDSA/RSA.", "security_soc", ["L051"], "ACTIVE", false, true),
+  L("L054", "Security Engineering", "Web Application Firewall (WAF)", "Filters malicious payloads, SQL injection, XSS attacks, and path traversal attempts.", "security_soc", ["L039"], "ACTIVE", false, true),
+  L("L055", "Security Engineering", "Secrets & Key Rotation Manager", "Securely stores API credentials, database passwords, and automatically rotates keys.", "security_soc", ["L051"], "ACTIVE", false, true),
+  L("L056", "Security Engineering", "Static Code & Vulnerability Scanner (SAST)", "Analyzes generated source code artifacts for security anti-patterns and vulnerabilities.", "security_soc", ["L051"], "ACTIVE", false, true),
+  L("L057", "Security Engineering", "Dynamic Application Security Testing (DAST)", "Simulates external pen-testing attacks against running staging environments.", "security_soc", ["L056"], "ACTIVE", false, true),
+  L("L058", "Security Engineering", "Container Image & Dependency Vulnerability Auditor", "Audits npm/binary supply-chain dependencies against CVE databases.", "security_soc", ["L056"], "ACTIVE", false, true),
+  L("L059", "Security Engineering", "Data Leak Prevention (DLP) Guard", "Inspects outbound payloads for accidental exposure of credit cards or national ID numbers.", "security_soc", ["L054"], "ACTIVE", false, true),
+  L("L060", "Security Engineering", "Intrusion Detection System (IDS) Daemon", "Analyzes network traffic patterns and system calls for anomalous behavior.", "security_soc", ["L052"], "ACTIVE", false, true),
+  L("L061", "Security Engineering", "Quantum-Resistant Encryption Adapter", "Post-quantum cryptographic algorithms (Kyber/Dilithium) for future-proof security.", "security_soc", ["L051"], "PLANNED", false, true),
+  L("L062", "Security Engineering", "Security Information & Event Management (SIEM) Streamer", "Pipes security alerts to sovereign Security Operations Centers in real time.", "security_soc", ["L060"], "ACTIVE", true, true),
 
-/* ============================================================
- * 041–050 — PRODUCT / ECOSYSTEM FACTORY
- * ============================================================ */
-L('L041','PRODUCT','Product Registry','Register JUMO products.','JUMO Product & Ecosystem Studio',['L031']),
-L('L042','PRODUCT','Ecosystem Registry','Register enterprise ecosystems.','JUMO Product & Ecosystem Studio',['L041']),
-L('L043','PRODUCT','Application Factory','Create application definitions.','JUMO Product & Ecosystem Studio',['L041']),
-L('L044','PRODUCT','ERP Factory','Create governed ERP products.','JUMO Product & Ecosystem Studio',['L042']),
-L('L045','PRODUCT','Module Factory','Create reusable modules.','JUMO Product & Ecosystem Studio',['L043']),
-L('L046','PRODUCT','Workflow Factory','Create business workflows.','JUMO Product & Ecosystem Studio',['L045']),
-L('L047','PRODUCT','Form Factory','Create executable forms.','JUMO Product & Ecosystem Studio',['L045']),
-L('L048','PRODUCT','Report Factory','Create reports and analytical views.','JUMO Product & Ecosystem Studio',['L045']),
-L('L049','PRODUCT','Integration Factory','Create governed integrations.','JUMO Product & Ecosystem Studio',['L043']),
-L('L050','PRODUCT','Product Packaging','Package complete products for deployment.','JUMO Product & Ecosystem Studio',['L041','L049']),
+  // 6. APPLICATION & ENTERPRISE PORTAL ENGINEERING (14 layers)
+  L("L063", "Application Engineering", "National Citizen Portal Gateway", "Public-facing portal for citizen services, application submissions, and status tracking.", "specification", ["L039"], "ACTIVE", true, true),
+  L("L064", "Application Engineering", "Institutional Admin Control Center", "Internal administrative console for ministry staff, departmental heads, and operators.", "specification", ["L014"], "ACTIVE", true, true),
+  L("L065", "Application Engineering", "Executive Analytics & BI Dashboard", "High-level visual charts, KPI metrics, and operational performance reports.", "specification", ["L064"], "ACTIVE", true, true),
+  L("L066", "Application Engineering", "Digital Form Builder & Render Engine", "Dynamic UI renderer for complex multi-step forms with live field validations.", "specification", ["L063"], "ACTIVE", true, true),
+  L("L067", "Application Engineering", "BPMN Workflow Orchestration Engine", "State-machine manager executing multi-party approval workflows and task escalations.", "specification", ["L002"], "ACTIVE", true, true),
+  L("L068", "Application Engineering", "Document Management & E-Signature Hub", "Handles PDF generation, digital signing, versioning, and document archive vaults.", "specification", ["L029"], "ACTIVE", true, true),
+  L("L069", "Application Engineering", "Notification & Alert Broadcast Center", "Omnichannel dispatching for SMS, Email, Push Notifications, and System Popups.", "specification", ["L002"], "ACTIVE", true, true),
+  L("L070", "Application Engineering", "Customer Relationship Management (CRM) Engine", "Manages stakeholder interactions, support tickets, and citizen inquiry histories.", "specification", ["L025"], "ACTIVE", true, true),
+  L("L071", "Application Engineering", "Registry & Asset Tracking System", "Verifiable registry for government assets, land titles, vehicles, and licenses.", "specification", ["L025"], "ACTIVE", true, true),
+  L("L072", "Application Engineering", "Mobile Progressive Web App (PWA) Shell", "Responsive offline-capable mobile interface with background sync support.", "specification", ["L063"], "ACTIVE", true, true),
+  L("L073", "Application Engineering", "Audit Trail & Activity Log Viewer", "Searchable UI presenting detailed user actions, timestamps, and resource edits.", "specification", ["L014"], "ACTIVE", true, true),
+  L("L074", "Application Engineering", "Accessibility & Multi-Language Localization Engine", "i18n translation engine with RTL support and WCAG 2.1 AA compliance.", "specification", ["L063"], "ACTIVE", true, true),
+  L("L075", "Application Engineering", "Field Operator Mobile App Bridge", "Specialized mobile views for field inspectors, surveyors, and enforcement agents.", "specification", ["L072"], "ACTIVE", true, true),
+  L("L076", "Application Engineering", "GIS & Interactive Mapping Studio", "Geospatial vector mapping layer for regional plotting and infrastructure boundaries.", "specification", ["L025"], "ACTIVE", true, true),
 
-/* ============================================================
- * 051–060 — DATA / KNOWLEDGE
- * ============================================================ */
-L('L051','DATA','Data Registry','Register authoritative data resources.','JUMO Data & Knowledge Studio',['L031']),
-L('L052','DATA','Schema Registry','Register schemas.','JUMO Data & Knowledge Studio',['L051']),
-L('L053','DATA','Data Mesh','Coordinate distributed enterprise data.','JUMO Data & Knowledge Studio',['L051','L052']),
-L('L054','DATA','Ontology Registry','Define enterprise concepts.','JUMO Data & Knowledge Studio',['L051']),
-L('L055','DATA','Knowledge Graph','Connect enterprise knowledge.','JUMO Data & Knowledge Studio',['L054']),
-L('L056','DATA','Knowledge Retrieval','Retrieve authorized knowledge for AI.','JUMO Data & Knowledge Studio',['L055','L017']),
-L('L057','DATA','Data Lineage','Track data origin and transformation.','JUMO Data & Knowledge Studio',['L053']),
-L('L058','DATA','Data Quality','Validate data quality.','JUMO Data & Knowledge Studio',['L053']),
-L('L059','DATA','Data Governance','Control data access and ownership.','JUMO Data & Knowledge Studio',['L053']),
-L('L060','DATA','Data Lifecycle','Archive and retire data safely.','JUMO Data & Knowledge Studio',['L059']),
+  // 7. COMMERCIAL PRODUCT & FINANCIAL EXTENSIONS (12 layers)
+  L("L077", "Commercial Products", "Universal Payment Gateway Adapter", "Unified bridge for Mobile Money, Visa, Mastercard, and direct bank debit transactions.", "digitalpay", ["L039"], "ACTIVE", true, true),
+  L("L078", "Commercial Products", "Double-Entry General Ledger Engine", "Immutable financial ledger recording debits, credits, account balances, and journals.", "digitalpay", ["L025"], "FOUNDATION", true, true),
+  L("L079", "Commercial Products", "Core Banking & Savings/Loan Module", "Manages SACCO/Microfinance deposits, interest calculations, loan schedules, and disbursements.", "digitalpay", ["L078"], "ACTIVE", true, true),
+  L("L080", "Commercial Products", "Procurement & Tender Management System", "Handles e-procurement tenders, vendor bidding, purchase orders, and invoice clearance.", "digitalpay", ["L067"], "ACTIVE", true, true),
+  L("L081", "Commercial Products", "Payroll & Compensation Manager", "Automates salary calculations, tax withholdings, pension deductions, and direct deposits.", "digitalpay", ["L078"], "ACTIVE", true, true),
+  L("L082", "Commercial Products", "Billing, Invoicing & Revenue Collection", "Generates recurring invoices, tax demand notes, and tracks utility fee collections.", "digitalpay", ["L077"], "ACTIVE", true, true),
+  L("L083", "Commercial Products", "Inventory & Warehouse Stock Control", "Real-time stock tracking, SKU management, reorder alerts, and dispatch notes.", "digitalpay", ["L025"], "ACTIVE", true, true),
+  L("L084", "Commercial Products", "Tax & Duty Calculation Engine", "Dynamic VAT, customs duty, and municipal tax rules calculator.", "digitalpay", ["L078"], "ACTIVE", false, true),
+  L("L085", "Commercial Products", "Point of Sale (POS) Terminal Bridge", "Connects physical retail POS hardware, barcode scanners, and thermal receipt printers.", "digitalpay", ["L077"], "ACTIVE", true, true),
+  L("L086", "Commercial Products", "Financial Audit & Fraud Detection AI", "Detects anomalous transaction volumes, double-spends, and suspicious ledger edits.", "digitalpay", ["L078"], "ACTIVE", false, true),
+  L("L087", "Commercial Products", "Escrow & Multi-Sig Vault Controller", "Holds funds in trust until pre-configured contract milestone conditions are satisfied.", "digitalpay", ["L078"], "GOVERNED", false, true),
+  L("L088", "Commercial Products", "E-Commerce & Digital Marketplace Engine", "Product catalog, shopping cart, checkout workflow, and merchant store management.", "digitalpay", ["L077"], "ACTIVE", true, true),
 
-/* ============================================================
- * 061–070 — SOFTWARE ENGINEERING
- * ============================================================ */
-L('L061','ENGINEERING','Source Registry','Authoritative source-code registry.','JUMO Software Engineering Studio',['L041']),
-L('L062','ENGINEERING','Component Engineering','Build reusable software components.','JUMO Software Engineering Studio',['L033','L061']),
-L('L063','ENGINEERING','API Engineering','Build and validate APIs.','JUMO Software Engineering Studio',['L034','L061']),
-L('L064','ENGINEERING','Test Engineering','Create automated tests.','JUMO Software Engineering Studio',['L061']),
-L('L065','ENGINEERING','Static Analysis','Analyse source and architecture.','JUMO Software Engineering Studio',['L061']),
-L('L066','ENGINEERING','Build Pipeline','Compile software artifacts.','JUMO Software Engineering Studio',['L061','L064']),
-L('L067','ENGINEERING','Artifact Registry','Register immutable build artifacts.','JUMO Software Engineering Studio',['L066']),
-L('L068','ENGINEERING','Dependency Management','Track software dependencies.','JUMO Software Engineering Studio',['L061']),
-L('L069','ENGINEERING','Version Control','Manage product versions.','JUMO Software Engineering Studio',['L061']),
-L('L070','ENGINEERING','Release Candidate','Prepare validated releases.','JUMO Software Engineering Studio',['L066','L067']),
+  // 8. COGNITIVE AI & AUTOMATION WORKFORCE (12 layers)
+  L("L089", "AI & Workforce", "JUMO GPT Orchestration Gateway", "Unified user-facing intelligence identity routing prompts to optimal reasoning providers.", "engineering", ["L001"], "ACTIVE", true, true),
+  L("L090", "AI & Workforce", "Google Gemini Reasoning Provider Interface", "Server-side integration proxy for Gemini 3.6 Flash and Gemini 3.1 Pro models.", "engineering", ["L089"], "ACTIVE", false, true),
+  L("L091", "AI & Workforce", "OpenAI / ChatGPT Reasoning Adapter", "Server-side integration bridge for GPT-4o reasoning models.", "engineering", ["L089"], "ACTIVE", false, true),
+  L("L092", "AI & Workforce", "Microsoft Copilot Intelligence Adapter", "Enterprise Productivity AI adapter for Microsoft Workspace integration.", "engineering", ["L089"], "INTEGRATION", false, true),
+  L("L093", "AI & Workforce", "400+ Cognitive Engineering Swarm Router", "Allocates specialized AI engineering agents to active manufacturing and testing tasks.", "engineering", ["L089"], "ACTIVE", false, true),
+  L("L094", "AI & Workforce", "Autonomous Code Generation Engine", "Compiles domain specifications directly into clean, type-safe TypeScript and React code.", "engineering", ["L093"], "ACTIVE", false, true),
+  L("L095", "AI & Workforce", "RAG & Vector Knowledge Graph Search", "Retrieves relevant system documentation, regulatory rules, and schema blueprints.", "engineering", ["L038"], "ACTIVE", false, true),
+  L("L096", "AI & Workforce", "AI Quality & Hallucination Guardrail", "Validates AI outputs against hard syntax checkers and security schema rules.", "engineering", ["L089"], "ACTIVE", false, true),
+  L("L097", "AI & Workforce", "Natural Language Specification Parser", "Converts plain text business descriptions into structured specification JSON objects.", "engineering", ["L089"], "ACTIVE", true, true),
+  L("L098", "AI & Workforce", "Automated Bug Fixing & Remediation Agent", "Analyzes build error stack traces and automatically applies surgical code patches.", "engineering", ["L094"], "ACTIVE", false, true),
+  L("L099", "AI & Workforce", "Voice & Speech-to-Text Conversational Interface", "Enables voice-driven commands and accessibility dictation across platform portals.", "engineering", ["L089"], "PLANNED", true, true),
+  L("L100", "AI & Workforce", "Predictive Analytics & Forecasting Swarm", "Runs time-series ML models to forecast revenue, system load, and resource demands.", "engineering", ["L089"], "ACTIVE", false, true),
 
-/* ============================================================
- * 071–080 — MANUFACTURING
- * ============================================================ */
-L('L071','MANUFACTURING','Production Registry','Register production programs.','JUMO Manufacturing Studio',['L041']),
-L('L072','MANUFACTURING','Manufacturing Planning','Plan production workloads.','JUMO Manufacturing Studio',['L071']),
-L('L073','MANUFACTURING','Production Jobs','Manage manufacturing jobs.','JUMO Manufacturing Studio',['L072']),
-L('L074','MANUFACTURING','Resource Planning','Allocate production resources.','JUMO Manufacturing Studio',['L072']),
-L('L075','MANUFACTURING','Engineering Tasks','Coordinate engineering tasks.','JUMO Manufacturing Studio',['L073']),
-L('L076','MANUFACTURING','Workforce Allocation','Assign engineering workforce.','JUMO Manufacturing Studio',['L074']),
-L('L077','MANUFACTURING','Production Scheduling','Schedule production activities.','JUMO Manufacturing Studio',['L073']),
-L('L078','MANUFACTURING','Manufacturing Evidence','Capture production evidence.','JUMO Manufacturing Studio',['L073']),
-L('L079','MANUFACTURING','Production Quality','Validate production quality.','JUMO Manufacturing Studio',['L078']),
-L('L080','MANUFACTURING','Production Completion','Close production jobs.','JUMO Manufacturing Studio',['L079']),
+  // 9. CLOUD INFRASTRUCTURE, COMPUTE & VIRTUAL NETWORK (12 layers)
+  L("L101", "Infrastructure", "Container Hypervisor & Runtime (Docker / Podman)", "Executes containerized platform microservices in secure sandboxed environments.", "cloud_infra", ["L001"], "FOUNDATION", false, true),
+  L("L102", "Infrastructure", "Kubernetes / Cloud Run Cluster Orchestrator", "Automates container deployment, scaling, rolling updates, and node scheduling.", "cloud_infra", ["L101"], "ACTIVE", false, true),
+  L("L103", "Infrastructure", "Virtual Private Cloud (VPC) & Subnet Router", "Configures isolated virtual network segments with strict ingress/egress rules.", "cloud_infra", ["L101"], "ACTIVE", false, true),
+  L("L104", "Infrastructure", "Software-Defined Load Balancer", "Distributes incoming HTTP/RPC traffic evenly across healthy cluster pods.", "cloud_infra", ["L102"], "ACTIVE", false, true),
+  L("L105", "Infrastructure", "Infrastructure as Code (IaC) Compiler (Terraform)", "Generates reproducible infrastructure blueprints for AWS, GCP, Azure, and On-Prem.", "cloud_infra", ["L101"], "ACTIVE", false, true),
+  L("L106", "Infrastructure", "Auto-Scaling & Load Spike Governor", "Dynamically provisions compute instances based on real-time CPU and request metrics.", "cloud_infra", ["L102"], "ACTIVE", false, true),
+  L("L107", "Infrastructure", "Air-Gapped Private Cloud Deployer", "Specialized deployment pipeline for isolated sovereign networks with no internet access.", "cloud_infra", ["L101"], "GOVERNED", false, true),
+  L("L108", "Infrastructure", "Edge Micro-Node Sync Gateway", "Synchronizes local regional edge servers with central cloud databases.", "cloud_infra", ["L103"], "ACTIVE", false, true),
+  L("L109", "Infrastructure", "DNS & Domain Routing Manager", "Automates domain resolution, CNAME records, and SSL certificate renewals.", "cloud_infra", ["L104"], "ACTIVE", false, true),
+  L("L110", "Infrastructure", "Bare-Metal Server Provisioning Engine", "Direct metal provisioning interface for high-performance sovereign datacenters.", "cloud_infra", ["L101"], "ACTIVE", false, true),
+  L("L111", "Infrastructure", "Container Storage Interface (CSI) Volume Plugin", "Manages persistent disk attachments, snapshots, and volume expansion.", "cloud_infra", ["L101"], "ACTIVE", false, true),
+  L("L112", "Infrastructure", "Network Mesh & Service Discovery Daemon", "Consul/Istio service mesh discovering internal pod IP addresses dynamically.", "cloud_infra", ["L102"], "ACTIVE", false, true),
 
-/* ============================================================
- * 081–090 — HYBRID INFRASTRUCTURE
- * ============================================================ */
-L('L081','HYBRID','JUMO Local Runtime','Local execution runtime.','JUMO Infrastructure & Hybrid Runtime Studio',[],'FOUNDATION'),
-L('L082','HYBRID','JUMO Sovereign Runtime','Sovereign controlled runtime.','JUMO Infrastructure & Hybrid Runtime Studio',['L081']),
-L('L083','HYBRID','JUMO Cloud Runtime','JUMO-controlled cloud execution.','JUMO Infrastructure & Hybrid Runtime Studio',['L082']),
-L('L084','HYBRID','Hybrid Runtime Router','Route workloads between runtimes.','JUMO Infrastructure & Hybrid Runtime Studio',['L081','L082','L083']),
-L('L085','HYBRID','Offline Runtime','Maintain operation without Internet.','JUMO Infrastructure & Hybrid Runtime Studio',['L081']),
-L('L086','HYBRID','Synchronization Engine','Synchronize offline and connected state.','JUMO Infrastructure & Hybrid Runtime Studio',['L085','L084']),
-L('L087','HYBRID','Runtime Health','Monitor runtime health.','JUMO Infrastructure & Hybrid Runtime Studio',['L084']),
-L('L088','HYBRID','Runtime Provisioning','Provision execution environments.','JUMO Infrastructure & Hybrid Runtime Studio',['L084']),
-L('L089','HYBRID','Runtime Isolation','Isolate tenants and workloads.','JUMO Infrastructure & Hybrid Runtime Studio',['L088']),
-L('L090','HYBRID','Runtime Recovery','Recover failed runtimes.','JUMO Infrastructure & Hybrid Runtime Studio',['L087']),
+  // 10. OBSERVABILITY, TELEMETRY & SOC AUDIT (10 layers)
+  L("L113", "Observability", "Centralized Structured Logging Engine", "Aggregates JSON log entries from all services with microsecond precision.", "audit", ["L001"], "FOUNDATION", true, true),
+  L("L114", "Observability", "Prometheus Metrics & Health Collector", "Scrapes CPU, RAM, disk, latency, and throughput metrics every 5 seconds.", "audit", ["L113"], "ACTIVE", true, true),
+  L("L115", "Observability", "Distributed Tracing & APM Engine (OpenTelemetry)", "Traces end-to-end request journeys across multi-service API boundaries.", "audit", ["L113"], "ACTIVE", false, true),
+  L("L116", "Observability", "Real-Time Telemetry Dashboard", "Visual Grafana-style charts presenting operational cluster health and SLA tracking.", "audit", ["L114"], "ACTIVE", true, true),
+  L("L117", "Observability", "Sovereign Audit Trail & Compliance Ledger", "Immutable write-once read-many audit store recording all sensitive admin actions.", "audit", ["L113"], "GOVERNED", true, true),
+  L("L118", "Observability", "SLA / SLO Compliance Monitor", "Tracks platform availability percentages against national service guarantees.", "audit", ["L114"], "ACTIVE", true, true),
+  L("L119", "Observability", "Automated Incident Alerting Daemon", "Dispatches PagerDuty / SMS alerts to engineers when error rate thresholds breach.", "audit", ["L114"], "ACTIVE", false, true),
+  L("L120", "Observability", "Diagnostic Log Search & Query Console", "High-speed log query interface supporting regex filters and time range slicing.", "audit", ["L113"], "ACTIVE", true, true),
+  L("L121", "Observability", "Synthetic Endpoint Uptime Monitor", "Pings critical public APIs every 60 seconds from distributed geographic nodes.", "audit", ["L114"], "ACTIVE", false, true),
+  L("L122", "Observability", "Resource Utilization Cost & Budget Analyzer", "Tracks compute resource utilization and provides cloud cost optimization metrics.", "audit", ["L114"], "ACTIVE", true, true),
 
-/* ============================================================
- * 091–100 — DEPLOYMENT / OPERATIONS
- * ============================================================ */
-L('L091','OPERATIONS','Environment Registry','Register runtime environments.','JUMO Deployment & Operations Studio',['L088']),
-L('L092','OPERATIONS','Release Management','Manage releases.','JUMO Deployment & Operations Studio',['L070']),
-L('L093','OPERATIONS','Deployment Orchestration','Deploy approved artifacts.','JUMO Deployment & Operations Studio',['L092']),
-L('L094','OPERATIONS','Rollback Engine','Rollback failed releases.','JUMO Deployment & Operations Studio',['L093']),
-L('L095','OPERATIONS','Telemetry','Collect runtime telemetry.','JUMO Deployment & Operations Studio',['L087']),
-L('L096','OPERATIONS','Observability','Analyse system behaviour.','JUMO Deployment & Operations Studio',['L095']),
-L('L097','OPERATIONS','Incident Management','Manage operational incidents.','JUMO Deployment & Operations Studio',['L096']),
-L('L098','OPERATIONS','Capacity Management','Manage compute capacity.','JUMO Deployment & Operations Studio',['L096']),
-L('L099','OPERATIONS','Performance Engineering','Analyse performance.','JUMO Deployment & Operations Studio',['L096']),
-L('L100','OPERATIONS','Service Reliability','Maintain service reliability.','JUMO Deployment & Operations Studio',['L097','L099']),
-
-/* ============================================================
- * 101–110 — SECURITY / TRUST
- * ============================================================ */
-L('L101','SECURITY','Identity Gateway','Authenticate JUMO users and workloads.','JUMO Security & Trust Studio',['L011'],'FOUNDATION'),
-L('L102','SECURITY','Authorization','Enforce permissions.','JUMO Security & Trust Studio',['L101']),
-L('L103','SECURITY','Tenant Isolation','Enforce tenant boundaries.','JUMO Security & Trust Studio',['L102']),
-L('L104','SECURITY','Secrets Management','Protect secrets and credentials.','JUMO Security & Trust Studio',['L101']),
-L('L105','SECURITY','Key Management','Manage cryptographic keys.','JUMO Security & Trust Studio',['L104']),
-L('L106','SECURITY','Certificate Authority','Manage runtime certificates.','JUMO Security & Trust Studio',['L105']),
-L('L107','SECURITY','Zero Trust Policy','Apply zero-trust controls.','JUMO Security & Trust Studio',['L102','L105']),
-L('L108','SECURITY','Security Audit','Record security events.','JUMO Security & Trust Studio',['L107']),
-L('L109','SECURITY','Threat Detection','Detect suspicious activity.','JUMO Security & Trust Studio',['L108']),
-L('L110','SECURITY','Emergency Control','Provide governed emergency controls.','JUMO Security & Trust Studio',['L109']),
-
-/* ============================================================
- * 111–120 — VERIFICATION / GOVERNANCE / LIFECYCLE
- * ============================================================ */
-L('L111','ASSURANCE','Verification Engine','Execute verification suites.','JUMO Verification & Assurance Studio',['L064']),
-L('L112','ASSURANCE','Architecture Verification','Verify architecture contracts.','JUMO Verification & Assurance Studio',['L039','L111']),
-L('L113','ASSURANCE','Security Verification','Verify security controls.','JUMO Verification & Assurance Studio',['L108','L111']),
-L('L114','ASSURANCE','Runtime Verification','Verify deployed runtime.','JUMO Verification & Assurance Studio',['L093','L111']),
-L('L115','ASSURANCE','Certification Engine','Issue governed certification evidence.','JUMO Verification & Assurance Studio',['L112','L113','L114']),
-L('L116','GOVERNANCE','Policy Registry','Register governance policies.','JUMO Governance Studio',['L038']),
-L('L117','GOVERNANCE','Approval Workflow','Manage human approvals.','JUMO Governance Studio',['L010','L116']),
-L('L118','GOVERNANCE','Audit Evidence','Maintain authoritative evidence.','JUMO Governance Studio',['L108','L115']),
-L('L119','LIFECYCLE','Upgrade Manager','Manage platform and product upgrades.','JUMO Lifecycle & Retirement Studio',['L069','L092']),
-L('L120','LIFECYCLE','Retirement Manager','Safely retire products, services and runtimes.','JUMO Lifecycle & Retirement Studio',['L119']),
-
-/* ============================================================
- * 121–130 — COMMERCIAL / MARKETPLACE
- * ============================================================ */
-L('L121','COMMERCIAL','Product Marketplace','Discover approved JUMO products.','JUMO Marketplace & Commercialization Studio',['L041']),
-L('L122','COMMERCIAL','Product Installation','Install products into authorized environments.','JUMO Marketplace & Commercialization Studio',['L121','L088']),
-L('L123','COMMERCIAL','Product Configuration','Configure installed products.','JUMO Marketplace & Commercialization Studio',['L122']),
-L('L124','COMMERCIAL','Provisioning','Provision product resources.','JUMO Marketplace & Commercialization Studio',['L122','L088']),
-L('L125','COMMERCIAL','Licensing','Govern product licensing.','JUMO Marketplace & Commercialization Studio',['L121']),
-L('L126','COMMERCIAL','Subscription Governance','Govern service subscriptions.','JUMO Marketplace & Commercialization Studio',['L125']),
-L('L127','COMMERCIAL','Commercial Analytics','Analyse product usage.','JUMO Marketplace & Commercialization Studio',['L126']),
-L('L128','COMMERCIAL','Product Updates','Distribute governed updates.','JUMO Marketplace & Commercialization Studio',['L119']),
-L('L129','COMMERCIAL','Product Support','Coordinate support workflows.','JUMO Marketplace & Commercialization Studio',['L121']),
-L('L130','COMMERCIAL','Product Retirement','Retire commercial products.','JUMO Marketplace & Commercialization Studio',['L120','L121']),
-
+  // 11. DISASTER RECOVERY, RESILIENCE & EDGE OPERATIONS (8 layers)
+  L("L123", "Disaster Recovery", "Automated Multi-Region Failover Controller", "Reroutes traffic to secondary datacenter regions instantly upon primary node outage.", "lifecycle", ["L102"], "ACTIVE", false, true),
+  L("L124", "Disaster Recovery", "Continuous Database Backup & Replication Stream", "Real-time streaming replication ensuring Zero Recovery Point Objective (RPO=0).", "lifecycle", ["L025"], "FOUNDATION", false, true),
+  L("L125", "Disaster Recovery", "Offline Edge Cache & Local Fallback Store", "Enables local offline operation on edge nodes during complete network blackout.", "lifecycle", ["L027"], "ACTIVE", true, true),
+  L("L126", "Disaster Recovery", "Chaos Engineering & Fault Injection Simulator", "Intentionally injects network latency and pod crashes to verify system resilience.", "lifecycle", ["L102"], "ACTIVE", false, true),
+  L("L127", "Disaster Recovery", "Point-in-Time Database Recovery (PITR) Engine", "Restores database state to any exact microsecond in the past 30 days.", "lifecycle", ["L124"], "ACTIVE", true, true),
+  L("L128", "Disaster Recovery", "Disaster Recovery Testing & Drill Orchestrator", "Automates monthly failover drills and verifies backup integrity hands-free.", "lifecycle", ["L123"], "ACTIVE", true, true),
+  L("L129", "Disaster Recovery", "Emergency Power-Down & Data Lockdown Guard", "Instantly seals database volumes and revokes all active tokens on breach alert.", "lifecycle", ["L051"], "GOVERNED", true, true),
+  L("L130", "Disaster Recovery", "Sovereign Certificate Seal & Release Publisher", "Signs final production release candidates with official national verification seal.", "lifecycle", ["L053"], "GOVERNED", true, true)
 ];
 
 

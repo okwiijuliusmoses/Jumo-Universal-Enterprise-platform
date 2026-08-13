@@ -17,7 +17,7 @@ export async function jumoFetch(endpoint: string, options: RequestInit = {}) {
   const url = endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${normalizedEndpoint}`;
 
   const token = typeof window !== "undefined" 
-    ? (localStorage.getItem("JUMO_SESSION") || localStorage.getItem("jumo_session_token")) 
+    ? (() => { try { return localStorage.getItem("JUMO_SESSION") || localStorage.getItem("jumo_session_token"); } catch(e) { return null; } })() 
     : null;
 
   const authHeaders: Record<string, string> = {};

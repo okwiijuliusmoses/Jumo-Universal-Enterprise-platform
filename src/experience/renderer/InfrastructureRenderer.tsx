@@ -5,15 +5,21 @@ import {
   Cpu, Zap, Loader2, ArrowRight, Layers, Network, HardDrive, Play, StopCircle, RefreshCcw, CheckCircle2, ChevronRight
 } from "lucide-react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
+import { DeploymentSlot, DatabaseVolume } from "../../core/runtime/sovereignState";
 
-export function InfrastructureRenderer() {
-  const [isLoading, setIsLoading] = useState(true);
+interface InfrastructureRendererProps {
+  slots: DeploymentSlot[];
+  volumes: DatabaseVolume[];
+}
+
+export function InfrastructureRenderer({ slots, volumes }: InfrastructureRendererProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [activeCloudTab, setActiveCloudTab] = useState("overview");
 
   // Dynamic system status
-  const [clusterMetrics, setClusterMetrics] = useState({
+  const [clusterMetrics] = useState({
     computeNodes: 48,
-    activeInstances: 142,
+    activeInstances: slots.length,
     throughput: "14.2 Gbps",
     globalLatency: "8.2ms",
     cpuTotal: 42,
@@ -21,19 +27,27 @@ export function InfrastructureRenderer() {
   });
 
   // Active compute containers
-  const [hostingPods, setHostingPods] = useState([
-    { id: "POD-EDU-01", name: "Makerere Education ERP Node", status: "Running", cpu: 32, mem: 48, bandwidth: "240 Mbps", activeUsers: 1420 },
-    { id: "POD-SACCO-04", name: "Zambia Sacco Core Ledger Pod", status: "Running", cpu: 54, mem: 72, bandwidth: "450 Mbps", activeUsers: 3890 },
-    { id: "POD-HEALTH-02", name: "East Hospital Clinical Pod", status: "Running", cpu: 18, mem: 34, bandwidth: "110 Mbps", activeUsers: 450 },
-    { id: "POD-NGO-09", name: "National NGO Donor Escrow Pod", status: "Running", cpu: 22, mem: 42, bandwidth: "180 Mbps", activeUsers: 820 }
-  ]);
+  const initialHostingPods = slots.length > 0 ? slots.map(s => ({
+    id: s.id,
+    name: s.name,
+    status: s.health === 'HEALTHY' ? "Running" : s.health === 'DEGRADED' ? "Degraded" : "Offline",
+    cpu: s.cpu,
+    mem: s.memory,
+    bandwidth: "240 Mbps",
+    activeUsers: 1420
+  })) : [];
+
+  const [hostingPods, setHostingPods] = useState<any[]>(initialHostingPods);
 
   // Sovereign storage details
-  const [storageVolumes, setStorageVolumes] = useState([
-    { id: "VOL-DB-LEDGER", label: "IFRS Double-Entry Ledger Core", type: "PostgreSQL Cloud SQL", size: "820 GB", utilized: 68, activeSessions: 420 },
-    { id: "VOL-DOC-REG", label: "National Citizens & Land Documents", type: "Encrypted Object Store", size: "1.4 TB", utilized: 45, activeSessions: 182 },
-    { id: "VOL-AI-MEMORY", label: "Sovereign Cognitive Knowledge Base", type: "Vector Memory Index", size: "340 GB", utilized: 28, activeSessions: 89 }
-  ]);
+  const storageVolumes = volumes.length > 0 ? volumes.map(v => ({
+    id: v.name,
+    label: v.name,
+    type: "PostgreSQL Cloud SQL",
+    size: v.size,
+    utilized: v.status === 'HEALTHY' ? 68 : 95,
+    activeSessions: 420
+  })) : [];
 
   // Terminal log stream
   const [cloudTerminalLogs, setCloudTerminalLogs] = useState<Array<{ id: string; time: string; msg: string; type: "info" | "success" | "warn" | "error" }>>([

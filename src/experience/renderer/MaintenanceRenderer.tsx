@@ -10,13 +10,7 @@ export function MaintenanceRenderer() {
   const [activeTab, setActiveTab] = useState("assets");
 
   // Active Assets telemetry & maintenance logs
-  const [assetsList, setAssetsList] = useState([
-    { id: "AST-401", name: "Kampala Main Node Core", type: "Compute Server Cluster", status: "Nominal", health: 98, lastInspected: "4h ago", severity: "Low" },
-    { id: "AST-108", name: "Sovereign M-Pesa Gateway Node", type: "Network Routing Grid", status: "Degraded", health: 64, lastInspected: "10m ago", severity: "High" },
-    { id: "AST-203", name: "Zambia HQ Escrow Server", type: "Storage Host Database", status: "Nominal", health: 99, lastInspected: "1d ago", severity: "Low" },
-    { id: "AST-054", name: "Makerere Campus Wi-Fi Tower", type: "IoT Telemetry Receiver", status: "Critical", health: 32, lastInspected: "3m ago", severity: "High" },
-    { id: "AST-311", name: "Gulu Regional Microgrid Node", type: "Energy Grid Controller", status: "In Maintenance", health: 85, lastInspected: "1h ago", severity: "Medium" }
-  ]);
+  const [assetsList, setAssetsList] = useState<any[]>([]);
 
   // Selected Asset for Lateral Panel
   const [selectedAsset, setSelectedAsset] = useState<any>(null);

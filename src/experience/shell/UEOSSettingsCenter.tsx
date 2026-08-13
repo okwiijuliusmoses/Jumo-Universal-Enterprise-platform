@@ -58,7 +58,7 @@ const DEFAULT_SETTINGS: UEOSSettings = {
   sessionTimeoutMinutes: 60,
   rbacVisibility: true,
   requireSignatureKey: false,
-  operatorIdentityName: "Hon. Minister Julius Moses",
+  operatorIdentityName: "Sovereign Operator Alpha",
   refreshStrategy: "polling",
   realtimeConnectionEnabled: true,
   offlineSyncSchedule: "instant",
@@ -79,7 +79,8 @@ export function UEOSSettingsCenter({ isOpen, onClose, onSave }: UEOSSettingsCent
   const [saveConfirmation, setSaveConfirmation] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("jumo_ueos_settings_v1");
+    let saved = null;
+    try { saved = localStorage.getItem("jumo_ueos_settings_v1"); } catch(e) {}
     if (saved) {
       try {
         setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(saved) });
@@ -99,7 +100,7 @@ export function UEOSSettingsCenter({ isOpen, onClose, onSave }: UEOSSettingsCent
   };
 
   const handleSaveAll = () => {
-    localStorage.setItem("jumo_ueos_settings_v1", JSON.stringify(settings));
+    try { localStorage.setItem("jumo_ueos_settings_v1", JSON.stringify(settings)); } catch (e) {}
     onSave(settings);
     setSaveConfirmation(true);
     setTimeout(() => {

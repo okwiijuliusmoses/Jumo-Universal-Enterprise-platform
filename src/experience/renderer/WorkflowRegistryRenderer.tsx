@@ -39,50 +39,7 @@ export function WorkflowRegistryRenderer() {
     };
   }, []);
 
-  const defaultWorkflows = [
-    {
-      id: "WF-EDU-ADM",
-      name: "University Admission & Enrollment Process",
-      trigger: "Form Submission (Admission Application)",
-      forms: ["Student Application Form", "Academic Record Upload", "Fee Receipt Verification"],
-      departments: ["Academic Registrar", "Student Affairs", "FAAP Bursar Office"],
-      roles: ["Registrar Officer", "Dean of Students", "Finance Controller"],
-      approvalChain: ["Automated Document OCR Check", "Departmental Verification", "Registrar Final Approval"],
-      aiAssistance: "JUMO Admission Agent (Transcripts OCR & Eligibility Check)",
-      status: "Active",
-      executionsToday: 4200,
-      slaHours: "24 Hours",
-      auditTrail: "FAAP Immutable Ledger Logged"
-    },
-    {
-      id: "WF-HEALTH-TRI",
-      name: "Hospital Clinical Triage & EMR Path",
-      trigger: "Patient Registration Intake",
-      forms: ["Vitals Triage Sheet", "Physician Consultation Note", "Lab Requisition Form"],
-      departments: ["Emergency Intake", "Clinical Medicine", "Pharmacy & Diagnostics"],
-      roles: ["Triage Nurse", "Attending Physician", "Senior Pharmacist"],
-      approvalChain: ["Nurse Severity Rating", "Doctor Diagnosis & Rx Sign-off", "Pharmacy Dispense Clearance"],
-      aiAssistance: "JUMO Clinical AI Agent (Drug Interaction Alerting)",
-      status: "Active",
-      executionsToday: 8900,
-      slaHours: "1 Hour",
-      auditTrail: "Cryptographic EMR Signature"
-    },
-    {
-      id: "WF-CORP-PROC",
-      name: "Enterprise Procurement & Voucher Approval",
-      trigger: "Requisition Voucher Submission",
-      forms: ["Purchase Requisition Voucher", "Vendor Quotation Matrix", "Budget Allocation Form"],
-      departments: ["Procurement Directorate", "FAAP Treasury Office", "Executive Director"],
-      roles: ["Procurement Manager", "Internal Auditor", "Chief Financial Officer"],
-      approvalChain: ["Market Quotation Verification", "Budget Threshold Gate", "CFO Cryptographic Sign-off"],
-      aiAssistance: "JUMO Finance Agent (Fraud Anomaly Sweep & Price Benchmarking)",
-      status: "Active",
-      executionsToday: 1540,
-      slaHours: "12 Hours",
-      auditTrail: "FAAP General Ledger Double-Entry Audit"
-    }
-  ];
+  const defaultWorkflows: any[] = [];
 
   const displayWorkflows = workflows.length > 0 ? workflows.map(w => ({ ...defaultWorkflows[0], ...w })) : defaultWorkflows;
 

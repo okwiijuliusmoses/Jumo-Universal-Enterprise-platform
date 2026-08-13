@@ -388,7 +388,7 @@ export function RuntimeWorkspaceRenderer({ instance, onExit }: { instance: any, 
                              req.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
                              req.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                            }`}>
-                             {req.status.replace('_', ' ')}
+                             {(req.status || 'UNKNOWN').replace('_', ' ')}
                            </span>
                          </div>
                          <h4 className="font-bold text-slate-800 text-sm">{req.title}</h4>

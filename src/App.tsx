@@ -9,7 +9,8 @@ export default function App() {
 
   const [currentUser, setCurrentUser] = useState<any>(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("ueos_user");
+      let stored = null;
+      try { stored = localStorage.getItem("ueos_user"); } catch (e) {}
       try {
         return stored ? JSON.parse(stored) : null;
       } catch {
@@ -25,12 +26,12 @@ export default function App() {
   }, []);
 
   const handleLogin = (user: any) => {
-    localStorage.setItem("ueos_user", JSON.stringify(user));
+    try { try { localStorage.setItem("ueos_user", JSON.stringify(user)); } catch (e) {} } catch (e) {}
     setCurrentUser(user);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("ueos_user");
+    try { localStorage.removeItem("ueos_user"); } catch (e) {}
     setCurrentUser(null);
   };
 
@@ -51,3 +52,4 @@ export default function App() {
 
   return <UEOSShell user={currentUser} onLogout={handleLogout} />;
 }
+// JUMO UEOS 20-Stage Pipeline Operationalized

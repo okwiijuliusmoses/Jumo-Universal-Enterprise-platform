@@ -24,9 +24,10 @@ import type {
   PaymentIdentityRecord,
 } from "./paymentIdentityRegistry";
 
+import { JumoSecretVault } from "../security/JumoSecretVault";
+
 const identitySecret =
-  process.env.DIGITAL_PAY_IDENTITY_SECRET ||
-  "JUMO-DEVELOPMENT-IDENTITY-SECRET-CHANGE-ME-32";
+  JumoSecretVault.getInstance().getDigitalPayIdentitySecret();
 
 export class DigitalPayIdentityRuntime {
   readonly registry: PaymentIdentityRegistry;

@@ -6,9 +6,15 @@ import {
   X, AlertTriangle, Play, RefreshCw, Send, Lock, Landmark, UserCheck
 } from "lucide-react";
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
+import { JumoIncident } from "../../core/runtime/sovereignState";
 
-export function AuditRenderer() {
-  const [isLoading, setIsLoading] = useState(true);
+interface AuditRendererProps {
+  incidents: JumoIncident[];
+  institutions: any[];
+}
+
+export function AuditRenderer({ incidents: realIncidents, institutions: realInstitutions }: AuditRendererProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("incidents");
 
   // Audit scanning simulation states
@@ -19,25 +25,36 @@ export function AuditRenderer() {
   const [scanReport, setScanReport] = useState<any>(null);
 
   // Flags & Incident data
-  const [incidents, setIncidents] = useState([
-    { id: "AUD-X1", entity: "Regional SACCO North", type: "Security", status: "Active", detail: "Attempted administrative access from unauthorized IP address.", severity: "high", timestamp: "08:12:45" },
-    { id: "AUD-X2", entity: "Public Service College", type: "FAAP Ledger", status: "Active", detail: "Disbursement variance of $14.50 detected in Payroll debit balances.", severity: "medium", timestamp: "07:34:12" },
-    { id: "AUD-X3", entity: "National Health Authority", type: "Identity Compliance", status: "Active", detail: "Governance Council administrative quorum validation failure.", severity: "low", timestamp: "06:12:00" },
-    { id: "AUD-X4", entity: "Kampala Central Node", type: "Quota Overflow", status: "Resolved", detail: "Container storage capacity utilized exceeded 85% safety bounds.", severity: "low", timestamp: "04:02:11" }
-  ]);
+  const initialIncidents = (realIncidents.length > 0 ? realIncidents : [
+    { id: "AUD-X1", component: "Regional SACCO North", title: "Security", status: "Active", severity: "high", timestamp: "08:12:45" },
+    { id: "AUD-X2", component: "Public Service College", title: "FAAP Ledger", status: "Active", severity: "medium", timestamp: "07:34:12" },
+  ]).map((inc: any) => ({
+    id: inc.id,
+    entity: inc.entity || inc.component || "Sovereign Node",
+    type: inc.type || inc.title || "Audit Alert",
+    status: inc.status || "Active",
+    severity: (inc.severity || "low").toLowerCase(),
+    timestamp: inc.timestamp || "Just now",
+    detail: inc.detail || inc.title || "Security audit scan variance."
+  }));
+
+  const [incidents, setIncidents] = useState<any[]>(initialIncidents);
 
   // Selected incident for lateral investigation panel
   const [investigatingIncident, setInvestigatingIncident] = useState<any>(null);
   const [investigationNotes, setInvestigationNotes] = useState("");
 
   // Institutional Health
-  const [institutions, setInstitutions] = useState([
-    { id: "inst-1", name: "Makerere University", grade: "A+", status: "Compliant", detail: "FAAP ledger trial balance matches with $0.00 offset variance.", lastAudited: "10m ago" },
-    { id: "inst-2", name: "Kyambogo University", grade: "A", status: "Compliant", detail: "Operational logs matched against active citizen registry nodes.", lastAudited: "1h ago" },
-    { id: "inst-3", name: "Mbarara Science Node", grade: "B+", status: "Review Required", detail: "Manual signature confirmation missing on 2 major vouchers.", lastAudited: "3h ago" },
-    { id: "inst-4", name: "Gulu University", grade: "A-", status: "Compliant", detail: "SecOps firewall policies and SSL certificates active.", lastAudited: "4h ago" },
-    { id: "inst-5", name: "Busitema Tech Hub", grade: "C", status: "Critical Variance", detail: "Double-entry trail mismatch of $1,240.00 in ledger.", lastAudited: "5m ago" },
-  ]);
+  const rawInstitutions = Array.isArray(realInstitutions) ? realInstitutions : [];
+
+  const institutions = rawInstitutions.map((inst: any, index: number) => ({
+    id: String(inst?.id || inst?.registryId || `inst-${index}`),
+    name: String(inst?.name || inst?.registryId || "Sovereign Institution"),
+    grade: String(inst?.grade || (inst?.verificationStatus === 'VERIFIED' ? "A+" : "A")),
+    status: String(inst?.status || inst?.lifecycleState || "Compliant"),
+    detail: String(inst?.detail || inst?.governanceModel || "Operational logs matched against sovereign registry nodes."),
+    lastAudited: String(inst?.lastAudited || (inst?.lastAuditTimestamp ? new Date(inst.lastAuditTimestamp).toLocaleTimeString() : "Just now"))
+  }));
 
   const [selectedInst, setSelectedInst] = useState<any>(null);
 

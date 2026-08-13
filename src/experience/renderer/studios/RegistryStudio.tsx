@@ -5,6 +5,7 @@ import {
   Layers, Zap, ExternalLink, HardDrive, Settings,
   CheckCircle2, Activity, Box, Terminal, RefreshCw
 } from 'lucide-react';
+import { EnterprisePlatformRegistryRenderer } from '../TemplateRegistryRenderer';
 
 interface RegistryStudioProps {
   registryFilter: string;
@@ -15,6 +16,7 @@ interface RegistryStudioProps {
   commercialProducts: any[];
   softwareProducts: any[];
   jobs: any[];
+  onConfigureInFactory?: (templateId: string) => void;
 }
 
 export const RegistryStudio: React.FC<RegistryStudioProps> = ({
@@ -25,9 +27,10 @@ export const RegistryStudio: React.FC<RegistryStudioProps> = ({
   erpEcosystems,
   commercialProducts,
   softwareProducts,
-  jobs
+  jobs,
+  onConfigureInFactory
 }) => {
-  const [activeTab, setActiveTab] = useState<'ecosystems' | 'products' | 'infrastructure'>('ecosystems');
+  const [activeTab, setActiveTab] = useState<'ecosystems' | 'templates' | 'products' | 'infrastructure'>('ecosystems');
 
   return (
     <div className="space-y-6">
@@ -38,26 +41,31 @@ export const RegistryStudio: React.FC<RegistryStudioProps> = ({
             <Database className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase">Unified Registry</h2>
-            <p className="text-xs text-slate-500 font-medium">Authoritative National Digital Manufacturing Registry</p>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase">Unified Registry Fabric</h2>
+            <p className="text-xs text-slate-500 font-medium">Authoritative National Digital Manufacturing & Template Registry</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3 bg-slate-50 p-1 rounded-2xl border border-slate-200">
-          {(['ecosystems', 'products', 'infrastructure'] as const).map((tab) => (
+          {(['ecosystems', 'templates', 'products', 'infrastructure'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
                 activeTab === tab ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
-              {tab}
+              {tab === 'templates' ? 'Template Registry' : tab}
             </button>
           ))}
         </div>
       </div>
 
+      {activeTab === 'templates' ? (
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <EnterprisePlatformRegistryRenderer onConfigureInFactory={onConfigureInFactory} />
+        </div>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Filter & Sidebar */}
         <div className="lg:col-span-3 space-y-6">
@@ -209,6 +217,7 @@ export const RegistryStudio: React.FC<RegistryStudioProps> = ({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

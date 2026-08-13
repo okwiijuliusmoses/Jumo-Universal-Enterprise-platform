@@ -10,9 +10,10 @@ let PgPool: any = null;
 
 if (!isBrowser) {
   try {
-    nodeFs = require("fs");
-    nodePath = require("path");
-    PgPool = require("pg").Pool;
+    // Using eval to hide require calls from Vite's static analysis
+    nodeFs = eval('require("fs")');
+    nodePath = eval('require("path")');
+    PgPool = eval('require("pg")').Pool;
   } catch {
     // Node modules unavailable
   }
@@ -300,7 +301,8 @@ export class JUMODBEngine {
     // Read from local storage (browser) or JSON file (Node)
     try {
       if (isBrowser && typeof localStorage !== "undefined") {
-        const stored = localStorage.getItem("ueos_db_backup");
+        let stored = null;
+        try { stored = localStorage.getItem("ueos_db_backup"); } catch(e) {}
         if (stored) {
           const parsed = JSON.parse(stored);
           for (const key of Object.keys(UEOS_SCHEMAS)) {
@@ -493,7 +495,7 @@ export class JUMODBEngine {
     try {
       const payload = JSON.stringify(this.data, null, 2);
       if (isBrowser && typeof localStorage !== "undefined") {
-        localStorage.setItem("ueos_db_backup", payload);
+        try { localStorage.setItem("ueos_db_backup", payload); } catch (e) {}
       } else if (!isBrowser && nodeFs && typeof nodeFs.writeFileSync === "function") {
         nodeFs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
       }
