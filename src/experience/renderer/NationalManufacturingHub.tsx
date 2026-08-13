@@ -34,6 +34,7 @@ import {
 import { SovereignGovernanceRegistry } from "../../services/gov/SovereignGovernanceRegistry";
 import { JumoEventBus } from "../../core/common/events/JumoEventBus";
 import { SpecificationStudio } from "./studios/SpecificationStudio";
+import { UEOSErrorBoundary } from "../components/UEOSErrorBoundary";
 
 export type HubWorkspace = 
   | 'specification'
@@ -85,84 +86,100 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
     const ws = activeWorkspaceState;
     switch (ws) {
       case 'specification':
-        return <SpecificationStudio />;
+        return (
+          <UEOSErrorBoundary componentName="Specification Studio">
+            <SpecificationStudio />
+          </UEOSErrorBoundary>
+        );
       case 'architecture':
         return (
-          <ArchitectureStudio 
-            requests={[]} 
-            contracts={archContracts}
-            expansionTraces={[]}
-            onCreateContract={async (requestId: string) => {
-              // The requestId here is the productId from specification
-              await orchestrator.initiateManufacturingLifecycle(requestId, {
-                title: "Injected Project",
-                problem: "Self-healing architecture recovery",
-                ecosystem: "ERP_ECOSYSTEM"
-              });
-            }}
-            onApproveContract={async (contractId: string) => {
-              await architectureEngine.approveArchitecture(contractId);
-              // Find the job associated with this architecture and notify approval
-              const job = jobs.find(j => j.architectureId === contractId);
-              if (job) {
-                JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId: job.id });
-              }
-            }}
-            onLaunchManufacturing={async (contractId: string) => {
-              const job = jobs.find(j => j.architectureId === contractId);
-              if (job) {
-                JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId: job.id });
-              }
-            }}
-            onCreateRequest={async () => {}}
-          />
+          <UEOSErrorBoundary componentName="Architecture Studio">
+            <ArchitectureStudio 
+              requests={[]} 
+              contracts={archContracts}
+              expansionTraces={[]}
+              onCreateContract={async (requestId: string) => {
+                await orchestrator.initiateManufacturingLifecycle(requestId, {
+                  title: "Injected Project",
+                  problem: "Self-healing architecture recovery",
+                  ecosystem: "ERP_ECOSYSTEM"
+                });
+              }}
+              onApproveContract={async (contractId: string) => {
+                await architectureEngine.approveArchitecture(contractId);
+                const job = jobs.find(j => j.architectureId === contractId);
+                if (job) {
+                  JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId: job.id });
+                }
+              }}
+              onLaunchManufacturing={async (contractId: string) => {
+                const job = jobs.find(j => j.architectureId === contractId);
+                if (job) {
+                  JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId: job.id });
+                }
+              }}
+              onCreateRequest={async () => {}}
+            />
+          </UEOSErrorBoundary>
         );
       case 'factory':
         return (
-          <ManufacturingStudio 
-            jobs={jobs}
-            contracts={archContracts}
-            onPromoteJob={async (jobId: string) => {
-              JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId });
-            }}
-            onPauseJob={async (jobId: string) => {
-              await jobEngine.pauseJob(jobId);
-            }}
-            eventLog={[]}
-          />
+          <UEOSErrorBoundary componentName="Manufacturing Factory Studio">
+            <ManufacturingStudio 
+              jobs={jobs}
+              contracts={archContracts}
+              onPromoteJob={async (jobId: string) => {
+                JumoEventBus.publish("HUMAN_APPROVAL_GRANTED", { jobId });
+              }}
+              onPauseJob={async (jobId: string) => {
+                await jobEngine.pauseJob(jobId);
+              }}
+              eventLog={[]}
+            />
+          </UEOSErrorBoundary>
         );
       case 'assurance':
         return (
-          <ProductAssuranceStudio 
-            verifications={[]}
-            certifications={certificationRecords}
-            onCertify={async () => {}}
-          />
+          <UEOSErrorBoundary componentName="Product Assurance Studio">
+            <ProductAssuranceStudio 
+              verifications={[]}
+              certifications={certificationRecords}
+              onCertify={async () => {}}
+            />
+          </UEOSErrorBoundary>
         );
       case 'operations':
         return (
-          <RuntimeOperationsStudio 
-            deploymentRecords={deploymentRecords}
-            cloudSlots={[]}
-          />
+          <UEOSErrorBoundary componentName="Runtime Operations Studio">
+            <RuntimeOperationsStudio 
+              deploymentRecords={deploymentRecords}
+              cloudSlots={[]}
+            />
+          </UEOSErrorBoundary>
         );
       case 'governance':
         return (
-          <GovernanceStudio 
-            stats={{
-              activeBlueprints: archContracts.length,
-              certifiedProducts: certificationRecords.length,
-              nationalStandardCompliance: 100
-            }}
-            ledger={auditEvents}
-            workforceStats={{
-              totalAgents: JumoAIAgentRegistry.getAllAgents().length,
-              divisions: JumoAIAgentRegistry.getDivisions()
-            }}
-          />
+          <UEOSErrorBoundary componentName="Governance & Trust Studio">
+            <GovernanceStudio 
+              stats={{
+                activeBlueprints: archContracts.length,
+                certifiedProducts: certificationRecords.length,
+                nationalStandardCompliance: 100
+              }}
+              ledger={auditEvents}
+              workforceStats={{
+                totalAgents: JumoAIAgentRegistry.getAllAgents().length,
+                divisions: JumoAIAgentRegistry.getDivisions()
+              }}
+            />
+          </UEOSErrorBoundary>
         );
       default:
-        return <SpecificationStudio />;
+        return (
+          <UEOSErrorBoundary componentName="Specification Studio">
+            <SpecificationStudio />
+          </UEOSErrorBoundary>
+        );
     }
   };
 
