@@ -97,7 +97,12 @@ export class JumoAIProviderGateway {
         continue;
       }
       
-      const health = await p.getHealth();
+      const health = typeof p.getHealth === "function"
+      ? await p.getHealth()
+      : {
+          status: "HEALTHY" as const,
+          details: "Provider does not expose an explicit health probe.",
+        };
       if (health.status === "HEALTHY") {
         healthyProviders.push(p);
       } else {
@@ -136,6 +141,13 @@ export class JumoAIProviderGateway {
     }
 
     const provider = registry.get(targetProviderId);
+
+    if (!provider) {
+      throw new Error(
+        `[AI_GATEWAY] Provider "${targetProviderId}" is not registered or enabled.`,
+      );
+    }
+
     let success = false;
     let output = "";
 
@@ -155,7 +167,18 @@ export class JumoAIProviderGateway {
       if (config.mode === "HYBRID" || agent.modelPolicy.offlineFallbackEnabled) {
         trace.push(`[GATEWAY] HYBRID fallback active. Transferring task to local air-gapped sovereign engine.`);
         const localProvider = registry.get("JUMO_LOCAL");
-        const res = await localProvider.generate({ message: prompt, systemPrompt: `Agent Role: ${agent.role}`, context });
+
+        if (!localProvider) {
+          throw new Error(
+            "[AI_GATEWAY] JUMO_LOCAL fallback provider is not registered or enabled.",
+          );
+        }
+
+        const res = await localProvider.generate({
+          message: prompt,
+          systemPrompt: `Agent Role: ${agent.role}`,
+          context,
+        });
         output = res.text;
         success = true;
         targetProviderId = "JUMO_LOCAL";

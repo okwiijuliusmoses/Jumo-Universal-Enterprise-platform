@@ -103,3 +103,23 @@ export interface ManufacturingExecutionPlan {
   createdAt: string;
   completedAt?: string;
 }
+
+
+export interface AgentWorkLog {
+  id: string;
+  agentId: string;
+  division: AIWorkforceDivision | string;
+  specialization: string;
+  jobId: string;
+  architectureId?: string;
+  task: string;
+  timestamp: string;
+  status: 'STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+  toolsUsed: string[];
+  providerUsed: string;
+  result: string;
+  evidenceHash?: string;
+  verificationResult?: string;
+  errors?: string;
+  humanApprovalRequired: boolean;
+}

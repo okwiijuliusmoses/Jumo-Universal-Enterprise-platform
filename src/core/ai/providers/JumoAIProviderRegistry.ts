@@ -51,6 +51,41 @@ export class JumoAIProviderRegistry {
     return [...this.providers];
   }
 
+  /**
+   * Gateway compatibility surface.
+   * Returns the concrete registered providers, not their registration wrappers.
+   */
+  list(): JumoAIProvider[] {
+    return this.providers
+      .filter((item) => item.enabled)
+      .map((item) => item.provider);
+  }
+
+  /**
+   * Resolve a concrete provider by canonical gateway ID or
+   * by its registered provider ID.
+   *
+   * Canonical gateway IDs are intentionally kept separate from
+   * the provider implementation IDs.
+   */
+  get(providerId: string): JumoAIProvider | undefined {
+    const aliases: Record<string, string> = {
+      OPENAI: "openai-primary",
+      GEMINI: "gemini-engineering",
+      COPILOT: "copilot-engineering",
+      JUMO_LOCAL: "jumo-local",
+      JUMO_RUNTIME: "jumo-runtime",
+    };
+
+    const resolvedId = aliases[providerId] ?? providerId;
+
+    return this.providers.find(
+      (item) =>
+        item.enabled &&
+        item.provider.providerId === resolvedId,
+    )?.provider;
+  }
+
   async resolve(
     role: JumoAIProviderRole,
   ): Promise<JumoAIProvider> {

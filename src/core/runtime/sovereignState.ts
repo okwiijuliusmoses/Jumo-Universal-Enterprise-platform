@@ -315,6 +315,74 @@ export class SovereignOperatingStateService {
     };
   }
 
+  public static logAgentWork(
+    workLog: {
+      id: string;
+      agentId: string;
+      division: string;
+      specialization: string;
+      jobId: string;
+      architectureId?: string;
+      task: string;
+      timestamp: string;
+      status: 'STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+      toolsUsed: string[];
+      providerUsed: string;
+      result: string;
+      evidenceHash?: string;
+      verificationResult?: string;
+      errors?: string;
+      humanApprovalRequired: boolean;
+    },
+    actor?: string,
+  ) {
+    return this.logAudit(
+      actor || workLog.agentId,
+      'AI_AGENT_WORK',
+      JSON.stringify(workLog),
+    );
+  }
+
+  public static proposeArchitectureExpansion(
+    proposal: {
+      specificationId?: string;
+      architectureId?: string;
+      requirement?: string;
+      proposedLayerId: string;
+      reason: string;
+      gap?: string;
+      recommendation?: string;
+      evidenceHash: string;
+      status?: string;
+      dependencies?: string[];
+      assignedAgents: string[];
+    },
+    actor?: string,
+  ) {
+    const proposalId =
+      `ARCH-EXP-${Math.floor(Math.random() * 90000) + 10000}`;
+
+    const expansionProposal = {
+      id: proposalId,
+      ...proposal,
+      status: proposal.status || 'PROPOSED',
+      timestamp: new Date().toISOString(),
+    };
+
+    this.logAudit(
+      actor ||
+        (proposal.assignedAgents.length > 0
+          ? proposal.assignedAgents.join(',')
+          : 'AI_WORKFORCE'),
+      'ARCHITECTURE_EXPANSION_PROPOSED',
+      JSON.stringify(expansionProposal),
+    );
+
+    this.saveState();
+
+    return expansionProposal;
+  }
+
   public static logAudit(actor: string, operation: string, details: string) {
     const newEvent: AuditEvent = {
       id: `AUD-${Math.floor(Math.random() * 90000) + 10000}`,
@@ -488,7 +556,7 @@ export class SovereignOperatingStateService {
       productId: contract.productIdentity.name.toLowerCase().replace(/\s+/g, '-'),
       ecosystem: contract.productIdentity.ecosystem,
       version: contract.version,
-      status: 'INTAKE',
+      status: 'DIGITAL_INTAKE',
       progress: 0,
       assignedWorkforce,
       repository: "Jumo-Universal-Enterprise-platform",
@@ -688,45 +756,181 @@ export class SovereignOperatingStateService {
 
   public static promoteManufacturingJob(jobId: string, actor: string) {
     const job = this.state.jobs.find(j => j.id === jobId);
-    if (!job) throw new Error(`Manufacturing Job ${jobId} not found in authoritative registry.`);
+
+    if (!job) {
+      throw new Error(
+        `Manufacturing Job ${jobId} not found in authoritative registry.`,
+      );
+    }
 
     const stageSequence: ManufacturingJobStatus[] = [
-      'INTAKE', 'SPECIFICATION', 'ARCHITECTURE', 'APPROVAL', 'ENGINEERING', 
-      'SOURCE_GENERATION', 'DEPENDENCY_RESOLUTION', 'COMPILATION', 'UNIT_TESTING', 
-      'INTEGRATION_PREP', 'CLOUD_BUILD', 'DEPLOYMENT_PREP', 'DEPLOYMENT', 
-      'VERIFICATION', 'CERTIFICATION', 'REGISTRY_ACTIVATION', 'OPERATIONS', 
-      'AUDIT', 'UPGRADE', 'LIFECYCLE_MANAGEMENT'
+      'DIGITAL_INTAKE',
+      'INTAKE',
+      'SPECIFICATION_NORMALIZATION',
+      'SPECIFICATION',
+      'PLATFORM_INSTANCE_DEFINITION',
+      'PROVISIONING',
+      'ARCHITECTURE_DISCOVERY',
+      'ARCHITECTURE_EXPANSION',
+      'ARCHITECTURE_VERIFICATION',
+      'ARCHITECTURE_CONTRACT_GENERATION',
+      'HUMAN_ARCHITECT_APPROVAL',
+      'REQUIREMENTS_DECOMPOSITION',
+      'SYSTEM_DESIGN',
+      'DATA_ARCHITECTURE',
+      'API_AND_INTEGRATION_ENGINEERING',
+      'SECURITY_ENGINEERING',
+      'APPLICATION_ENGINEERING',
+      'COMMERCIAL_PRODUCT_ENGINEERING',
+      'AI_AND_AUTOMATION_ENGINEERING',
+      'INFRASTRUCTURE_ENGINEERING',
+      'DEPENDENCY_RESOLUTION',
+      'SCHEMA_MANUFACTURING',
+      'SOURCE_AND_ARTIFACT_GENERATION',
+      'COMPILATION',
+      'BUILD_ASSEMBLY',
+      'BUILDING',
+      'APPLICATION_COMPLETENESS_VERIFICATION',
+      'SECURITY_AND_ZERO_TRUST_VERIFICATION',
+      'INTEGRATION_VERIFICATION',
+      'END_TO_END_SYSTEM_TESTING',
+      'REGRESSION_AND_RESILIENCE_TESTING',
+      'VERIFICATION',
+      'CERTIFICATION_AND_HUMAN_ACCEPTANCE',
+      'DEPLOYMENT_AND_PUBLISHING',
+      'REGISTRY_ACTIVATION',
+      'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT',
+      'PRODUCTION',
+      'OPERATIONS',
+      'AUDIT',
+      'UPGRADE',
+      'LIFECYCLE_MANAGEMENT',
     ];
 
     const currentIdx = stageSequence.indexOf(job.status);
-    if (currentIdx === -1 || currentIdx === stageSequence.length - 1) {
-      throw new Error(`Authoritative promotion blocked: Job ${jobId} is in a terminal or invalid state (${job.status}).`);
+
+    if (currentIdx === -1) {
+      throw new Error(
+        `Authoritative promotion blocked: Job ${jobId} has unsupported status ${job.status}.`,
+      );
+    }
+
+    if (currentIdx === stageSequence.length - 1) {
+      throw new Error(
+        `Authoritative promotion blocked: Job ${jobId} is already at terminal lifecycle stage.`,
+      );
     }
 
     const nextStage = stageSequence[currentIdx + 1];
+
     job.status = nextStage;
-    job.progress = Math.round(((currentIdx + 1) / (stageSequence.length - 1)) * 100);
+    job.progress = Math.round(
+      ((currentIdx + 1) / (stageSequence.length - 1)) * 100,
+    );
     job.updatedAt = new Date().toISOString();
 
-    const timestamp = new Date().toLocaleTimeString();
-    let stageLog = "";
-    switch (nextStage) {
-      case 'SPECIFICATION': stageLog = "[SPECIFICATION] Digital Ecosystem Specification finalized and validated."; break;
-      case 'ARCHITECTURE': stageLog = "[ARCHITECTURE] Blueprints converted to authoritative Architecture Contract."; break;
-      case 'APPROVAL': stageLog = "[APPROVAL] Architecture blueprints formally approved for manufacturing."; break;
-      case 'ENGINEERING': stageLog = "[ENGINEERING] Swarm operators assigned to core engineering workstreams."; break;
-      case 'SOURCE_GENERATION': stageLog = "[SOURCE] JUMO-AI engine executing sovereign source generation."; break;
-      case 'COMPILATION': stageLog = "[BUILD] Native compilation successful. Authoritative binary sealed."; break;
-      case 'DEPLOYMENT': stageLog = "[DEPLOY] Secure deployment to JUMO Sovereign Cloud Node completed."; break;
-      case 'VERIFICATION': stageLog = "[VERIFY] Executing the dynamically registered architectural verification suite."; break;
-      case 'CERTIFICATION': stageLog = "[CERTIFY] Sovereign Manufacturing Hub Certificate issued for production."; break;
-      case 'REGISTRY_ACTIVATION': stageLog = "[REGISTRY] Product formally activated in National Ecosystem Registry."; break;
-      default: stageLog = `[HUB] Job transitioned to ${nextStage} stage.`; break;
-    }
+    const stageMessages: Partial<Record<ManufacturingJobStatus, string>> = {
+      DIGITAL_INTAKE:
+        '[INTAKE] Digital product manufacturing request accepted.',
+      INTAKE:
+        '[INTAKE] Product intake normalized into a manufacturing job.',
+      SPECIFICATION_NORMALIZATION:
+        '[SPECIFICATION] Digital specification normalized and validated.',
+      SPECIFICATION:
+        '[SPECIFICATION] Authoritative digital specification established.',
+      PLATFORM_INSTANCE_DEFINITION:
+        '[PLATFORM] Enterprise platform instance definition established.',
+      PROVISIONING:
+        '[PROVISIONING] Installation and infrastructure provisioning prepared.',
+      ARCHITECTURE_DISCOVERY:
+        '[ARCHITECTURE] Existing architecture and institutional requirements discovered.',
+      ARCHITECTURE_EXPANSION:
+        '[ARCHITECTURE] Architecture expanded by the engineering workforce.',
+      ARCHITECTURE_VERIFICATION:
+        '[VERIFY] Architecture verification executed.',
+      ARCHITECTURE_CONTRACT_GENERATION:
+        '[ARCHITECTURE] Authoritative architecture contract generated.',
+      HUMAN_ARCHITECT_APPROVAL:
+        '[APPROVAL] Awaiting or recording human architect acceptance.',
+      REQUIREMENTS_DECOMPOSITION:
+        '[ENGINEERING] Requirements decomposed into executable workstreams.',
+      SYSTEM_DESIGN:
+        '[ENGINEERING] System design established.',
+      DATA_ARCHITECTURE:
+        '[DATA] Data architecture manufactured.',
+      API_AND_INTEGRATION_ENGINEERING:
+        '[INTEGRATION] API and integration architecture manufactured.',
+      SECURITY_ENGINEERING:
+        '[SECURITY] Security and Zero Trust architecture manufactured.',
+      APPLICATION_ENGINEERING:
+        '[APPLICATION] Application components manufactured.',
+      COMMERCIAL_PRODUCT_ENGINEERING:
+        '[PRODUCT] Commercial product capabilities manufactured.',
+      AI_AND_AUTOMATION_ENGINEERING:
+        '[AI] AI and automation capabilities manufactured.',
+      INFRASTRUCTURE_ENGINEERING:
+        '[INFRASTRUCTURE] Infrastructure architecture manufactured.',
+      DEPENDENCY_RESOLUTION:
+        '[DEPENDENCIES] Dependencies resolved.',
+      SCHEMA_MANUFACTURING:
+        '[SCHEMA] Database and application schemas manufactured.',
+      SOURCE_AND_ARTIFACT_GENERATION:
+        '[SOURCE] Source code and build artifacts generated.',
+      COMPILATION:
+        '[BUILD] Source compilation completed.',
+      BUILD_ASSEMBLY:
+        '[BUILD] Product artifacts assembled.',
+      BUILDING:
+        '[BUILD] Manufacturing build execution completed.',
+      APPLICATION_COMPLETENESS_VERIFICATION:
+        '[VERIFY] Application completeness verification executed.',
+      SECURITY_AND_ZERO_TRUST_VERIFICATION:
+        '[VERIFY] Security and Zero Trust verification executed.',
+      INTEGRATION_VERIFICATION:
+        '[VERIFY] Integration verification executed.',
+      END_TO_END_SYSTEM_TESTING:
+        '[TEST] End-to-end system testing executed.',
+      REGRESSION_AND_RESILIENCE_TESTING:
+        '[TEST] Regression and resilience testing executed.',
+      VERIFICATION:
+        '[VERIFY] Full authoritative verification suite executed.',
+      CERTIFICATION_AND_HUMAN_ACCEPTANCE:
+        '[CERTIFY] Certification and human acceptance gate reached.',
+      DEPLOYMENT_AND_PUBLISHING:
+        '[DEPLOY] Installation and publishing execution initiated.',
+      REGISTRY_ACTIVATION:
+        '[REGISTRY] Product activated in the authoritative registry.',
+      RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT:
+        '[RUNTIME] Runtime activated with continuous audit.',
+      PRODUCTION:
+        '[PRODUCTION] Product promoted into production operation.',
+      OPERATIONS:
+        '[OPERATIONS] Operational lifecycle management activated.',
+      AUDIT:
+        '[AUDIT] Continuous institutional and platform audit active.',
+      UPGRADE:
+        '[UPGRADE] Product entered controlled upgrade lifecycle.',
+      LIFECYCLE_MANAGEMENT:
+        '[LIFECYCLE] Full digital product lifecycle management active.',
+    };
 
-    job.logs.push(`[${timestamp}] ${stageLog}`);
-    this.logAudit(actor, "JOB_STAGE_PROMOTED", `Promoted Job ${jobId} to Authoritative Stage: ${nextStage}`);
+    const stageLog =
+      stageMessages[nextStage] ??
+      `[MANUFACTURING] Job transitioned to ${nextStage}.`;
+
+    job.logs = Array.isArray(job.logs) ? job.logs : [];
+    job.logs.push(
+      `[${new Date().toISOString()}] ${stageLog}`,
+    );
+
+    this.logAudit(
+      actor,
+      'JOB_STAGE_PROMOTED',
+      `Promoted Job ${jobId} to authoritative manufacturing stage: ${nextStage}`,
+    );
+
     this.saveState();
+
     return job;
   }
 

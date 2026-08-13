@@ -394,6 +394,23 @@ export class JumoAIAgentRegistry {
   public static getAgentById(agentId: string): AIAgentRecord | undefined {
     return this.agentsMap.get(agentId);
   }
+  public static getAgentByName(name: string): AIAgentRecord | undefined {
+    const normalized = String(name ?? "").trim().toLowerCase();
+
+    if (!normalized) return undefined;
+
+    return Array.from(this.agentsMap.values()).find((agent) =>
+      [
+        agent.agentId,
+        agent.jumoName,
+        agent.displayName,
+        agent.role,
+      ]
+        .filter(Boolean)
+        .some((value) => String(value).trim().toLowerCase() === normalized),
+    );
+  }
+
 
   // 4. REGISTER NEW AGENT
   public static registerAgent(agent: AIAgentRecord): AIAgentRecord {
