@@ -45,7 +45,6 @@ export class ArchitectureIntelligenceService {
     
     const reqResult = await gateway.reasoning({
       message: `Analyze this specification and normalize it against National Enterprise Standards:\n${JSON.stringify(spec.detailedSpecification)}`,
-      systemPrompt: "You are the JUMO Requirements Analyzer. Normalize the input into a structured architectural goal set."
     });
     
     reqTrace.status = 'COMPLETED';
@@ -68,7 +67,6 @@ export class ArchitectureIntelligenceService {
     const allLayers = JUMO_HYBRID_ARCHITECTURE_REGISTRY.all();
     const expansionResult = await gateway.reasoning({
       message: `Suggest the most relevant architectural layers from this list for the given specification:\nLayers: ${JSON.stringify(allLayers.map(l => ({ id: l.id, name: l.name })))}\nSpec: ${reqResult.text}`,
-      systemPrompt: "You are the Sovereign Architect. Match and select the appropriate enterprise-grade architectural layers from the provided registry for this system."
     });
     
     // Parse the recommended layer IDs (e.g. L001, L025)
@@ -166,7 +164,6 @@ export class ArchitectureIntelligenceService {
     
     const verificationResult = await gateway.reasoning({
       message: `Verify the selected architectural layers for security and compliance:\nLayers: ${JSON.stringify(expansionTrace.evidence.suggestedLayers)}`,
-      systemPrompt: "You are the Sovereign Security Auditor. Perform a 20-gate verification of the proposed architecture."
     });
 
     verificationTrace.status = 'COMPLETED';

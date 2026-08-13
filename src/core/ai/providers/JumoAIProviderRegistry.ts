@@ -3,6 +3,8 @@
 
 import { JumoAIProvider, OpenAIProvider, GeminiProvider, CopilotProvider, JumoLocalReasoningProvider, FutureProviderAdapter } from "./JumoAIProvider";
 
+export type { JumoAIProvider };
+
 export class JumoAIProviderRegistry {
   private static instance: JumoAIProviderRegistry;
   private readonly providers = new Map<string, JumoAIProvider>();
@@ -49,3 +51,8 @@ export class JumoAIProviderRegistry {
     return result;
   }
 }
+
+
+// Public contract export for gateway and runtime consumers.
+
+// Public contract export for gateway and runtime consumers.

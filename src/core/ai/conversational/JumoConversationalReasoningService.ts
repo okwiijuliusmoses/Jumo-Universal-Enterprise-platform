@@ -69,7 +69,6 @@ export class JumoConversationalReasoningService {
     try {
       const response = await this.gateway.reasoning({
         message,
-        systemPrompt,
         context: augmentedContext
       });
 

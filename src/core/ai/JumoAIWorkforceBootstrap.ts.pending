@@ -1,0 +1,85 @@
+/**
+ * JUMO UEOS — AI Workforce Bootstrap
+ *
+ * Activates the registered JUMO workforce without inventing
+ * quota limits.
+ */
+
+import {
+  JumoAgentOperations,
+  configureJumoAgent,
+} from "./JumoAgentOperations";
+
+import {
+  JumoAIAgentRegistry,
+} from "./registry/JumoAIAgentRegistry";
+
+export class JumoAIWorkforceBootstrap {
+  private static started = false;
+
+  static start(): {
+    started: boolean;
+    registered: number;
+    active: number;
+  } {
+    if (this.started) {
+      const operations =
+        JumoAgentOperations.getInstance();
+
+      return {
+        started: true,
+        registered: operations.list().length,
+        active: operations.active().length,
+      };
+    }
+
+    const operations =
+      JumoAgentOperations.getInstance();
+
+    const registry =
+      JumoAIAgentRegistry.getInstance();
+
+    const agents =
+      typeof (registry as any).list === "function"
+        ? (registry as any).list()
+        : [];
+
+    for (const agent of agents) {
+      if (!agent?.agentId) {
+        continue;
+      }
+
+      const configuration =
+        configureJumoAgent({
+          agentId: agent.agentId,
+          role: agent.role,
+          specialization:
+            agent.specialization,
+        });
+
+      operations.register(configuration);
+      operations.activate(agent.agentId);
+    }
+
+    this.started = true;
+
+    return {
+      started: true,
+      registered: operations.list().length,
+      active: operations.active().length,
+    };
+  }
+}
+
+/**
+ * Idempotent application-level startup hook.
+ *
+ * Calling this more than once is safe.
+ */
+export function startJumoAIWorkforce(): {
+  started: boolean;
+  registered: number;
+  active: number;
+} {
+  return JumoAIWorkforceBootstrap.start();
+}

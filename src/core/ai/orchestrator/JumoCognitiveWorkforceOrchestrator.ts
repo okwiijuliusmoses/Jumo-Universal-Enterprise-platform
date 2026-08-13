@@ -135,7 +135,15 @@ export class JumoCognitiveWorkforceOrchestrator {
 
         try {
           // Select provider according to policy
-          const providerId = agent.modelPolicy.preferredProvider === "OPENAI" ? "OPENAI" : "GEMINI";
+          const providerId =
+          agent.role?.toLowerCase().includes("architect") ||
+          agent.role?.toLowerCase().includes("administrator") ||
+          agent.specialization?.toLowerCase().includes("architecture") ||
+          agent.specialization?.toLowerCase().includes("system administration")
+            ? "OPENAI"
+            : agent.modelPolicy.preferredProvider === "COPILOT"
+              ? "COPILOT"
+              : "GEMINI";
           const res = await gateway.executeAgentTask(
             agent,
             "Architecture Review Task",
