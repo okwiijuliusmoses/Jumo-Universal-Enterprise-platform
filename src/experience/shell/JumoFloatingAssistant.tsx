@@ -101,7 +101,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/v1/ueos/ai/reasoning', {
+      const response = await fetch('/api/v1/ueos/ai/reason', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
         setMessages(prev => [...prev, {
           id: resObj.requestId || `msg-${Date.now()}`,
           role: 'assistant',
-          content: resObj.content || resObj.response,
+          content: resObj.response,
           timestamp: new Date(resObj.timestamp || Date.now()).toLocaleTimeString(),
         }]);
       } else {

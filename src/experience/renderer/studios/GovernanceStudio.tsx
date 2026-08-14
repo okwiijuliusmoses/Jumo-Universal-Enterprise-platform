@@ -22,14 +22,11 @@ export const GovernanceStudio: React.FC<GovernanceStudioProps> = ({
   const [activeTab, setActiveTab] = useState<'overview' | 'ledger' | 'workforce' | 'standards'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredLedger = (ledger || []).filter(entry => {
-    if (!entry) return false;
-    const q = (searchQuery || "").toLowerCase();
-    const event = (entry.event || "").toLowerCase();
-    const domain = (entry.domain || "").toLowerCase();
-    const details = (entry.details || "").toLowerCase();
-    return event.includes(q) || domain.includes(q) || details.includes(q);
-  });
+  const filteredLedger = ledger.filter(entry => 
+    entry.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.domain.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.details.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -192,7 +189,7 @@ export const GovernanceStudio: React.FC<GovernanceStudioProps> = ({
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1 text-emerald-600 font-mono text-[10px] bg-emerald-50 px-2 py-1 rounded border border-emerald-100">
                             <ShieldCheck size={10} />
-                            {entry.signature ? entry.signature.substring(0, 12) + "..." : "VERIFIED"}
+                            {entry.signature?.substring(0, 12)}...
                           </div>
                         </td>
                       </tr>
@@ -269,7 +266,7 @@ export const GovernanceStudio: React.FC<GovernanceStudioProps> = ({
                           </div>
                           <div className="text-[11px] text-slate-600 mb-3">{agent.role}</div>
                           <div className="flex flex-wrap gap-1">
-                            {(agent.capabilities || []).slice(0, 2).map((cap: string) => (
+                            {agent.capabilities.slice(0, 2).map((cap: string) => (
                               <span key={cap} className="text-[9px] px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded font-bold uppercase">{cap}</span>
                             ))}
                           </div>

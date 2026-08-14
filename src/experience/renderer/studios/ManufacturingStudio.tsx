@@ -75,7 +75,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
   const linkedContract = selectedJob && contracts.find(c => 
     c.id === selectedJob.productId || 
-    (c.productIdentity?.name || "").toLowerCase() === (selectedJob?.productId || "").toLowerCase()
+    c.productIdentity.name.toLowerCase() === selectedJob.productId.toLowerCase()
   );
 
   const getStageState = (stageKey: ManufacturingJobStatus, index: number): 'COMPLETED' | 'RUNNING' | 'FAILED' | 'BLOCKED' | 'READY' | 'WAITING_APPROVAL' | 'NOT_CONFIGURED' | 'NO_ACTIVE_JOB' => {

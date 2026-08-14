@@ -188,9 +188,9 @@ export function ArchitectureVerificationCommandCenter({
   const filteredLayers = useMemo(() => {
     return allLayers.filter(l => {
       const matchesSearch = searchQuery === "" ||
-        (l.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (l.id || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (l.responsibility || "").toLowerCase().includes(searchQuery.toLowerCase());
+        l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.responsibility.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesFamily = selectedFamilyFilter === "ALL" || l.family === selectedFamilyFilter;
       return matchesSearch && matchesFamily;
     });

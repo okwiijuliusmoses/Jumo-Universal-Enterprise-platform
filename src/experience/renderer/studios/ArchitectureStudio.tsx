@@ -1716,11 +1716,11 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
                       if (searchQuery) {
                         const q = searchQuery.toLowerCase();
                         return (
-                          (agent.jumoName || "").toLowerCase().includes(q) ||
-                          (agent.role || "").toLowerCase().includes(q) ||
-                          (agent.specialization || "").toLowerCase().includes(q) ||
-                          (agent.description || "").toLowerCase().includes(q) ||
-                          (agent.agentId || "").toLowerCase().includes(q)
+                          agent.jumoName.toLowerCase().includes(q) ||
+                          agent.role.toLowerCase().includes(q) ||
+                          agent.specialization.toLowerCase().includes(q) ||
+                          agent.description.toLowerCase().includes(q) ||
+                          agent.agentId.toLowerCase().includes(q)
                         );
                       }
                       // Otherwise, filter by division
