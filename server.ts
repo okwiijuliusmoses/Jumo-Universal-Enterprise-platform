@@ -74,10 +74,16 @@ async function startServer() {
 
   app.post("/api/v1/ueos/ai/reasoning", (req, res) => {
     try {
-      const response = JumoAIGatewayEngine.processReasoningRequest(req.body);
-      res.json(response);
+      const { message, mode, context } = req.body;
+      const reasoningReq = {
+        agentRole: mode || 'Sovereign Conversationalist',
+        prompt: message || '',
+        context
+      };
+      const result = JumoAIGatewayEngine.processReasoningRequest(reasoningReq);
+      res.json({ ok: true, result });
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ ok: false, error: err.message });
     }
   });
 

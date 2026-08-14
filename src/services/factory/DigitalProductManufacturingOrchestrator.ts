@@ -8,6 +8,13 @@ import { SovereignGovernanceRegistry } from "../gov/SovereignGovernanceRegistry"
 import { ManufacturingEngine } from "./ManufacturingEngine";
 import { ArchitectureEngine } from "../architecture/ArchitectureEngine";
 import { JumoEventBus } from "../../core/common/events/JumoEventBus";
+import { JumoManufacturingPipeline } from "../../core/manufacturing/JumoManufacturingPipeline";
+import { JumoApplicationAssemblyEngine } from "../../core/application/assembly/JumoApplicationAssemblyEngine";
+import { JumoApplicationBuildingEngine } from "../../core/application/building/JumoApplicationBuildingEngine";
+import { JumoApplicationCompletenessVerificationEngine } from "../../core/verification/JumoApplicationCompletenessVerificationEngine";
+import { JumoEndToEndTestingEngine } from "../../core/manufacturing/testing/JumoEndToEndTestingEngine";
+import { JumoSharedServiceIntegrationEngine } from "../../core/platform/integration/JumoSharedServiceIntegrationEngine";
+import { JumoProductConfigurationEngine } from "../../core/platform/configuration/JumoProductConfigurationEngine";
 
 export class DigitalProductManufacturingOrchestrator {
   private static instance: DigitalProductManufacturingOrchestrator;
@@ -104,6 +111,12 @@ export class DigitalProductManufacturingOrchestrator {
         case "SPECIFICATION_NORMALIZATION":
           await this.handleNormalization(jobId);
           break;
+        case "PLATFORM_INSTANCE_DEFINITION":
+          await this.handlePlatformDefinition(jobId);
+          break;
+        case "PROVISIONING":
+          await this.handleProvisioning(jobId);
+          break;
         case "ARCHITECTURE_DISCOVERY":
           await this.handleArchitectureDiscovery(jobId);
           break;
@@ -126,6 +139,36 @@ export class DigitalProductManufacturingOrchestrator {
         case "REQUIREMENTS_DECOMPOSITION":
           await this.handleRequirementsDecomposition(jobId);
           break;
+        case "SYSTEM_DESIGN":
+          await this.handleSystemDesign(jobId);
+          break;
+        case "DATA_ARCHITECTURE":
+          await this.handleDataArchitecture(jobId);
+          break;
+        case "API_AND_INTEGRATION_ENGINEERING":
+          await this.handleApiIntegration(jobId);
+          break;
+        case "SECURITY_ENGINEERING":
+          await this.handleSecurityEngineering(jobId);
+          break;
+        case "APPLICATION_ENGINEERING":
+          await this.handleApplicationEngineering(jobId);
+          break;
+        case "COMMERCIAL_PRODUCT_ENGINEERING":
+          await this.handleCommercialEngineering(jobId);
+          break;
+        case "AI_AND_AUTOMATION_ENGINEERING":
+          await this.handleAiEngineering(jobId);
+          break;
+        case "INFRASTRUCTURE_ENGINEERING":
+          await this.handleInfrastructureEngineering(jobId);
+          break;
+        case "DEPENDENCY_RESOLUTION":
+          await this.handleDependencyResolution(jobId);
+          break;
+        case "SCHEMA_MANUFACTURING":
+          await this.handleSchemaManufacturing(jobId);
+          break;
         case "SOURCE_AND_ARTIFACT_GENERATION":
           await this.handleManufacturing(jobId);
           break;
@@ -134,6 +177,24 @@ export class DigitalProductManufacturingOrchestrator {
           break;
         case "BUILD_ASSEMBLY":
           await this.handleBuildAssembly(jobId);
+          break;
+        case "APPLICATION_COMPLETENESS_VERIFICATION":
+          await this.handleCompletenessVerification(jobId);
+          break;
+        case "SECURITY_AND_ZERO_TRUST_VERIFICATION":
+          await this.handleSecurityVerification(jobId);
+          break;
+        case "INTEGRATION_VERIFICATION":
+          await this.handleIntegrationVerification(jobId);
+          break;
+        case "END_TO_END_SYSTEM_TESTING":
+          await this.handleEndToEndTesting(jobId);
+          break;
+        case "REGRESSION_AND_RESILIENCE_TESTING":
+          await this.handleRegressionTesting(jobId);
+          break;
+        case "CERTIFICATION_AND_HUMAN_ACCEPTANCE":
+          await this.handleCertification(jobId);
           break;
         case "DEPLOYMENT_AND_PUBLISHING":
           await this.handleDeployment(jobId);
@@ -231,13 +292,26 @@ export class DigitalProductManufacturingOrchestrator {
     this.registry.updateJobProgress(jobId, 6);
   }
 
+  private async handlePlatformDefinition(jobId: string) {
+    this.registry.addJobLog(jobId, "Defining platform instance and configuration parameters.");
+    const engine = new JumoProductConfigurationEngine();
+    await engine.initializeConfiguration(jobId);
+    this.registry.updateJobProgress(jobId, 8);
+  }
+
+  private async handleProvisioning(jobId: string) {
+    this.registry.addJobLog(jobId, "Provisioning JUMO cloud resources and secure enclaves.");
+    await new Promise(r => setTimeout(r, 1500));
+    this.registry.updateJobProgress(jobId, 12);
+  }
+
   private async handleArchitectureDiscovery(jobId: string) {
     const job = this.registry.getJob(jobId);
     if (!job) return;
     
     const contract = await this.architectureEngine.generateInitialContract(jobId, job.productId);
     this.registry.updateJobArchitecture(jobId, contract.id);
-    this.registry.updateJobProgress(jobId, 9);
+    this.registry.updateJobProgress(jobId, 15);
   }
 
   private async handleArchitectureExpansion(jobId: string) {
@@ -245,7 +319,7 @@ export class DigitalProductManufacturingOrchestrator {
     if (!job || !job.architectureId) return;
     
     await this.architectureEngine.expandArchitecture(jobId, job.architectureId);
-    this.registry.updateJobProgress(jobId, 15);
+    this.registry.updateJobProgress(jobId, 21);
   }
 
   private async handleArchitectureVerification(jobId: string) {
@@ -253,25 +327,87 @@ export class DigitalProductManufacturingOrchestrator {
     if (!job || !job.architectureId) return;
     
     await this.architectureEngine.verifyArchitecture(jobId, job.architectureId);
-    this.registry.updateJobProgress(jobId, 21);
+    this.registry.updateJobProgress(jobId, 27);
   }
 
   private async handleContractGeneration(jobId: string) {
     this.registry.addJobLog(jobId, "Generating final architecture contract evidence...");
     await new Promise(r => setTimeout(r, 1000));
-    this.registry.updateJobProgress(jobId, 25);
+    this.registry.updateJobProgress(jobId, 31);
   }
 
   private async handleWorkforceOrchestration(jobId: string) {
     this.registry.addJobLog(jobId, "Orchestrating AI workforce swarms for implementation...");
     await new Promise(r => setTimeout(r, 1000));
-    this.registry.updateJobProgress(jobId, 31);
+    this.registry.updateJobProgress(jobId, 33);
   }
 
   private async handleRequirementsDecomposition(jobId: string) {
     this.registry.addJobLog(jobId, "Decomposing high-level architecture into executable agent tasks...");
     await new Promise(r => setTimeout(r, 1000));
-    this.registry.updateJobProgress(jobId, 34);
+    this.registry.updateJobProgress(jobId, 35);
+  }
+
+  private async handleSystemDesign(jobId: string) {
+    this.registry.addJobLog(jobId, "Generating system design specifications.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 37);
+  }
+
+  private async handleDataArchitecture(jobId: string) {
+    this.registry.addJobLog(jobId, "Modeling data architecture and persistence schemas.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 40);
+  }
+
+  private async handleApiIntegration(jobId: string) {
+    this.registry.addJobLog(jobId, "Engineering API bridges and service integrations.");
+    const engine = new JumoSharedServiceIntegrationEngine();
+    await engine.orchestrateIntegration(jobId);
+    this.registry.updateJobProgress(jobId, 45);
+  }
+
+  private async handleSecurityEngineering(jobId: string) {
+    this.registry.addJobLog(jobId, "Injecting Zero-Trust security protocols and encryption layers.");
+    await new Promise(r => setTimeout(r, 1500));
+    this.registry.updateJobProgress(jobId, 50);
+  }
+
+  private async handleApplicationEngineering(jobId: string) {
+    this.registry.addJobLog(jobId, "Constructing application logic and core features.");
+    const engine = new JumoApplicationBuildingEngine();
+    await engine.buildApplication(jobId);
+    this.registry.updateJobProgress(jobId, 58);
+  }
+
+  private async handleCommercialEngineering(jobId: string) {
+    this.registry.addJobLog(jobId, "Integrating commercial modules and financial gateways.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 62);
+  }
+
+  private async handleAiEngineering(jobId: string) {
+    this.registry.addJobLog(jobId, "Embedding AI models and cognitive automation logic.");
+    await new Promise(r => setTimeout(r, 1500));
+    this.registry.updateJobProgress(jobId, 65);
+  }
+
+  private async handleInfrastructureEngineering(jobId: string) {
+    this.registry.addJobLog(jobId, "Finalizing infrastructure-as-code definitions.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 68);
+  }
+
+  private async handleDependencyResolution(jobId: string) {
+    this.registry.addJobLog(jobId, "Resolving and locking supply chain dependencies.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 70);
+  }
+
+  private async handleSchemaManufacturing(jobId: string) {
+    this.registry.addJobLog(jobId, "Manufacturing database and runtime schemas.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 72);
   }
 
   private async handleManufacturing(jobId: string) {
@@ -279,26 +415,66 @@ export class DigitalProductManufacturingOrchestrator {
     if (!job) return;
     
     this.registry.addJobLog(jobId, "Initiating core manufacturing engine...");
-    await this.manufacturingEngine.executeManufacturing(jobId);
-    this.registry.updateJobProgress(jobId, 68);
+    const engine = new JumoManufacturingPipeline();
+    await engine.executePipeline(jobId);
+    this.registry.updateJobProgress(jobId, 78);
   }
 
   private async handleCompilation(jobId: string) {
     this.registry.addJobLog(jobId, "Compiling enterprise artifacts into executable binaries...");
     await new Promise(r => setTimeout(r, 2000));
-    this.registry.updateJobProgress(jobId, 71);
+    this.registry.updateJobProgress(jobId, 82);
   }
 
   private async handleBuildAssembly(jobId: string) {
     this.registry.addJobLog(jobId, "Assembling build containers for sovereign deployment...");
+    const engine = new JumoApplicationAssemblyEngine();
+    await engine.assembleApplication(jobId);
+    this.registry.updateJobProgress(jobId, 85);
+  }
+
+  private async handleCompletenessVerification(jobId: string) {
+    this.registry.addJobLog(jobId, "Verifying application completeness and structural integrity.");
+    const engine = new JumoApplicationCompletenessVerificationEngine();
+    await engine.verifyCompleteness(jobId);
+    this.registry.updateJobProgress(jobId, 88);
+  }
+
+  private async handleSecurityVerification(jobId: string) {
+    this.registry.addJobLog(jobId, "Performing automated security penetration and audit.");
     await new Promise(r => setTimeout(r, 2000));
-    this.registry.updateJobProgress(jobId, 75);
+    this.registry.updateJobProgress(jobId, 90);
+  }
+
+  private async handleIntegrationVerification(jobId: string) {
+    this.registry.addJobLog(jobId, "Verifying integration bridges and data flow.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 92);
+  }
+
+  private async handleEndToEndTesting(jobId: string) {
+    this.registry.addJobLog(jobId, "Initiating comprehensive end-to-end system testing.");
+    const engine = new JumoEndToEndTestingEngine();
+    await engine.executeEndToEndTests(jobId);
+    this.registry.updateJobProgress(jobId, 94);
+  }
+
+  private async handleRegressionTesting(jobId: string) {
+    this.registry.addJobLog(jobId, "Performing regression and resilience stress testing.");
+    await new Promise(r => setTimeout(r, 1500));
+    this.registry.updateJobProgress(jobId, 96);
+  }
+
+  private async handleCertification(jobId: string) {
+    this.registry.addJobLog(jobId, "Final certification and human acceptance gate.");
+    await new Promise(r => setTimeout(r, 1000));
+    this.registry.updateJobProgress(jobId, 98);
   }
 
   private async handleDeployment(jobId: string) {
     this.registry.addJobLog(jobId, "Publishing artifacts to national container registry...");
     await new Promise(r => setTimeout(r, 2000));
-    this.registry.updateJobProgress(jobId, 96);
+    this.registry.updateJobProgress(jobId, 99);
   }
 
   private async handleRuntimeActivation(jobId: string) {
