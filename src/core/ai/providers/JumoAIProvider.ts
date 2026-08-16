@@ -101,7 +101,7 @@ export class OpenAIProvider implements JumoAIProvider {
         text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_OPENAI_API_KEY is not configured.",
         modelId: request.modelId || "UNKNOWN",
         providerId: this.providerId,
-        metadata: { error: "NOT_CONFIGURED" }
+        reasoning: false, metadata: { error: "NOT_CONFIGURED" }
       };
     }
 
@@ -195,7 +195,7 @@ export class GeminiProvider implements JumoAIProvider {
         text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_GEMINI_API_KEY is not configured.",
         modelId: request.modelId || "UNKNOWN",
         providerId: this.providerId,
-        metadata: { error: "NOT_CONFIGURED" }
+        reasoning: false, metadata: { error: "NOT_CONFIGURED" }
       };
     }
 
@@ -305,7 +305,7 @@ export class CopilotProvider implements JumoAIProvider {
         text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_COPILOT_PROVIDER_ENDPOINT is not configured.",
         modelId: request.modelId || "UNKNOWN",
         providerId: this.providerId,
-        metadata: { error: "NOT_CONFIGURED" }
+        reasoning: false, metadata: { error: "NOT_CONFIGURED" }
       };
     }
 

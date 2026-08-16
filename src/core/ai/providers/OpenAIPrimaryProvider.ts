@@ -56,7 +56,7 @@ export class OpenAIPrimaryProvider implements JumoAIProvider {
         text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_OPENAI_API_KEY is not configured.",
         modelId: request.modelId || "UNKNOWN",
         providerId: this.providerId,
-        metadata: { error: "NOT_CONFIGURED" }
+        reasoning: false, metadata: { error: "NOT_CONFIGURED" }
       };
     }
 
