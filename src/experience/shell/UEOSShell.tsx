@@ -315,7 +315,6 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
         return 'SPECIFICATION';
 
       case 'architecture':
-      case 'blueprint':
       case 'engineering':
       case 'arch-verification':
         return 'ARCHITECTURE_ENGINEERING';

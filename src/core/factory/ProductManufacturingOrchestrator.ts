@@ -382,13 +382,15 @@ export class ProductManufacturingOrchestrator {
         artifactId: `ART-ARCH-${Date.now().toString(36).toUpperCase()}`,
         productId: job.productId,
         version: '1.0.0',
-        type: 'SPECIFICATION_AND_SCHEMAS',
+        type: 'SPECIFICATION_ARTIFACT',
         sourceJobId: job.jobId,
         sourceStage: 'ARCHITECTURE_CONTRACT_GENERATION',
         content: job.blueprint || {},
         integrityHash: `sha256:${Math.random().toString(36)}`,
         createdAt: new Date().toISOString(),
-        status: 'VERIFIED'
+        status: 'VERIFIED',
+        dependencies: [],
+        evidence: []
       };
       if (!job.artifacts) job.artifacts = {};
       job.artifacts['ARCHITECTURE'] = art;
@@ -400,13 +402,15 @@ export class ProductManufacturingOrchestrator {
         artifactId: `ART-ENG-${Date.now().toString(36).toUpperCase()}`,
         productId: job.productId,
         version: '1.0.0',
-        type: 'SPECIFICATION_AND_SCHEMAS',
+        type: 'SPECIFICATION_ARTIFACT',
         sourceJobId: job.jobId,
         sourceStage: 'DEPENDENCY_RESOLUTION',
         content: job.engineeringReport || {},
         integrityHash: `sha256:${Math.random().toString(36)}`,
         createdAt: new Date().toISOString(),
-        status: 'VERIFIED'
+        status: 'VERIFIED',
+        dependencies: [],
+        evidence: []
       };
       if (!job.artifacts) job.artifacts = {};
       job.artifacts['ENGINEERING'] = art;
@@ -424,7 +428,9 @@ export class ProductManufacturingOrchestrator {
         content: {},
         integrityHash: `sha256:${Math.random().toString(36)}`,
         createdAt: new Date().toISOString(),
-        status: 'VERIFIED'
+        status: 'VERIFIED',
+        dependencies: [],
+        evidence: []
       };
       if (!job.artifacts) job.artifacts = {};
       job.artifacts['MANUFACTURING'] = art;

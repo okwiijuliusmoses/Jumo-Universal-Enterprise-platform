@@ -245,7 +245,7 @@ export class LocalInferenceAdapter {
       const canonicalDef: JumoModelDefinition = {
         modelId: m.modelId,
         displayName: m.modelName,
-        providerId: "olla-local",
+        providerId: "JUMO_LOCAL",
         family: m.family,
         parameterSize: m.parameterSize,
         contextLength: m.contextLength,
@@ -426,7 +426,7 @@ export class LocalInferenceAdapter {
 
     return {
       code,
-      provider: "olla-local",
+      provider: "JUMO_LOCAL",
       runtime: "Omalla/Olla Local Inference Engine",
       status,
       endpoint,
