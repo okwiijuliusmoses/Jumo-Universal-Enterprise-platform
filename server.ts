@@ -7,6 +7,7 @@ import { JumoAIGatewayEngine } from "./src/core/ai/JumoAIGatewayEngine";
 import { JumoProviderQuotaManager } from "./src/core/ai/JumoProviderQuotaManager";
 import { JumoModelEvolutionEngine } from "./src/core/ai/JumoModelEvolutionEngine";
 import { JumoAgentContractRegistry } from "./src/core/ai/JumoAgentContractRegistry";
+import { JumoModelRegistry } from "./src/core/registry/JumoModelRegistry";
 import { JumoAutonomousMaintenanceEngine } from "./src/core/maintenance/JumoAutonomousMaintenanceEngine";
 import { JumoMaintenanceManufacturingPipeline } from "./src/core/maintenance/JumoMaintenanceManufacturingPipeline";
 import { JumoInstitutionalLifecycleEngine } from "./src/core/platform/JumoInstitutionalLifecycleEngine";
@@ -592,18 +593,7 @@ async function startServer() {
     }
   });
 
-  app.all("/api/v1/ueos/ai/*", (req, res) => {
-    res.status(404).json({
-      code: "TASK_LIFECYCLE_ROUTE_NOT_FOUND",
-      status: 404,
-      taskId: req.body?.taskId || "UNKNOWN",
-      agentId: req.body?.agentId || "UNKNOWN",
-      requestedRoute: req.originalUrl,
-      correlationId: `corr-${Date.now()}`,
-      lifecycleState: "FAILED",
-      timestamp: new Date().toISOString()
-    });
-  });
+
 
   app.get("/api/v1/ueos/ai/gpt/snapshot", (req, res) => {
     try {
@@ -1652,7 +1642,6 @@ async function startServer() {
 
   app.get("/api/v1/ueos/ai/models", (req, res) => {
     try {
-      const { JumoModelRegistry } = require("./src/core/ai/providers/JumoModelRegistry");
       res.json({ models: JumoModelRegistry.getAllModels() });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
@@ -1739,6 +1728,19 @@ async function startServer() {
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
+  });
+
+  app.all("/api/v1/ueos/ai/*", (req, res) => {
+    res.status(404).json({
+      code: "TASK_LIFECYCLE_ROUTE_NOT_FOUND",
+      status: 404,
+      taskId: req.body?.taskId || "UNKNOWN",
+      agentId: req.body?.agentId || "UNKNOWN",
+      requestedRoute: req.originalUrl,
+      correlationId: `corr-${Date.now()}`,
+      lifecycleState: "FAILED",
+      timestamp: new Date().toISOString()
+    });
   });
 
   // Digital Artifact Dependency Graph Registry API
