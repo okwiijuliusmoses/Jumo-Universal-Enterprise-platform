@@ -97,7 +97,12 @@ export class OpenAIProvider implements JumoAIProvider {
     const vault = JumoSecretVault.getInstance();
     const key = vault.getOpenAIKey();
     if (!key) {
-      throw new Error("Cannot execute: JUMO_OPENAI_API_KEY is not configured.");
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_OPENAI_API_KEY is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
     }
 
     const openai = new OpenAI({ apiKey: key });
@@ -186,7 +191,12 @@ export class GeminiProvider implements JumoAIProvider {
     const vault = JumoSecretVault.getInstance();
     const key = vault.getGeminiKey();
     if (!key) {
-      throw new Error("Cannot execute: JUMO_GEMINI_API_KEY is not configured.");
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_GEMINI_API_KEY is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
     }
 
     try {
@@ -291,7 +301,12 @@ export class CopilotProvider implements JumoAIProvider {
     const endpoint = vault.getCopilotProviderEndpoint();
     const key = vault.getCopilotKey();
     if (!endpoint) {
-      throw new Error("Cannot execute: JUMO_COPILOT_PROVIDER_ENDPOINT is not configured.");
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_COPILOT_PROVIDER_ENDPOINT is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
     }
 
     try {

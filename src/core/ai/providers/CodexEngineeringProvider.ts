@@ -58,6 +58,15 @@ export class CodexEngineeringProvider implements JumoAIProvider {
 
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const start = Date.now();
+    const key = JumoSecretVault.getInstance().getOpenAIKey();
+    if (!key) {
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_OPENAI_API_KEY is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
+    }
     const model = request.modelId || "codex-engineering-agent";
 
     // Engineering code generation response

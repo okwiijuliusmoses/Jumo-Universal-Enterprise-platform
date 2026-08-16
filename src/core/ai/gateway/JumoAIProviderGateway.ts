@@ -161,6 +161,9 @@ export class JumoAIProviderGateway {
         systemPrompt: `Agent Role: ${agent.role}\nAgent Specialization: ${agent.specialization}`,
         context
       });
+      if (res.metadata?.error) {
+        throw new Error(`Provider returned error state: ${res.metadata.error} - ${res.text}`);
+      }
       output = res.text;
       if (res.modelId) {
         actualModelUsed = res.modelId;
@@ -323,6 +326,9 @@ We have executed the requested system tasks under the secure local isolation con
         temperature: request.temperature,
         context: request.context
       });
+      if (result.metadata?.error) {
+        throw new Error(`Provider returned error state: ${result.metadata.error} - ${result.text}`);
+      }
       
       return {
         text: result.text,

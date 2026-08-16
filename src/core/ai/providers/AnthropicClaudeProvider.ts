@@ -107,7 +107,12 @@ export class AnthropicClaudeProvider implements JumoAIProvider {
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
     const apiKey = JumoSecretVault.getKey("ANTHROPIC_API_KEY") || JumoSecretVault.getKey("CLAUDE_API_KEY");
     if (!apiKey) {
-      throw new Error("ANTHROPIC_API_KEY missing in JumoSecretVault");
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: ANTHROPIC_API_KEY is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
     }
 
     const modelId = request.modelId || "claude-3-7-sonnet";

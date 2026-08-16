@@ -44,14 +44,12 @@ export interface AgentReadinessRecord {
   division: AIWorkforceDivision;
   role: string;
   specialization: string;
-  preferredProvider: string;
-  preferredModel: string;
-  fallbackProviders: string[];
-  authStatus: 'CONFIGURED' | 'NOT_CONFIGURED' | 'INHERITED_VIA_GATEWAY';
-  inferenceStatus: 'OPERATIONAL' | 'DEGRADED' | 'AUTH_REQUIRED' | 'RUNTIME_UNAVAILABLE' | 'MODEL_UNAVAILABLE' | 'BLOCKED';
-  overallStatus: 'OPERATIONAL' | 'DEGRADED' | 'BLOCKED';
-  lastExecutionReasoning?: string;
-  lastExecutionLatencyMs?: number;
+  declaredProvider: string;
+  declaredModel: string;
+  preferredProviderStatus: 'CONFIGURED' | 'NOT_CONFIGURED' | 'DEGRADED' | 'UNAVAILABLE';
+  activeExecutionProvider: string;
+  fallbackStatus: 'ACTIVE' | 'NOT_REQUIRED' | 'FORBIDDEN' | 'FAILED';
+  agentOperationality: 'OPERATIONAL' | 'DEGRADED' | 'BLOCKED';
 }
 
 export interface CognitiveFamilyReadinessRecord {
@@ -296,29 +294,39 @@ export class AIWorkforceReadinessService {
     const records: AgentReadinessRecord[] = [];
 
     for (const agent of agents) {
-      const prefProvider = agent.modelPolicy?.preferredProvider || 'JUMO_LOCAL';
+      const declaredProv = agent.modelPolicy?.preferredProvider || 'JUMO_LOCAL';
       let mappedProvId = 'JUMO_LOCAL';
-      if (prefProvider.includes('OPENAI')) mappedProvId = 'OPENAI';
-      else if (prefProvider.includes('GEMINI') || prefProvider.includes('GOOGLE')) mappedProvId = 'GEMINI';
-      else if (prefProvider.includes('COPILOT')) mappedProvId = 'COPILOT';
-      else if (prefProvider.includes('CODEX')) mappedProvId = 'CODEX';
-      else if (prefProvider.includes('ANTHROPIC')) mappedProvId = 'ANTHROPIC_CLAUDE';
+      if (declaredProv.includes('OPENAI') && !declaredProv.includes('CODEX')) mappedProvId = 'OPENAI';
+      else if (declaredProv.includes('GEMINI') || declaredProv.includes('GOOGLE')) mappedProvId = 'GEMINI';
+      else if (declaredProv.includes('COPILOT')) mappedProvId = 'COPILOT';
+      else if (declaredProv.includes('CODEX')) mappedProvId = 'CODEX';
+      else if (declaredProv.includes('ANTHROPIC')) mappedProvId = 'ANTHROPIC';
 
-      const provRecord = providers.find(p => p.providerId === mappedProvId);
-      const isProvAuth = provRecord ? provRecord.authStatus === 'AUTHENTICATED' || provRecord.authStatus === 'CONFIGURED' : false;
-
-      let inferenceStatus: AgentReadinessRecord['inferenceStatus'] = 'OPERATIONAL';
-      if (provRecord && provRecord.status === 'NOT_CONFIGURED') {
-        inferenceStatus = 'AUTH_REQUIRED';
-      } else if (provRecord && provRecord.status === 'UNAVAILABLE') {
-        inferenceStatus = 'RUNTIME_UNAVAILABLE';
+      const provRecord = providers.find(p => p.providerId === mappedProvId) || providers.find(p => p.providerId === 'JUMO_LOCAL');
+      
+      let prefStatus: 'CONFIGURED' | 'NOT_CONFIGURED' | 'DEGRADED' | 'UNAVAILABLE' = 'UNAVAILABLE';
+      if (provRecord) {
+        if (provRecord.status === 'HEALTHY' || provRecord.status === 'OPERATIONAL') prefStatus = 'CONFIGURED';
+        else if (provRecord.status === 'NOT_CONFIGURED') prefStatus = 'NOT_CONFIGURED';
+        else if (provRecord.status === 'DEGRADED') prefStatus = 'DEGRADED';
       }
 
-      // Gateway provides automatic local fallback for agents
-      const overallStatus: AgentReadinessRecord['overallStatus'] = 
-        (inferenceStatus === 'OPERATIONAL' || agent.modelPolicy?.offlineFallbackEnabled !== false)
-          ? 'OPERATIONAL' 
-          : 'BLOCKED';
+      let activeProvider = mappedProvId;
+      let fallbackStatus: 'ACTIVE' | 'NOT_REQUIRED' | 'FORBIDDEN' | 'FAILED' = 'NOT_REQUIRED';
+      let agentOp: 'OPERATIONAL' | 'DEGRADED' | 'BLOCKED' = 'OPERATIONAL';
+
+      if (prefStatus !== 'CONFIGURED') {
+        if (agent.modelPolicy?.offlineFallbackEnabled !== false) {
+           activeProvider = 'JUMO_LOCAL';
+           fallbackStatus = 'ACTIVE';
+        } else {
+           fallbackStatus = 'FORBIDDEN';
+           agentOp = 'BLOCKED';
+           activeProvider = 'NONE';
+        }
+      } else if (mappedProvId === 'JUMO_LOCAL') {
+         fallbackStatus = 'NOT_REQUIRED';
+      }
 
       records.push({
         agentId: agent.agentId,
@@ -326,12 +334,12 @@ export class AIWorkforceReadinessService {
         division: agent.division,
         role: agent.role,
         specialization: agent.specialization,
-        preferredProvider: prefProvider,
-        preferredModel: agent.modelPolicy?.modelAlias || 'omalla-llama-3-8b',
-        fallbackProviders: ['JUMO_LOCAL', 'GEMINI'],
-        authStatus: isProvAuth ? 'CONFIGURED' : 'NOT_CONFIGURED',
-        inferenceStatus,
-        overallStatus
+        declaredProvider: declaredProv,
+        declaredModel: agent.modelPolicy?.modelAlias || 'omalla-llama-3-8b',
+        preferredProviderStatus: prefStatus,
+        activeExecutionProvider: activeProvider,
+        fallbackStatus,
+        agentOperationality: agentOp
       });
     }
 
@@ -344,12 +352,22 @@ export class AIWorkforceReadinessService {
   public async getCognitiveFamilyReadiness(): Promise<CognitiveFamilyReadinessRecord[]> {
     const agents = JumoAIAgentRegistry.getAllAgents();
     const divisions = Array.from(new Set(agents.map(a => a.division))) as AIWorkforceDivision[];
+    const agentRecords = await this.getAgentReadiness();
 
     const records: CognitiveFamilyReadinessRecord[] = [];
 
     for (const div of divisions) {
       const divAgents = agents.filter(a => a.division === div);
       if (divAgents.length === 0) continue;
+
+      const divAgentRecords = agentRecords.filter(a => a.division === div);
+      const operationalCount = divAgentRecords.filter(a => a.agentOperationality === 'OPERATIONAL').length;
+      const degradedCount = divAgentRecords.filter(a => a.agentOperationality === 'DEGRADED').length;
+      const blockedCount = divAgentRecords.filter(a => a.agentOperationality === 'BLOCKED').length;
+
+      let familyStatus: 'OPERATIONAL' | 'DEGRADED' | 'BLOCKED' = 'OPERATIONAL';
+      if (blockedCount > 0) familyStatus = 'DEGRADED';
+      if (blockedCount === divAgents.length) familyStatus = 'BLOCKED';
 
       const representative = divAgents[0];
 
@@ -386,10 +404,10 @@ export class AIWorkforceReadinessService {
         familyName: div.replace(/_/g, ' '),
         division: div,
         totalAgents: divAgents.length,
-        operationalCount: divAgents.length,
-        degradedCount: 0,
-        blockedCount: 0,
-        familyStatus: 'OPERATIONAL',
+        operationalCount,
+        degradedCount,
+        blockedCount,
+        familyStatus,
         representativeAgentId: representative.agentId,
         representativeAgentName: representative.data?.displayName || representative.name || representative.role,
         representativeTestResult: repResult
@@ -443,9 +461,9 @@ export class AIWorkforceReadinessService {
     const modelRecords = await this.getModelReadiness();
 
     const agentsTotal = agentRecords.length;
-    const agentsOperational = agentRecords.filter(a => a.overallStatus === 'OPERATIONAL').length;
-    const agentsDegraded = agentRecords.filter(a => a.overallStatus === 'DEGRADED').length;
-    const agentsBlocked = agentRecords.filter(a => a.overallStatus === 'BLOCKED').length;
+    const agentsOperational = agentRecords.filter(a => a.agentOperationality === 'OPERATIONAL').length;
+    const agentsDegraded = agentRecords.filter(a => a.agentOperationality === 'DEGRADED').length;
+    const agentsBlocked = agentRecords.filter(a => a.agentOperationality === 'BLOCKED').length;
 
     const registeredModelsCount = modelRecords.length;
     const availableModelsCount = modelRecords.filter(m => m.availability === 'AVAILABLE').length;
@@ -500,23 +518,22 @@ export class AIWorkforceReadinessService {
       ``,
       `DETAILED WORKFORCE AGENT MATRIX (SAMPLING & INVENTORY)`,
       `------------------------------------------------------------`,
-      ...agentRecords.slice(0, 30).map(a => `${a.agentId.padEnd(35)} | ${a.division.padEnd(32)} | Prov: ${a.preferredProvider.padEnd(12)} | ${a.overallStatus}`),
+      ...agentRecords.slice(0, 30).map(a => `${a.agentId.padEnd(35)} | ${a.division.padEnd(32)} | Pref: ${a.declaredProvider.padEnd(12)} [${a.preferredProviderStatus.padEnd(14)}] | Active: ${a.activeExecutionProvider.padEnd(12)} | Mode: ${a.fallbackStatus.padEnd(12)} | ${a.agentOperationality}`),
       `... (${agentsTotal - 30} additional cognitive agents fully cataloged in registry)`,
       ``,
       `FINAL STATUS`,
       `------------------------------------------------------------`,
-      `AI FABRIC           : OPERATIONAL`,
-      `WORKFORCE           : OPERATIONAL (420/420 Agents Active)`,
-      `LOCAL EXECUTION     : OPERATIONAL (Air-Gapped Sovereign Enforcement Active)`,
-      `EXTERNAL PROVIDERS  : OPERATIONAL (Gemini 3.7/3.6 Active; Remote Keys Safe)`,
+      `EXTERNAL PROVIDERS  : PARTIALLY_CONFIGURED (Some keys missing in Secret Vault)`,
+      `SOVEREIGN EXECUTION : OPERATIONAL (Air-Gapped Sovereign Enforcement Active)`,
+      `WORKFORCE           : OPERATIONAL (${agentsOperational}/${agentsTotal} Agents Executable via policies)`,
       `MANUFACTURING       : OPERATIONAL (10-Stage Pipeline Executable)`,
       `AUTOMATED SUBMISSION: OPERATIONAL (Spec Intake -> Job Creation -> Review Studio Gate)`,
       `============================================================`
     ];
 
     return {
-      overallStatus: 'OPERATIONAL',
-      isFullyOperational: true,
+      overallStatus: agentsBlocked === 0 ? 'OPERATIONAL' : 'DEGRADED',
+      isFullyOperational: agentsBlocked === 0,
       providers,
       runtimes,
       cognitiveFamilies,

@@ -52,9 +52,12 @@ export class OpenAIPrimaryProvider implements JumoAIProvider {
     const client = this.getClient();
 
     if (!client) {
-      throw new Error(
-        "JUMO OpenAI primary provider is not configured.",
-      );
+      return {
+        text: "AI_EXECUTION_UNAVAILABLE: Cannot execute: JUMO_OPENAI_API_KEY is not configured.",
+        modelId: request.modelId || "UNKNOWN",
+        providerId: this.providerId,
+        metadata: { error: "NOT_CONFIGURED" }
+      };
     }
 
     const model =
