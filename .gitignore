@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+bun.lock
+sovereign-state.json
