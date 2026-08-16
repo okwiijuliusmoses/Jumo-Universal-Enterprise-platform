@@ -14,8 +14,8 @@ export type ExecutionCapabilityStatus = 'REGISTERED' | 'CONFIGURED' | 'EXECUTABL
 export interface ProviderFabricRecord {
   providerId: string;
   displayName: string;
-  providerFamily: 'OPENAI' | 'GOOGLE' | 'MICROSOFT' | 'ANTHROPIC' | 'JUMO_LOCAL' | 'FUTURE';
-  providerType: 'API_PROVIDER' | 'LOCAL_RUNTIME' | 'ENGINEERING_AGENT';
+  providerFamily: 'JUMO_GPT_5_6' | 'OPENAI' | 'CODEX' | 'GEMINI' | 'COPILOT' | 'CLAUDE_CODE' | 'JUMO_LOCAL' | 'OTHER';
+  providerType: 'API_PROVIDER' | 'LOCAL_RUNTIME' | 'ENGINEERING_AGENT' | 'SYSTEM_CORE';
   authenticationMethod: 'BEARER_TOKEN' | 'API_KEY' | 'OAUTH' | 'NONE';
   configurationStatus: ProviderConfigurationStatus;
   connectivityStatus: ProviderConnectivityStatus;
@@ -65,6 +65,28 @@ export class JumoAIProviderFabricRegistry {
   private initializeRegistry(): void {
     const providers: ProviderFabricRecord[] = [
       {
+        providerId: 'JUMO_GPT_5_6',
+        displayName: 'JUMO GPT-5.6 (Sovereign Core)',
+        providerFamily: 'JUMO_GPT_5_6',
+        providerType: 'SYSTEM_CORE',
+        authenticationMethod: 'NONE',
+        configurationStatus: 'CONFIGURED',
+        connectivityStatus: 'CONNECTED',
+        healthStatus: 'HEALTHY',
+        executionStatus: 'EXECUTABLE',
+        endpointUrl: 'system://kernel/gpt-5.6',
+        defaultModel: 'jumo-gpt-5.6-sol',
+        supportedModels: ['jumo-gpt-5.6-sol'],
+        capabilities: ['reasoning', 'policy-compliance', 'governance', 'coordination'],
+        localOrRemote: 'LOCAL',
+        lastHealthCheck: null,
+        lastSuccessfulExecution: null,
+        lastFailure: null,
+        failureReason: null,
+        latencyMs: 5,
+        evidenceId: null
+      },
+      {
         providerId: 'OPENAI',
         displayName: 'OpenAI Primary API',
         providerFamily: 'OPENAI',
@@ -76,8 +98,30 @@ export class JumoAIProviderFabricRegistry {
         executionStatus: JumoSecretVault.hasKey('OPENAI_API_KEY') ? 'CONFIGURED' : 'REGISTERED',
         endpointUrl: 'https://api.openai.com/v1',
         defaultModel: 'gpt-4o',
-        supportedModels: ['gpt-4o', 'gpt-4o-mini', 'o1-preview', 'o1-mini'],
+        supportedModels: ['gpt-4o', 'o1', 'o3-mini'],
         capabilities: ['reasoning', 'coding', 'multimodal', 'tool-calling'],
+        localOrRemote: 'REMOTE',
+        lastHealthCheck: null,
+        lastSuccessfulExecution: null,
+        lastFailure: null,
+        failureReason: null,
+        latencyMs: 0,
+        evidenceId: null
+      },
+      {
+        providerId: 'CODEX',
+        displayName: 'Codex Engineering Agent',
+        providerFamily: 'CODEX',
+        providerType: 'ENGINEERING_AGENT',
+        authenticationMethod: 'API_KEY',
+        configurationStatus: JumoSecretVault.hasKey('OPENAI_API_KEY') ? 'CONFIGURED' : 'NOT_CONFIGURED',
+        connectivityStatus: 'UNKNOWN',
+        healthStatus: 'NOT_TESTED',
+        executionStatus: 'REGISTERED',
+        endpointUrl: 'https://api.openai.com/v1/codex',
+        defaultModel: 'codex-engineering-agent',
+        supportedModels: ['codex-engineering-agent'],
+        capabilities: ['code-generation', 'refactoring', 'ast-analysis'],
         localOrRemote: 'REMOTE',
         lastHealthCheck: null,
         lastSuccessfulExecution: null,
@@ -89,7 +133,7 @@ export class JumoAIProviderFabricRegistry {
       {
         providerId: 'GEMINI',
         displayName: 'Google Gemini Engineering API',
-        providerFamily: 'GOOGLE',
+        providerFamily: 'GEMINI',
         providerType: 'API_PROVIDER',
         authenticationMethod: 'API_KEY',
         configurationStatus: (JumoSecretVault.hasKey('GEMINI_API_KEY') || process.env.VITE_GEMINI_API_KEY) ? 'CONFIGURED' : 'NOT_CONFIGURED',
@@ -97,8 +141,8 @@ export class JumoAIProviderFabricRegistry {
         healthStatus: 'NOT_TESTED',
         executionStatus: 'CONFIGURED',
         endpointUrl: 'https://generativelanguage.googleapis.com/v1beta',
-        defaultModel: 'gemini-2.5-pro',
-        supportedModels: ['gemini-2.5-pro', 'gemini-3.6-flash', 'gemini-3.1-pro-preview'],
+        defaultModel: 'gemini-3.7-flash',
+        supportedModels: ['gemini-3.7-flash', 'gemini-3.1-pro-preview'],
         capabilities: ['multimodal', 'complex-reasoning', 'speed', 'long-context'],
         localOrRemote: 'REMOTE',
         lastHealthCheck: null,
@@ -111,7 +155,7 @@ export class JumoAIProviderFabricRegistry {
       {
         providerId: 'COPILOT',
         displayName: 'GitHub / Microsoft Copilot Enterprise',
-        providerFamily: 'MICROSOFT',
+        providerFamily: 'COPILOT',
         providerType: 'ENGINEERING_AGENT',
         authenticationMethod: 'OAUTH',
         configurationStatus: 'NOT_CONFIGURED',
@@ -119,8 +163,8 @@ export class JumoAIProviderFabricRegistry {
         healthStatus: 'FAILED',
         executionStatus: 'REGISTERED',
         endpointUrl: 'https://api.githubcopilot.com',
-        defaultModel: 'copilot-enterprise',
-        supportedModels: ['copilot-enterprise', 'copilot-intelligent-mesh'],
+        defaultModel: 'copilot-intelligent-mesh',
+        supportedModels: ['copilot-intelligent-mesh'],
         capabilities: ['coding', 'completion', 'repo-context'],
         localOrRemote: 'REMOTE',
         lastHealthCheck: null,
@@ -131,41 +175,19 @@ export class JumoAIProviderFabricRegistry {
         evidenceId: null
       },
       {
-        providerId: 'CODEX',
-        displayName: 'Codex Engineering Agent',
-        providerFamily: 'OPENAI',
+        providerId: 'CLAUDE_CODE',
+        displayName: 'Anthropic Claude Code',
+        providerFamily: 'CLAUDE_CODE',
         providerType: 'ENGINEERING_AGENT',
-        authenticationMethod: 'API_KEY',
-        configurationStatus: JumoSecretVault.hasKey('OPENAI_API_KEY') ? 'CONFIGURED' : 'NOT_CONFIGURED',
-        connectivityStatus: 'UNKNOWN',
-        healthStatus: 'NOT_TESTED',
-        executionStatus: 'REGISTERED',
-        endpointUrl: 'https://api.openai.com/v1/codex',
-        defaultModel: 'codex-engineering-agent',
-        supportedModels: ['codex-engineering-agent'],
-        capabilities: ['code-generation', 'refactoring', 'ast-analysis', 'test-generation'],
-        localOrRemote: 'REMOTE',
-        lastHealthCheck: null,
-        lastSuccessfulExecution: null,
-        lastFailure: null,
-        failureReason: null,
-        latencyMs: 0,
-        evidenceId: null
-      },
-      {
-        providerId: 'ANTHROPIC',
-        displayName: 'Anthropic Claude Engineering & Reasoning',
-        providerFamily: 'ANTHROPIC',
-        providerType: 'API_PROVIDER',
         authenticationMethod: 'API_KEY',
         configurationStatus: (JumoSecretVault.hasKey('ANTHROPIC_API_KEY') || JumoSecretVault.hasKey('CLAUDE_API_KEY')) ? 'CONFIGURED' : 'NOT_CONFIGURED',
         connectivityStatus: 'UNKNOWN',
         healthStatus: 'NOT_TESTED',
         executionStatus: (JumoSecretVault.hasKey('ANTHROPIC_API_KEY') || JumoSecretVault.hasKey('CLAUDE_API_KEY')) ? 'CONFIGURED' : 'REGISTERED',
         endpointUrl: 'https://api.anthropic.com/v1',
-        defaultModel: 'claude-3-7-sonnet',
-        supportedModels: ['claude-3-7-sonnet', 'claude-3-5-sonnet', 'claude-3-5-haiku', 'claude-3-opus'],
-        capabilities: ['reasoning', 'coding', 'computer-use', 'tool-calling', 'extended-thinking'],
+        defaultModel: 'claude-code-sonnet',
+        supportedModels: ['claude-code-sonnet'],
+        capabilities: ['reasoning', 'coding', 'extended-thinking', 'tool-calling'],
         localOrRemote: 'REMOTE',
         lastHealthCheck: null,
         lastSuccessfulExecution: null,
@@ -176,7 +198,7 @@ export class JumoAIProviderFabricRegistry {
       },
       {
         providerId: 'JUMO_LOCAL',
-        displayName: 'JUMO Local Sovereign Engine',
+        displayName: 'JUMO Local Sovereign Engine (Omalla)',
         providerFamily: 'JUMO_LOCAL',
         providerType: 'LOCAL_RUNTIME',
         authenticationMethod: 'NONE',
@@ -185,10 +207,32 @@ export class JumoAIProviderFabricRegistry {
         healthStatus: 'NOT_TESTED',
         executionStatus: 'REGISTERED',
         endpointUrl: 'http://localhost:11434',
-        defaultModel: 'llama3',
-        supportedModels: ['llama3', 'mistral', 'codellama', 'phi3'],
+        defaultModel: 'jumo-sovereign-kernel-local',
+        supportedModels: ['jumo-sovereign-kernel-local', 'llama3-local-8b', 'mistral-local-7b'],
         capabilities: ['offline-sovereignty', 'air-gapped-reasoning', 'local-coding', 'zero-leak'],
         localOrRemote: 'LOCAL',
+        lastHealthCheck: null,
+        lastSuccessfulExecution: null,
+        lastFailure: null,
+        failureReason: null,
+        latencyMs: 0,
+        evidenceId: null
+      },
+      {
+        providerId: 'OTHER',
+        displayName: 'Extensible Custom Provider Nodes',
+        providerFamily: 'OTHER',
+        providerType: 'API_PROVIDER',
+        authenticationMethod: 'NONE',
+        configurationStatus: 'NOT_CONFIGURED',
+        connectivityStatus: 'UNKNOWN',
+        healthStatus: 'NOT_TESTED',
+        executionStatus: 'REGISTERED',
+        endpointUrl: 'http://custom-node-router.local',
+        defaultModel: 'custom-neural-node',
+        supportedModels: ['custom-neural-node'],
+        capabilities: ['extensible-inference', 'chat'],
+        localOrRemote: 'REMOTE',
         lastHealthCheck: null,
         lastSuccessfulExecution: null,
         lastFailure: null,
@@ -331,12 +375,12 @@ export class JumoAIProviderFabricRegistry {
           errorDetails = e.message;
         }
       }
-    } else if (providerId === 'ANTHROPIC') {
+    } else if (providerId === 'CLAUDE_CODE') {
       const hasKey = JumoSecretVault.hasKey('ANTHROPIC_API_KEY') || JumoSecretVault.hasKey('CLAUDE_API_KEY');
       record.configurationStatus = hasKey ? 'CONFIGURED' : 'NOT_CONFIGURED';
       authPass = !!hasKey;
       if (!hasKey) {
-        errorDetails = 'Anthropic API key not configured';
+        errorDetails = 'Claude API key not configured';
         record.connectivityStatus = 'UNREACHABLE';
         record.healthStatus = 'FAILED';
         record.executionStatus = 'REGISTERED';
@@ -359,7 +403,7 @@ export class JumoAIProviderFabricRegistry {
             record.connectivityStatus = (res.status === 401 || res.status === 403) ? 'AUTHENTICATION_FAILED' : 'UNREACHABLE';
             record.healthStatus = 'FAILED';
             record.executionStatus = (res.status === 401 || res.status === 403) ? 'BLOCKED' : 'CONFIGURED';
-            errorDetails = `Anthropic probe returned status ${res.status}`;
+            errorDetails = `Claude probe returned status ${res.status}`;
           }
         } catch (e: any) {
           networkPass = false;

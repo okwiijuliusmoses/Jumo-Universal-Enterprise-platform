@@ -503,55 +503,57 @@ export function SpecificationStudio() {
         </div>
       </div>
 
-      {/* 2. THREE-COLUMN RESTORED COMPOSITION */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-hidden min-h-[700px]">
-        
-        {/* Left: Stage Navigation (2 Columns) */}
-        <div className="lg:col-span-2 space-y-1 bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs overflow-y-auto">
-          <div className="px-3 py-2 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-2">
-            Manufacturing Stages
-          </div>
-          <div className="space-y-1">
-            {SPECIFICATION_SCHEMA.sections.map((section, idx) => {
-              const isCurrent = section.id === activeTab;
-              const hasData = contractData[section.id] && Object.keys(contractData[section.id]).length > 0;
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => setActiveTab(section.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-xl text-[11px] transition-all flex items-center justify-between cursor-pointer ${
-                    isCurrent
-                      ? 'bg-blue-50 border border-blue-200 text-blue-900 font-bold shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 truncate">
-                    <span className={`w-5 h-5 rounded-md text-[9px] flex items-center justify-center font-bold font-mono ${
-                      isCurrent ? 'bg-blue-600 text-white' : hasData ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      {(idx + 1).toString().padStart(2, '0')}
-                    </span>
-                    <span className="truncate">{section.title.split('. ')[1] || section.title}</span>
-                  </div>
-                  {hasData && <Check size={12} className="text-emerald-600 shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
+      {/* 2. HORIZONTAL STAGE NAVIGATOR */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
+        <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin scroll-smooth" id="spec-horizontal-navigator">
+          {SPECIFICATION_SCHEMA.sections.map((section, idx) => {
+            const isCurrent = section.id === activeTab;
+            const hasData = contractData[section.id] && Object.keys(contractData[section.id]).length > 0;
+            return (
+              <button
+                key={section.id}
+                onClick={() => setActiveTab(section.id)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border shrink-0 transition-all cursor-pointer ${
+                  isCurrent
+                    ? 'bg-blue-50 border-blue-200 text-blue-900 shadow-xs'
+                    : 'bg-slate-50 border-slate-150 text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                }`}
+                title={section.title}
+              >
+                <span className={`w-5 h-5 rounded-lg text-[10px] flex items-center justify-center font-bold ${
+                  isCurrent 
+                    ? 'bg-blue-600 text-white font-mono' 
+                    : hasData 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-slate-200 text-slate-500 font-mono'
+                }`}>
+                  {hasData ? '✓' : (idx + 1).toString().padStart(2, '0')}
+                </span>
+                <span>{section.title.split('. ')[1] || section.title}</span>
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="mt-6 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Completeness</div>
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-900 mb-1.5">
-              <span>{completeness}%</span>
+        {/* Inline Completeness Indicator */}
+        <div className="shrink-0 flex items-center gap-3 bg-slate-50/80 border border-slate-200 px-4 py-2 rounded-xl text-xs md:max-w-[220px] w-full">
+          <div className="flex-1 min-w-0">
+            <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-widest leading-none mb-1">
+              <span>Completeness</span>
+              <span className="font-mono text-blue-600 font-black">{completeness}%</span>
             </div>
-            <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-slate-200 rounded-full h-1 overflow-hidden">
               <div className="bg-blue-600 h-full transition-all duration-300" style={{ width: `${completeness}%` }}></div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Center: Stage Content / Form Workspace (7 Columns) */}
-        <div className="lg:col-span-7 bg-white p-8 rounded-2xl border border-slate-200/80 shadow-xs overflow-y-auto">
+      {/* 3. OPTIMIZED TWO-COLUMN SYSTEM COMPOSITION */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-hidden min-h-[700px]">
+
+        {/* Center: Stage Content / Form Workspace (8 Columns) */}
+        <div className="lg:col-span-8 bg-white p-8 rounded-2xl border border-slate-200/80 shadow-xs overflow-y-auto">
           <div className="space-y-8">
             <div className="border-b border-slate-100 pb-5">
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">{activeSection.title}</h2>
@@ -943,8 +945,8 @@ export function SpecificationStudio() {
           </div>
         </div>
 
-        {/* Right: Contract Context & Real-time Synthesis (3 Columns) */}
-        <div className="lg:col-span-3 flex flex-col space-y-4 overflow-hidden">
+        {/* Right: Contract Context & Real-time Synthesis (4 Columns) */}
+        <div className="lg:col-span-4 flex flex-col space-y-4 overflow-hidden">
           
           {/* Engineering Synthesis Panel */}
           <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-xl border border-slate-800 flex flex-col flex-1">

@@ -5,6 +5,7 @@ import {
   Search, Sliders, Activity, Terminal, Eye, History,
   Award, ShieldAlert, Fingerprint, Zap, Lock, Info
 } from 'lucide-react';
+import { JobReviewStudio } from '../../studio/JobReviewStudio';
 
 interface AssuranceStudioProps {
   verifications: any[];
@@ -17,7 +18,7 @@ export const ProductAssuranceStudio: React.FC<AssuranceStudioProps> = ({
   certifications = [],
   onCertify
 }) => {
-  const [activeTab, setActiveTab] = useState<'gates' | 'certification' | 'audit'>('gates');
+  const [activeTab, setActiveTab] = useState<'verification' | 'job_review' | 'app_review'>('verification');
 
   return (
     <div className="flex flex-col h-full space-y-6">
@@ -27,33 +28,50 @@ export const ProductAssuranceStudio: React.FC<AssuranceStudioProps> = ({
             <ShieldCheck size={24} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Product Assurance Studio</h2>
+            <h2 className="text-xl font-bold text-slate-900">Assurance & Human Verification Studio</h2>
             <p className="text-sm text-slate-500 font-medium">Authoritative Verification, Certification & Release Seal</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-lg">
-          {(['gates', 'certification', 'audit'] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${
-                activeTab === tab 
-                ? 'bg-white text-slate-900 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 p-1 bg-slate-100 rounded-xl">
+          <button
+            onClick={() => setActiveTab('verification')}
+            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+              activeTab === 'verification' 
+              ? 'bg-white text-slate-900 shadow-sm' 
+              : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            Verification
+          </button>
+          <button
+            onClick={() => setActiveTab('job_review')}
+            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+              activeTab === 'job_review' 
+              ? 'bg-white text-slate-900 shadow-sm' 
+              : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            Job Review
+          </button>
+          <button
+            onClick={() => setActiveTab('app_review')}
+            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
+              activeTab === 'app_review' 
+              ? 'bg-white text-slate-900 shadow-sm' 
+              : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            Application Review
+          </button>
         </div>
       </div>
 
       <div className="flex-1 overflow-auto">
         <AnimatePresence mode="wait">
-          {activeTab === 'gates' && (
+          {activeTab === 'verification' && (
             <motion.div
-              key="gates"
+              key="verification"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -90,9 +108,6 @@ export const ProductAssuranceStudio: React.FC<AssuranceStudioProps> = ({
                            <div className="px-2 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase rounded border border-emerald-100 flex items-center gap-1">
                              <CheckCircle2 size={10} /> PASSED
                            </div>
-                           <button className="p-2 hover:bg-white rounded-lg text-slate-400 hover:text-slate-600 transition-colors">
-                             <Eye size={16} />
-                           </button>
                          </div>
                        </div>
                      ))}
@@ -139,7 +154,7 @@ export const ProductAssuranceStudio: React.FC<AssuranceStudioProps> = ({
                        Awaiting final human signature for Release Candidate 2026.04.B. All technical gates are green.
                      </p>
                      <button 
-                       onClick={() => setActiveTab('certification')}
+                       onClick={() => setActiveTab('app_review')}
                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-200"
                      >
                        Proceed to Certification
@@ -150,11 +165,24 @@ export const ProductAssuranceStudio: React.FC<AssuranceStudioProps> = ({
             </motion.div>
           )}
 
-          {activeTab === 'certification' && (
-             <motion.div
-              key="certification"
+          {activeTab === 'job_review' && (
+            <motion.div
+              key="job_review"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              <JobReviewStudio />
+            </motion.div>
+          )}
+
+          {activeTab === 'app_review' && (
+             <motion.div
+              key="app_review"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="max-w-3xl mx-auto space-y-8 py-8"
              >
                <div className="text-center space-y-2">

@@ -96,7 +96,7 @@ export class AnthropicClaudeProvider implements JumoAIProvider {
       }
     }
 
-    return JumoModelRegistry.getModelsByProvider("ANTHROPIC").map(m => ({
+    return JumoModelRegistry.getModelsByProvider("CLAUDE_CODE").map(m => ({
       modelId: m.modelId,
       displayName: m.displayName,
       contextLength: m.contextLength,

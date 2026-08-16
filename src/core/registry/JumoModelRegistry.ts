@@ -1,293 +1,381 @@
 // JUMO UEOS — JUMO Provider-Neutral AI Model Registry
-// Dynamic registry supporting Google Gemini (2.x, 3.x, 3.1, 3.5 Flash, 3.6 Flash, 3.7 Flash with multi-step coding/agent planning),
-// OpenAI (GPT-4o, o1, o1-mini, o3-mini, GPT-4.5), Copilot/Azure, Anthropic (Claude 3.5/3.7 Sonnet), and Local Air-Gapped models.
+// Dynamic registry supporting JUMO GPT-5.6, OpenAI, Codex, Google Gemini, Microsoft Copilot, Anthropic Claude Code, JUMO Local (Omalla), and Other Providers.
 
-export type AIModelProviderType = 'GEMINI' | 'OPENAI' | 'COPILOT' | 'ANTHROPIC' | 'JUMO_LOCAL' | 'SOVEREIGN_CUSTOM';
+export type AIModelProviderType = 
+  | 'JUMO_GPT_5_6'
+  | 'OPENAI'
+  | 'CODEX'
+  | 'GEMINI'
+  | 'COPILOT'
+  | 'CLAUDE_CODE'
+  | 'JUMO_LOCAL'
+  | 'OTHER';
 
 export interface JumoModelDefinition {
   modelId: string;
   displayName: string;
   providerId: AIModelProviderType;
   purpose: string;
+  
+  // Specific capabilities
   reasoning: boolean;
   coding: boolean;
+  architecture: boolean;
+  analysis: boolean;
   multimodal: boolean;
   toolCalling: boolean;
   structuredOutput: boolean;
   streaming: boolean;
+  
+  // Deployment & Infrastructure
   local: boolean;
-  status: 'AVAILABLE' | 'UNAVAILABLE' | 'PLANNED';
-  contextLength: number;
+  deploymentType: 'LOCAL' | 'CLOUD' | 'HYBRID';
+  securityClassification: 'UNCLASSIFIED' | 'RESTRICTED' | 'SECRET' | 'TOP_SECRET';
+  
+  // Lifecyle State
+  status: 'DISCOVERED' | 'REGISTERED' | 'CONFIGURED' | 'AVAILABLE' | 'HEALTHY' | 'IN_USE' | 'DEGRADED' | 'UNAVAILABLE' | 'FAILED';
+  
+  // Performance & Capacity
+  contextLength: number; // context capacity
   maxOutputTokens: number;
   costTier: 'LOW' | 'MEDIUM' | 'HIGH' | 'ZERO_LOCAL';
   latencyTier: 'ULTRA_FAST' | 'FAST' | 'BALANCED' | 'DEEP_REASONING';
+  
+  // Metadata & Diagnostics
   recommendedTasks: string[];
   capabilities: string[];
+  parameterSize?: string;
+  quantization?: string;
+  digest?: string;
 }
 
 export const CANONICAL_JUMO_MODELS: JumoModelDefinition[] = [
-  // Google Gemini Generations
+  // 1. JUMO GPT-5.6
   {
-    modelId: 'gemini-3.7-flash',
-    displayName: 'Gemini 3.7 Flash (Hybrid Coding & Agentic Reasoning)',
-    providerId: 'GEMINI',
-    purpose: 'Google flagship hybrid model for multi-step agent planning, complex coding loops, tool execution, and architecture synthesis.',
+    modelId: 'jumo-gpt-5.6-sol',
+    displayName: 'JUMO GPT-5.6 Sol (Sovereign Core Reasoning Engine)',
+    providerId: 'JUMO_GPT_5_6',
+    purpose: 'Flagship JUMO reasoning intelligence for supreme administration, compliance, policy interpretation, and governance.',
     reasoning: true,
     coding: true,
+    architecture: true,
+    analysis: true,
     multimodal: true,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: false,
-    status: 'AVAILABLE',
-    contextLength: 1048576,
+    deploymentType: 'HYBRID',
+    securityClassification: 'TOP_SECRET',
+    status: 'AVAILABLE' as any, // fallback to healthy in usage
+    contextLength: 1000000,
     maxOutputTokens: 65536,
-    costTier: 'LOW',
-    latencyTier: 'FAST',
-    recommendedTasks: ['agent-workforce-orchestration', 'code-generation', 'architecture-synthesis', 'multi-step-planning'],
-    capabilities: ['fast-agentic-loops', 'code-execution', 'multimodal', 'tool-calling', 'interactions-api']
-  },
-  {
-    modelId: 'gemini-3.6-flash',
-    displayName: 'Gemini 3.6 Flash (High-Velocity Agentic Execution)',
-    providerId: 'GEMINI',
-    purpose: 'Optimized for high-velocity coding, real-time agent loops, and fast task completion.',
-    reasoning: true,
-    coding: true,
-    multimodal: true,
-    toolCalling: true,
-    structuredOutput: true,
-    streaming: true,
-    local: false,
-    status: 'AVAILABLE',
-    contextLength: 1048576,
-    maxOutputTokens: 8192,
-    costTier: 'LOW',
-    latencyTier: 'ULTRA_FAST',
-    recommendedTasks: ['telemetry-analysis', 'routine-transformation', 'rapid-triage'],
-    capabilities: ['speed', 'code-execution', 'high-concurrency']
-  },
-  {
-    modelId: 'gemini-3.1-pro-preview',
-    displayName: 'Gemini 3.1 Pro Preview (Architectural Reasoning)',
-    providerId: 'GEMINI',
-    purpose: 'High-capacity reasoning engine for deep invariant audits and massive context multi-domain specifications.',
-    reasoning: true,
-    coding: true,
-    multimodal: true,
-    toolCalling: true,
-    structuredOutput: true,
-    streaming: true,
-    local: false,
-    status: 'AVAILABLE',
-    contextLength: 2097152,
-    maxOutputTokens: 65536,
-    costTier: 'MEDIUM',
-    latencyTier: 'DEEP_REASONING',
-    recommendedTasks: ['architecture-invariants-audit', 'massive-spec-ingestion', 'formal-verification'],
-    capabilities: ['deep-architectural-reasoning', 'complex-verification', 'software-engineering', 'broad-reasoning']
-  },
-  {
-    modelId: 'gemini-2.5-pro',
-    displayName: 'Gemini 2.5 Pro (Enterprise Workhorse)',
-    providerId: 'GEMINI',
-    purpose: 'Stable enterprise generation with high mathematical and compliance accuracy.',
-    reasoning: true,
-    coding: true,
-    multimodal: true,
-    toolCalling: true,
-    structuredOutput: true,
-    streaming: true,
-    local: false,
-    status: 'AVAILABLE',
-    contextLength: 2097152,
-    maxOutputTokens: 8192,
-    costTier: 'MEDIUM',
-    latencyTier: 'BALANCED',
-    recommendedTasks: ['compliance-audit', 'verification-testing', 'security-analysis'],
-    capabilities: ['multimodal', 'reasoning', 'tool-calling']
-  },
-
-  // OpenAI / Sovereign Primary Intelligence
-  {
-    modelId: 'gpt-5.6-sol',
-    displayName: 'OpenAI GPT-5.6 Sol (Primary JUMO System Intelligence)',
-    providerId: 'OPENAI',
-    purpose: 'Authoritative primary system intelligence for JUMO GPT orchestration, system administration, high-risk architecture governance, escalation, and policy interpretation.',
-    reasoning: true,
-    coding: true,
-    multimodal: true,
-    toolCalling: true,
-    structuredOutput: true,
-    streaming: true,
-    local: false,
-    status: 'AVAILABLE',
-    contextLength: 500000,
-    maxOutputTokens: 100000,
     costTier: 'HIGH',
     latencyTier: 'DEEP_REASONING',
-    recommendedTasks: [
-      'system-administration',
-      'architecture-governance',
-      'high-risk-engineering-reasoning',
-      'manufacturing-supervision',
-      'workforce-supervision',
-      'policy-interpretation',
-      'escalation-handling'
-    ],
-    capabilities: [
-      'primary-system-intelligence',
-      'orchestration',
-      'policy-governance',
-      'high-risk-reasoning',
-      'system-administration'
-    ]
+    recommendedTasks: ['system-administration', 'architecture-governance', 'policy-interpretation', 'escalation-handling'],
+    capabilities: ['reasoning', 'policy-compliance', 'governance', 'complex-coordination']
   },
-  {
-    modelId: 'codex-engineering-agent',
-    displayName: 'Codex Engineering Engine (Repository & Code Transformation Specialist)',
-    providerId: 'OPENAI',
-    purpose: 'Engineering repository specialist for deep codebase synthesis, AST transformations, and formal refactoring.',
-    reasoning: true,
-    coding: true,
-    multimodal: false,
-    toolCalling: true,
-    structuredOutput: true,
-    streaming: true,
-    local: false,
-    status: 'AVAILABLE',
-    contextLength: 250000,
-    maxOutputTokens: 65536,
-    costTier: 'MEDIUM',
-    latencyTier: 'FAST',
-    recommendedTasks: ['codebase-transformation', 'refactoring', 'ast-generation'],
-    capabilities: ['coding', 'repo-synthesis', 'tool-calling']
-  },
+
+  // 2. OpenAI
   {
     modelId: 'gpt-4o',
-    displayName: 'GPT-4o (Omni Enterprise Engine)',
+    displayName: 'GPT-4o (OpenAI Omni Engine)',
     providerId: 'OPENAI',
-    purpose: 'High-speed omni model for general multi-turn reasoning and tool invocation.',
+    purpose: 'Balanced enterprise omni model for fast multi-turn interaction, document search, and structured analysis.',
     reasoning: true,
     coding: true,
+    architecture: true,
+    analysis: true,
     multimodal: true,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: false,
-    status: 'AVAILABLE',
+    deploymentType: 'CLOUD',
+    securityClassification: 'SECRET',
+    status: 'AVAILABLE' as any,
     contextLength: 128000,
     maxOutputTokens: 16384,
     costTier: 'MEDIUM',
     latencyTier: 'FAST',
-    recommendedTasks: ['general-reasoning', 'api-contracts', 'conversational-intelligence'],
-    capabilities: ['omni-multimodal', 'tool-calling', 'json-mode']
+    recommendedTasks: ['general-reasoning', 'document-indexing', 'api-contracts'],
+    capabilities: ['speed', 'multimodal', 'tool-calling', 'json-mode']
   },
   {
     modelId: 'o1',
-    displayName: 'OpenAI o1 (Deep Formal Reasoning)',
+    displayName: 'OpenAI o1 (Formal Multi-Step Reasoner)',
     providerId: 'OPENAI',
-    purpose: 'Autonomous chain-of-thought engine for hard mathematical logic, cryptographic proofs, and algorithm design.',
+    purpose: 'Deep chain-of-thought engine for math modeling, code verification, and security risk auditing.',
     reasoning: true,
     coding: true,
+    architecture: true,
+    analysis: true,
     multimodal: true,
     toolCalling: false,
     structuredOutput: true,
     streaming: false,
     local: false,
-    status: 'AVAILABLE',
+    deploymentType: 'CLOUD',
+    securityClassification: 'TOP_SECRET',
+    status: 'AVAILABLE' as any,
     contextLength: 200000,
     maxOutputTokens: 100000,
     costTier: 'HIGH',
     latencyTier: 'DEEP_REASONING',
-    recommendedTasks: ['cryptographic-proofs', 'complex-compiler-design', 'security-boundary-analysis'],
-    capabilities: ['deep-reasoning', 'formal-logic', 'math-olympiad-tier']
+    recommendedTasks: ['formal-proofs', 'algorithm-design', 'vulnerability-audit'],
+    capabilities: ['deep-reasoning', 'formal-logic', 'complex-verification']
   },
   {
     modelId: 'o3-mini',
-    displayName: 'OpenAI o3-mini (High-Velocity Reasoning & STEM)',
+    displayName: 'OpenAI o3-mini (High-Velocity Reasoner)',
     providerId: 'OPENAI',
-    purpose: 'Lightweight, ultra-fast reasoning model optimized for coding, mathematics, and science benchmarks.',
+    purpose: 'Fast logical model designed for software engineering loops and high-throughput STEM calculations.',
     reasoning: true,
     coding: true,
+    architecture: false,
+    analysis: true,
     multimodal: false,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: false,
-    status: 'AVAILABLE',
+    deploymentType: 'CLOUD',
+    securityClassification: 'SECRET',
+    status: 'AVAILABLE' as any,
     contextLength: 200000,
     maxOutputTokens: 100000,
     costTier: 'LOW',
     latencyTier: 'FAST',
-    recommendedTasks: ['fast-stem-reasoning', 'code-refactoring', 'test-case-generation'],
-    capabilities: ['fast-reasoning', 'coding', 'tool-calling']
+    recommendedTasks: ['code-generation', 'refactoring', 'test-generation'],
+    capabilities: ['reasoning', 'coding', 'speed']
   },
 
-  // Microsoft Copilot / Azure Ecosystem
+  // 3. Codex
   {
-    modelId: 'copilot-intelligent-mesh',
-    displayName: 'Microsoft Copilot Intelligent Mesh (Azure Enterprise)',
-    providerId: 'COPILOT',
-    purpose: 'Enterprise productivity, Microsoft 365 / Azure integration, and cross-service orchestration.',
-    reasoning: true,
+    modelId: 'codex-engineering-agent',
+    displayName: 'Codex Engineering Agent (AST Specialist)',
+    providerId: 'CODEX',
+    purpose: 'Low-level code transformation specialist focusing on syntax parsing, compilers, and database script assembly.',
+    reasoning: false,
     coding: true,
-    multimodal: true,
+    architecture: false,
+    analysis: true,
+    multimodal: false,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: false,
-    status: 'AVAILABLE',
-    contextLength: 32000,
-    maxOutputTokens: 4096,
+    deploymentType: 'CLOUD',
+    securityClassification: 'RESTRICTED',
+    status: 'AVAILABLE' as any,
+    contextLength: 64000,
+    maxOutputTokens: 16384,
     costTier: 'MEDIUM',
     latencyTier: 'FAST',
-    recommendedTasks: ['azure-orchestration', 'enterprise-productivity', 'document-indexing'],
-    capabilities: ['azure-integration', 'enterprise-mesh']
+    recommendedTasks: ['code-synthesis', 'ast-refactoring', 'sql-generation'],
+    capabilities: ['coding', 'ast-parsing', 'formatting']
   },
 
-  // Anthropic Family
+  // 4. Google Gemini
   {
-    modelId: 'claude-3-7-sonnet',
-    displayName: 'Claude 3.7 Sonnet (Hybrid Reasoning & Coding)',
-    providerId: 'ANTHROPIC',
-    purpose: 'Hybrid reasoning and coding model with fine-grained thinking budgets and high nuance.',
+    modelId: 'gemini-3.7-flash',
+    displayName: 'Gemini 3.7 Flash (Agentic Reasoning & Tool Orchestrator)',
+    providerId: 'GEMINI',
+    purpose: 'Google flagship hybrid model for autonomous agent loops, code compilation, and full-stack integration.',
     reasoning: true,
     coding: true,
+    architecture: true,
+    analysis: true,
     multimodal: true,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: false,
-    status: 'AVAILABLE',
+    deploymentType: 'CLOUD',
+    securityClassification: 'SECRET',
+    status: 'AVAILABLE' as any,
+    contextLength: 1048576,
+    maxOutputTokens: 65536,
+    costTier: 'LOW',
+    latencyTier: 'FAST',
+    recommendedTasks: ['agentic-workflows', 'compilation-supervision', 'architecture-synthesis'],
+    capabilities: ['interactions-api', 'tool-calling', 'code-execution', 'speed']
+  },
+  {
+    modelId: 'gemini-3.1-pro-preview',
+    displayName: 'Gemini 3.1 Pro Preview (Massive Invariant Audit)',
+    providerId: 'GEMINI',
+    purpose: 'Deep multi-domain context processing for specification auditing and security perimeter tracing.',
+    reasoning: true,
+    coding: true,
+    architecture: true,
+    analysis: true,
+    multimodal: true,
+    toolCalling: true,
+    structuredOutput: true,
+    streaming: true,
+    local: false,
+    deploymentType: 'CLOUD',
+    securityClassification: 'TOP_SECRET',
+    status: 'AVAILABLE' as any,
+    contextLength: 2097152,
+    maxOutputTokens: 65536,
+    costTier: 'MEDIUM',
+    latencyTier: 'DEEP_REASONING',
+    recommendedTasks: ['broad-auditing', 'contract-verification', 'multi-file-analysis'],
+    capabilities: ['long-context', 'reasoning', 'multimodal', 'security-tracing']
+  },
+
+  // 5. Microsoft Copilot
+  {
+    modelId: 'copilot-intelligent-mesh',
+    displayName: 'Microsoft Copilot Intelligent Mesh (Enterprise Integration)',
+    providerId: 'COPILOT',
+    purpose: 'Productivity alignment, Microsoft Azure resource modeling, and corporate dependency coordination.',
+    reasoning: true,
+    coding: true,
+    architecture: false,
+    analysis: true,
+    multimodal: true,
+    toolCalling: true,
+    structuredOutput: true,
+    streaming: true,
+    local: false,
+    deploymentType: 'CLOUD',
+    securityClassification: 'RESTRICTED',
+    status: 'AVAILABLE' as any,
+    contextLength: 32000,
+    maxOutputTokens: 8192,
+    costTier: 'MEDIUM',
+    latencyTier: 'FAST',
+    recommendedTasks: ['dependency-coordination', 'cloud-mapping', 'executive-reports'],
+    capabilities: ['azure-integration', 'structured-output']
+  },
+
+  // 6. Anthropic Claude Code
+  {
+    modelId: 'claude-code-sonnet',
+    displayName: 'Claude Code Sonnet (Advanced Repository Synthesis)',
+    providerId: 'CLAUDE_CODE',
+    purpose: 'Repository specialist for generating responsive UI components, test suites, and handling semantic diff refactoring.',
+    reasoning: true,
+    coding: true,
+    architecture: true,
+    analysis: true,
+    multimodal: true,
+    toolCalling: true,
+    structuredOutput: true,
+    streaming: true,
+    local: false,
+    deploymentType: 'CLOUD',
+    securityClassification: 'SECRET',
+    status: 'AVAILABLE' as any,
     contextLength: 200000,
     maxOutputTokens: 8192,
     costTier: 'MEDIUM',
     latencyTier: 'FAST',
-    recommendedTasks: ['nuanced-coding', 'large-codebase-refactoring', 'detailed-documentation'],
-    capabilities: ['extended-thinking', 'coding', 'computer-use']
+    recommendedTasks: ['ui-generation', 'unit-testing', 'diff-refactoring', 'component-assembly'],
+    capabilities: ['coding', 'computer-use', 'tool-calling']
   },
 
-  // JUMO Local Air-Gapped Sovereign Engine
+  // 7. JUMO Local
   {
     modelId: 'jumo-sovereign-kernel-local',
-    displayName: 'JUMO Sovereign Kernel Local (Air-Gapped Deterministic)',
+    displayName: 'JUMO Sovereign Kernel Local (Air-Gapped Core)',
     providerId: 'JUMO_LOCAL',
-    purpose: 'Deterministic air-gapped zero-egress fallback running directly on memory-locked secure kernels.',
+    purpose: 'Air-gapped secure fallback executing in host server kernel memory. Guarantees 100% security classification compliance.',
     reasoning: true,
-    coding: false,
+    coding: true,
+    architecture: true,
+    analysis: true,
     multimodal: false,
     toolCalling: true,
     structuredOutput: true,
     streaming: true,
     local: true,
-    status: 'AVAILABLE',
-    contextLength: 16000,
-    maxOutputTokens: 4096,
+    deploymentType: 'LOCAL',
+    securityClassification: 'TOP_SECRET',
+    status: 'AVAILABLE' as any,
+    contextLength: 32000,
+    maxOutputTokens: 8192,
     costTier: 'ZERO_LOCAL',
     latencyTier: 'ULTRA_FAST',
-    recommendedTasks: ['air-gap-failover', 'deterministic-assertions', 'zero-leak-execution'],
-    capabilities: ['air-gap', 'deterministic-rules', 'zero-leak', 'offline-guarantee']
+    recommendedTasks: ['secure-fallback', 'confidential-verification', 'offline-audit'],
+    capabilities: ['air-gapped', 'zero-leak', 'local-inference']
+  },
+  {
+    modelId: 'llama3-local-8b',
+    displayName: 'Llama-3 Local 8B (Omalla/Olla Discovered)',
+    providerId: 'JUMO_LOCAL',
+    purpose: 'Standard discovered local model for basic user questions, routine log analysis, and system checks.',
+    reasoning: true,
+    coding: true,
+    architecture: false,
+    analysis: true,
+    multimodal: false,
+    toolCalling: false,
+    structuredOutput: true,
+    streaming: true,
+    local: true,
+    deploymentType: 'LOCAL',
+    securityClassification: 'SECRET',
+    status: 'REGISTERED' as any,
+    contextLength: 8192,
+    maxOutputTokens: 4096,
+    costTier: 'ZERO_LOCAL',
+    latencyTier: 'FAST',
+    recommendedTasks: ['log-analysis', 'routine-checks', 'help-utilities'],
+    capabilities: ['local-inference', 'chat']
+  },
+  {
+    modelId: 'mistral-local-7b',
+    displayName: 'Mistral Local 7B (Omalla/Olla Discovered)',
+    providerId: 'JUMO_LOCAL',
+    purpose: 'Highly compact discovered model optimized for fast responses and minor task execution.',
+    reasoning: true,
+    coding: true,
+    architecture: false,
+    analysis: true,
+    multimodal: false,
+    toolCalling: true,
+    structuredOutput: true,
+    streaming: true,
+    local: true,
+    deploymentType: 'LOCAL',
+    securityClassification: 'SECRET',
+    status: 'REGISTERED' as any,
+    contextLength: 16384,
+    maxOutputTokens: 4096,
+    costTier: 'ZERO_LOCAL',
+    latencyTier: 'FAST',
+    recommendedTasks: ['rapid-inference', 'command-synthesizer'],
+    capabilities: ['local-inference', 'tool-calling']
+  },
+
+  // 8. Other Providers
+  {
+    modelId: 'custom-neural-node',
+    displayName: 'Custom Neural Node (Extensible Routing Endpoint)',
+    providerId: 'OTHER',
+    purpose: 'User-configured custom neural node or external endpoint router.',
+    reasoning: true,
+    coding: false,
+    architecture: false,
+    analysis: true,
+    multimodal: false,
+    toolCalling: false,
+    structuredOutput: false,
+    streaming: true,
+    local: false,
+    deploymentType: 'CLOUD',
+    securityClassification: 'UNCLASSIFIED',
+    status: 'REGISTERED' as any,
+    contextLength: 8192,
+    maxOutputTokens: 2048,
+    costTier: 'LOW',
+    latencyTier: 'FAST',
+    recommendedTasks: ['generic-routing', 'text-summarization'],
+    capabilities: ['summarization', 'chat']
   }
 ];
 
@@ -301,7 +389,13 @@ export class JumoModelRegistry {
   }
 
   public static registerModel(model: JumoModelDefinition): void {
-    this.dynamicModels.set(model.modelId, model);
+    this.dynamicModels.set(model.modelId, {
+      ...model,
+      // Default to registered/available if unspecified
+      status: model.status || 'AVAILABLE' as any,
+      deploymentType: model.deploymentType || (model.local ? 'LOCAL' : 'CLOUD'),
+      securityClassification: model.securityClassification || 'SECRET'
+    });
   }
 
   public static getModel(modelId: string): JumoModelDefinition | undefined {
@@ -316,17 +410,54 @@ export class JumoModelRegistry {
     return Array.from(this.dynamicModels.values()).filter(m => m.providerId === providerId);
   }
 
+  /**
+   * Resolves compatible models based on capability constraints, provider policies, and availability.
+   * Part of the Agent Requirement -> Capability Resolver pattern.
+   */
+  public static resolveCompatibleModels(requirements: {
+    reasoning?: boolean;
+    coding?: boolean;
+    architecture?: boolean;
+    analysis?: boolean;
+    multimodal?: boolean;
+    toolCalling?: boolean;
+    requireLocal?: boolean;
+    securityClassification?: 'UNCLASSIFIED' | 'RESTRICTED' | 'SECRET' | 'TOP_SECRET';
+  }): JumoModelDefinition[] {
+    let list = Array.from(this.dynamicModels.values());
+
+    if (requirements.reasoning) list = list.filter(m => m.reasoning);
+    if (requirements.coding) list = list.filter(m => m.coding);
+    if (requirements.architecture) list = list.filter(m => m.architecture);
+    if (requirements.analysis) list = list.filter(m => m.analysis);
+    if (requirements.multimodal) list = list.filter(m => m.multimodal);
+    if (requirements.toolCalling) list = list.filter(m => m.toolCalling);
+    if (requirements.requireLocal) list = list.filter(m => m.local);
+
+    // Filter by security classification if provided
+    if (requirements.securityClassification) {
+      const order = ['UNCLASSIFIED', 'RESTRICTED', 'SECRET', 'TOP_SECRET'];
+      const targetIdx = order.indexOf(requirements.securityClassification);
+      list = list.filter(m => {
+        const modelIdx = order.indexOf(m.securityClassification);
+        return modelIdx >= targetIdx; // Model has equal or higher classification capability
+      });
+    }
+
+    return list;
+  }
+
   public static getDefaultModelForTask(taskType: 'FAST' | 'DEEP_REASONING' | 'CODING' | 'AIR_GAP' = 'FAST'): string {
     switch (taskType) {
       case 'AIR_GAP':
         return 'jumo-sovereign-kernel-local';
       case 'DEEP_REASONING':
-        return 'gemini-3.7-flash';
+        return 'jumo-gpt-5.6-sol';
       case 'CODING':
-        return 'gemini-3.7-flash';
+        return 'claude-code-sonnet';
       case 'FAST':
       default:
-        return 'gemini-3.6-flash';
+        return 'gemini-3.7-flash';
     }
   }
 }

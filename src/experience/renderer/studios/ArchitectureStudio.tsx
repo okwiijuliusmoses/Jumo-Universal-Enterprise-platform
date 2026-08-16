@@ -42,7 +42,7 @@ export const ArchitectureStudio: React.FC<ArchitectureStudioProps> = ({
   const workforceStats = JumoAIAgentRegistry.getWorkforceStats();
 
   // Primary Studio Navigation Tab
-  const [primaryTab, setPrimaryTab] = useState<'contracts' | 'explorer' | 'workforce' | 'assistant'>('explorer');
+  const [primaryTab, setPrimaryTab] = useState<'workforce' | 'expansion' | 'explorer' | 'contracts'>('explorer');
 
   // Tab 1: Contracts & Specifications Sub-state
   const [leftTab, setLeftTab] = useState<'designer' | 'intake'>('designer');
@@ -457,6 +457,30 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
         {/* Studio Workspace Tabs */}
         <div className="flex items-center gap-2 mt-6 border-t border-slate-800 pt-4">
           <button
+            onClick={() => setPrimaryTab('workforce')}
+            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+              primaryTab === 'workforce' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/10' 
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Agent Workforce</span>
+          </button>
+
+          <button
+            onClick={() => setPrimaryTab('expansion')}
+            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+              primaryTab === 'expansion' 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/10' 
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <GitCommit className="w-4 h-4" />
+            <span>Requirements Expansion</span>
+          </button>
+
+          <button
             onClick={() => setPrimaryTab('explorer')}
             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
               primaryTab === 'explorer' 
@@ -465,7 +489,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
             }`}
           >
             <Network className="w-4 h-4" />
-            <span>National Layer Explorer</span>
+            <span>Architecture</span>
           </button>
 
           <button
@@ -477,31 +501,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
             }`}
           >
             <FileSignature className="w-4 h-4" />
-            <span>Contracts & Specs ({(requests ?? []).length + (contracts ?? []).length})</span>
-          </button>
-
-          <button
-            onClick={() => setPrimaryTab('workforce')}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
-              primaryTab === 'workforce' 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/10' 
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>Cognitive Swarm Command</span>
-          </button>
-
-          <button
-            onClick={() => setPrimaryTab('assistant')}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
-              primaryTab === 'assistant' 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/10' 
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>JUMO GPT Assistant</span>
+            <span>Blueprints ({(contracts ?? []).length})</span>
           </button>
         </div>
       </div>
@@ -525,7 +525,7 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
             <span>Shortcuts</span>
           </button>
           <button 
-            onClick={() => setPrimaryTab('assistant')}
+            onClick={() => setPrimaryTab('expansion')}
             className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer"
           >
             <Bot className="w-4 h-4" />
@@ -2019,16 +2019,108 @@ Focus on the security, data sovereignty, double-entry audit integrity, and regul
           </motion.div>
         )}
 
-        {/* TAB 4: JUMO GPT ASSISTANT (Relocated Capability) */}
-        {primaryTab === 'assistant' && (
+        {/* TAB 2: REQUIREMENTS EXPANSION COGNITIVE CONTROL */}
+        {primaryTab === 'expansion' && (
           <motion.div 
-            key="tab-assistant"
+            key="tab-expansion"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl h-[700px]"
+            className="space-y-6"
           >
-            <JumoFloatingAssistant activeStudio="ARCHITECTURE" variant="embedded" />
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-800 tracking-wider">Requirements Expansion & Cognitive Tracing</h3>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Authoritative records tracking requirements to architecture layers and specialized workforce expansions.</p>
+                </div>
+                <button 
+                  onClick={() => handleProposeExpansion(contracts[0]?.specificationId || "PROD-GEN-1")}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+                >
+                  + Propose Manual Trace
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                  <span className="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Total Traces Registered</span>
+                  <div className="text-2xl font-black text-slate-900">{expansionTraces.length}</div>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase">Across all platforms</span>
+                </div>
+                <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-1">
+                  <span className="text-[9px] font-black uppercase text-emerald-600 block tracking-wider">Approved Gaps Resolved</span>
+                  <div className="text-2xl font-black text-emerald-800">{expansionTraces.filter(t => t.status === 'APPROVED').length}</div>
+                  <span className="text-[8px] font-bold text-emerald-600 uppercase">Deterministic compliance</span>
+                </div>
+                <div className="p-4 bg-amber-50/50 rounded-xl border border-amber-100 space-y-1">
+                  <span className="text-[9px] font-black uppercase text-amber-600 block tracking-wider">Awaiting Agent Consensus</span>
+                  <div className="text-2xl font-black text-amber-800">{expansionTraces.filter(t => t.status === 'PROPOSED').length}</div>
+                  <span className="text-[8px] font-bold text-amber-600 uppercase">Active cognitive reasoning</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">Live Trace Ledger</span>
+                <div className="space-y-3 max-h-[450px] overflow-y-auto pr-1">
+                  {expansionTraces.map((trace) => (
+                    <div key={trace.id} className="p-4 bg-slate-50 hover:bg-white border border-slate-200 rounded-xl space-y-3 transition-all shadow-2xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 bg-slate-200 text-slate-700 font-mono text-[8px] font-bold rounded">
+                            {trace.specificationId}
+                          </span>
+                          <span className="text-xs font-black text-slate-800">{trace.requirement}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${
+                          trace.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
+                        }`}>
+                          {trace.status}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-slate-200 text-xs">
+                        <div className="space-y-1">
+                          <span className="font-extrabold text-slate-400 uppercase text-[8px] tracking-widest block">Identified Gap:</span>
+                          <p className="text-slate-600 leading-normal">{trace.gap}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="font-extrabold text-slate-400 uppercase text-[8px] tracking-widest block">Specialist Recommendation:</span>
+                          <p className="text-slate-700 italic leading-normal font-medium">{trace.recommendation}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                        <div className="flex items-center gap-4 text-[10px]">
+                          <div>
+                            <span className="text-slate-400">Proposed Layer:</span> <strong className="font-mono text-blue-600">{trace.proposedLayerId}</strong>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Evidence:</span> <strong className="font-mono text-slate-500">{trace.evidenceHash ? trace.evidenceHash.slice(0, 16) : "SHA256:88ae93..."}...</strong>
+                          </div>
+                        </div>
+
+                        {trace.status === 'PROPOSED' && (
+                          <button 
+                            onClick={() => handleApproveExpansion(trace.id)}
+                            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+                          >
+                            Approve and Inject Subsystem
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {expansionTraces.length === 0 && (
+                    <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest">No expansion traces registered in the ledger.</p>
+                      <p className="text-[10px] text-slate-400 mt-1 uppercase font-medium">Verify that specifications have been properly compiled and submitted to trigger active tracing.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
 

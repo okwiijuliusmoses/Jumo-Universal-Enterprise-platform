@@ -78,11 +78,15 @@ export class JumoAIModelDiscoveryEngine {
               purpose: `Dynamically discovered ${normalized.providerId} model (${normalized.modelId})`,
               reasoning: normalized.reasoning,
               coding: normalized.coding,
+              architecture: normalized.reasoning || normalized.coding,
+              analysis: true,
               multimodal: normalized.multimodal,
               toolCalling: normalized.toolCalling,
               structuredOutput: normalized.structuredOutput,
               streaming: normalized.streaming,
               local: normalized.local,
+              deploymentType: normalized.local ? 'LOCAL' : 'CLOUD',
+              securityClassification: 'RESTRICTED',
               status: 'AVAILABLE',
               contextLength: normalized.contextLength,
               maxOutputTokens: normalized.maxOutputTokens,
@@ -111,10 +115,10 @@ export class JumoAIModelDiscoveryEngine {
    */
   private normalizeModel(providerId: string, raw: any): DiscoveredModelNormalized {
     const pUpper = providerId.toUpperCase();
-    let mappedProvider: AIModelProviderType = 'SOVEREIGN_CUSTOM';
+    let mappedProvider: AIModelProviderType = 'OTHER';
     if (pUpper.includes('OPENAI') || pUpper.includes('CODEX')) mappedProvider = 'OPENAI';
     else if (pUpper.includes('GEMINI') || pUpper.includes('GOOGLE')) mappedProvider = 'GEMINI';
-    else if (pUpper.includes('ANTHROPIC') || pUpper.includes('CLAUDE')) mappedProvider = 'ANTHROPIC';
+    else if (pUpper.includes('ANTHROPIC') || pUpper.includes('CLAUDE')) mappedProvider = 'CLAUDE_CODE';
     else if (pUpper.includes('COPILOT') || pUpper.includes('AZURE') || pUpper.includes('MICROSOFT')) mappedProvider = 'COPILOT';
     else if (pUpper.includes('LOCAL') || pUpper.includes('OLLAMA')) mappedProvider = 'JUMO_LOCAL';
 

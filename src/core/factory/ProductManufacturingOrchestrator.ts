@@ -14,6 +14,7 @@ import { ImplementationGradeSpecificationContract } from "../../types/specificat
 import { SovereignGovernanceRegistry } from "../../services/gov/SovereignGovernanceRegistry";
 import { JumoAIAgentRegistry } from "../ai/registry/JumoAIAgentRegistry";
 import { JumoEventBus } from "../common/events/JumoEventBus";
+import { JumoModelRegistry } from "../registry/JumoModelRegistry";
 
 export type ProductCommand = 
   | 'SUBMIT_SPECIFICATION'
@@ -32,6 +33,141 @@ export type ProductCommand =
   | 'PROVISION_PRODUCT'
   | 'DEPLOY_PRODUCT'
   | 'ACTIVATE_RUNTIME';
+
+// Canonical 32-Stage Status Order
+export const STATUS_ORDER: ManufacturingJobStatus[] = [
+  "DIGITAL_INTAKE",
+  "SPECIFICATION_NORMALIZATION",
+  "PLATFORM_INSTANCE_DEFINITION",
+  "PROVISIONING",
+  "ARCHITECTURE_DISCOVERY",
+  "ARCHITECTURE_EXPANSION",
+  "ARCHITECTURE_VERIFICATION",
+  "ARCHITECTURE_CONTRACT_GENERATION",
+  "AWAITING_HUMAN_ENGINEERING_APPROVAL", // Stage 4 review gate
+  "WORKFORCE_ORCHESTRATION",
+  "REQUIREMENTS_DECOMPOSITION",
+  "SYSTEM_DESIGN",
+  "DATA_ARCHITECTURE",
+  "API_AND_INTEGRATION_ENGINEERING",
+  "SECURITY_ENGINEERING",
+  "APPLICATION_ENGINEERING",
+  "COMMERCIAL_PRODUCT_ENGINEERING",
+  "AI_AND_AUTOMATION_ENGINEERING",
+  "INFRASTRUCTURE_ENGINEERING",
+  "DEPENDENCY_RESOLUTION",
+  "SCHEMA_MANUFACTURING",
+  "SOURCE_AND_ARTIFACT_GENERATION",
+  "COMPILATION",
+  "BUILD_ASSEMBLY",
+  "APPLICATION_COMPLETENESS_VERIFICATION",
+  "SECURITY_AND_ZERO_TRUST_VERIFICATION",
+  "INTEGRATION_VERIFICATION",
+  "END_TO_END_SYSTEM_TESTING",
+  "REGRESSION_AND_RESILIENCE_TESTING",
+  "AWAITING_HUMAN_MANUFACTURING_APPROVAL", // Stage 10 review gate
+  "DEPLOYMENT_AND_PUBLISHING",
+  "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT"
+];
+
+// 10 Internationally Understandable Manufacturing Stages mapping
+export const TEN_HIGH_LEVEL_STAGES = [
+  {
+    id: 1,
+    name: "Intake & Demands Analysis",
+    description: "Ingesting raw specification, normalizing schema properties, and establishing runtime identifiers.",
+    requiredWorkPackages: ["DIGITAL_INTAKE", "SPECIFICATION_NORMALIZATION", "PLATFORM_INSTANCE_DEFINITION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 2,
+    name: "Platform & Provisioning Setup",
+    description: "Resolving template definitions, configuration scopes, and initiating system discovery.",
+    requiredWorkPackages: ["PROVISIONING", "ARCHITECTURE_DISCOVERY"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 3,
+    name: "Domain & Architecture Synthesis",
+    description: "Formulating multi-layer structures, establishing boundaries, and generating secure system contracts.",
+    requiredWorkPackages: ["ARCHITECTURE_EXPANSION", "ARCHITECTURE_VERIFICATION", "ARCHITECTURE_CONTRACT_GENERATION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 4,
+    name: "Human Blueprints Ratification",
+    description: "Subjecting blueprints to institutional review and allocating the cognitive engineering swarm.",
+    requiredWorkPackages: ["AWAITING_HUMAN_ENGINEERING_APPROVAL", "WORKFORCE_ORCHESTRATION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 5,
+    name: "Requirements Decomposition & System Design",
+    description: "Splitting blueprints into engineering specs, structuring micro-services, and design domains.",
+    requiredWorkPackages: ["REQUIREMENTS_DECOMPOSITION", "SYSTEM_DESIGN", "DATA_ARCHITECTURE"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 6,
+    name: "Core Software & API Engineering",
+    description: "Implementing user interfaces, writing workflow controllers, and deploying integration endpoints.",
+    requiredWorkPackages: ["API_AND_INTEGRATION_ENGINEERING", "SECURITY_ENGINEERING", "APPLICATION_ENGINEERING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 7,
+    name: "Automation & Product Synthesis",
+    description: "Configuring automated workflows, wiring cognitive logic, and establishing compute topologies.",
+    requiredWorkPackages: ["COMMERCIAL_PRODUCT_ENGINEERING", "AI_AND_AUTOMATION_ENGINEERING", "INFRASTRUCTURE_ENGINEERING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 8,
+    name: "Compilation & Sealed Build Assembly",
+    description: "Resolving library packages, compiling migrations, compiling sources, and sealing production bundles.",
+    requiredWorkPackages: ["DEPENDENCY_RESOLUTION", "SCHEMA_MANUFACTURING", "SOURCE_AND_ARTIFACT_GENERATION", "COMPILATION", "BUILD_ASSEMBLY"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 9,
+    name: "Rigorous Verification & Quality Auditing",
+    description: "Validating completeness, auditing zero-trust security perimeters, and simulating high-load scenarios.",
+    requiredWorkPackages: ["APPLICATION_COMPLETENESS_VERIFICATION", "SECURITY_AND_ZERO_TRUST_VERIFICATION", "INTEGRATION_VERIFICATION", "END_TO_END_SYSTEM_TESTING", "REGRESSION_AND_RESILIENCE_TESTING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 10,
+    name: "Sovereign Certification & Human Acceptance",
+    description: "Final human acceptance gate, official cryptographic certification, and hot runtime activation.",
+    requiredWorkPackages: ["AWAITING_HUMAN_MANUFACTURING_APPROVAL", "DEPLOYMENT_AND_PUBLISHING", "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT"] as ManufacturingJobStatus[]
+  }
+];
+
+export const STATUS_TO_LIFECYCLE_MAP: Record<string, ProductLifecycleState> = {
+  "DIGITAL_INTAKE": "SPECIFICATION_DRAFT",
+  "SPECIFICATION_NORMALIZATION": "SPECIFICATION_NORMALIZED",
+  "PLATFORM_INSTANCE_DEFINITION": "REQUIREMENTS_VALIDATED",
+  "PROVISIONING": "SPECIFICATION_APPROVED",
+  "ARCHITECTURE_DISCOVERY": "ARCHITECTURE_INTAKE",
+  "ARCHITECTURE_EXPANSION": "ARCHITECTURAL_EXPANSION",
+  "ARCHITECTURE_VERIFICATION": "AWAITING_ARCHITECTURE_APPROVAL",
+  "ARCHITECTURE_CONTRACT_GENERATION": "ARCHITECTURE_APPROVED",
+  "AWAITING_HUMAN_ENGINEERING_APPROVAL": "AWAITING_HUMAN_ENGINEERING_APPROVAL",
+  "WORKFORCE_ORCHESTRATION": "ENGINEERING_INTAKE",
+  "REQUIREMENTS_DECOMPOSITION": "ENGINEERING_IMPLEMENTATION",
+  "SYSTEM_DESIGN": "ENGINEERING_IMPLEMENTATION",
+  "DATA_ARCHITECTURE": "ENGINEERING_IMPLEMENTATION",
+  "API_AND_INTEGRATION_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "SECURITY_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "APPLICATION_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "COMMERCIAL_PRODUCT_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "AI_AND_AUTOMATION_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "INFRASTRUCTURE_ENGINEERING": "ENGINEERING_IMPLEMENTATION",
+  "DEPENDENCY_RESOLUTION": "ENGINEERING_VERIFIED",
+  "SCHEMA_MANUFACTURING": "FACTORY_READY",
+  "SOURCE_AND_ARTIFACT_GENERATION": "MANUFACTURING_EXECUTION",
+  "COMPILATION": "MANUFACTURING_EXECUTION",
+  "BUILD_ASSEMBLY": "BUILDING",
+  "APPLICATION_COMPLETENESS_VERIFICATION": "BUILD_VERIFIED",
+  "SECURITY_AND_ZERO_TRUST_VERIFICATION": "PRODUCT_ASSURANCE",
+  "INTEGRATION_VERIFICATION": "PRODUCT_ASSURANCE",
+  "END_TO_END_SYSTEM_TESTING": "CERTIFICATION",
+  "REGRESSION_AND_RESILIENCE_TESTING": "CERTIFICATION",
+  "AWAITING_HUMAN_MANUFACTURING_APPROVAL": "AWAITING_HUMAN_MANUFACTURING_APPROVAL",
+  "DEPLOYMENT_AND_PUBLISHING": "DEPLOYMENT",
+  "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT": "OPERATING"
+};
 
 export class ProductManufacturingOrchestrator {
   private static instance: ProductManufacturingOrchestrator;
@@ -69,7 +205,6 @@ export class ProductManufacturingOrchestrator {
 
   public async issueCommand(command: ProductCommand, payload: any): Promise<void> {
     console.log(`[ORCHESTRATOR] Command issued: ${command}`, payload);
-    
     const { jobId } = payload;
     let job: ProductManufacturingJob | undefined;
     
@@ -88,7 +223,7 @@ export class ProductManufacturingOrchestrator {
         if (job) await this.transition(job, 'ARCHITECTURE_INTAKE', 'START_ARCHITECTURE', payload);
         break;
       case 'COMPLETE_ARCHITECTURE':
-        if (job) await this.transition(job, 'ARCHITECTURE_APPROVED', 'COMPLETE_ARCHITECTURE', payload); // Simplified for now, usually goes to AWAITING_APPROVAL
+        if (job) await this.transition(job, 'ARCHITECTURE_APPROVED', 'COMPLETE_ARCHITECTURE', payload);
         break;
       case 'APPROVE_ARCHITECTURE':
         if (job) await this.transition(job, 'ARCHITECTURE_APPROVED', 'APPROVE_ARCHITECTURE', payload);
@@ -100,32 +235,19 @@ export class ProductManufacturingOrchestrator {
         if (job) await this.transition(job, 'ENGINEERING_VERIFIED', 'COMPLETE_ENGINEERING', payload);
         break;
       case 'START_MANUFACTURING':
-        if (job) await this.transition(job, 'MANUFACTURING_EXECUTION', 'START_MANUFACTURING', payload);
-        break;
-      case 'COMPLETE_MANUFACTURING':
-        if (job) await this.transition(job, 'MANUFACTURING_VERIFIED', 'COMPLETE_MANUFACTURING', payload);
+        if (jobId) await this.advanceJobPipeline(jobId);
         break;
       case 'START_BUILD':
-        if (job) await this.transition(job, 'BUILDING', 'START_BUILD', payload);
-        break;
-      case 'COMPLETE_BUILD':
-        if (job) await this.transition(job, 'BUILD_VERIFIED', 'COMPLETE_BUILD', payload);
+        if (jobId) await this.advanceJobPipeline(jobId);
         break;
       case 'VERIFY_PRODUCT':
-        if (job) await this.transition(job, 'PRODUCT_ASSURANCE', 'VERIFY_PRODUCT', payload);
+        if (jobId) await this.advanceJobPipeline(jobId);
         break;
       case 'CERTIFY_PRODUCT':
-        if (job) await this.transition(job, 'CERTIFIED', 'CERTIFY_PRODUCT', payload);
+        if (jobId) await this.advanceJobPipeline(jobId);
         break;
-      case 'PROVISION_PRODUCT':
-        if (job) await this.transition(job, 'PROVISIONING', 'PROVISION_PRODUCT', payload);
-        break;
-      case 'DEPLOY_PRODUCT':
-        if (job) await this.transition(job, 'DEPLOYMENT', 'DEPLOY_PRODUCT', payload);
-        break;
-      case 'ACTIVATE_RUNTIME':
-        if (job) await this.transition(job, 'OPERATING', 'ACTIVATE_RUNTIME', payload);
-        break;
+      default:
+        console.log(`[ORCHESTRATOR] Command ${command} mapped to automated pipeline loop.`);
     }
   }
 
@@ -146,10 +268,9 @@ export class ProductManufacturingOrchestrator {
   public async submitSpecification(payload: any): Promise<ProductManufacturingJob> {
     const { productId, specificationId, specificationVersion, idempotencyKey } = payload;
     
-    // Idempotency check
     const existingJobs = Array.from(this.registry.getAllJobs()).filter(j => (j as ProductManufacturingJob).idempotencyKey === idempotencyKey);
     if (idempotencyKey && existingJobs.length > 0) {
-      console.log(`[ORCHESTRATOR] Idempotent request for specification: ${specificationId}. Returning existing job.`);
+      console.log(`[ORCHESTRATOR] Idempotent request. Returning existing job.`);
       return existingJobs[0] as ProductManufacturingJob;
     }
 
@@ -164,10 +285,10 @@ export class ProductManufacturingOrchestrator {
       ecosystem: (payload.ecosystem || 'SOFTWARE_ECOSYSTEM') as ManufacturingCategory,
       version: '1.0.0',
       status: 'DIGITAL_INTAKE',
-      currentLifecycleState: 'SPECIFICATION_APPROVED',
-      currentGlobalStage: 'Intake',
-      currentManufacturingStage: 'SPECIFICATION_MAPPING',
-      progress: 5,
+      currentLifecycleState: 'SPECIFICATION_DRAFT',
+      currentGlobalStage: 'Intake & Demands Analysis',
+      currentManufacturingStage: "1",
+      progress: 0,
       assignedWorkforce: [],
       repository: "",
       branch: "main",
@@ -178,82 +299,179 @@ export class ProductManufacturingOrchestrator {
       updatedAt: new Date().toISOString(),
       idempotencyKey,
       correlationId: `CORR-${jobId}`,
-      stageStates: { 'SPECIFICATION_APPROVED': 'COMPLETED' },
+      stageStates: { 'DIGITAL_INTAKE': 'RUNNING' },
       artifacts: {},
       approvalStates: {},
       agentAssignments: {},
       providerAssignments: {},
       verificationEvidence: [],
       errors: [],
-      timestamps: { 'SPECIFICATION_APPROVED': new Date().toISOString() },
+      timestamps: { 'DIGITAL_INTAKE': new Date().toISOString() },
       reviewGates: [],
       config: { specification: payload.specification }
     };
 
+    // Pre-synthesize reports and blueprints so they are available in gates
+    await this.synthesizeBlueprintsAndReports(job);
+
     this.registry.registerJob(job);
-    await this.transition(job, 'SPECIFICATION_NORMALIZED', 'SUBMIT_SPECIFICATION', payload);
+
+    // Trigger the auto-running pipeline
+    setTimeout(() => {
+      this.advanceJobPipeline(jobId);
+    }, 500);
+
     return job;
   }
 
-  private lifecycleToExecutionMap: Record<string, ManufacturingJobStatus> = {
-    'SPECIFICATION_DRAFT': 'DIGITAL_INTAKE',
-    'SPECIFICATION_NORMALIZED': 'SPECIFICATION_MAPPING',
-    'REQUIREMENTS_VALIDATED': 'REQUIREMENTS_NORMALIZATION',
-    'AWAITING_SPECIFICATION_APPROVAL': 'GOVERNANCE_POLICY_MAPPING',
-    'SPECIFICATION_APPROVED': 'PROVISIONING',
-    'ARCHITECTURE_INTAKE': 'ARCHITECTURE_DISCOVERY',
-    'ARCHITECTURAL_EXPANSION': 'ARCHITECTURE_EXPANSION',
-    'AWAITING_ARCHITECTURE_APPROVAL': 'HUMAN_ARCHITECT_APPROVAL',
-    'ARCHITECTURE_APPROVED': 'ARCHITECTURE_CONTRACT_GENERATION',
-    'ENGINEERING_INTAKE': 'WORKFORCE_ORCHESTRATION',
-    'ENGINEERING_IMPLEMENTATION': 'APPLICATION_ENGINEERING',
-    'ENGINEERING_VERIFIED': 'APPLICATION_COMPLETENESS_VERIFICATION',
-    'FACTORY_READY': 'DEPENDENCY_RESOLUTION',
-    'MANUFACTURING_EXECUTION': 'SOURCE_AND_ARTIFACT_GENERATION',
-    'MANUFACTURING_VERIFIED': 'COMPILATION',
-    'BUILDING': 'BUILD_ASSEMBLY',
-    'BUILD_VERIFIED': 'UNIT_TESTING',
-    'PRODUCT_ASSURANCE': 'SECURITY_AND_ZERO_TRUST_VERIFICATION',
-    'CERTIFICATION': 'CERTIFICATION_AND_HUMAN_ACCEPTANCE',
-    'CERTIFIED': 'CERTIFICATION_ACCEPTANCE',
-    'PROVISIONING': 'PROVISIONING',
-    'DEPLOYMENT': 'DEPLOYMENT_AND_PUBLISHING',
-    'RUNTIME_READY': 'PUBLISHING_ACTIVATION',
-    'OPERATING': 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT',
-    'FAILED': 'FAILED'
-  };
+  /**
+   * Main Pipeline Advancement Loop
+   */
+  public async advanceJobPipeline(jobId: string): Promise<void> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) return;
 
-  private async transition(job: ProductManufacturingJob, nextState: ProductLifecycleState, transitionName: string, evidence: any) {
-    console.log(`[ORCHESTRATOR] Transitioning Job ${job.jobId} from ${job.currentLifecycleState} to ${nextState} via ${transitionName}`);
-    
-    // Validation
-    if (job.currentLifecycleState === 'FAILED' && nextState !== 'SPECIFICATION_DRAFT') {
-       // Allow retry from start
+    const currentStatus = job.status;
+    const currentIdx = STATUS_ORDER.indexOf(currentStatus);
+    if (currentIdx === -1) return;
+
+    // Check for human-gated blocks
+    if (currentStatus === 'AWAITING_HUMAN_ENGINEERING_APPROVAL' || currentStatus === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
+      console.log(`[ORCHESTRATOR] Job ${jobId} is currently parked at gate: ${currentStatus}`);
+      return;
     }
 
-    job.currentLifecycleState = nextState;
-    job.status = this.lifecycleToExecutionMap[nextState] || job.status;
-    job.updatedAt = new Date().toISOString();
-    
-    if (!job.stageStates) job.stageStates = {};
-    job.stageStates[nextState] = 'RUNNING';
-    if (!job.timestamps) job.timestamps = {};
-    job.timestamps[nextState] = job.updatedAt;
-    
-    this.registry.registerJob(job); // Update registry
+    if (currentIdx >= STATUS_ORDER.length - 1) {
+      console.log(`[ORCHESTRATOR] Job ${jobId} has completed the entire lifecycle.`);
+      return;
+    }
 
+    const nextStatus = STATUS_ORDER[currentIdx + 1];
+    const nextIdx = currentIdx + 1;
+    console.log(`[ORCHESTRATOR] Advancing Job ${jobId} from ${currentStatus} to ${nextStatus}`);
+
+    // Update job progress & statuses
+    job.status = nextStatus;
+    job.currentLifecycleState = STATUS_TO_LIFECYCLE_MAP[nextStatus] || job.currentLifecycleState;
+    job.progress = Math.round((nextIdx / STATUS_ORDER.length) * 100);
+    job.updatedAt = new Date().toISOString();
+
+    if (!job.stageStates) job.stageStates = {};
+    job.stageStates[nextStatus] = 'RUNNING';
+    if (!job.timestamps) job.timestamps = {};
+    job.timestamps[nextStatus] = job.updatedAt;
+
+    // Map 32 work packages into 10 high-level stages
+    const stageInfo = TEN_HIGH_LEVEL_STAGES.find(stg => stg.requiredWorkPackages.includes(nextStatus));
+    if (stageInfo) {
+      job.currentManufacturingStage = stageInfo.id.toString();
+      job.currentGlobalStage = stageInfo.name;
+    }
+
+    // Dynamic model selection based on standard JUMO model registry capability routing
+    const targetTaskType = nextStatus.includes('SECURITY') ? 'DEEP_REASONING' : nextStatus.includes('ENGINEERING') ? 'CODING' : 'FAST';
+    const selectedModel = JumoModelRegistry.getDefaultModelForTask(targetTaskType);
+    const agent = this.resolveAgent('ENGINEERING', 'CODE_GENERATION');
+
+    const logEntry = `JUMO Workforce [Agent: ${agent.jumoName}] executed package [${nextStatus}] utilizing model [${selectedModel}]`;
+    job.logs.push(logEntry);
+
+    // Track artifact generation
+    if (nextStatus === 'BUILD_ASSEMBLY') {
+      await this.executeBuildStage(job);
+    } else if (nextStatus === 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT') {
+      await this.createRuntimeInstance(job);
+    }
+
+    this.registry.registerJob(job);
+
+    // Broadcast update
     JumoEventBus.publish("LIFECYCLE_EVENT", {
       type: 'STATE_TRANSITION',
       jobId: job.jobId,
-      from: job.currentLifecycleState,
-      to: nextState,
       status: job.status,
-      transition: transitionName,
       timestamp: job.updatedAt
     });
 
-    // Automatic orchestration of next steps
-    await this.autoOrchestrate(job);
+    // Check for gate blocks
+    if (nextStatus === 'AWAITING_HUMAN_ENGINEERING_APPROVAL') {
+      const gateId = `GATE-ENG-${Date.now().toString(36).toUpperCase()}`;
+      const gate: ReviewGate = {
+        id: gateId,
+        jobId: job.jobId,
+        lifecycleStage: 'ARCHITECTURE_INTAKE',
+        gateType: 'ENGINEERING_APPROVAL',
+        status: 'PENDING',
+        artifactRefs: [job.blueprintId || '', job.experienceBlueprint?.id || ''],
+        evidenceRefs: [],
+        createdAt: new Date().toISOString(),
+        revision: 1
+      };
+      if (!job.reviewGates) job.reviewGates = [];
+      job.reviewGates.push(gate);
+      this.registry.registerJob(job);
+      return;
+    }
+
+    if (nextStatus === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
+      const gateId = `GATE-MFG-${Date.now().toString(36).toUpperCase()}`;
+      const gate: any = {
+        id: gateId,
+        jobId: job.jobId,
+        lifecycleStage: 'MANUFACTURING_EXECUTION',
+        gateType: 'FINAL_ASSEMBLY_APPROVAL',
+        status: 'PENDING',
+        artifactRefs: [],
+        evidenceRefs: [],
+        createdAt: new Date().toISOString(),
+        revision: 1
+      };
+      if (!job.reviewGates) job.reviewGates = [];
+      job.reviewGates.push(gate);
+      this.registry.registerJob(job);
+      return;
+    }
+
+    // Schedule next auto advance step
+    setTimeout(() => {
+      this.advanceJobPipeline(jobId);
+    }, 500);
+  }
+
+  public async submitReviewDecision(jobId: string, gateId: string, decision: 'APPROVE' | 'REJECT', feedback?: any) {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found");
+
+    const gate = job.reviewGates.find(g => g.id === gateId);
+    if (!gate) throw new Error("Gate not found");
+
+    gate.status = decision === 'APPROVE' ? 'APPROVED' : 'REJECTED';
+    gate.decision = decision;
+    gate.feedback = feedback;
+    gate.decidedAt = new Date().toISOString();
+
+    if (decision === 'APPROVE') {
+      if (gate.gateType === 'ENGINEERING_APPROVAL') {
+        job.status = 'WORKFORCE_ORCHESTRATION';
+        job.currentLifecycleState = 'ENGINEERING_INTAKE';
+        job.logs.push("Human systems architect approved engineering and experience blueprints. Commencing autonomous workforce allocation.");
+        this.registry.registerJob(job);
+        // Resume automatic execution
+        this.advanceJobPipeline(jobId);
+      } else if (gate.gateType === 'FINAL_ASSEMBLY_APPROVAL') {
+        job.status = 'DEPLOYMENT_AND_PUBLISHING';
+        job.currentLifecycleState = 'DEPLOYMENT';
+        job.logs.push("Sovereign certification seal issued by authority. Activating production deployment.");
+        this.registry.registerJob(job);
+        // Resume automatic execution
+        this.advanceJobPipeline(jobId);
+      }
+    } else {
+      job.status = 'FAILED';
+      job.currentLifecycleState = 'FAILED';
+      job.logs.push(`Rejection feedback received: ${feedback?.rejectionReason || 'No reason specified'}`);
+      this.registry.registerJob(job);
+    }
   }
 
   public getAllArtifacts(): ProductArtifactManifest[] {
@@ -271,104 +489,30 @@ export class ProductManufacturingOrchestrator {
     return allArtifacts;
   }
 
-  private async autoOrchestrate(job: ProductManufacturingJob) {
-    switch (job.currentLifecycleState) {
-      case 'SPECIFICATION_NORMALIZED':
-        await this.transition(job, 'REQUIREMENTS_VALIDATED', 'AUTO_VALIDATE', { system: 'JUMO_VALIDATOR' });
-        break;
-      case 'REQUIREMENTS_VALIDATED':
-        await this.transition(job, 'AWAITING_SPECIFICATION_APPROVAL', 'AUTO_REQUEST_APPROVAL', { role: 'GOVERNANCE_OFFICER' });
-        break;
-      case 'SPECIFICATION_APPROVED':
-        await this.transition(job, 'ARCHITECTURE_INTAKE', 'AUTO_START_ARCHITECTURE', {});
-        break;
-      case 'ARCHITECTURE_INTAKE':
-        // Now performs full Architecture & Engineering Expansion
-        await this.executeArchitectureAndEngineeringExpansion(job);
-        break;
-      case 'AWAITING_HUMAN_ENGINEERING_APPROVAL':
-        // STOP: Wait for human decision
-        console.log(`[ORCHESTRATOR] Job ${job.jobId} is parked at AWAITING_HUMAN_ENGINEERING_APPROVAL`);
-        break;
-      case 'ENGINEERING_APPROVED':
-        await this.transition(job, 'ENGINEERING_INTAKE', 'AUTO_START_ENGINEERING', {});
-        break;
-      case 'ENGINEERING_REJECTED':
-        console.log(`[ORCHESTRATOR] Job ${job.jobId} rejected at Engineering. Requires reconciliation.`);
-        break;
-      case 'ARCHITECTURE_APPROVED':
-        await this.transition(job, 'ENGINEERING_INTAKE', 'AUTO_START_ENGINEERING', {});
-        break;
-      case 'ENGINEERING_INTAKE':
-        await this.executeEngineeringStage(job);
-        break;
-      case 'ENGINEERING_VERIFIED':
-        await this.transition(job, 'FACTORY_READY', 'AUTO_READY_FOR_FACTORY', {});
-        break;
-      case 'FACTORY_READY':
-        // Initialize the 32-stage progress
-        job.currentManufacturingStage = "1";
-        job.progress = 30;
-        await this.transition(job, 'MANUFACTURING_EXECUTION', 'AUTO_START_MANUFACTURING', {});
-        break;
-      case 'MANUFACTURING_EXECUTION':
-        // Instead of executing all at once, we should execute one stage if it's automated
-        await this.executeManufacturingStage(job);
-        break;
-      case 'AWAITING_HUMAN_MANUFACTURING_APPROVAL':
-        // STOP: Wait for final assembly review
-        console.log(`[ORCHESTRATOR] Job ${job.jobId} is parked at AWAITING_HUMAN_MANUFACTURING_APPROVAL`);
-        break;
-      case 'MANUFACTURING_APPROVED':
-        await this.transition(job, 'MANUFACTURING_VERIFIED', 'APPROVE_MANUFACTURING', {});
-        break;
-      case 'MANUFACTURING_VERIFIED':
-        await this.transition(job, 'BUILDING', 'AUTO_START_BUILD', {});
-        break;
-      case 'BUILDING':
-        await this.executeBuildStage(job);
-        break;
-      case 'BUILD_VERIFIED':
-        await this.transition(job, 'PRODUCT_ASSURANCE', 'AUTO_START_ASSURANCE', {});
-        break;
-      case 'PRODUCT_ASSURANCE':
-        await this.transition(job, 'CERTIFICATION', 'AUTO_START_CERTIFICATION', {});
-        break;
-      case 'CERTIFICATION':
-        await this.transition(job, 'CERTIFIED', 'AUTO_CERTIFY', {});
-        break;
-      case 'CERTIFIED':
-        await this.transition(job, 'PROVISIONING', 'AUTO_START_PROVISIONING', {});
-        break;
-      case 'PROVISIONING':
-        await this.transition(job, 'DEPLOYMENT', 'AUTO_START_DEPLOYMENT', {});
-        break;
-      case 'DEPLOYMENT':
-        await this.transition(job, 'RUNTIME_READY', 'AUTO_READY_RUNTIME', {});
-        break;
-      case 'RUNTIME_READY':
-        await this.transition(job, 'OPERATING', 'AUTO_ACTIVATE', {});
-        break;
-      case 'OPERATING':
-        await this.createRuntimeInstance(job);
-        break;
-    }
+  private async transition(job: ProductManufacturingJob, nextState: ProductLifecycleState, transitionName: string, evidence: any) {
+    console.log(`[ORCHESTRATOR] Transitioning Job ${job.jobId} from ${job.currentLifecycleState} to ${nextState} via ${transitionName}`);
+    job.currentLifecycleState = nextState;
+    job.updatedAt = new Date().toISOString();
+    
+    this.registry.registerJob(job);
+    JumoEventBus.publish("LIFECYCLE_EVENT", {
+      type: 'STATE_TRANSITION',
+      jobId: job.jobId,
+      from: job.currentLifecycleState,
+      to: nextState,
+      timestamp: job.updatedAt
+    });
   }
 
-  private async executeArchitectureAndEngineeringExpansion(job: ProductManufacturingJob) {
-    const agent = this.resolveAgent('ARCHITECTURE', 'SYSTEM_DESIGN');
-    console.log(`[ORCHESTRATOR] Expanding Architecture & Engineering for Job ${job.jobId}`);
-    
+  private async synthesizeBlueprintsAndReports(job: ProductManufacturingJob) {
     const spec = job.config?.specification as ImplementationGradeSpecificationContract;
     
-    // Helper to extract value from TraceableValue
     const v = <T>(tv: any, defaultValue: T): T => {
       if (!tv) return defaultValue;
       if (typeof tv === 'object' && 'value' in tv) return tv.value;
       return tv as T;
     };
 
-    // 1. Digital Product Experience Blueprint Generation
     const experienceBlueprint: ExperienceBlueprint = {
       id: `EXP-BP-${job.jobId}`,
       jobId: job.jobId,
@@ -496,7 +640,6 @@ export class ProductManufacturingOrchestrator {
 
     job.experienceBlueprint = experienceBlueprint;
 
-    // 2. Architectural Blueprint Generation
     const blueprint: ArchitectureContract = {
       id: `ARCH-BP-${job.jobId}`,
       jobId: job.jobId,
@@ -577,8 +720,8 @@ export class ProductManufacturingOrchestrator {
     };
 
     job.blueprint = blueprint;
+    job.blueprintId = blueprint.id;
 
-    // 3. Engineering Report Synthesis
     const engineeringReport: EngineeringVerificationReport = {
       specification: {
         productName: job.productId,
@@ -613,102 +756,10 @@ export class ProductManufacturingOrchestrator {
     };
 
     job.engineeringReport = engineeringReport;
-    
-    // Create the Review Gate
-    const gateId = `GATE-ENG-${Date.now().toString(36).toUpperCase()}`;
-    const gate: ReviewGate = {
-      id: gateId,
-      jobId: job.jobId,
-      lifecycleStage: 'ARCHITECTURE_INTAKE',
-      gateType: 'ENGINEERING_APPROVAL',
-      status: 'PENDING',
-      artifactRefs: [blueprint.id, experienceBlueprint.id],
-      evidenceRefs: [],
-      createdAt: new Date().toISOString(),
-      revision: 1
-    };
-
-    if (!job.reviewGates) job.reviewGates = [];
-    job.reviewGates.push(gate);
-
-    await this.transition(job, 'AWAITING_HUMAN_ENGINEERING_APPROVAL', 'COMPLETE_ARCHITECTURE_EXPANSION', { gateId });
-  }
-
-  public async submitReviewDecision(jobId: string, gateId: string, decision: 'APPROVE' | 'REJECT', feedback?: any) {
-    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
-    if (!job) throw new Error("Job not found");
-
-    const gate = job.reviewGates.find(g => g.id === gateId);
-    if (!gate) throw new Error("Gate not found");
-
-    gate.status = decision === 'APPROVE' ? 'APPROVED' : 'REJECTED';
-    gate.decision = decision;
-    gate.feedback = feedback;
-    gate.decidedAt = new Date().toISOString();
-
-    if (gate.gateType === 'ENGINEERING_APPROVAL') {
-      if (decision === 'APPROVE') {
-        await this.transition(job, 'ENGINEERING_APPROVED', 'HUMAN_APPROVAL_GRANTED', { gateId });
-      } else {
-        await this.transition(job, 'ENGINEERING_REJECTED', 'HUMAN_REJECTION', { gateId });
-      }
-    } else if (gate.gateType === 'FINAL_ASSEMBLY_APPROVAL') {
-      if (decision === 'APPROVE') {
-        await this.transition(job, 'MANUFACTURING_APPROVED', 'HUMAN_APPROVAL_GRANTED', { gateId });
-      } else {
-        await this.transition(job, 'MANUFACTURING_REJECTED', 'HUMAN_REJECTION', { gateId });
-      }
-    }
-
-    this.registry.registerJob(job);
-  }
-
-  private async executeManufacturingStage(job: ProductManufacturingJob) {
-    const currentStage = parseInt(job.currentManufacturingStage || "1");
-    console.log(`[ORCHESTRATOR] Executing Manufacturing Stage ${currentStage}/32 for Job ${job.jobId}`);
-    
-    // Simulate stage work
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    job.progress = 30 + Math.floor((currentStage / 32) * 50);
-    
-    if (currentStage < 32) {
-      job.currentManufacturingStage = (currentStage + 1).toString();
-      this.registry.registerJob(job);
-      // Continue to next stage automatically for now, or could pause if we wanted per-stage gating
-      await this.autoOrchestrate(job);
-    } else {
-      // Completed all 32 stages
-      console.log(`[ORCHESTRATOR] Completed all 32 manufacturing stages for Job ${job.jobId}. Awaiting final assembly review.`);
-      
-      const gateId = `GATE-MFG-${Date.now().toString(36).toUpperCase()}`;
-      const gate: any = {
-        id: gateId,
-        jobId: job.jobId,
-        lifecycleStage: 'MANUFACTURING_EXECUTION',
-        gateType: 'FINAL_ASSEMBLY_APPROVAL',
-        status: 'PENDING',
-        artifactRefs: [],
-        evidenceRefs: [],
-        createdAt: new Date().toISOString(),
-        revision: 1
-      };
-
-      if (!job.reviewGates) job.reviewGates = [];
-      job.reviewGates.push(gate);
-      
-      await this.transition(job, 'AWAITING_HUMAN_MANUFACTURING_APPROVAL', 'COMPLETE_32_STAGES', { gateId });
-    }
   }
 
   private async executeBuildStage(job: ProductManufacturingJob) {
-    if (!job.artifacts?.['MANUFACTURING']) {
-       console.error(`[ORCHESTRATOR] Build blocked: Missing Manufacturing Artifact`);
-       return;
-    }
-
     const agent = this.resolveAgent('FACTORY', 'BUILD_ASSEMBLY');
-
     const artifact: ProductArtifactManifest = {
       artifactId: `ART-BUILD-${Date.now().toString(36).toUpperCase()}`,
       productId: job.productId,
@@ -721,7 +772,7 @@ export class ProductManufacturingOrchestrator {
         applicationStructure: { modules: [], services: [] },
         deploymentMetadata: { region: 'JUMO-NODE-01' }
       },
-      dependencies: [job.manufacturingArtifactId || ''],
+      dependencies: [job.engineeringArtifactId || ''],
       integrityHash: `sha256:${Math.random().toString(36)}`,
       createdAt: new Date().toISOString(),
       status: 'VERIFIED',
@@ -731,70 +782,6 @@ export class ProductManufacturingOrchestrator {
     if (!job.artifacts) job.artifacts = {};
     job.artifacts['BUILD'] = artifact;
     job.buildArtifactId = artifact.artifactId;
-
-    await this.transition(job, 'BUILD_VERIFIED', 'COMPLETE_BUILD', { artifactId: artifact.artifactId });
-  }
-
-  private resolveAgent(discipline: string, capability: string) {
-    const agents = JumoAIAgentRegistry.getAllAgents();
-    
-    // Authoritative Provider Fabric Selection
-    if (discipline === 'ARCHITECTURE') {
-      const architect = agents.find(a => a.modelPolicy.preferredProvider === 'OPENAI' && a.division === 'ARCHITECTURE');
-      if (architect) return architect;
-    }
-
-    if (discipline === 'SOFTWARE_ENGINEERING' || discipline === 'ENGINEERING') {
-      const codex = agents.find(a => a.modelPolicy.preferredProvider === 'OPENAI_CODEX');
-      if (codex) return codex;
-      
-      const gemini = agents.find(a => a.modelPolicy.preferredProvider === 'GOOGLE_GEMINI');
-      if (gemini) return gemini;
-    }
-
-    if (discipline === 'TESTING_VERIFICATION') {
-      const gemini = agents.find(a => a.modelPolicy.preferredProvider === 'GOOGLE_GEMINI' && a.division === 'TESTING_VERIFICATION');
-      if (gemini) return gemini;
-    }
-
-    if (capability === 'GENERAL_REASONING') {
-      const gpt = agents.find(a => a.jumoName.includes('JUMO GPT'));
-      if (gpt) return gpt;
-    }
-    
-    // Fallback to division and capability filter
-    const qualified = agents.filter(a => a.division === (discipline as any) && a.capabilities.includes(capability));
-    if (qualified.length > 0) return qualified[0];
-    
-    // Final fallback
-    const fallback = agents.find(a => a.division === (discipline as any));
-    return fallback || agents[0];
-  }
-
-  private async executeEngineeringStage(job: ProductManufacturingJob) {
-    const agent = this.resolveAgent('ENGINEERING', 'CODE_GENERATION');
-    console.log(`[ORCHESTRATOR] Engineering Stage: Assigned Agent ${agent.agentId} via ${agent.modelPolicy.provider}`);
-
-    const artifact: ProductArtifactManifest = {
-      artifactId: `ART-ENG-${Date.now().toString(36).toUpperCase()}`,
-      productId: job.productId,
-      version: '1.0.0',
-      type: 'ENGINEERING_ARTIFACT',
-      sourceJobId: job.jobId,
-      sourceStage: 'ENGINEERING_IMPLEMENTATION',
-      content: { components: ['CoreModule', 'SecurityGateway'], routes: 50 },
-      dependencies: [job.blueprintId || ''],
-      integrityHash: `sha256:${Math.random().toString(36)}`,
-      createdAt: new Date().toISOString(),
-      status: 'VERIFIED',
-      evidence: [{ agentId: agent.agentId, action: 'IMPLEMENTATION', result: 'SUCCESS' }]
-    };
-
-    if (!job.artifacts) job.artifacts = {};
-    job.artifacts['ENGINEERING'] = artifact;
-    job.engineeringArtifactId = artifact.artifactId;
-
-    await this.transition(job, 'ENGINEERING_VERIFIED', 'COMPLETE_ENGINEERING', { artifactId: artifact.artifactId });
   }
 
   private async createRuntimeInstance(job: ProductManufacturingJob) {
@@ -842,7 +829,40 @@ export class ProductManufacturingOrchestrator {
     console.log(`[ORCHESTRATOR] Runtime Instance ${runtimeId} activated for Product ${job.productId}`);
   }
 
+  private resolveAgent(discipline: string, capability: string) {
+    const agents = JumoAIAgentRegistry.getAllAgents();
+    
+    if (discipline === 'ARCHITECTURE') {
+      const architect = agents.find(a => a.modelPolicy.preferredProvider === 'OPENAI' && a.division === 'ARCHITECTURE');
+      if (architect) return architect;
+    }
+
+    if (discipline === 'SOFTWARE_ENGINEERING' || discipline === 'ENGINEERING') {
+      const codex = agents.find(a => a.modelPolicy.preferredProvider === 'OPENAI_CODEX');
+      if (codex) return codex;
+      
+      const gemini = agents.find(a => a.modelPolicy.preferredProvider === 'GOOGLE_GEMINI');
+      if (gemini) return gemini;
+    }
+
+    if (discipline === 'TESTING_VERIFICATION') {
+      const gemini = agents.find(a => a.modelPolicy.preferredProvider === 'GOOGLE_GEMINI' && a.division === 'TESTING_VERIFICATION');
+      if (gemini) return gemini;
+    }
+
+    if (capability === 'GENERAL_REASONING') {
+      const gpt = agents.find(a => a.jumoName.includes('JUMO GPT'));
+      if (gpt) return gpt;
+    }
+    
+    const qualified = agents.filter(a => a.division === (discipline as any) && a.capabilities.includes(capability));
+    if (qualified.length > 0) return qualified[0];
+    
+    const fallback = agents.find(a => a.division === (discipline as any));
+    return fallback || agents[0];
+  }
+
   private async handleLifecycleEvent(event: any) {
-    // This could trigger more automation or external integrations
+    // Advanced hooks for live events
   }
 }

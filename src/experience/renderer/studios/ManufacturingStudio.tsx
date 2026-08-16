@@ -57,6 +57,70 @@ const PIPELINE_STAGES: { stage: string; statusKey: ManufacturingJobStatus; label
   { stage: "32", statusKey: "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT", label: "Runtime Activation & Continuous Audit", desc: "Operating live platform instance with real-time health telemetry." }
 ];
 
+// 10 Internationally Understandable Manufacturing Stages mapping
+export const TEN_HIGH_LEVEL_STAGES = [
+  {
+    id: 1,
+    name: "Intake & Demands Analysis",
+    description: "Ingesting raw specification, normalizing schema properties, and establishing runtime identifiers.",
+    requiredWorkPackages: ["DIGITAL_INTAKE", "SPECIFICATION_NORMALIZATION", "PLATFORM_INSTANCE_DEFINITION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 2,
+    name: "Platform & Provisioning Setup",
+    description: "Resolving template definitions, configuration scopes, and initiating system discovery.",
+    requiredWorkPackages: ["PROVISIONING", "ARCHITECTURE_DISCOVERY"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 3,
+    name: "Domain & Architecture Synthesis",
+    description: "Formulating multi-layer structures, establishing boundaries, and generating secure system contracts.",
+    requiredWorkPackages: ["ARCHITECTURE_EXPANSION", "ARCHITECTURE_VERIFICATION", "ARCHITECTURE_CONTRACT_GENERATION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 4,
+    name: "Human Blueprints Ratification",
+    description: "Subjecting blueprints to institutional review and allocating the cognitive engineering swarm.",
+    requiredWorkPackages: ["AWAITING_HUMAN_ENGINEERING_APPROVAL", "WORKFORCE_ORCHESTRATION"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 5,
+    name: "Requirements Decomposition & System Design",
+    description: "Splitting blueprints into engineering specs, structuring micro-services, and design domains.",
+    requiredWorkPackages: ["REQUIREMENTS_DECOMPOSITION", "SYSTEM_DESIGN", "DATA_ARCHITECTURE"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 6,
+    name: "Core Software & API Engineering",
+    description: "Implementing user interfaces, writing workflow controllers, and deploying integration endpoints.",
+    requiredWorkPackages: ["API_AND_INTEGRATION_ENGINEERING", "SECURITY_ENGINEERING", "APPLICATION_ENGINEERING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 7,
+    name: "Automation & Product Synthesis",
+    description: "Configuring automated workflows, wiring cognitive logic, and establishing compute topologies.",
+    requiredWorkPackages: ["COMMERCIAL_PRODUCT_ENGINEERING", "AI_AND_AUTOMATION_ENGINEERING", "INFRASTRUCTURE_ENGINEERING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 8,
+    name: "Compilation & Sealed Build Assembly",
+    description: "Resolving library packages, compiling migrations, compiling sources, and sealing production bundles.",
+    requiredWorkPackages: ["DEPENDENCY_RESOLUTION", "SCHEMA_MANUFACTURING", "SOURCE_AND_ARTIFACT_GENERATION", "COMPILATION", "BUILD_ASSEMBLY"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 9,
+    name: "Rigorous Verification & Quality Auditing",
+    description: "Validating completeness, auditing zero-trust security perimeters, and simulating high-load scenarios.",
+    requiredWorkPackages: ["APPLICATION_COMPLETENESS_VERIFICATION", "SECURITY_AND_ZERO_TRUST_VERIFICATION", "INTEGRATION_VERIFICATION", "END_TO_END_SYSTEM_TESTING", "REGRESSION_AND_RESILIENCE_TESTING"] as ManufacturingJobStatus[]
+  },
+  {
+    id: 10,
+    name: "Sovereign Certification & Human Acceptance",
+    description: "Final human acceptance gate, official cryptographic certification, and hot runtime activation.",
+    requiredWorkPackages: ["AWAITING_HUMAN_MANUFACTURING_APPROVAL", "DEPLOYMENT_AND_PUBLISHING", "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT"] as ManufacturingJobStatus[]
+  }
+];
+
 export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   jobs = [],
   contracts = [],
@@ -65,7 +129,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   eventLog = []
 }) => {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'pipeline' | 'components' | 'services' | 'workflows' | 'data' | 'tests' | 'deployments' | 'evolution' | 'assistant'>('pipeline');
+  const [activeTab, setActiveTab] = useState<'job_board' | 'assembly_line' | 'resources' | 'build_log'>('job_board');
   const [factorySummary, setFactorySummary] = useState<any>(null);
   const [componentsList, setComponentsList] = useState<any[]>([]);
   const [servicesList, setServicesList] = useState<any[]>([]);
@@ -201,32 +265,70 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   const pendingManufacturingJobs = jobs.filter(j => j.status === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL');
   const pendingEngineeringJobs = jobs.filter(j => j.status === 'AWAITING_HUMAN_ENGINEERING_APPROVAL');
 
-  const getStageState = (stageKey: ManufacturingJobStatus, index: number): 'COMPLETED' | 'RUNNING' | 'FAILED' | 'BLOCKED' | 'READY' | 'WAITING_APPROVAL' | 'NO_ACTIVE_JOB' => {
+  const [expandedStages, setExpandedStages] = useState<number[]>([1, 4, 10]);
+
+  const toggleStageExpand = (stageId: number) => {
+    setExpandedStages(prev => 
+      prev.includes(stageId) ? prev.filter(id => id !== stageId) : [...prev, stageId]
+    );
+  };
+
+  const getHighLevelStageState = (stage: typeof TEN_HIGH_LEVEL_STAGES[0]): 'COMPLETED' | 'RUNNING' | 'WAITING_APPROVAL' | 'READY' | 'FAILED' | 'NO_ACTIVE_JOB' => {
     if (!selectedJob) return 'NO_ACTIVE_JOB';
-    const stageSequenceKeys = PIPELINE_STAGES.map(s => s.statusKey);
-    const currentIdx = stageSequenceKeys.indexOf(selectedJob.status);
-    
-    if (selectedJob.status === 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT') {
-      return 'COMPLETED';
+    if (selectedJob.status === 'FAILED') {
+      const currentIdx = PIPELINE_STAGES.findIndex(s => s.statusKey === selectedJob.status);
+      const indices = stage.requiredWorkPackages.map(wp => PIPELINE_STAGES.findIndex(s => s.statusKey === wp));
+      const minIdx = Math.min(...indices);
+      const maxIdx = Math.max(...indices);
+      if (currentIdx >= minIdx && currentIdx <= maxIdx) {
+        return 'FAILED';
+      }
     }
 
-    if (selectedJob.status === 'FAILED') {
-      if (index < currentIdx) return 'COMPLETED';
-      if (index === currentIdx) return 'FAILED';
+    const currentIdx = PIPELINE_STAGES.findIndex(s => s.statusKey === selectedJob.status);
+    if (currentIdx === -1) return 'READY';
+
+    const indices = stage.requiredWorkPackages.map(wp => PIPELINE_STAGES.findIndex(s => s.statusKey === wp));
+    const minIdx = Math.min(...indices);
+    const maxIdx = Math.max(...indices);
+
+    if (currentIdx > maxIdx) {
+      return 'COMPLETED';
+    } else if (currentIdx < minIdx) {
+      return 'READY';
+    } else {
+      if (selectedJob.status === 'AWAITING_HUMAN_ENGINEERING_APPROVAL' || selectedJob.status === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
+        return 'WAITING_APPROVAL';
+      }
+      return 'RUNNING';
+    }
+  };
+
+  const getWorkPackageState = (wp: ManufacturingJobStatus): 'COMPLETED' | 'RUNNING' | 'WAITING_APPROVAL' | 'READY' | 'FAILED' => {
+    if (!selectedJob) return 'READY';
+    const currentIdx = PIPELINE_STAGES.findIndex(s => s.statusKey === selectedJob.status);
+    const wpIdx = PIPELINE_STAGES.findIndex(s => s.statusKey === wp);
+
+    if (currentIdx > wpIdx) {
+      return 'COMPLETED';
+    } else if (currentIdx < wpIdx) {
+      return 'READY';
+    } else {
+      if (selectedJob.status === 'FAILED') return 'FAILED';
+      if (wp === 'AWAITING_HUMAN_ENGINEERING_APPROVAL' || wp === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
+        return 'WAITING_APPROVAL';
+      }
+      return 'RUNNING';
+    }
+  };
+
+  // Backwards compatibility helper
+  const getStageState = (stageKey: ManufacturingJobStatus, index: number): 'COMPLETED' | 'RUNNING' | 'FAILED' | 'BLOCKED' | 'READY' | 'WAITING_APPROVAL' | 'NO_ACTIVE_JOB' => {
+    const wpState = getWorkPackageState(stageKey);
+    if (wpState === 'READY' && selectedJob && PIPELINE_STAGES.findIndex(s => s.statusKey === selectedJob.status) === -1) {
       return 'BLOCKED';
     }
-
-    if (index < currentIdx) return 'COMPLETED';
-    else if (index === currentIdx) {
-      if (selectedJob.status === 'BLOCKED') return 'BLOCKED';
-      const approvalStages: ManufacturingJobStatus[] = [
-        'AWAITING_HUMAN_ENGINEERING_APPROVAL', 
-        'AWAITING_HUMAN_MANUFACTURING_APPROVAL',
-        'DEPLOYMENT_AND_PUBLISHING'
-      ];
-      if (approvalStages.includes(stageKey)) return 'WAITING_APPROVAL';
-      return 'RUNNING';
-    } else return 'READY';
+    return wpState as any;
   };
 
   return (
@@ -523,9 +625,9 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-black text-slate-900 tracking-tight">JDPM International Manufacturing Factory</h2>
+              <h2 className="text-lg font-black text-slate-900 tracking-tight">Digital Product Factory</h2>
               <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
-                International Standard
+                Sovereign Standard
               </span>
             </div>
             <p className="text-xs text-slate-500 font-semibold">End-to-End Autonomous Specification, Assembly, Verification, Certification & Runtime</p>
@@ -591,22 +693,17 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
       <div className="flex items-center justify-between gap-4 bg-white border border-slate-200 rounded-2xl p-3 overflow-x-auto">
         <div className="flex items-center gap-1.5 shrink-0">
           {[
-            { id: 'pipeline', label: '32-Stage Lifecycle' },
-            { id: 'components', label: 'Components' },
-            { id: 'services', label: 'Services' },
-            { id: 'workflows', label: 'Workflows' },
-            { id: 'data', label: 'Data & Schemas' },
-            { id: 'tests', label: 'Test Evidence' },
-            { id: 'deployments', label: 'Deployments & Runtime' },
-            { id: 'evolution', label: 'Quality & Traceability' },
-            { id: 'assistant', label: 'JUMO GPT' }
+            { id: 'job_board', label: 'Job Board' },
+            { id: 'assembly_line', label: 'Assembly Line' },
+            { id: 'resources', label: 'Resource Allocation' },
+            { id: 'build_log', label: 'Build Log' }
           ].map(tab => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === tab.id ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-              }`}
+               key={tab.id}
+               onClick={() => setActiveTab(tab.id as any)}
+               className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                 activeTab === tab.id ? 'bg-slate-900 text-white shadow-xs' : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+               }`}
             >
               {tab.label}
             </button>
@@ -625,9 +722,9 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
       {/* TAB CONTENT */}
       <AnimatePresence mode="wait">
-        {activeTab === 'pipeline' && (
+        {activeTab === 'job_board' && (
           <motion.div 
-            key="tab-pipeline"
+            key="tab-job_board"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -713,60 +810,137 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
               <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
                   <div>
-                    <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">32-Stage Sovereign Execution Grid</h3>
-                    <p className="text-[11px] text-slate-500 font-medium">Subordinate to JDPM/SPEC &rarr; ARCH &rarr; BLUE &rarr; MFG &rarr; VER &rarr; CERT</p>
+                    <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">10-Phase Sovereign Manufacturing Pipeline</h3>
+                    <p className="text-[11px] text-slate-500 font-medium">Consolidated internationally compliant phases tracking 32 granular work packages</p>
                   </div>
                   <span className="text-[10px] font-mono font-black text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
-                    Target: Production Node
+                    Target: JUMO Production Node
                   </span>
                 </div>
 
-                <div className="space-y-2 max-h-[640px] overflow-y-auto pr-1">
-                  {PIPELINE_STAGES.map((stg, idx) => {
-                    const state = getStageState(stg.statusKey, idx);
+                <div className="space-y-3 max-h-[720px] overflow-y-auto pr-1">
+                  {TEN_HIGH_LEVEL_STAGES.map((phase) => {
+                    const phaseState = getHighLevelStageState(phase);
+                    const isExpanded = expandedStages.includes(phase.id);
+                    
                     return (
                       <div 
-                        key={stg.stage} 
-                        className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
-                          state === 'COMPLETED' ? 'bg-emerald-50/40 border-emerald-200' :
-                          state === 'RUNNING' ? 'bg-blue-50/60 border-blue-300 ring-1 ring-blue-400' :
-                          state === 'WAITING_APPROVAL' ? 'bg-amber-50/60 border-amber-300' :
-                          state === 'FAILED' ? 'bg-rose-50 border-rose-300' :
-                          'bg-slate-50/50 border-slate-200 opacity-60'
+                        key={phase.id} 
+                        className={`rounded-xl border transition-all ${
+                          phaseState === 'COMPLETED' ? 'bg-emerald-50/10 border-emerald-200 shadow-xs' :
+                          phaseState === 'RUNNING' ? 'bg-blue-50/20 border-blue-300 ring-1 ring-blue-100 shadow-xs' :
+                          phaseState === 'WAITING_APPROVAL' ? 'bg-amber-50/20 border-amber-300 ring-1 ring-amber-100 shadow-xs' :
+                          phaseState === 'FAILED' ? 'bg-rose-50/20 border-rose-300' :
+                          'bg-slate-50/40 border-slate-200 opacity-80'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-mono font-black text-xs ${
-                            state === 'COMPLETED' ? 'bg-emerald-600 text-white' :
-                            state === 'RUNNING' ? 'bg-blue-600 text-white animate-pulse' :
-                            state === 'WAITING_APPROVAL' ? 'bg-amber-600 text-white' :
-                            'bg-slate-200 text-slate-600'
-                          }`}>
-                            {stg.stage}
-                          </div>
-                          <div>
-                            <div className="text-xs font-black text-slate-900 flex items-center gap-2">
-                              <span>{stg.label}</span>
-                              {stg.requiresApproval && (
-                                <span className="text-[9px] font-black text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded border border-amber-200">
-                                  Gate
-                                </span>
-                              )}
+                        {/* Header Row */}
+                        <div 
+                          onClick={() => toggleStageExpand(phase.id)}
+                          className="p-4 flex items-center justify-between cursor-pointer select-none"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono font-black text-xs ${
+                              phaseState === 'COMPLETED' ? 'bg-emerald-600 text-white' :
+                              phaseState === 'RUNNING' ? 'bg-blue-600 text-white animate-pulse' :
+                              phaseState === 'WAITING_APPROVAL' ? 'bg-amber-600 text-white' :
+                              'bg-slate-200 text-slate-600'
+                            }`}>
+                              {phase.id}
                             </div>
-                            <div className="text-[10px] text-slate-500 font-medium">{stg.desc}</div>
+                            <div>
+                              <h4 className="text-xs font-black text-slate-900">{phase.name}</h4>
+                              <p className="text-[10px] text-slate-500 font-medium max-w-[400px] truncate">{phase.description}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full font-mono uppercase tracking-wider ${
+                              phaseState === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
+                              phaseState === 'RUNNING' ? 'bg-blue-100 text-blue-800' :
+                              phaseState === 'WAITING_APPROVAL' ? 'bg-amber-100 text-amber-800' :
+                              'bg-slate-200 text-slate-600'
+                            }`}>
+                              {phaseState === 'NO_ACTIVE_JOB' ? 'READY' : phaseState}
+                            </span>
+                            <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                           </div>
                         </div>
 
-                        <div>
-                          <span className={`text-[9px] font-black px-2 py-0.5 rounded-full font-mono uppercase tracking-wider ${
-                            state === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                            state === 'RUNNING' ? 'bg-blue-100 text-blue-800' :
-                            state === 'WAITING_APPROVAL' ? 'bg-amber-100 text-amber-800' :
-                            'bg-slate-200 text-slate-600'
-                          }`}>
-                            {state}
-                          </span>
-                        </div>
+                        {/* Expandable work packages block */}
+                        <AnimatePresence initial={false}>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden border-t border-slate-100 bg-slate-50/40"
+                            >
+                              <div className="p-4 space-y-2">
+                                <div className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2 font-mono">
+                                  Constituent Work Packages ({phase.requiredWorkPackages.length})
+                                </div>
+                                <div className="grid grid-cols-1 gap-2">
+                                  {phase.requiredWorkPackages.map((wp) => {
+                                    // Find detailed info in PIPELINE_STAGES
+                                    const detailedWp = PIPELINE_STAGES.find(s => s.statusKey === wp);
+                                    const wpState = getWorkPackageState(wp);
+                                    if (!detailedWp) return null;
+
+                                    return (
+                                      <div 
+                                        key={wp}
+                                        className={`p-3 rounded-lg border flex items-center justify-between bg-white text-xs ${
+                                          wpState === 'COMPLETED' ? 'border-emerald-100 shadow-2xs' :
+                                          wpState === 'RUNNING' ? 'border-blue-200 shadow-2xs' :
+                                          wpState === 'WAITING_APPROVAL' ? 'border-amber-200' :
+                                          'border-slate-100 opacity-60'
+                                        }`}
+                                      >
+                                        <div className="flex items-center gap-2.5">
+                                          <div className={`w-5 h-5 rounded-md flex items-center justify-center font-mono text-[10px] font-bold ${
+                                            wpState === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700' :
+                                            wpState === 'RUNNING' ? 'bg-blue-50 text-blue-700 animate-pulse' :
+                                            wpState === 'WAITING_APPROVAL' ? 'bg-amber-50 text-amber-700' :
+                                            'bg-slate-100 text-slate-500'
+                                          }`}>
+                                            {detailedWp.stage}
+                                          </div>
+                                          <div>
+                                            <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                                              <span>{detailedWp.label}</span>
+                                              {detailedWp.requiresApproval && (
+                                                <span className="text-[8px] font-black uppercase text-amber-700 bg-amber-50 px-1 py-0.2 rounded border border-amber-100">Gate</span>
+                                              )}
+                                            </div>
+                                            <div className="text-[9px] text-slate-400 font-medium">{detailedWp.desc}</div>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                          {wpState === 'RUNNING' && (
+                                            <span className="flex h-1.5 w-1.5 relative">
+                                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
+                                            </span>
+                                          )}
+                                          <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase font-mono tracking-wider ${
+                                            wpState === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+                                            wpState === 'RUNNING' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
+                                            wpState === 'WAITING_APPROVAL' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+                                            'bg-slate-100 text-slate-400'
+                                          }`}>
+                                            {wpState}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     );
                   })}
@@ -776,356 +950,325 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
           </motion.div>
         )}
 
-        {activeTab === 'components' && (
+        {activeTab === 'assembly_line' && (
           <motion.div 
-            key="tab-components"
+            key="tab-assembly_line"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Digital Component Factory</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Reusable, cryptographically verified software components</p>
-              </div>
-              <span className="text-xs font-mono font-black text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-lg">
-                {componentsList.length} Manufactured Components
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {componentsList.map(comp => (
-                <div key={comp.componentId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span className="text-xs font-mono font-black text-slate-900">{comp.componentId}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                      {comp.verificationStatus} ({comp.testCoveragePercent}%)
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-900">{comp.name}</h4>
-                    <span className="text-[10px] font-mono text-slate-400">Category: {comp.category} | Ver: {comp.version}</span>
-                  </div>
-                  <div className="bg-slate-950 p-2.5 rounded-xl font-mono text-[10px] text-emerald-400 overflow-x-auto">
-                    <code>{comp.implementationSnippet || 'export async function exec() { ... }'}</code>
-                  </div>
-                  <div className="space-y-1 text-[10px] font-mono text-slate-500">
-                    <div className="truncate">Ref: <span className="text-slate-800 font-bold">{comp.blueprintRef}</span></div>
-                    <div className="truncate">Hash: <span className="text-slate-600">{comp.cryptographicHash}</span></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'services' && (
-          <motion.div 
-            key="tab-services"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Digital Service Factory</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Executable micro-services with real telemetry probes and endpoints</p>
-              </div>
-              <span className="text-xs font-mono font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-lg">
-                {servicesList.length} Active Services
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {servicesList.map(srv => (
-                <div key={srv.serviceId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span className="text-xs font-mono font-black text-slate-900">{srv.serviceId}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                      {srv.healthStatus}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-900">{srv.name}</h4>
-                    <span className="text-[10px] font-mono text-slate-400">Port: {srv.runtimeConfig?.port} | Concurrency: {srv.runtimeConfig?.concurrency}</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    <span className="text-[10px] font-black uppercase text-slate-400 font-mono">Endpoints:</span>
-                    {srv.endpoints?.map((ep: any, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg text-[10px] font-mono border border-slate-100">
-                        <span className="font-black text-indigo-600">{ep.method} {ep.path}</span>
-                        <span className="text-slate-400">{ep.requiredClearance}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-slate-500">
-                    <span>Probes: {srv.telemetryProbes?.length || 0} active</span>
-                    <span>Hash: {srv.cryptographicHash?.substring(0, 16)}...</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'workflows' && (
-          <motion.div 
-            key="tab-workflows"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Digital Workflow Factory</h3>
-                <p className="text-[11px] text-slate-500 font-medium">State machine workflows with compensation and approval gates</p>
-              </div>
-              <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
-                {workflowsList.length} Configured Workflows
-              </span>
-            </div>
-
+            {/* Components Section */}
             <div className="space-y-4">
-              {workflowsList.map(wf => (
-                <div key={wf.workflowId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span className="text-xs font-mono font-black text-slate-900">{wf.workflowId}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-full">
-                      {wf.status}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-black text-slate-900">{wf.name}</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {wf.steps?.map((stp: any) => (
-                      <div key={stp.stepId} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                        <div className="text-[10px] font-mono font-black text-slate-700">{stp.stepId}</div>
-                        <div className="text-xs font-bold text-slate-900">{stp.name}</div>
-                        <div className="text-[9px] text-slate-400 font-mono">Executor: {stp.executor} ({stp.assignedAgentOrRole})</div>
-                      </div>
-                    ))}
-                  </div>
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Digital Component Assembly</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Reusable, cryptographically verified software components generated by the cognitive workforce.</p>
                 </div>
-              ))}
+                <span className="text-xs font-mono font-black text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-lg">
+                  {componentsList.length} Components
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {componentsList.map(comp => (
+                  <div key={comp.componentId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-mono font-black text-slate-900">{comp.componentId}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                        {comp.verificationStatus} ({comp.testCoveragePercent}%)
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900">{comp.name}</h4>
+                      <span className="text-[10px] font-mono text-slate-400">Category: {comp.category} | Ver: {comp.version}</span>
+                    </div>
+                    <div className="bg-slate-950 p-2.5 rounded-xl font-mono text-[10px] text-emerald-400 overflow-x-auto max-h-32">
+                      <code>{comp.implementationSnippet || 'export async function exec() { ... }'}</code>
+                    </div>
+                    <div className="space-y-1 text-[10px] font-mono text-slate-500">
+                      <div className="truncate">Ref: <span className="text-slate-800 font-bold">{comp.blueprintRef}</span></div>
+                      <div className="truncate">Hash: <span className="text-slate-600">{comp.cryptographicHash}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Services Section */}
+            <div className="space-y-4 pt-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Executable Micro-Services</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Isolated service containers with active telemetry probes and zero-trust verification gateways.</p>
+                </div>
+                <span className="text-xs font-mono font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-lg">
+                  {servicesList.length} Active Services
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {servicesList.map(srv => (
+                  <div key={srv.serviceId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-mono font-black text-slate-900">{srv.serviceId}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                        {srv.healthStatus}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900">{srv.name}</h4>
+                      <span className="text-[10px] font-mono text-slate-400">Port: {srv.runtimeConfig?.port} | Concurrency: {srv.runtimeConfig?.concurrency}</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-black uppercase text-slate-400 font-mono">Endpoints:</span>
+                      {srv.endpoints?.map((ep: any, idx: number) => (
+                        <div key={idx} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg text-[10px] font-mono border border-slate-100">
+                          <span className="font-black text-indigo-600">{ep.method} {ep.path}</span>
+                          <span className="text-slate-400">{ep.requiredClearance}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-slate-500">
+                      <span>Probes: {srv.telemetryProbes?.length || 0} active</span>
+                      <span>Hash: {srv.cryptographicHash?.substring(0, 16)}...</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
 
-        {activeTab === 'data' && (
+        {activeTab === 'resources' && (
           <motion.div 
-            key="tab-data"
+            key="tab-resources"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Digital Data Factory</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Relational schemas, multi-tenant isolation, and migration scripts</p>
-              </div>
-              <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
-                {schemasList.length} Schemas
-              </span>
-            </div>
-
+            {/* Workflows Section */}
             <div className="space-y-4">
-              {schemasList.map(sch => (
-                <div key={sch.schemaId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span className="text-xs font-mono font-black text-slate-900">{sch.schemaId}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                      Target: {sch.targetRDBMS}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-black text-slate-900">{sch.name}</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {sch.entities?.map((ent: any) => (
-                      <div key={ent.tableName} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-mono font-black text-indigo-700">{ent.tableName}</span>
-                          <span className="text-[9px] font-mono text-slate-500">RLS: {ent.rowLevelSecurityEnabled ? 'ENABLED' : 'DISABLED'}</span>
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Workforce & State Machine Workflows</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">State machine logic coordinating execution sequences, compensations, and human ratification gates.</p>
+                </div>
+                <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
+                  {workflowsList.length} Workflows
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {workflowsList.map(wf => (
+                  <div key={wf.workflowId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-mono font-black text-slate-900">{wf.workflowId}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-full">
+                        {wf.status}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-black text-slate-900">{wf.name}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {wf.steps?.map((stp: any) => (
+                        <div key={stp.stepId} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                          <div className="text-[10px] font-mono font-black text-slate-700">{stp.stepId}</div>
+                          <div className="text-xs font-bold text-slate-900">{stp.name}</div>
+                          <div className="text-[9px] text-slate-400 font-mono">Executor: {stp.executor} ({stp.assignedAgentOrRole})</div>
                         </div>
-                        <div className="text-[10px] font-mono text-slate-500 space-y-0.5">
-                          {ent.fields?.map((f: any) => (
-                            <div key={f.name} className="flex justify-between border-b border-slate-100 pb-0.5">
-                              <span>{f.name}</span>
-                              <span className="font-bold text-slate-700">{f.type} {f.primaryKey ? '(PK)' : ''}</span>
-                            </div>
-                          ))}
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Data & Database Schemas Section */}
+            <div className="space-y-4 pt-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Database Schemas & Isolated Storage</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Isolated storage partitions, relational schemas, migrations, and Row-Level Security policy registers.</p>
+                </div>
+                <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
+                  {schemasList.length} Databases
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {schemasList.map(sch => (
+                  <div key={sch.schemaId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-mono font-black text-slate-900">{sch.schemaId}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                        Target: {sch.targetRDBMS}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-black text-slate-900">{sch.name}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {sch.entities?.map((ent: any) => (
+                        <div key={ent.tableName} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-mono font-black text-indigo-700">{ent.tableName}</span>
+                            <span className="text-[9px] font-mono text-slate-500">RLS: {ent.rowLevelSecurityEnabled ? 'ENABLED' : 'DISABLED'}</span>
+                          </div>
+                          <div className="text-[10px] font-mono text-slate-500 space-y-0.5">
+                            {ent.fields?.map((f: any) => (
+                              <div key={f.name} className="flex justify-between border-b border-slate-100 pb-0.5">
+                                <span>{f.name}</span>
+                                <span className="font-bold text-slate-700">{f.type} {f.primaryKey ? '(PK)' : ''}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'build_log' && (
+          <motion.div 
+            key="tab-build_log"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="space-y-6"
+          >
+            {/* Test Evidence Section */}
+            <div className="space-y-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Verified Test Suite Evidence</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Automated test suites confirming regression security with cryptographically signed verifiable evidence.</p>
+                </div>
+                <span className="text-xs font-mono font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg">
+                  {testsList.length} Suites
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {testsList.map(tst => (
+                  <div key={tst.testId} className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-slate-900">{tst.testSuiteName}</div>
+                        <div className="text-[10px] font-mono text-slate-400">
+                          {tst.testId} | Category: {tst.category} | Target: {tst.targetArtifactId}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'tests' && (
-          <motion.div 
-            key="tab-tests"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Digital Test Factory & Verifiable Evidence</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Automated test execution logs with SHA-256 evidence digests</p>
-              </div>
-              <span className="text-xs font-mono font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg">
-                {testsList.length} Executed Suites
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {testsList.map(tst => (
-                <div key={tst.testId} className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                      <CheckCircle2 className="w-4 h-4" />
                     </div>
-                    <div>
-                      <div className="text-xs font-black text-slate-900">{tst.testSuiteName}</div>
-                      <div className="text-[10px] font-mono text-slate-400">
-                        {tst.testId} | Category: {tst.category} | Target: {tst.targetArtifactId}
+                    <div className="text-right font-mono text-[11px]">
+                      <span className="text-xs font-black text-emerald-700">{tst.passedCount}/{tst.assertionsCount} Passed</span>
+                      <span className="text-[9px] text-slate-400 block">{tst.durationMs}ms | Digest: {tst.evidenceDigest?.substring(0, 14)}...</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Deployments Section */}
+            <div className="space-y-4 pt-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Active Deployments & Container Clusters</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Live instances registered in the secure regional network topology, displaying operational limits.</p>
+                </div>
+                <span className="text-xs font-mono font-black text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1 rounded-lg">
+                  {runtimeList.length} Active Instances
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {runtimeList.map(inst => (
+                  <div key={inst.instanceId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-mono font-black text-slate-900">{inst.instanceId}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                        {inst.operationalState}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-black text-slate-900">{inst.productName} (v{inst.version})</h4>
+                    <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl font-mono text-[10px]">
+                      <div>
+                        <span className="text-slate-400 block">CPU Load</span>
+                        <span className="font-bold text-slate-800">{inst.cpuUsagePercent}%</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Memory</span>
+                        <span className="font-bold text-slate-800">{inst.memoryUsageMb} MB</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Throughput</span>
+                        <span className="font-bold text-slate-800">{inst.transactionsPerSecond} TPS</span>
                       </div>
                     </div>
+                    <div className="text-[10px] font-mono text-slate-400">
+                      Deployment Ref: <span className="text-slate-700 font-bold">{inst.deploymentRef}</span>
+                    </div>
                   </div>
-                  <div className="text-right font-mono">
-                    <span className="text-xs font-black text-emerald-700">{tst.passedCount}/{tst.assertionsCount} Passed</span>
-                    <span className="text-[9px] text-slate-400 block">{tst.durationMs}ms | Digest: {tst.evidenceDigest?.substring(0, 14)}...</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'deployments' && (
-          <motion.div 
-            key="tab-deployments"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Provisioning & Active Runtime Instances</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Live sovereign runtime container topology and telemetry heartbeats</p>
+                ))}
               </div>
-              <span className="text-xs font-mono font-black text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1 rounded-lg">
-                {runtimeList.length} Active Instances
-              </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {runtimeList.map(inst => (
-                <div key={inst.instanceId} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span className="text-xs font-mono font-black text-slate-900">{inst.instanceId}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                      {inst.operationalState}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-black text-slate-900">{inst.productName} (v{inst.version})</h4>
-                  <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl font-mono text-[10px]">
-                    <div>
-                      <span className="text-slate-400 block">CPU Load</span>
-                      <span className="font-bold text-slate-800">{inst.cpuUsagePercent}%</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block">Memory</span>
-                      <span className="font-bold text-slate-800">{inst.memoryUsageMb} MB</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block">Throughput</span>
-                      <span className="font-bold text-slate-800">{inst.transactionsPerSecond} TPS</span>
-                    </div>
-                  </div>
-                  <div className="text-[10px] font-mono text-slate-400">
-                    Deployment Ref: <span className="text-slate-700 font-bold">{inst.deploymentRef}</span>
-                  </div>
+            {/* Quality & Defect Matrix */}
+            <div className="space-y-4 pt-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black uppercase text-slate-900 tracking-wider">Quality Management & Traceability Matrix</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Authoritative verifiable trace records linking original requirements, blueprint items, and runtime logs.</p>
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'evolution' && (
-          <motion.div 
-            key="tab-evolution"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-black uppercase text-slate-900 tracking-wider">Quality Management & Traceability Matrix</h3>
-                <p className="text-[11px] text-slate-500 font-medium">Complete chain of evidence from Requirement to Runtime</p>
+                <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
+                  {qualityData.traceabilityMatrix?.length || 1} Trace Links
+                </span>
               </div>
-              <span className="text-xs font-mono font-black text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg">
-                {qualityData.traceabilityMatrix?.length || 1} Trace Links
-              </span>
-            </div>
 
-            <div className="space-y-3">
-              <h4 className="text-xs font-black uppercase text-slate-400 font-mono">End-to-End Traceability Links</h4>
-              {qualityData.traceabilityMatrix?.map((link, idx) => (
-                <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 font-mono text-[10px] space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-bold">{link.requirementId}</span>
-                    <span>&rarr;</span>
-                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-bold">{link.architectureElementId}</span>
-                    <span>&rarr;</span>
-                    <span className="px-2 py-0.5 bg-purple-50 text-purple-700 rounded font-bold">{link.blueprintElementId}</span>
-                    <span>&rarr;</span>
-                    <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-bold">{link.componentId}</span>
-                    <span>&rarr;</span>
-                    <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded font-bold">{link.testId}</span>
-                    <span>&rarr;</span>
-                    <span className="px-2 py-0.5 bg-slate-900 text-white rounded font-bold">{link.certificateId}</span>
+              <div className="space-y-3">
+                <h4 className="text-xs font-black uppercase text-slate-400 font-mono">End-to-End Traceability Links</h4>
+                {qualityData.traceabilityMatrix?.map((link, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 font-mono text-[10px] space-y-2 overflow-x-auto">
+                    <div className="flex items-center gap-2 whitespace-nowrap">
+                      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-bold">{link.requirementId}</span>
+                      <span>&rarr;</span>
+                      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-bold">{link.architectureElementId}</span>
+                      <span>&rarr;</span>
+                      <span className="px-2 py-0.5 bg-purple-50 text-purple-700 rounded font-bold">{link.blueprintElementId}</span>
+                      <span>&rarr;</span>
+                      <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-bold">{link.componentId}</span>
+                      <span>&rarr;</span>
+                      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded font-bold">{link.testId}</span>
+                      <span>&rarr;</span>
+                      <span className="px-2 py-0.5 bg-slate-900 text-white rounded font-bold">{link.certificateId}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="space-y-3 pt-4">
-              <h4 className="text-xs font-black uppercase text-slate-400 font-mono">Defect Management & Corrective Actions</h4>
-              {qualityData.defects?.map(def => (
-                <div key={def.defectId} className="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-black text-slate-900">{def.defectId}: {def.title}</span>
-                    <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                      {def.status}
-                    </span>
+              <div className="space-y-3 pt-4">
+                <h4 className="text-xs font-black uppercase text-slate-400 font-mono">Defect Management & Corrective Actions</h4>
+                {qualityData.defects?.map(def => (
+                  <div key={def.defectId} className="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-slate-900">{def.defectId}: {def.title}</span>
+                      <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                        {def.status}
+                      </span>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-500 space-y-1">
+                      <div>Root Cause: <span className="text-slate-800">{def.rootCauseAnalysis}</span></div>
+                      <div>Correction: <span className="text-emerald-700 font-bold">{def.correctiveAction}</span></div>
+                    </div>
                   </div>
-                  <div className="text-[10px] font-mono text-slate-500 space-y-1">
-                    <div>Root Cause: <span className="text-slate-800">{def.rootCauseAnalysis}</span></div>
-                    <div>Correction: <span className="text-emerald-700 font-bold">{def.correctiveAction}</span></div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'assistant' && (
-          <motion.div 
-            key="tab-assistant"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl h-[700px]"
-          >
-            <JumoFloatingAssistant activeStudio="MANUFACTURING" variant="embedded" />
           </motion.div>
         )}
       </AnimatePresence>
