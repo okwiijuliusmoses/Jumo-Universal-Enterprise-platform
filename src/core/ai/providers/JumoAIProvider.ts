@@ -1,5 +1,6 @@
 import { JumoModelRegistry } from "../../registry/JumoModelRegistry";
 import { LocalInferenceRuntimeRegistry } from "../runtime/LocalInferenceRuntime";
+import { LocalInferenceAdapter } from "../../../engine/ai/providers/local/LocalInferenceAdapter";
 // JUMO UEOS — JUMO AI Providers Layer
 // Unified contract and concrete adapters for Google Gemini, OpenAI, Copilot/Microsoft, and JUMO Local Engines.
 
@@ -349,6 +350,7 @@ export class JumoLocalReasoningProvider implements JumoAIProvider {
   readonly displayName = "JUMO Local Sovereign Engine";
   readonly local = true;
 
+  private adapter = LocalInferenceAdapter.getInstance();
   private runtime = LocalInferenceRuntimeRegistry.getInstance().getEngine();
 
   async isAvailable(): Promise<boolean> {
@@ -357,22 +359,61 @@ export class JumoLocalReasoningProvider implements JumoAIProvider {
   }
 
   async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE" | "NOT_CONFIGURED" | "UNREACHABLE"; latencyMs?: number; details?: string }> {
-    const health = await this.runtime.healthCheck();
-    const telemetry = this.runtime.getRuntimeTelemetry();
+    const healthRes = await this.adapter.checkInferenceHealth();
+    const runtimeHealth = await this.runtime.healthCheck();
     return {
-      status: health.status === "HEALTHY" ? "HEALTHY" : "UNAVAILABLE",
-      latencyMs: health.latencyMs,
-      details: `${health.details} [Engine: ${telemetry.runtimeEngine}, Status: ${telemetry.runtimeStatus}]`
+      status: (healthRes.status === "HEALTHY" || runtimeHealth.status === "HEALTHY") ? "HEALTHY" : "UNAVAILABLE",
+      latencyMs: healthRes.latencyMs || runtimeHealth.latencyMs,
+      details: `${healthRes.diagnosticReport} | Engine: ${runtimeHealth.details}`
     };
   }
 
   async discoverModels(): Promise<JumoModelDiscovery[]> {
+    const adapterModels = await this.adapter.discoverModels();
+    if (adapterModels.length > 0) {
+      return adapterModels.map(m => ({
+        modelId: m.modelId,
+        displayName: m.modelName,
+        contextLength: m.contextLength,
+        capabilities: m.capabilities
+      }));
+    }
     return this.runtime.discoverModels();
   }
 
   async generate(request: JumoAIRequest): Promise<JumoAIResponse> {
+    const models = await this.discoverModels();
+    const targetModel = request.modelId || (models[0] ? models[0].modelId : "omalla-llama-3-8b");
+
+    // Primary execution route through LocalInferenceAdapter
+    const adapterRes = await this.adapter.executeInference(
+      targetModel,
+      request.message,
+      request.systemPrompt,
+      request.temperature ?? 0.2
+    );
+
+    if (adapterRes.text && !adapterRes.text.includes("AIR_GAPPED_FAIL")) {
+      return {
+        text: adapterRes.text,
+        modelId: targetModel,
+        providerId: this.providerId,
+        reasoning: true,
+        usage: {
+          totalTokens: adapterRes.tokens
+        },
+        metadata: {
+          role: "LOCAL_SOVEREIGN_INFERENCE",
+          sovereign: true,
+          latencyMs: adapterRes.latencyMs,
+          tokensUsed: adapterRes.tokens
+        }
+      };
+    }
+
+    // Fallback through JumoLocalInferenceEngine
     const res = await this.runtime.generate(request.message, {
-      modelId: request.modelId,
+      modelId: targetModel,
       temperature: request.temperature,
       systemPrompt: request.systemPrompt
     });
@@ -383,7 +424,7 @@ export class JumoLocalReasoningProvider implements JumoAIProvider {
 
     return {
       text: res.text,
-      modelId: res.modelId,
+      modelId: res.modelId || targetModel,
       providerId: this.providerId,
       reasoning: true,
       metadata: {

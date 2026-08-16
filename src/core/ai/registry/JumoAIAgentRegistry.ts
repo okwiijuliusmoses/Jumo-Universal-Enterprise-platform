@@ -534,6 +534,10 @@ export class JumoAIAgentRegistry {
     return Array.from(this.agentsMap.values());
   }
 
+  public static listAgents(): AIAgentRecord[] {
+    return this.getAllAgents();
+  }
+
   // 2. GET BY DIVISION
   public static getAgentsByDivision(division: AIWorkforceDivision): AIAgentRecord[] {
     return Array.from(this.agentsMap.values()).filter(a => a.division === division);

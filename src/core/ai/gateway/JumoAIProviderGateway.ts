@@ -151,6 +151,7 @@ export class JumoAIProviderGateway {
     const provider = registry.get(targetProviderId);
     let success = false;
     let output = "";
+    let actualModelUsed = provider.displayName;
 
     try {
       trace.push(`[${targetProviderId}] Dispatching reasoning block to ${provider.displayName}...`);
@@ -161,8 +162,11 @@ export class JumoAIProviderGateway {
         context
       });
       output = res.text;
+      if (res.modelId) {
+        actualModelUsed = res.modelId;
+      }
       success = true;
-      trace.push(`[${targetProviderId}] Successfully received remote reasoning block.`);
+      trace.push(`[${targetProviderId}] Successfully received reasoning block. Model: ${actualModelUsed}`);
     } catch (err: any) {
       trace.push(`[ERROR] Provider ${targetProviderId} failed: ${err.message}`);
       if (targetProviderId !== "JUMO_LOCAL" && config.mode === "HYBRID" && agent.modelPolicy.offlineFallbackEnabled) {
@@ -171,6 +175,9 @@ export class JumoAIProviderGateway {
           const localProvider = registry.get("JUMO_LOCAL");
           const res = await localProvider.generate({ message: prompt, systemPrompt: `Agent Role: ${agent.role}`, context });
           output = res.text;
+          if (res.modelId) {
+            actualModelUsed = res.modelId;
+          }
           success = true;
           targetProviderId = "JUMO_LOCAL";
         } catch (localErr: any) {
@@ -199,7 +206,7 @@ export class JumoAIProviderGateway {
     const result: AIExecutionResult = {
       success,
       provider: targetProviderId as any,
-      modelUsed: provider.displayName,
+      modelUsed: actualModelUsed,
       executionMode: config.mode,
       agentId: agent.agentId,
       agentName: agent.jumoName,
@@ -279,24 +286,32 @@ We have executed the requested system tasks under the secure local isolation con
 
   /**
    * General reasoning method for high-level intelligence tasks.
-   * Routes to the most capable available provider.
+   * Routes to the specified or most capable available provider.
    */
-  public async reasoning(request: { message: string; systemPrompt?: string; modelId?: string; temperature?: number; context?: Record<string, any> }): Promise<{ text: string }> {
+  public async reasoning(request: { message: string; systemPrompt?: string; modelId?: string; temperature?: number; context?: Record<string, any>; providerId?: string }): Promise<{ text: string; modelId: string; providerId: string }> {
     const { JumoAIProviderRegistry } = await import("../providers/JumoAIProviderRegistry");
     const registry = JumoAIProviderRegistry.getInstance();
     const vault = JumoSecretVault.getInstance();
     
-    // Default priority: OPENAI -> GEMINI -> LOCAL for JUMO GPT role alignment
-    const providerId = vault.getOpenAIKey() ? "OPENAI" : (vault.getGeminiKey() ? "GEMINI" : "JUMO_LOCAL");
-    const provider = registry.get(providerId);
+    let targetProviderId = request.providerId;
+    if (!targetProviderId) {
+      targetProviderId = vault.getOpenAIKey() ? "OPENAI" : (vault.getGeminiKey() ? "GEMINI" : "jumo_local");
+    }
+
+    const provider = registry.get(targetProviderId);
     
     const result = await provider.generate({
       message: request.message,
       systemPrompt: request.systemPrompt,
       modelId: request.modelId,
-      temperature: request.temperature
+      temperature: request.temperature,
+      context: request.context
     });
     
-    return { text: result.text };
+    return {
+      text: result.text,
+      modelId: result.modelId || request.modelId || "omalla-llama-3-8b",
+      providerId: targetProviderId
+    };
   }
 }

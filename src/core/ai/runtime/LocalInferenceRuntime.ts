@@ -1,13 +1,35 @@
 // JUMO UEOS — Canonical Local Inference Runtime & Registry
-// Implements the rigorous local inference contract for Ollama, llama.cpp, vLLM, and LocalAI.
+// Implements the rigorous local inference contract for Olla Proxy, Ollama, llama.cpp, vLLM, and LocalAI.
 // Authoritative air-gapped sovereign execution engine.
 
 import { JumoModelRegistry, JumoModelDefinition } from "../../registry/JumoModelRegistry";
 
-export type LocalEngineType = 'OLLAMA' | 'LLAMA_CPP' | 'VLLM' | 'LOCALAI' | 'NONE';
+export type LocalEngineType = 'OLLA_PROXY' | 'OLLAMA' | 'LLAMA_CPP' | 'VLLM' | 'LOCALAI' | 'NONE';
 export type LocalRuntimeStatus = 'AVAILABLE' | 'NOT_INSTALLED' | 'OFFLINE' | 'UNHEALTHY' | 'UNSUPPORTED';
 
+export type GranularInferenceErrorCode =
+  | 'RUNTIME_NOT_INSTALLED'
+  | 'RUNTIME_NOT_RUNNING'
+  | 'RUNTIME_UNREACHABLE'
+  | 'NO_MODELS_FOUND'
+  | 'MODEL_UNAVAILABLE'
+  | 'MODEL_LOAD_FAILED'
+  | 'INFERENCE_TIMEOUT'
+  | 'INFERENCE_FAILED'
+  | 'JUMO_CONFIGURATION_INVALID';
+
+export type LocalExecutionProgressState =
+  | 'PROVIDER_REGISTERED'
+  | 'RUNTIME_DISCOVERED'
+  | 'RUNTIME_REACHABLE'
+  | 'MODEL_DISCOVERED'
+  | 'MODEL_AVAILABLE'
+  | 'INFERENCE_TEST_PASSED'
+  | 'JUMO_AGENT_EXECUTION_PASSED'
+  | 'LOCAL_AI_READY';
+
 export interface LocalRuntimeTelemetry {
+  executionState: LocalExecutionProgressState;
   runtimeStatus: LocalRuntimeStatus;
   runtimeEngine: LocalEngineType;
   loadedModel: string | null;
@@ -19,6 +41,7 @@ export interface LocalRuntimeTelemetry {
   inferenceLatencyMs: number;
   tokensGenerated: number;
   errors: string[];
+  errorCode?: GranularInferenceErrorCode | null;
   version: string;
   endpointUrl: string | null;
 }
@@ -37,11 +60,13 @@ export interface LocalInferenceResult {
   latencyMs: number;
   success: boolean;
   error?: string;
+  errorCode?: GranularInferenceErrorCode;
+  state?: LocalExecutionProgressState;
 }
 
 export interface LocalInferenceRuntime {
   initialize(): Promise<boolean>;
-  healthCheck(): Promise<{ status: 'HEALTHY' | 'UNHEALTHY' | 'OFFLINE'; latencyMs: number; details: string }>;
+  healthCheck(): Promise<{ status: 'HEALTHY' | 'UNHEALTHY' | 'OFFLINE'; latencyMs: number; details: string; state: LocalExecutionProgressState }>;
   discoverModels(): Promise<Array<{ modelId: string; displayName: string; contextLength: number; capabilities: string[] }>>;
   loadModel(modelId: string): Promise<boolean>;
   unloadModel(modelId: string): Promise<boolean>;
@@ -55,6 +80,8 @@ export interface LocalInferenceRuntime {
 export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
   private engineType: LocalEngineType = 'NONE';
   private runtimeStatus: LocalRuntimeStatus = 'NOT_INSTALLED';
+  private executionState: LocalExecutionProgressState = 'PROVIDER_REGISTERED';
+  private errorCode: GranularInferenceErrorCode | null = null;
   private endpointUrl: string | null = null;
   private loadedModel: string | null = null;
   private modelPath: string | null = null;
@@ -76,10 +103,11 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
     return health.status === 'HEALTHY';
   }
 
-  async healthCheck(): Promise<{ status: 'HEALTHY' | 'UNHEALTHY' | 'OFFLINE'; latencyMs: number; details: string }> {
+  async healthCheck(): Promise<{ status: 'HEALTHY' | 'UNHEALTHY' | 'OFFLINE'; latencyMs: number; details: string; state: LocalExecutionProgressState }> {
     const start = Date.now();
+    this.executionState = 'PROVIDER_REGISTERED';
 
-    // Helper to probe an endpoint and ensure it returns JSON
+    // Helper to probe an endpoint and ensure it returns valid responses
     const probeJson = async (url: string): Promise<boolean> => {
       try {
         const controller = new AbortController();
@@ -87,7 +115,7 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
         const res = await fetch(url, { signal: controller.signal });
         clearTimeout(tid);
         const contentType = res.headers.get('content-type') || '';
-        if (res.ok && contentType.includes('application/json')) {
+        if (res.ok && (contentType.includes('application/json') || res.status === 200)) {
           return true;
         }
       } catch {
@@ -96,37 +124,86 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
       return false;
     };
 
-    // 1. Check Ollama (try 127.0.0.1 first, then localhost)
+    // 0. Check Local Express / Olla Server Proxy on port 3000 or port 40114
+    if (await probeJson('http://127.0.0.1:3000/olla/models') || await probeJson('http://127.0.0.1:3000/api/tags') || await probeJson('http://127.0.0.1:40114/olla/models')) {
+      this.endpointUrl = 'http://127.0.0.1:3000';
+      this.engineType = 'OLLA_PROXY';
+      this.runtimeStatus = 'AVAILABLE';
+      this.executionState = 'RUNTIME_REACHABLE';
+      this.errorCode = null;
+      this.lastLatencyMs = Date.now() - start;
+
+      // Discover models to progress state
+      const models = await this.discoverModels();
+      if (models.length > 0) {
+        this.executionState = 'MODEL_AVAILABLE';
+        
+        // Quick test inference ping
+        const testPing = await this.generate('ping', { modelId: models[0].modelId });
+        if (testPing.success) {
+          this.executionState = 'LOCAL_AI_READY';
+          return {
+            status: 'HEALTHY',
+            latencyMs: Date.now() - start,
+            details: `Omalla Olla Local AI Engine active on ${this.endpointUrl}. Tested '${models[0].modelId}' in ${testPing.latencyMs}ms.`,
+            state: 'LOCAL_AI_READY'
+          };
+        }
+      }
+
+      return {
+        status: 'HEALTHY',
+        latencyMs: this.lastLatencyMs,
+        details: 'Omalla/Olla local inference proxy endpoint reachable',
+        state: this.executionState
+      };
+    }
+
+    // 1. Check Ollama (127.0.0.1:11434)
     if (await probeJson('http://127.0.0.1:11434/api/tags') || await probeJson('http://localhost:11434/api/tags')) {
       this.endpointUrl = 'http://127.0.0.1:11434';
       this.engineType = 'OLLAMA';
       this.runtimeStatus = 'AVAILABLE';
+      this.executionState = 'RUNTIME_REACHABLE';
+      this.errorCode = null;
       this.lastLatencyMs = Date.now() - start;
-      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'Ollama local inference runtime active' };
+      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'Ollama local inference runtime active', state: 'RUNTIME_REACHABLE' };
     }
 
-    // 2. Check vLLM / OpenAI compatible server (127.0.0.1 first, then localhost)
+    // 2. Check vLLM / oMLX OpenAI-compatible server (127.0.0.1:8000)
     if (await probeJson('http://127.0.0.1:8000/v1/models') || await probeJson('http://localhost:8000/v1/models')) {
       this.endpointUrl = 'http://127.0.0.1:8000/v1';
       this.engineType = 'VLLM';
       this.runtimeStatus = 'AVAILABLE';
+      this.executionState = 'RUNTIME_REACHABLE';
+      this.errorCode = null;
       this.lastLatencyMs = Date.now() - start;
-      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'vLLM OpenAI-compatible runtime active' };
+      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'vLLM/oMLX OpenAI-compatible runtime active', state: 'RUNTIME_REACHABLE' };
     }
 
-    // 3. Check llama.cpp server (127.0.0.1 first, then localhost)
+    // 3. Check llama.cpp server (127.0.0.1:8080)
     if (await probeJson('http://127.0.0.1:8080/health') || await probeJson('http://localhost:8080/health')) {
       this.endpointUrl = 'http://127.0.0.1:8080';
       this.engineType = 'LLAMA_CPP';
       this.runtimeStatus = 'AVAILABLE';
+      this.executionState = 'RUNTIME_REACHABLE';
+      this.errorCode = null;
       this.lastLatencyMs = Date.now() - start;
-      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'llama.cpp local server active' };
+      return { status: 'HEALTHY', latencyMs: this.lastLatencyMs, details: 'llama.cpp local server active', state: 'RUNTIME_REACHABLE' };
     }
 
-    this.runtimeStatus = 'NOT_INSTALLED';
+    this.runtimeStatus = 'OFFLINE';
+    this.executionState = 'RUNTIME_DISCOVERED';
     this.engineType = 'NONE';
     this.endpointUrl = null;
-    return { status: 'OFFLINE', latencyMs: Date.now() - start, details: 'No local inference runtime detected on standard ports (11434, 8000, 8080).' };
+    this.errorCode = 'RUNTIME_UNREACHABLE';
+
+    return {
+      status: 'OFFLINE',
+      latencyMs: Date.now() - start,
+      details: 'RUNTIME_UNREACHABLE: No local inference runtime detected on probed ports (3000, 40114, 11434, 8000, 8080).',
+      state: 'RUNTIME_DISCOVERED'
+    };
   }
 
   async discoverModels(): Promise<Array<{ modelId: string; displayName: string; contextLength: number; capabilities: string[] }>> {
@@ -136,49 +213,69 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
       return discovered;
     }
 
-    if (this.engineType === 'OLLAMA') {
+    if (this.engineType === 'OLLA_PROXY' || this.engineType === 'OLLAMA') {
       try {
-        const res = await fetch(`${this.endpointUrl}/api/tags`);
-        if (res.ok) {
-          const data = await res.json();
-          for (const m of (data.models || [])) {
-            const modelDef = {
-              modelId: m.name || m.model,
-              displayName: `Ollama: ${m.name || m.model}`,
-              contextLength: 8192,
-              capabilities: ['offline-reasoning', 'conversation', 'coding', 'local-sovereignty']
-            };
-            discovered.push(modelDef);
-            if (!this.loadedModel) {
-              this.loadedModel = modelDef.modelId;
+        const probeUrls = [
+          `${this.endpointUrl}/olla/models`,
+          `${this.endpointUrl}/api/tags`
+        ];
+
+        for (const url of probeUrls) {
+          const res = await fetch(url).catch(() => null);
+          if (res && res.ok) {
+            const data = await res.json();
+            const items = Array.isArray(data) ? data : (data.models || []);
+
+            for (const m of items) {
+              const mId = m.modelId || m.id || m.name || m.model;
+              if (!mId) continue;
+
+              const modelDef = {
+                modelId: mId,
+                displayName: m.displayName || m.name || `Olla/Omalla: ${mId}`,
+                contextLength: m.contextLength || m.context_length || 8192,
+                capabilities: m.capabilities || ['offline-reasoning', 'conversation', 'coding', 'local-sovereignty']
+              };
+
+              if (!discovered.some(d => d.modelId === modelDef.modelId)) {
+                discovered.push(modelDef);
+              }
+
+              if (!this.loadedModel) {
+                this.loadedModel = modelDef.modelId;
+              }
+
+              // Register into JumoModelRegistry
+              JumoModelRegistry.registerModel({
+                ...modelDef,
+                providerId: 'JUMO_LOCAL',
+                purpose: 'Air-gapped sovereign local inference',
+                reasoning: true,
+                coding: true,
+                architecture: true,
+                analysis: true,
+                multimodal: false,
+                toolCalling: false,
+                structuredOutput: true,
+                streaming: true,
+                local: true,
+                deploymentType: 'LOCAL',
+                securityClassification: 'SECRET',
+                status: 'AVAILABLE',
+                maxOutputTokens: 4096,
+                costTier: 'ZERO_LOCAL',
+                latencyTier: 'FAST',
+                recommendedTasks: ['local-inference', 'air-gapped-reasoning'],
+              });
             }
 
-            // Register into JumoModelRegistry
-            JumoModelRegistry.registerModel({
-              ...modelDef,
-              providerId: 'JUMO_LOCAL',
-              purpose: 'Air-gapped sovereign local inference',
-              reasoning: true,
-              coding: true,
-              architecture: true,
-              analysis: true,
-              multimodal: false,
-              toolCalling: false,
-              structuredOutput: true,
-              streaming: true,
-              local: true,
-              deploymentType: 'LOCAL',
-              securityClassification: 'SECRET',
-              status: 'AVAILABLE',
-              maxOutputTokens: 4096,
-              costTier: 'ZERO_LOCAL',
-              latencyTier: 'FAST',
-              recommendedTasks: ['local-inference', 'air-gapped-reasoning'],
-            });
+            if (discovered.length > 0) {
+              break;
+            }
           }
         }
       } catch (e: any) {
-        this.errors.push(`Ollama model discovery error: ${e.message}`);
+        this.errors.push(`Olla/Ollama model discovery error: ${e.message}`);
       }
     } else if (this.engineType === 'VLLM' || this.engineType === 'LLAMA_CPP') {
       try {
@@ -256,7 +353,7 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
     const targetModel = options?.modelId || this.loadedModel || (models[0] ? models[0].modelId : 'llama3');
 
     try {
-      if (this.engineType === 'OLLAMA') {
+      if (this.engineType === 'OLLA_PROXY' || this.engineType === 'OLLAMA') {
         const res = await fetch(`${this.endpointUrl}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -351,6 +448,7 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
 
   getRuntimeTelemetry(): LocalRuntimeTelemetry {
     return {
+      executionState: this.executionState,
       runtimeStatus: this.runtimeStatus,
       runtimeEngine: this.engineType,
       loadedModel: this.loadedModel,
@@ -362,6 +460,7 @@ export class JumoLocalInferenceEngine implements LocalInferenceRuntime {
       inferenceLatencyMs: this.lastLatencyMs,
       tokensGenerated: this.totalTokensGenerated,
       errors: [...this.errors],
+      errorCode: this.errorCode,
       version: this.version,
       endpointUrl: this.endpointUrl
     };

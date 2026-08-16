@@ -35,15 +35,37 @@ export class JumoAIProviderRegistry {
   }
 
   register(provider: JumoAIProvider): void {
+    const canonicalKey = this.normalizeKey(provider.providerId);
+    this.providers.set(canonicalKey, provider);
+    // Also preserve exact providerId
     this.providers.set(provider.providerId, provider);
   }
 
-  get(providerId: string): JumoAIProvider {
-    const provider = this.providers.get(providerId);
-    if (!provider) {
-      throw new Error(`JUMO AI provider is not registered: ${providerId}`);
+  private normalizeKey(key: string): string {
+    const cleaned = (key || '').trim().toUpperCase().replace(/[-_]/g, '');
+    if (cleaned === 'JUMOLOCAL' || cleaned === 'OLLALOCAL' || cleaned === 'LOCAL' || cleaned === 'JUMO') {
+      return 'JUMO_LOCAL';
     }
-    return provider;
+    return cleaned;
+  }
+
+  get(providerId: string): JumoAIProvider {
+    const normalized = this.normalizeKey(providerId);
+    
+    // Check normalized map first
+    for (const [key, provider] of this.providers.entries()) {
+      if (this.normalizeKey(key) === normalized) {
+        return provider;
+      }
+    }
+
+    // Direct lookup fallback
+    const direct = this.providers.get(providerId);
+    if (direct) {
+      return direct;
+    }
+
+    throw new Error(`JUMO AI provider is not registered: ${providerId}`);
   }
 
   list(): JumoAIProvider[] {
