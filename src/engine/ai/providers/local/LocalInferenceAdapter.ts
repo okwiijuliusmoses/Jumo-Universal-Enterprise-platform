@@ -517,7 +517,7 @@ export class LocalInferenceAdapter {
 
     // Air-gapped container fallback
     let agentRole = "General Execution Agent";
-    const roleMatch = context.systemPrompt?.match(/Agent Role:\s*(.+)/i);
+    const roleMatch = systemPrompt?.match(/Agent Role:\s*(.+)/i);
     if (roleMatch) agentRole = roleMatch[1].split('\\n')[0].trim();
     
     const fallbackText = `[SOVEREIGN LOCAL ENGINE RESPONDING]\nExecuted air-gapped local reasoning under sovereign security container.\n\nResult: System constraints, schemas, and specifications verified under local offline policy.\n\n[SIMULATED FALLBACK EXECUTION FOR ${agentRole}]\nProcessed requirements and successfully generated structural blueprint definitions.`;
