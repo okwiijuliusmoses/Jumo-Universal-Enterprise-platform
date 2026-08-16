@@ -22,7 +22,13 @@ export interface AIProviderConfig {
 
 export interface AIExecutionResult {
   success: boolean;
-  provider: "OPENAI" | "GEMINI" | "JUMO_LOCAL";
+  status?: "SUCCESS" | "SUCCESS_WITH_FALLBACK" | "FAILED" | "AI_EXECUTION_UNAVAILABLE";
+  requestedProviderId?: string;
+  selectedProviderId?: string;
+  executedProviderId?: string;
+  fallbackUsed?: boolean;
+  fallbackReason?: string;
+  provider: "OPENAI" | "GEMINI" | "JUMO_LOCAL" | string;
   modelUsed: string;
   executionMode: "LIVE" | "HYBRID" | "AIR-GAP";
   agentId: string;
@@ -148,10 +154,17 @@ export class JumoAIProviderGateway {
       }
     }
 
+    const requestedProviderId = targetProviderId;
+    let executedProviderId = targetProviderId;
+    let fallbackUsed = false;
+    let fallbackReason: string | undefined = undefined;
+    let executionStatus: "SUCCESS" | "SUCCESS_WITH_FALLBACK" | "FAILED" | "AI_EXECUTION_UNAVAILABLE" = "SUCCESS";
+
     const provider = registry.get(targetProviderId);
     let success = false;
     let output = "";
     let actualModelUsed = provider.displayName;
+    let primaryError: Error | undefined = undefined;
 
     try {
       trace.push(`[${targetProviderId}] Dispatching reasoning block to ${provider.displayName}...`);
@@ -161,37 +174,90 @@ export class JumoAIProviderGateway {
         systemPrompt: `Agent Role: ${agent.role}\nAgent Specialization: ${agent.specialization}`,
         context
       });
+      
+      let isErrorState = false;
+      let isFallbackState = false;
+      
       if (res.metadata?.error) {
-        throw new Error(`Provider returned error state: ${res.metadata.error} - ${res.text}`);
+         if (res.metadata?.engineType === "OMALLA_OLLA_FALLBACK" || res.text.includes("[SOVEREIGN LOCAL ENGINE RESPONDING]")) {
+            isFallbackState = true;
+         } else {
+            isErrorState = true;
+         }
+      } else if (res.text.startsWith("AI_EXECUTION_UNAVAILABLE")) {
+         isErrorState = true;
       }
+      
+      if (isErrorState) {
+         throw new Error(`Provider returned error state: ${res.metadata?.error || "AI_EXECUTION_UNAVAILABLE"} - ${res.text}`);
+      }
+      
       output = res.text;
       if (res.modelId) {
         actualModelUsed = res.modelId;
       }
       success = true;
-      trace.push(`[${targetProviderId}] Successfully received reasoning block. Model: ${actualModelUsed}`);
+      executionStatus = isFallbackState ? "SUCCESS_WITH_FALLBACK" : "SUCCESS";
+      
+      if (isFallbackState) {
+         fallbackUsed = true;
+         fallbackReason = `Provider local runtime error: ${res.metadata?.error}`;
+         executedProviderId = "JUMO_LOCAL_AIRGAPPED";
+         trace.push(`[${targetProviderId}] Successfully received reasoning block via Sovereign Fallback. Model: ${actualModelUsed}`);
+      } else {
+         trace.push(`[${targetProviderId}] Successfully received reasoning block. Model: ${actualModelUsed}`);
+      }
+      
     } catch (err: any) {
+      primaryError = err;
       trace.push(`[ERROR] Provider ${targetProviderId} failed: ${err.message}`);
+      
       if (targetProviderId !== "JUMO_LOCAL" && config.mode === "HYBRID" && agent.modelPolicy.offlineFallbackEnabled) {
         trace.push(`[GATEWAY] HYBRID fallback active. Transferring task to local air-gapped sovereign engine.`);
+        fallbackUsed = true;
+        fallbackReason = err.message;
+        
         try {
           const localProvider = registry.get("JUMO_LOCAL");
           const res = await localProvider.generate({ message: prompt, systemPrompt: `Agent Role: ${agent.role}`, context });
+          
+          let isLocalFallbackState = false;
+          let isLocalErrorState = false;
+          if (res.metadata?.error) {
+             if (res.metadata?.engineType === "OMALLA_OLLA_FALLBACK" || res.text.includes("[SOVEREIGN LOCAL ENGINE RESPONDING]")) {
+                isLocalFallbackState = true;
+             } else {
+                isLocalErrorState = true;
+             }
+          } else if (res.text.startsWith("AI_EXECUTION_UNAVAILABLE")) {
+             isLocalErrorState = true;
+          }
+          
+          if (isLocalErrorState) {
+             throw new Error(`Local provider returned error state: ${res.metadata?.error || "AI_EXECUTION_UNAVAILABLE"} - ${res.text}`);
+          }
+          
           output = res.text;
           if (res.modelId) {
             actualModelUsed = res.modelId;
           }
           success = true;
+          executionStatus = "SUCCESS_WITH_FALLBACK";
           targetProviderId = "JUMO_LOCAL";
+          executedProviderId = isLocalFallbackState ? "JUMO_LOCAL_AIRGAPPED" : "JUMO_LOCAL";
+          trace.push(`[GATEWAY] Fallback execution successful via ${executedProviderId}`);
+          
         } catch (localErr: any) {
-          trace.push(`[GATEWAY] Local fallback failed: ${localErr.message}`);
-          output = `AI_EXECUTION_UNAVAILABLE: ${err.message}. Local fallback also failed: ${localErr.message}`;
+          trace.push(`[GATEWAY] Local fallback also failed: ${localErr.message}`);
+          output = `AI_EXECUTION_UNAVAILABLE: ${primaryError.message}. Local fallback also failed: ${localErr.message}`;
           success = false;
+          executionStatus = "AI_EXECUTION_UNAVAILABLE";
         }
       } else {
         trace.push(`[GATEWAY] Task terminated. Execution failed and fallback is disabled or exhausted.`);
         output = `AI_EXECUTION_UNAVAILABLE: Provider returned an error: ${err.message}`;
         success = false;
+        executionStatus = "AI_EXECUTION_UNAVAILABLE";
       }
     }
 
@@ -208,6 +274,12 @@ export class JumoAIProviderGateway {
 
     const result: AIExecutionResult = {
       success,
+      status: executionStatus,
+      requestedProviderId,
+      selectedProviderId: targetProviderId,
+      executedProviderId,
+      fallbackUsed,
+      fallbackReason,
       provider: targetProviderId as any,
       modelUsed: actualModelUsed,
       executionMode: config.mode,
@@ -225,7 +297,7 @@ export class JumoAIProviderGateway {
     SovereignOperatingStateService.logAudit(
       agent.displayName,
       "AGENT_EXECUTION_LOOP",
-      `Agent ${agent.jumoName} executed task: "${taskTitle}" using ${targetProviderId} (${provider.displayName}). Status: ${success ? "SUCCESS" : "FAILED"}. Latency: ${latencyMs}ms. Evidence: ${evidenceHash}`
+      `Agent ${agent.jumoName} executed task: "${taskTitle}" requested ${requestedProviderId}, selected ${targetProviderId} executed via ${executedProviderId}. Status: ${executionStatus}. Latency: ${latencyMs}ms. Evidence: ${evidenceHash}`
     );
 
     return result;
@@ -326,14 +398,28 @@ We have executed the requested system tasks under the secure local isolation con
         temperature: request.temperature,
         context: request.context
       });
+      
+      let isErrorState = false;
+      let isFallbackState = false;
+      
       if (result.metadata?.error) {
-        throw new Error(`Provider returned error state: ${result.metadata.error} - ${result.text}`);
+         if (result.metadata?.engineType === "OMALLA_OLLA_FALLBACK" || result.text.includes("[SOVEREIGN LOCAL ENGINE RESPONDING]")) {
+            isFallbackState = true;
+         } else {
+            isErrorState = true;
+         }
+      } else if (result.text.startsWith("AI_EXECUTION_UNAVAILABLE")) {
+         isErrorState = true;
+      }
+      
+      if (isErrorState) {
+         throw new Error(`Provider returned error state: ${result.metadata?.error || "AI_EXECUTION_UNAVAILABLE"} - ${result.text}`);
       }
       
       return {
         text: result.text,
         modelId: result.modelId || request.modelId || "omalla-llama-3-8b",
-        providerId: targetProviderId
+        providerId: isFallbackState ? "JUMO_LOCAL_AIRGAPPED" : targetProviderId
       };
     } catch (err: any) {
       if (targetProviderId !== "jumo_local") {
@@ -346,10 +432,27 @@ We have executed the requested system tasks under the secure local isolation con
           temperature: request.temperature,
           context: request.context
         });
+        
+        let isLocalErrorState = false;
+        let isLocalFallbackState = false;
+        if (localResult.metadata?.error) {
+           if (localResult.metadata?.engineType === "OMALLA_OLLA_FALLBACK" || localResult.text.includes("[SOVEREIGN LOCAL ENGINE RESPONDING]")) {
+              isLocalFallbackState = true;
+           } else {
+              isLocalErrorState = true;
+           }
+        } else if (localResult.text.startsWith("AI_EXECUTION_UNAVAILABLE")) {
+           isLocalErrorState = true;
+        }
+        
+        if (isLocalErrorState) {
+           throw new Error(`Local provider returned error state: ${localResult.metadata?.error || "AI_EXECUTION_UNAVAILABLE"} - ${localResult.text}`);
+        }
+        
         return {
           text: localResult.text,
           modelId: localResult.modelId || "omalla-llama-3-8b",
-          providerId: "jumo_local"
+          providerId: isLocalFallbackState ? "JUMO_LOCAL_AIRGAPPED" : "jumo_local"
         };
       }
       throw err;
