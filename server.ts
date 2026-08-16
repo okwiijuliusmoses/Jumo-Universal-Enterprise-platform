@@ -1670,28 +1670,6 @@ async function startServer() {
     }
   });
 
-  // Global Manufacturing Lineage & Lifecycle Registry API
-  app.get("/api/v1/ueos/lineage/global", (req, res) => {
-    try {
-      const { globalManufacturingLifecycleRegistry } = require("./src/core/factory/lineage/GlobalManufacturingLifecycleRegistry");
-      res.json({ stages: globalManufacturingLifecycleRegistry.getAllStages() });
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // Enterprise Ledger Engine API
-  app.get("/api/v1/ueos/ledger/entries", (req, res) => {
-    try {
-      const { enterpriseLedgerEngine } = require("./src/core/ledger/EnterpriseLedgerEngine");
-      const category = req.query.category as string | undefined;
-      const entries = category ? enterpriseLedgerEngine.getEntriesByCategory(category as any) : enterpriseLedgerEngine.getChain();
-      res.json({ entries, total: entries.length, chainValid: enterpriseLedgerEngine.verifyChainIntegrity().valid });
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
   // AI Gateway Reasoning & Conversational Co-pilot Endpoint
   app.post("/api/v1/ueos/ai/reasoning", async (req, res) => {
     try {
@@ -1741,6 +1719,28 @@ async function startServer() {
       lifecycleState: "FAILED",
       timestamp: new Date().toISOString()
     });
+  });
+
+  // Global Manufacturing Lineage & Lifecycle Registry API
+  app.get("/api/v1/ueos/lineage/global", (req, res) => {
+    try {
+      const { globalManufacturingLifecycleRegistry } = require("./src/core/factory/lineage/GlobalManufacturingLifecycleRegistry");
+      res.json({ stages: globalManufacturingLifecycleRegistry.getAllStages() });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Enterprise Ledger Engine API
+  app.get("/api/v1/ueos/ledger/entries", (req, res) => {
+    try {
+      const { enterpriseLedgerEngine } = require("./src/core/ledger/EnterpriseLedgerEngine");
+      const category = req.query.category as string | undefined;
+      const entries = category ? enterpriseLedgerEngine.getEntriesByCategory(category as any) : enterpriseLedgerEngine.getChain();
+      res.json({ entries, total: entries.length, chainValid: enterpriseLedgerEngine.verifyChainIntegrity().valid });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
   });
 
   // Digital Artifact Dependency Graph Registry API
