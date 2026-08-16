@@ -53,6 +53,7 @@ import { SovereignAIControlCenterStudio } from './studios/SovereignAIControlCent
 import { RemoteDigitalWorkshopStudio } from './studios/RemoteDigitalWorkshopStudio';
 import { FinancialControlStudio } from './studios/FinancialControlStudio';
 import { DigitalProductsStudio } from './studios/DigitalProductsStudio';
+import { JobReviewStudio } from './studios/JobReviewStudio';
 
 import { 
   GlobalManufacturingLifecycleRegistry, 
@@ -94,7 +95,8 @@ type HubWorkspaceAlias =
   | 'workshop'
   | 'ai-control'
   | 'financial'
-  | 'products';
+  | 'products'
+  | 'job-review';
 
 // Map 20 stages to studios
 const STAGE_TO_STUDIO_MAP: Record<string, HubWorkspace> = {
@@ -411,6 +413,8 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
         return <FinancialControlStudio />;
       case 'products':
         return <DigitalProductsStudio />;
+      case 'job-review':
+        return <JobReviewStudio />;
       default:
         return <SpecificationStudio />;
     }

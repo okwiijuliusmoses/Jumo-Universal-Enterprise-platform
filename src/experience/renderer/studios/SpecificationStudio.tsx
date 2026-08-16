@@ -15,25 +15,28 @@ import { SpecificationApprovalPanel } from '../components/SpecificationApprovalP
 import { JumoDomainOptionRegistry } from '../../../core/specification/JumoDomainOptionRegistry';
 import { JumoProductTaxonomyRegistry, ProductEcosystemId } from '../../../core/specification/JumoProductTaxonomyRegistry';
 
-// Authoritative Schema for Products with 12 Core Dimensions
+// Authoritative Schema for Products with 31 Core Dimensions
 const SPECIFICATION_SCHEMA = {
   sections: [
     {
       id: 'classification',
-      title: '1. Ecosystem & Domain Classification',
+      title: '01. Ecosystem & Domain Classification',
       description: 'Select the sovereign Product Ecosystem and its authoritative domain taxonomy.',
       questions: [
-        { id: 'ecosystem', label: '1. Top-Level Product Ecosystem', type: 'ecosystem_selector', required: true },
-        { id: 'domain', label: '2. Domain / Sector / Product Type', type: 'domain_selector', required: true }
+        { id: 'ecosystem', label: 'Top-Level Product Ecosystem', type: 'ecosystem_selector', required: true },
+        { id: 'domain', label: 'Primary Domain / Sector', type: 'domain_selector', required: true },
+        { id: 'secondaryDomains', label: 'Secondary Domains (Cross-Domain)', type: 'list' },
+        { id: 'scope', label: 'Ecosystem Scope', type: 'select', options: ['REGIONAL', 'NATIONAL', 'SOVEREIGN_CRITICAL'], required: true }
       ]
     },
     {
       id: 'identity',
-      title: '2. Product Identity',
+      title: '02. Product Identity',
       description: 'Authoritative identification of the manufactured workspace asset.',
       questions: [
         { id: 'productName', label: 'Public-Facing Product Name', type: 'text', placeholder: 'e.g. Wiggins Secondary School Management ERP', required: true },
         { id: 'tenantName', label: 'Tenant / Organization Name', type: 'text', placeholder: 'e.g. Wiggins Secondary School', required: true },
+        { id: 'productClass', label: 'Product Family / Class', type: 'text', defaultValue: 'Enterprise Resource Planning' },
         { id: 'productVersion', label: 'Initial Version', type: 'text', defaultValue: '1.0.0', required: true },
         { id: 'productPurpose', label: 'Purpose & Sovereign Vision', type: 'textarea', placeholder: 'Describe the sovereign value proposition...', required: true },
         { id: 'targetAudience', label: 'Target Audience', type: 'text', placeholder: 'e.g. National Citizens & Clinicians' },
@@ -42,63 +45,61 @@ const SPECIFICATION_SCHEMA = {
     },
     {
       id: 'business',
-      title: '3. Business Specification',
+      title: '03. Business Specification',
       description: 'Structural hierarchy and capacity targets mapped into the system database.',
       questions: [
-        { id: 'tenancyModel', label: 'Tenancy Model', type: 'select', options: ['MULTI_TENANT', 'SINGLE_TENANT', 'HYBRID_TENANT'], required: true },
-        { id: 'tenantHierarchy', label: 'Tenant Hierarchy', type: 'text', placeholder: 'e.g. Headquarters -> Region -> District Unit' },
-        { id: 'usersCount', label: 'Total Registered Users', type: 'number', required: true },
-        { id: 'concurrentUsersCount', label: 'Peak Concurrent Users', type: 'number', required: true },
-        { id: 'storageGb', label: 'Required Storage (GB)', type: 'number', required: true }
+        { id: 'tenancyModel', label: 'Tenancy Model', type: 'guided_tenancy', required: true },
+        { id: 'tenantHierarchy', label: 'Tenant Hierarchy Logic', type: 'text', placeholder: 'e.g. Headquarters -> Region -> District Unit' },
+        { id: 'businessProcesses', label: 'Standard Business Processes', type: 'list', domainCategory: 'WORKFLOWS' },
+        { id: 'capacity', label: 'Capacity Profile', type: 'guided_capacity', required: true }
       ]
     },
     {
-      id: 'domain',
-      title: '4. Domain Specification',
+      id: 'domain_spec',
+      title: '04. Domain Specification',
       description: 'Sector-specific requirements and compliance protocols.',
       questions: [
         { id: 'sector', label: 'Sector Focus', type: 'text' },
-        { id: 'complianceStandards', label: 'Target Regulatory Frameworks', type: 'list', options: ['ISO_27001', 'HIPAA', 'GDPR', 'SOC2'] }
+        { id: 'domainRequirements', label: 'Domain Specific Requirements', type: 'list' },
+        { id: 'complianceStandards', label: 'Target Regulatory Frameworks', type: 'list', domainCategory: 'COMPLIANCE' }
       ]
     },
     {
       id: 'functional',
-      title: '5. Functional Specification',
+      title: '05. Functional Specification',
       description: 'Domain-specific capabilities, portals and modules that this system must deliver.',
       questions: [
         { id: 'portals', label: 'Role-Based Portals', type: 'list', domainCategory: 'PORTALS' },
-        { id: 'coreCapabilities', label: 'Required Domain Capabilities & Modules', type: 'list', domainCategory: 'MODULES' },
+        { id: 'modules', label: 'Core Functional Modules', type: 'list', domainCategory: 'MODULES' },
         { id: 'automationLevel', label: 'Target Automation Level', type: 'select', options: ['MANUAL_ASSISTED', 'SEMI_AUTONOMOUS', 'FULLY_AUTONOMOUS'] }
       ]
     },
     {
       id: 'digital_experience',
-      title: '6. Digital Experience Specification',
+      title: '06. Digital Experience Specification',
       description: 'Define the intended public and authenticated product experience dimensions.',
       questions: [
-        { id: 'publicExperienceEnabled', label: 'Enable Public Experience (Landing Page)', type: 'boolean', defaultValue: true },
+        { id: 'publicExperienceEnabled', label: 'Enable Public Experience', type: 'boolean', defaultValue: true },
         { id: 'heroTitle', label: 'Landing Hero Title', type: 'text' },
         { id: 'heroSubtitle', label: 'Landing Hero Subtitle', type: 'text' },
-        { id: 'primaryCTA', label: 'Primary Call-to-Action', type: 'text' },
         { id: 'dashboardLayout', label: 'Workspace Dashboard Layout', type: 'select', options: ['GRID', 'WIDGETS', 'LIST'], defaultValue: 'GRID' },
         { id: 'navigationModel', label: 'Navigation Model', type: 'select', options: ['SIDEBAR', 'TOPBAR', 'HYBRID'], defaultValue: 'SIDEBAR' },
-        { id: 'designDensity', label: 'Design System Density', type: 'select', options: ['COMPACT', 'STANDARD', 'SPACIOUS'], defaultValue: 'STANDARD' },
-        { id: 'advertisingEnabled', label: 'Integrate Advertising Hub', type: 'boolean', defaultValue: false }
+        { id: 'designDensity', label: 'Design System Density', type: 'select', options: ['COMPACT', 'STANDARD', 'SPACIOUS'], defaultValue: 'STANDARD' }
       ]
     },
     {
       id: 'ai_experience',
-      title: '7. AI Experience Specification',
+      title: '07. AI Experience Specification',
       description: 'Configure public and authenticated AI assistant boundaries.',
       questions: [
         { id: 'publicAssistantEnabled', label: 'Enable Public JUMO Assistant', type: 'boolean', defaultValue: true },
         { id: 'assistantName', label: 'Assistant Persona Name', type: 'text', defaultValue: 'Sovereign Guide' },
-        { id: 'authenticatedAssistantEnabled', label: 'Enable Authenticated Enterprise Assistant', type: 'boolean', defaultValue: true }
+        { id: 'aiCapabilities', label: 'AI Cognitive Capabilities', type: 'list', domainCategory: 'AI_CAPABILITIES' }
       ]
     },
     {
       id: 'localization',
-      title: '8. Localization Specification',
+      title: '08. Localization Specification',
       description: 'Authoritative regionalization and language mandates.',
       questions: [
         { id: 'defaultLanguage', label: 'Default Language', type: 'text', defaultValue: 'English' },
@@ -109,7 +110,7 @@ const SPECIFICATION_SCHEMA = {
     },
     {
       id: 'accessibility',
-      title: '9. Accessibility Specification',
+      title: '09. Accessibility Specification',
       description: 'Accessibility mandates and verification targets.',
       questions: [
         { id: 'targetStandard', label: 'Accessibility Standard Target', type: 'select', options: ['WCAG_AA', 'WCAG_AAA'], defaultValue: 'WCAG_AA' },
@@ -118,7 +119,7 @@ const SPECIFICATION_SCHEMA = {
     },
     {
       id: 'security_experience',
-      title: '10. Security Experience Specification',
+      title: '10. Security & Identity Experience',
       description: 'User-facing security, privacy controls, and identity verification.',
       questions: [
         { id: 'mfaRequired', label: 'Mandatory MFA (Multi-Factor)', type: 'boolean', defaultValue: true },
@@ -136,18 +137,170 @@ const SPECIFICATION_SCHEMA = {
       ]
     },
     {
-      id: 'operational',
-      title: '12. Operational Specification',
-      description: 'Deployment targets and scaling policies.',
+      id: 'data_spec',
+      title: '12. Data Specification',
+      description: 'Data classification, residency and retention mandates.',
       questions: [
-        { id: 'deploymentType', label: 'Deployment Strategy', type: 'select', options: ['CLOUD', 'ON_PREMISE', 'HYBRID'] },
-        { id: 'availabilityTarget', label: 'Availability SLA (%)', type: 'number', defaultValue: 99.9 }
+        { id: 'entities', label: 'Core Data Entities', type: 'list' },
+        { id: 'classification', label: 'Data Sensitivity Level', type: 'select', options: ['PUBLIC', 'INTERNAL', 'RESTRICTED', 'SOVEREIGN_CONFIDENTIAL'] },
+        { id: 'residency', label: 'Data Residency Requirement', type: 'text' }
+      ]
+    },
+    {
+      id: 'integrations',
+      title: '13. Integration Specification',
+      description: 'Authoritative integration points with external systems.',
+      questions: [
+        { id: 'externalSystems', label: 'Integration Targets', type: 'list', domainCategory: 'INTEGRATIONS' },
+        { id: 'apiProtocols', label: 'Supported Protocols', type: 'list', options: ['REST', 'GRAPHQL', 'GRPC', 'SOAP'] }
+      ]
+    },
+    {
+      id: 'financial',
+      title: '14. Financial & Transaction Specification',
+      description: 'Accounting models, currencies and payment rules.',
+      questions: [
+        { id: 'currency', label: 'Primary Currency', type: 'text', defaultValue: 'USD' },
+        { id: 'accountingBasis', label: 'Accounting Basis', type: 'select', options: ['ACCRUAL', 'CASH', 'MODIFIED_ACCRUAL'] }
+      ]
+    },
+    {
+      id: 'workflow',
+      title: '15. Workflow & Automation Specification',
+      description: 'State machines, approval chains and triggers.',
+      questions: [
+        { id: 'workflows', label: 'Critical Path Workflows', type: 'list', domainCategory: 'WORKFLOWS' },
+        { id: 'automationTriggers', label: 'Event-Driven Triggers', type: 'list' }
+      ]
+    },
+    {
+      id: 'analytics',
+      title: '16. Reporting & Analytics Specification',
+      description: 'KPIs, standard reports and dashboard metrics.',
+      questions: [
+        { id: 'reports', label: 'Standard Operational Reports', type: 'list', domainCategory: 'REPORTS' },
+        { id: 'kpis', label: 'Core Dashboard KPIs', type: 'list' }
+      ]
+    },
+    {
+      id: 'content',
+      title: '17. Content & Knowledge Specification',
+      description: 'Knowledge bases, documentation and RAG sources.',
+      questions: [
+        { id: 'knowledgeBases', label: 'Primary Knowledge Domains', type: 'list' },
+        { id: 'documentTypes', label: 'Managed Document Types', type: 'list' }
+      ]
+    },
+    {
+      id: 'engagement',
+      title: '18. Advertising & Engagement Specification',
+      description: 'Campaign models and user engagement strategy.',
+      questions: [
+        { id: 'advertisingEnabled', label: 'Enable Advertising Hub', type: 'boolean', defaultValue: false },
+        { id: 'campaignTypes', label: 'Supported Campaign Types', type: 'list' }
+      ]
+    },
+    {
+      id: 'search',
+      title: '19. Search & Discovery Specification',
+      description: 'Global search scopes and indexing mandates.',
+      questions: [
+        { id: 'searchScopes', label: 'Search Index Scopes', type: 'list' },
+        { id: 'aiSearchEnabled', label: 'Enable AI-Powered Semantic Search', type: 'boolean', defaultValue: true }
+      ]
+    },
+    {
+      id: 'support',
+      title: '20. Support & Help Specification',
+      description: 'Help center configuration and support SLAs.',
+      questions: [
+        { id: 'helpPortalEnabled', label: 'Enable Integrated Help Center', type: 'boolean', defaultValue: true },
+        { id: 'slaLevels', label: 'Support Response SLAs', type: 'list' }
+      ]
+    },
+    {
+      id: 'compliance',
+      title: '21. Compliance & Governance Specification',
+      description: 'Regulatory alignment and audit trail mandates.',
+      questions: [
+        { id: 'regulatoryFrameworks', label: 'Regulatory Framework Alignment', type: 'list', domainCategory: 'COMPLIANCE' },
+        { id: 'auditTrailEnabled', label: 'Enable Full Immutable Audit Trail', type: 'boolean', defaultValue: true }
+      ]
+    },
+    {
+      id: 'deployment',
+      title: '22. Deployment & Installation Specification',
+      description: 'Infrastructure targets and regional availability.',
+      questions: [
+        { id: 'deploymentType', label: 'Infrastructure Strategy', type: 'select', options: ['CLOUD', 'ON_PREMISE', 'HYBRID'] },
+        { id: 'availabilityTarget', label: 'Availability Target (SLA %)', type: 'number', defaultValue: 99.9 }
+      ]
+    },
+    {
+      id: 'verification',
+      title: '23. Verification Specification',
+      description: 'Quality assurance and acceptance criteria.',
+      questions: [
+        { id: 'acceptanceCriteria', label: 'Core Acceptance Criteria', type: 'list' },
+        { id: 'automatedTestsRequired', label: 'Mandatory Automated Test Coverage', type: 'boolean', defaultValue: true }
+      ]
+    },
+    {
+      id: 'manufacturing_spec',
+      title: '24. Manufacturing Specification',
+      description: 'Factory profile and manufacturing priority.',
+      questions: [
+        { id: 'priority', label: 'Manufacturing Priority', type: 'select', options: ['NORMAL', 'HIGH', 'CRITICAL'] },
+        { id: 'requiredStudios', label: 'Required Specialist Studios', type: 'list' }
+      ]
+    },
+    {
+      id: 'certification',
+      title: '25. Release & Certification Specification',
+      description: 'Release gates and quality sign-off mandates.',
+      questions: [
+        { id: 'releaseGates', label: 'Mandatory Release Gates', type: 'list' },
+        { id: 'humanSignOffRequired', label: 'Human Engineering Sign-Off Required', type: 'boolean', defaultValue: true }
+      ]
+    },
+    {
+      id: 'evolution',
+      title: '26. Evolution & Upgrade Specification',
+      description: 'Upgrade policy and feature evolution roadmap.',
+      questions: [
+        { id: 'upgradePolicy', label: 'Platform Upgrade Policy', type: 'select', options: ['AUTOMATIC', 'SCHEDULED', 'MANUAL_DEFERRED'] }
+      ]
+    },
+    {
+      id: 'human_governance',
+      title: '27. HUMAN GOVERNANCE SPECIFICATION',
+      description: 'Approval gates and manual verification mandates.',
+      questions: [
+        { id: 'mandatoryApprovalGates', label: 'Mandatory Approval Gates', type: 'list' },
+        { id: 'gatekeepers', label: 'Authorized Gatekeeper Roles', type: 'list' }
+      ]
+    },
+    {
+      id: 'priorities',
+      title: '28. REQUIREMENT PRIORITY & CONSTRAINTS',
+      description: 'Identify critical requirements and hard technical constraints.',
+      questions: [
+        { id: 'criticalRequirements', label: 'Critical "Must-Have" Requirements', type: 'list' },
+        { id: 'technicalConstraints', label: 'Hard Technical Constraints', type: 'list' }
+      ]
+    },
+    {
+      id: 'traceability_spec',
+      title: '29. REQUIREMENT TRACEABILITY',
+      description: 'Traceability mandates for audit and verification.',
+      questions: [
+        { id: 'mappingRequirement', label: 'Traceability Mapping Requirement', type: 'select', options: ['STANDARD', 'DEEP', 'CRITICAL_ONLY'] }
       ]
     },
     {
       id: 'final_review',
-      title: 'Final Review & Factory Compilation',
-      description: 'Review and authoritative submission into the JUMO Manufacturing Pipeline.',
+      title: '30. Digital Product Contract Summary',
+      description: 'Authoritative review of the assembled Digital Product Experience Specification.',
       questions: []
     }
   ]
@@ -205,175 +358,33 @@ export function SpecificationStudio() {
   };
 
   const compileFinalContract = (): ImplementationGradeSpecificationContract => {
-    return {
-      identity: {
-        productId: `PROD-${Date.now()}`,
-        productName: contractData.identity?.productName || 'Unspecified Product',
-        tenantName: contractData.identity?.tenantName || 'Default Tenant',
-        productClassification: activeEcosystemId as ProductClassification,
-        productClass: 'Sovereign Business System',
-        brandIdentity: {},
-        organizationIdentity: contractData.identity?.tenantName || 'Default Org',
-        publicFacingName: contractData.identity?.productName || 'Unspecified Product',
-        internalSystemIdentity: `SYSTEM-${Date.now()}`,
-        productVersion: contractData.identity?.productVersion || '1.0.0',
-        productDescription: contractData.identity?.productPurpose || '',
-        productPurpose: contractData.identity?.productPurpose || '',
-        targetAudience: contractData.identity?.targetAudience || 'General Public',
-        geographicScope: contractData.identity?.geographicScope || 'Global',
-        operatingJurisdictions: [],
-      },
-      businessSpecification: {
-        tenancyModel: contractData.business?.tenancyModel || 'MULTI_TENANT',
-        tenantHierarchy: contractData.business?.tenantHierarchy || '',
-        organizationHierarchy: '',
-        businessProcesses: [],
-        operatingCalendars: 'STANDARD',
-        capacity: {
-          usersCount: Number(contractData.business?.usersCount || 0),
-          concurrentUsersCount: Number(contractData.business?.concurrentUsersCount || 0),
-          transactionsPerSecond: 100,
-          storageGb: Number(contractData.business?.storageGb || 0),
-        },
-      },
-      domainSpecification: {
-        sector: contractData.domain?.sector || activeDomainId,
-        domainRequirements: [],
-        complianceStandards: contractData.domain?.complianceStandards || [],
-        industryProtocols: [],
-      },
-      functionalSpecification: {
-        coreCapabilities: contractData.functional?.coreCapabilities || [],
-        portals: contractData.functional?.portals || [],
-        modules: contractData.functional?.coreCapabilities || [],
-        workflows: [],
-        automationLevel: contractData.functional?.automationLevel || 'SEMI_AUTONOMOUS',
-        reportingRequirements: [],
-      },
-      digitalExperience: {
-        publicExperience: {
-          enabled: contractData.digital_experience?.publicExperienceEnabled ?? true,
-          landingPage: {
-            pagePurpose: 'Product Discovery & Engagement',
-            heroTitle: contractData.digital_experience?.heroTitle || '',
-            heroSubtitle: contractData.digital_experience?.heroSubtitle || '',
-            primaryCTA: contractData.digital_experience?.primaryCTA || 'Get Started',
-            secondaryCTAs: [],
-            featuredServices: true,
-            sections: [],
-          },
-          serviceDiscovery: {
-            catalogEnabled: true,
-            categories: [],
-            searchEnabled: true,
-          },
-          footer: {
-            links: [],
-            socialEnabled: false,
-            legalLinks: [],
-          },
-        },
-        authenticatedExperience: {
-          onboardingRequired: true,
-          dashboardLayout: contractData.digital_experience?.dashboardLayout || 'GRID',
-          workspaceTheme: 'MODERN',
-          navigationModel: contractData.digital_experience?.navigationModel || 'SIDEBAR',
-        },
-        headerArchitecture: {
-          brandLogoEnabled: true,
-          searchEnabled: true,
-          notificationsEnabled: true,
-          accountSwitching: true,
-          languageSelection: true,
-          contextSwitching: true,
-        },
-        navigationArchitecture: {
-          primaryNav: [],
-          secondaryNav: [],
-          breadcrumbs: true,
-          roleAware: true,
-        },
-        designSystem: {
-          typography: 'Inter',
-          density: contractData.digital_experience?.designDensity || 'STANDARD',
-          radius: 8,
-        },
-        advertisingEnabled: contractData.digital_experience?.advertisingEnabled ?? false,
-      },
-      aiExperience: {
-        publicAssistant: {
-          enabled: contractData.ai_experience?.publicAssistantEnabled ?? true,
-          assistantName: contractData.ai_experience?.assistantName || 'Sovereign Guide',
-          welcomeBehavior: 'PROACTIVE',
-          knowledgeScope: [],
-        },
-        authenticatedAssistant: {
-          enabled: contractData.ai_experience?.authenticatedAssistantEnabled ?? true,
-          persona: 'ANALYST',
-          tools: [],
-        },
-        domainAssistant: {
-          enabled: true,
-          domainFocus: activeDomainId,
-        },
-        administrativeAssistant: {
-          enabled: true,
-        },
-        safetyGuardrails: [],
-      },
-      localization: {
-        defaultLanguage: contractData.localization?.defaultLanguage || 'English',
-        supportedLanguages: contractData.localization?.supportedLanguages || ['English'],
-        locale: 'en-US',
-        dateFormat: 'YYYY-MM-DD',
-        numberFormat: 'STANDARD',
-        currency: 'USD',
-        timezone: contractData.localization?.timezone || 'UTC',
-        rtlSupport: contractData.localization?.rtlSupport ?? false,
-      },
-      accessibility: {
-        targetStandard: contractData.accessibility?.targetStandard || 'WCAG_AA',
-        keyboardNavigation: true,
-        screenReaderSupport: contractData.accessibility?.screenReaderSupport ?? true,
-        reducedMotionSupport: false,
-        contrastTarget: '4.5:1',
-      },
-      securityExperience: {
-        authenticationMethods: ['PASSWORD', 'MFA'],
-        mfaRequired: contractData.security_experience?.mfaRequired ?? true,
-        identityVerification: contractData.security_experience?.identityVerificationRequired ?? false,
-        privacyControlsEnabled: contractData.security_experience?.privacyControlsEnabled ?? true,
-        sessionManagement: 'STANDARD',
-        termsAcceptanceRequired: true,
-      },
-      communication: {
-        channels: contractData.communication_device?.channels || ['IN_APP', 'EMAIL'],
-        templatesRequired: true,
-        notificationPreferences: true,
-        criticalAlertsEnabled: true,
-      },
-      deviceExperience: {
-        targets: contractData.communication_device?.targets || ['DESKTOP', 'MOBILE'],
-        offlineCapability: false,
-        lowBandwidthOptimization: false,
-      },
-      operational: {
-        deploymentType: contractData.operational?.deploymentType || 'CLOUD',
-        availabilityTarget: Number(contractData.operational?.availabilityTarget || 99.9),
-        backupPolicy: 'DAILY',
-        monitoringRequirements: ['UPTIME', 'PERFORMANCE'],
-        analyticsExperience: {
-          usageAnalytics: true,
-          performanceMonitoring: true,
-          errorTracking: true,
-        },
-      },
-      manufacturing: {
-        requiredStudios: ['FACTORY', 'VERIFICATION', 'SECURITY'],
-        verificationGates: ['ENGINEERING_APPROVAL', 'FINAL_ASSEMBLY_APPROVAL'],
-        priority: 'NORMAL',
-      },
-    };
+    // Combine all sections into a flat params object for the registry synthesizer
+    const params: any = {};
+    Object.values(contractData).forEach(section => {
+      Object.entries(section).forEach(([key, val]) => {
+        params[key] = val;
+      });
+    });
+
+    // Handle guided selections for Capacity and Tenancy
+    if (contractData.business?.capacityProfile) {
+      params.capacityProfileId = contractData.business.capacityProfile;
+    }
+    if (contractData.business?.tenancyModel) {
+      params.tenancyProfileId = contractData.business.tenancyModel;
+    }
+
+    // Use the Authoritative Registry to synthesize the contract with TraceableValue wrappers
+    return JumoDomainOptionRegistry.synthesizeSpecificationContract({
+      domain: activeDomainId,
+      ecosystemClassification: activeEcosystemId as any,
+      ...params,
+      selectedModules: contractData.functional?.modules || [],
+      selectedPortals: contractData.functional?.portals || [],
+      selectedWorkflows: contractData.workflow?.workflows || [],
+      selectedAICapabilities: contractData.ai_experience?.aiCapabilities || [],
+      selectedIntegrations: contractData.integrations?.externalSystems || []
+    });
   };
 
   const handlePublishContract = async () => {
@@ -717,6 +728,63 @@ export function SpecificationStudio() {
                       >
                         Disabled
                       </button>
+                    </div>
+                  )}
+
+                  {/* Guided Capacity */}
+                  {q.type === 'guided_capacity' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {JumoDomainOptionRegistry.CAPACITY_PROFILES.map(profile => (
+                        <button
+                          key={profile.id}
+                          type="button"
+                          onClick={() => updateSection(activeSection.id, { capacityProfile: profile.id, usersCount: profile.usersCount, storageGb: profile.storageGb })}
+                          className={`text-left p-4 rounded-xl border transition-all ${
+                            contractData[activeSection.id]?.capacityProfile === profile.id 
+                              ? 'bg-blue-50 border-blue-300 shadow-sm' 
+                              : 'bg-white border-slate-100 hover:border-blue-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-bold text-slate-900">{profile.displayName}</span>
+                            <span className="text-[10px] font-black bg-blue-100 text-blue-600 px-2 py-0.5 rounded uppercase">{profile.tier}</span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 leading-relaxed">{profile.description}</p>
+                          <div className="mt-3 flex items-center gap-3 text-[9px] font-bold text-slate-400">
+                            <span>{profile.usersCount} Users</span>
+                            <span>•</span>
+                            <span>{profile.storageGb}GB Storage</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Guided Tenancy */}
+                  {q.type === 'guided_tenancy' && (
+                    <div className="space-y-3">
+                      {JumoDomainOptionRegistry.TENANCY_PROFILES.map(profile => (
+                        <button
+                          key={profile.id}
+                          type="button"
+                          onClick={() => updateSection(activeSection.id, { tenancyModel: profile.id, tenantHierarchy: profile.hierarchyType })}
+                          className={`w-full text-left p-4 rounded-xl border transition-all ${
+                            contractData[activeSection.id]?.tenancyModel === profile.id 
+                              ? 'bg-blue-50 border-blue-300 shadow-sm' 
+                              : 'bg-white border-slate-100 hover:border-blue-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-bold text-slate-900">{profile.displayName}</span>
+                            <span className="text-[10px] font-black bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded uppercase">{profile.tenantModel}</span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 leading-relaxed mb-2">{profile.description}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Hierarchy:</span>
+                            <span className="text-[9px] font-bold text-slate-600">{profile.hierarchyType}</span>
+                          </div>
+                        </button>
+                      ))}
                     </div>
                   )}
 

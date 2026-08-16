@@ -101,14 +101,14 @@ export async function runArchitectureVerificationSuite() {
     selectedIntegrations: ['INT-MINISTRY-EMIS', 'INT-PAYMENT-GATEWAY']
   });
   const domainContractValid = Boolean(
-    domainContract.identity.productName.includes('Wiggins Secondary School') &&
-    domainContract.businessSpecification.capacity.usersCount === 5000 &&
-    (domainContract as any).functionalSpecification?.coreCapabilities?.length >= 3
+    (domainContract.identity.productName.value as string).includes('Wiggins Secondary School') &&
+    domainContract.businessSpecification.capacity.usersCount.value === 5000 &&
+    ((domainContract as any).functionalSpecification?.coreCapabilities?.value || (domainContract as any).functionalSpecification?.coreCapabilities)?.length >= 3
   );
   results.push({
     test: 'Domain Option Registry Specification Synthesis',
     passed: domainContractValid,
-    details: `Synthesized implementation-grade contract for ${domainContract.identity.productName} with ${(domainContract as any).functional?.coreCapabilities?.length || 0} core capabilities.`
+    details: `Synthesized implementation-grade contract for ${domainContract.identity.productName.value} with ${((domainContract as any).functionalSpecification?.coreCapabilities?.value || (domainContract as any).functionalSpecification?.coreCapabilities)?.length || 0} core capabilities.`
   });
 
   // 9. Verify Dynamic AI Model Discovery Engine

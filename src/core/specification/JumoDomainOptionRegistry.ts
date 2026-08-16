@@ -323,185 +323,226 @@ export class JumoDomainOptionRegistry {
     const modules = ensureArray(params.selectedModules);
     const integrations = ensureArray(params.selectedIntegrations);
     const aiCaps = ensureArray(params.selectedAICapabilities);
+    const workflows = ensureArray(params.selectedWorkflows);
 
-    const exp = params.experienceSettings || {};
-    const ai = params.aiSettings || {};
-    const loc = params.localizationSettings || {};
-    const acc = params.accessibilitySettings || {};
-    const comm = params.communicationSettings || {};
-    const dev = params.deviceSettings || {};
-    const sec = params.securitySettings || {};
+    const timestamp = new Date().toISOString();
+    const t = <T>(value: T, source: any = 'HUMAN_SELECTED'): any => ({
+      value,
+      source,
+      timestamp
+    });
 
     const contract: ImplementationGradeSpecificationContract = {
+      classification: {
+        ecosystem: t(classification, 'MINIMUM_STANDARD'),
+        domain: t(params.domain, 'HUMAN_SELECTED'),
+        secondaryDomains: t([], 'CONTEXT_GENERATED'),
+        scope: t('NATIONAL', 'MINIMUM_STANDARD')
+      },
       identity: {
         productId,
-        productName: name,
-        tenantName: org,
+        productName: t(name),
+        tenantName: t(org),
         productClassification: classification,
-        productClass: 'ENTERPRISE_CORE',
+        productClass: t('ENTERPRISE_CORE', 'MINIMUM_STANDARD'),
         brandIdentity: {
-          primaryColor: '#2563eb',
-          typography: 'Inter, sans-serif'
+          primaryColor: t('#2563eb'),
+          typography: t('Inter, sans-serif')
         },
-        organizationIdentity: org,
-        publicFacingName: name,
+        organizationIdentity: t(org),
+        publicFacingName: t(name),
         internalSystemIdentity: productId,
-        productVersion: params.productVersion || '1.0.0',
-        productDescription: params.additionalRequirements || `Sovereign ${params.domain} system designed for ${name}.`,
-        productPurpose: params.additionalRequirements || `Sovereign ${params.domain} system designed for ${name}.`,
-        targetAudience: 'Institutional Workforce & Public Citizens',
-        geographicScope: 'NATIONAL',
-        operatingJurisdictions: ['NATIONAL_SOVEREIGN'],
+        productVersion: t(params.productVersion || '1.0.0'),
+        productDescription: t(params.additionalRequirements || `Sovereign ${params.domain} system designed for ${name}.`),
+        productPurpose: t(params.additionalRequirements || `Sovereign ${params.domain} system designed for ${name}.`),
+        targetAudience: t('Institutional Workforce & Public Citizens'),
+        geographicScope: t('NATIONAL'),
+        operatingJurisdictions: t(['NATIONAL_SOVEREIGN']),
       },
       businessSpecification: {
-        tenancyModel: ten.tenantModel,
-        tenantHierarchy: ten.hierarchyType,
-        organizationHierarchy: departments.length > 0 ? departments.join(' -> ') : 'Corporate -> Division -> Unit',
-        businessProcesses: params.selectedWorkflows || ['Standard Intake'],
-        operatingCalendars: 'Standard Gregorian',
+        tenancyModel: t(ten.tenantModel, 'ENGINEERING_RECOMMENDED'),
+        tenantHierarchy: t(ten.hierarchyType, 'ENGINEERING_RECOMMENDED'),
+        organizationHierarchy: t(departments.length > 0 ? departments.join(' -> ') : 'Corporate -> Division -> Unit'),
+        businessProcesses: t(workflows),
+        operatingCalendars: t('Standard Gregorian'),
         capacity: {
-          usersCount: cap.usersCount,
-          concurrentUsersCount: cap.concurrentUsersCount,
-          transactionsPerSecond: 150,
-          storageGb: cap.storageGb
+          usersCount: t(cap.usersCount),
+          concurrentUsersCount: t(cap.concurrentUsersCount),
+          transactionsPerSecond: t(150, 'ENGINEERING_RECOMMENDED'),
+          storageGb: t(cap.storageGb)
         }
       },
       domainSpecification: {
-        sector: params.domain,
-        domainRequirements: modules,
-        complianceStandards: ['JUMO_SOVEREIGN_POLICY'],
-        industryProtocols: ['ISO_20022']
+        sector: t(params.domain),
+        domainRequirements: t(modules),
+        complianceStandards: t(['JUMO_SOVEREIGN_POLICY'], 'REGULATORY_REQUIRED'),
+        industryProtocols: t(['ISO_20022'], 'REGULATORY_REQUIRED')
       },
       functionalSpecification: {
-        coreCapabilities: modules,
-        portals: portals,
-        modules: modules,
-        workflows: params.selectedWorkflows || [],
-        automationLevel: 'SEMI_AUTONOMOUS',
-        reportingRequirements: ['Daily Summary', 'Audit Ledger']
+        coreCapabilities: t(modules),
+        portals: t(portals),
+        modules: t(modules),
+        workflows: t(workflows),
+        automationLevel: t('SEMI_AUTONOMOUS', 'ENGINEERING_RECOMMENDED'),
+        reportingRequirements: t(['Daily Summary', 'Audit Ledger'], 'MINIMUM_STANDARD')
       },
       digitalExperience: {
         publicExperience: {
-          enabled: exp.publicExperienceEnabled ?? true,
+          enabled: t(true),
           landingPage: {
-            pagePurpose: 'Discovery and Public Service Access',
-            heroTitle: exp.heroTitle || `Welcome to ${name}`,
-            heroSubtitle: exp.heroSubtitle || 'Sovereign Digital Services',
-            primaryCTA: 'Get Started',
-            secondaryCTAs: [],
-            featuredServices: true,
-            sections: ['Hero', 'Services', 'News', 'FAQ']
+            pagePurpose: t('Discovery and Public Service Access'),
+            heroTitle: t(`Welcome to ${name}`),
+            heroSubtitle: t('Sovereign Digital Services'),
+            primaryCTA: t('Get Started'),
+            sections: t(['Hero', 'Services', 'News', 'FAQ'])
           },
           serviceDiscovery: {
-            catalogEnabled: exp.serviceDiscoveryEnabled ?? true,
-            categories: [params.domain],
-            searchEnabled: true
-          },
-          footer: {
-            links: ['About', 'Contact', 'Support'],
-            socialEnabled: true,
-            legalLinks: ['Privacy Policy', 'Terms of Service']
+            catalogEnabled: t(true),
+            categories: t([params.domain])
           }
         },
         authenticatedExperience: {
-          onboardingRequired: true,
-          dashboardLayout: exp.dashboardLayout || 'GRID',
-          workspaceTheme: 'MODERN',
-          navigationModel: exp.navigationModel || 'SIDEBAR'
-        },
-        headerArchitecture: {
-          brandLogoEnabled: true,
-          searchEnabled: true,
-          notificationsEnabled: true,
-          accountSwitching: true,
-          languageSelection: true,
-          contextSwitching: true
-        },
-        navigationArchitecture: {
-          primaryNav: portals,
-          secondaryNav: ['Settings', 'Profile'],
-          breadcrumbs: true,
-          roleAware: true
+          onboardingRequired: t(true),
+          dashboardLayout: t('GRID'),
+          workspaceTheme: t('MODERN'),
+          navigationModel: t('SIDEBAR')
         },
         designSystem: {
-          typography: 'Inter',
-          density: 'STANDARD',
-          radius: 16
-        },
-        advertisingEnabled: exp.advertisingEnabled ?? false
+          typography: t('Inter'),
+          density: t('STANDARD'),
+          radius: t(16)
+        }
       },
       aiExperience: {
         publicAssistant: {
-          enabled: ai.publicAssistantEnabled ?? true,
-          assistantName: ai.assistantName || 'Sovereign Guide',
-          knowledgeScope: ai.assistantKnowledgeScope || [params.domain],
-          welcomeBehavior: 'How can I assist you with our services today?'
+          enabled: t(true),
+          assistantName: t('Sovereign Guide'),
+          knowledgeScope: t([params.domain])
         },
         authenticatedAssistant: {
-          enabled: ai.authenticatedAssistantEnabled ?? true,
-          persona: 'ANALYST',
-          tools: ['Data Retrieval', 'Workflow Automation']
+          enabled: t(true),
+          persona: t('ANALYST'),
+          tools: t(['Data Retrieval', 'Workflow Automation'])
         },
-        domainAssistant: {
-          enabled: true,
-          domainFocus: params.domain
-        },
-        administrativeAssistant: {
-          enabled: true
-        },
-        safetyGuardrails: ['Privacy Preserving', 'Context Bound']
+        safetyGuardrails: t(['Privacy Preserving', 'Context Bound'], 'REGULATORY_REQUIRED')
       },
       localization: {
-        defaultLanguage: loc.defaultLanguage || 'English',
-        supportedLanguages: loc.supportedLanguages || ['English'],
-        locale: 'en-US',
-        dateFormat: 'YYYY-MM-DD',
-        numberFormat: 'STANDARD',
-        currency: 'USD',
-        timezone: 'UTC',
-        rtlSupport: false
+        defaultLanguage: t('English'),
+        supportedLanguages: t(['English']),
+        timezone: t('UTC'),
+        rtlSupport: t(false)
       },
       accessibility: {
-        targetStandard: acc.accessibilityTarget || 'WCAG_AA',
-        keyboardNavigation: true,
-        screenReaderSupport: true,
-        reducedMotionSupport: true,
-        contrastTarget: '4.5:1'
+        targetStandard: t('WCAG_AA', 'REGULATORY_REQUIRED'),
+        screenReaderSupport: t(true),
+        contrastTarget: t('4.5:1', 'REGULATORY_REQUIRED')
       },
       securityExperience: {
-        authenticationMethods: ['OIDC', 'SAML'],
-        mfaRequired: sec.mfaRequired ?? true,
-        identityVerification: sec.identityVerificationRequired ?? false,
-        privacyControlsEnabled: sec.privacyControlsEnabled ?? true,
-        sessionManagement: '30_MIN_INACTIVITY',
-        termsAcceptanceRequired: true
+        authenticationMethods: t(['OIDC', 'SAML'], 'ENGINEERING_RECOMMENDED'),
+        mfaRequired: t(true, 'REGULATORY_REQUIRED'),
+        identityVerification: t(false),
+        privacyControlsEnabled: t(true),
+        termsAcceptanceRequired: t(true, 'REGULATORY_REQUIRED')
       },
       communication: {
-        channels: comm.communicationChannels || ['IN_APP', 'EMAIL'],
-        templatesRequired: true,
-        notificationPreferences: true,
-        criticalAlertsEnabled: true
+        channels: t(['IN_APP', 'EMAIL']),
+        targets: t(['DESKTOP', 'MOBILE'])
       },
-      deviceExperience: {
-        targets: dev.deviceTargets || ['DESKTOP', 'MOBILE'],
-        offlineCapability: dev.offlineCapability ?? false,
-        lowBandwidthOptimization: true
+      dataSpecification: {
+        entities: t(['User', 'Profile', 'AuditLog'], 'CONTEXT_GENERATED'),
+        classification: t('INTERNAL', 'CONTEXT_GENERATED'),
+        retentionPolicy: t('7_YEARS', 'REGULATORY_REQUIRED'),
+        residencyRequirements: t('NATIONAL_ONLY', 'REGULATORY_REQUIRED')
       },
-      operational: {
-        deploymentType: inf.deploymentType as any,
-        availabilityTarget: cap.availabilityTargetPercentage,
-        backupPolicy: 'DAILY_REPLICATED',
-        monitoringRequirements: ['Performance', 'Uptime', 'Security'],
-        analyticsExperience: {
-          usageAnalytics: true,
-          performanceMonitoring: true,
-          errorTracking: true
-        }
+      integrationSpecification: {
+        externalSystems: t(integrations),
+        apiProtocols: t(['REST', 'GRAPHQL']),
+        webhookEvents: t(['ENTITY_CREATED', 'WORKFLOW_STARTED'])
       },
-      manufacturing: {
-        requiredStudios: ['Specification', 'Engineering', 'Manufacturing'],
-        verificationGates: ['Architecture Approval', 'Final Assembly Review'],
-        priority: 'NORMAL'
+      financialSpecification: {
+        currency: t('USD'),
+        paymentGateways: t(['STRIPE', 'JUMO_PAY']),
+        taxationModels: t(['STANDARD_VAT']),
+        billingIntervals: t(['MONTHLY'])
+      },
+      workflowSpecification: {
+        businessProcesses: t(workflows),
+        automationTriggers: t(['TIME_BASED', 'EVENT_BASED']),
+        approvalChains: t(['ADMIN_APPROVAL'])
+      },
+      analyticsSpecification: {
+        kpis: t(['User Engagement', 'Success Rate']),
+        standardReports: t(['Monthly Activity', 'Security Audit']),
+        dashboards: t(['Operational Overview'])
+      },
+      contentSpecification: {
+        knowledgeBases: t(['System Documentation']),
+        documentTypes: t(['PDF', 'DOCX'])
+      },
+      engagementSpecification: {
+        campaignTypes: t([]),
+        adPlacements: t([]),
+        loyaltyPrograms: t(false)
+      },
+      searchSpecification: {
+        searchScopes: t(['GLOBAL', 'MODULE']),
+        indexingFrequency: t('REAL_TIME'),
+        aiSearchEnabled: t(true)
+      },
+      supportSpecification: {
+        supportChannels: t(['EMAIL', 'HELP_CENTER']),
+        slaLevels: t(['P1_4H', 'P2_24H']),
+        helpPortalEnabled: t(true)
+      },
+      complianceSpecification: {
+        regulatoryFrameworks: t(['GDPR', 'ISO_27001']),
+        auditRequirements: t(['QUARTERLY_EXTERNAL']),
+        dataGovernancePolicy: t('SOVEREIGN_DATA_POLICY')
+      },
+      deploymentSpecification: {
+        targets: t(['CLOUD_CLUSTER']),
+        regions: t(['PRIMARY_REGION']),
+        infrastructureRequirements: t('HIGH_AVAILABILITY')
+      },
+      verificationSpecification: {
+        acceptanceCriteria: t(['ALL_TESTS_PASS', 'SECURITY_SCAN_CLEAR']),
+        verificationProtocols: t(['MANUAL_HUMAN_SIGN_OFF']),
+        automatedTestsRequired: t(true)
+      },
+      manufacturingSpecification: {
+        manufacturingProfile: t('STANDARD_ERP'),
+        qualityStandards: t(['JUMO_Q1']),
+        priority: t('NORMAL')
+      },
+      certificationSpecification: {
+        releaseGates: t(['SECURITY_GATE', 'LEGAL_GATE']),
+        certificationTargets: t(['SOC2_TYPE_2']),
+        humanSignOffRequired: t(true)
+      },
+      evolutionSpecification: {
+        upgradePolicy: t('SCHEDULED'),
+        featureEvolutionPath: t('CONTINUOUS'),
+        maintenanceWindows: t('SUN_0200_0400')
+      },
+      humanGovernance: {
+        mandatoryApprovalGates: t(['ARCHITECTURE_APPROVAL', 'MANUFACTURING_APPROVAL']),
+        gatekeepers: t(['CHIEF_ARCHITECT', 'SOVEREIGN_GOVERNOR']),
+        rejectionWorkflows: t('RE-DESIGN_REQUIRED')
+      },
+      priorities: {
+        criticalRequirements: t(['DATA_SOVEREIGNTY', 'ZERO_TRUST']),
+        technicalConstraints: t(['LATENCY_UNDER_100MS']),
+        budgetaryConstraints: t('NOT_SPECIFIED')
+      },
+      traceability: {
+        mappingRequirement: t('DEEP'),
+        auditTrailEnabled: t(true)
+      },
+      metadata: {
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        version: 1,
+        specificationCompleteness: 100
       }
     };
 

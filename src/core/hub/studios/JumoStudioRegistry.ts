@@ -169,6 +169,7 @@ export const JUMO_STUDIO_REGISTRY = new JumoStudioRegistry([
   // 11 — DIGITAL PRODUCTS
   studio('products', 'Digital Products Catalogue', 'PRODUCTS', 'Manufactured ERP ecosystems and platforms catalogue.', ['Products', 'Catalogue'], 'boxes'),
   studio('templates', 'Registry Fabric', 'PRODUCTS', 'Authoritative source for base registries.', ['Registries', 'Orchestration'], 'layers'),
+  studio('job-review', 'Job Review & Verification', 'GOVERNANCE', 'Authoritative human governance gate for manufacturing jobs.', ['Review', 'Approval', 'Governance'], 'shield-check'),
 ]);
 
 

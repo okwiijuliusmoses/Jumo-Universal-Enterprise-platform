@@ -360,6 +360,13 @@ export class ProductManufacturingOrchestrator {
     console.log(`[ORCHESTRATOR] Expanding Architecture & Engineering for Job ${job.jobId}`);
     
     const spec = job.config?.specification as ImplementationGradeSpecificationContract;
+    
+    // Helper to extract value from TraceableValue
+    const v = <T>(tv: any, defaultValue: T): T => {
+      if (!tv) return defaultValue;
+      if (typeof tv === 'object' && 'value' in tv) return tv.value;
+      return tv as T;
+    };
 
     // 1. Digital Product Experience Blueprint Generation
     const experienceBlueprint: ExperienceBlueprint = {
@@ -368,94 +375,97 @@ export class ProductManufacturingOrchestrator {
       productId: job.productId,
       publicExperience: {
         landingPage: {
-          heroTitle: spec?.digitalExperience?.publicExperience?.landingPage?.heroTitle || "Sovereign Portal",
-          heroSubtitle: spec?.digitalExperience?.publicExperience?.landingPage?.heroSubtitle || "Institutional Excellence",
-          primaryCTA: spec?.digitalExperience?.publicExperience?.landingPage?.primaryCTA || "Get Started",
-          secondaryCTAs: spec?.digitalExperience?.publicExperience?.landingPage?.secondaryCTAs || [],
-          sections: spec?.digitalExperience?.publicExperience?.landingPage?.sections || ["Hero", "Services", "About", "FAQ"],
-          seoMetadata: { title: spec?.identity?.productName || "JUMO Product", description: spec?.identity?.productDescription || "" }
+          heroTitle: v(spec?.digitalExperience?.publicExperience?.landingPage?.heroTitle, "Sovereign Portal"),
+          heroSubtitle: v(spec?.digitalExperience?.publicExperience?.landingPage?.heroSubtitle, "Institutional Excellence"),
+          primaryCTA: v(spec?.digitalExperience?.publicExperience?.landingPage?.primaryCTA, "Get Started"),
+          secondaryCTAs: [],
+          sections: v(spec?.digitalExperience?.publicExperience?.landingPage?.sections, ["Hero", "Services", "About", "FAQ"]),
+          seoMetadata: { 
+            title: v(spec?.identity?.productName, "JUMO Product"), 
+            description: v(spec?.identity?.productDescription, "") 
+          }
         },
         serviceCatalogue: {
-          categories: spec?.digitalExperience?.publicExperience?.serviceDiscovery?.categories || [job.ecosystem],
+          categories: v(spec?.digitalExperience?.publicExperience?.serviceDiscovery?.categories, [job.ecosystem]),
           featuredServices: ["Core Operations", "Public Inquiry"],
-          searchEnabled: spec?.digitalExperience?.publicExperience?.serviceDiscovery?.searchEnabled ?? true
+          searchEnabled: true
         },
         assistant: {
-          enabled: spec?.aiExperience?.publicAssistant?.enabled ?? true,
-          name: spec?.aiExperience?.publicAssistant?.assistantName || "JUMO Guide",
-          welcomeMessage: spec?.aiExperience?.publicAssistant?.welcomeBehavior || "How can I help you today?",
-          knowledgeScope: spec?.aiExperience?.publicAssistant?.knowledgeScope || []
+          enabled: v(spec?.aiExperience?.publicAssistant?.enabled, true),
+          name: v(spec?.aiExperience?.publicAssistant?.assistantName, "Sovereign Guide"),
+          welcomeMessage: "How can I help you today?",
+          knowledgeScope: v(spec?.aiExperience?.publicAssistant?.knowledgeScope, [])
         },
         footer: {
-          legalLinks: spec?.digitalExperience?.publicExperience?.footer?.legalLinks || ["Privacy", "Terms"],
+          legalLinks: ["Privacy", "Terms"],
           socialLinks: ["LinkedIn", "Twitter", "Official Portal"],
           siteMap: true
         }
       },
       authenticationExperience: {
-        methods: spec?.securityExperience?.authenticationMethods || ['PASSWORD', 'MFA'],
-        mfaRequired: spec?.securityExperience?.mfaRequired ?? true,
-        onboardingRequired: spec?.digitalExperience?.authenticatedExperience?.onboardingRequired ?? true,
-        identityVerification: spec?.securityExperience?.identityVerification ?? false,
-        termsAcceptance: spec?.securityExperience?.termsAcceptanceRequired ?? true
+        methods: v(spec?.securityExperience?.authenticationMethods, ['PASSWORD', 'MFA']),
+        mfaRequired: v(spec?.securityExperience?.mfaRequired, true),
+        onboardingRequired: v(spec?.digitalExperience?.authenticatedExperience?.onboardingRequired, true),
+        identityVerification: v(spec?.securityExperience?.identityVerification, false),
+        termsAcceptance: v(spec?.securityExperience?.termsAcceptanceRequired, true)
       },
       navigationExperience: {
-        primaryNav: spec?.digitalExperience?.navigationArchitecture?.primaryNav || spec?.functionalSpecification?.portals || ["Dashboard", "Services", "Inbox"],
-        secondaryNav: spec?.digitalExperience?.navigationArchitecture?.secondaryNav || ["Profile", "Settings", "Help"],
-        sidebarEnabled: spec?.digitalExperience?.authenticatedExperience?.navigationModel !== 'TOPBAR',
-        breadcrumbs: spec?.digitalExperience?.navigationArchitecture?.breadcrumbs ?? true,
-        roleAware: spec?.digitalExperience?.navigationArchitecture?.roleAware ?? true,
+        primaryNav: v(spec?.functionalSpecification?.portals, ["Dashboard", "Services", "Inbox"]),
+        secondaryNav: ["Profile", "Settings", "Help"],
+        sidebarEnabled: v(spec?.digitalExperience?.authenticatedExperience?.navigationModel, 'SIDEBAR') === 'SIDEBAR',
+        breadcrumbs: true,
+        roleAware: true,
         shortcuts: ["Alt+S (Search)", "Alt+H (Home)"]
       },
       workspaceExperience: {
-        dashboardLayout: spec?.digitalExperience?.authenticatedExperience?.dashboardLayout || 'GRID',
-        widgets: spec?.functionalSpecification?.modules || [],
-        dataDensity: spec?.digitalExperience?.designSystem?.density || 'STANDARD',
-        contextSwitching: spec?.digitalExperience?.headerArchitecture?.contextSwitching ?? true,
+        dashboardLayout: v(spec?.digitalExperience?.authenticatedExperience?.dashboardLayout, 'GRID'),
+        widgets: v(spec?.functionalSpecification?.modules, []),
+        dataDensity: v(spec?.digitalExperience?.designSystem?.density, 'STANDARD'),
+        contextSwitching: true,
         toolbars: true
       },
       mobileExperience: {
         responsive: true,
-        pwaEnabled: spec?.deviceExperience?.targets?.includes('PWA') || false,
-        offlineCapability: spec?.deviceExperience?.offlineCapability ?? false,
+        pwaEnabled: false,
+        offlineCapability: false,
         touchOptimizations: true
       },
       localization: {
-        defaultLanguage: spec?.localization?.defaultLanguage || "English",
-        supportedLanguages: spec?.localization?.supportedLanguages || ["English"],
-        currency: spec?.localization?.currency || "USD",
-        dateFormat: spec?.localization?.dateFormat || "YYYY-MM-DD",
-        numberFormat: spec?.localization?.numberFormat || "STANDARD",
-        timezone: spec?.localization?.timezone || "UTC",
-        rtlSupport: spec?.localization?.rtlSupport ?? false
+        defaultLanguage: v(spec?.localization?.defaultLanguage, "English"),
+        supportedLanguages: v(spec?.localization?.supportedLanguages, ["English"]),
+        currency: "USD",
+        dateFormat: "YYYY-MM-DD",
+        numberFormat: "STANDARD",
+        timezone: v(spec?.localization?.timezone, "UTC"),
+        rtlSupport: v(spec?.localization?.rtlSupport, false)
       },
       accessibility: {
-        target: spec?.accessibility?.targetStandard || "WCAG_AA",
+        target: v(spec?.accessibility?.targetStandard, "WCAG_AA"),
         features: ["Screen Reader Optimized", "Keyboard Navigation", "Aria-Label Compliance"],
-        contrastTarget: spec?.accessibility?.contrastTarget || "4.5:1",
-        reducedMotion: spec?.accessibility?.reducedMotionSupport ?? false
+        contrastTarget: v(spec?.accessibility?.contrastTarget, "4.5:1"),
+        reducedMotion: false
       },
       aiExperience: {
-        persona: spec?.aiExperience?.authenticatedAssistant?.persona || "ANALYST",
-        capabilities: spec?.aiExperience?.authenticatedAssistant?.tools || [],
-        safetyGuardrails: spec?.aiExperience?.safetyGuardrails || [],
-        administrativeAssistant: spec?.aiExperience?.administrativeAssistant?.enabled ?? true,
-        domainReasoning: spec?.aiExperience?.domainAssistant?.enabled ?? true
+        persona: v(spec?.aiExperience?.authenticatedAssistant?.persona, "ANALYST"),
+        capabilities: v(spec?.aiExperience?.authenticatedAssistant?.tools, []),
+        safetyGuardrails: v(spec?.aiExperience?.safetyGuardrails, []),
+        administrativeAssistant: true,
+        domainReasoning: true
       },
       advertisingExperience: {
-        enabled: spec?.digitalExperience?.advertisingEnabled ?? false,
+        enabled: false,
         placements: ["DASHBOARD_SIDEBAR", "LANDING_PAGE_BOTTOM"],
         revenueModel: "CPC_CPM"
       },
       communicationExperience: {
-        channels: spec?.communication?.channels || ["IN_APP", "EMAIL"],
+        channels: v(spec?.communication?.channels, ["IN_APP", "EMAIL"]),
         templates: ["WELCOME_EMAIL", "ALERT_NOTIFICATION"],
-        preferencesEnabled: spec?.communication?.notificationPreferences ?? true,
-        emergencyAlerts: spec?.communication?.criticalAlertsEnabled ?? true
+        preferencesEnabled: true,
+        emergencyAlerts: true
       },
       searchExperience: {
-        globalSearch: spec?.digitalExperience?.headerArchitecture?.searchEnabled ?? true,
-        aiPowered: spec?.aiExperience?.authenticatedAssistant?.enabled ?? true,
+        globalSearch: true,
+        aiPowered: v(spec?.aiExperience?.authenticatedAssistant?.enabled, true),
         filters: ["Date", "Category", "Author"]
       },
       supportExperience: {
@@ -465,21 +475,21 @@ export class ProductManufacturingOrchestrator {
         feedbackLoop: true
       },
       designSystem: {
-        typography: spec?.digitalExperience?.designSystem?.typography || spec?.identity?.brandIdentity?.typography || "Inter",
-        primaryColor: spec?.identity?.brandIdentity?.primaryColor || "#2563eb",
-        secondaryColor: spec?.identity?.brandIdentity?.secondaryColor || "#64748b",
-        radius: `${spec?.digitalExperience?.designSystem?.radius || 16}px`,
-        motionLevel: spec?.accessibility?.reducedMotionSupport ? 'SUBTLE' : 'DYNAMIC'
+        typography: v(spec?.digitalExperience?.designSystem?.typography, v(spec?.identity?.brandIdentity?.typography, "Inter")),
+        primaryColor: v(spec?.identity?.brandIdentity?.primaryColor, "#2563eb"),
+        secondaryColor: "#64748b",
+        radius: `${v(spec?.digitalExperience?.designSystem?.radius, 16)}px`,
+        motionLevel: 'DYNAMIC'
       },
       trustSecurityExperience: {
         verificationBadges: true,
-        privacyDashboard: spec?.securityExperience?.privacyControlsEnabled ?? true,
+        privacyDashboard: v(spec?.securityExperience?.privacyControlsEnabled, true),
         sessionTransparency: true,
         auditVisibility: true
       },
       analyticsExperience: {
-        usageAnalytics: spec?.operational?.analyticsExperience?.usageAnalytics ?? true,
-        performanceMonitoring: spec?.operational?.analyticsExperience?.performanceMonitoring ?? true,
+        usageAnalytics: true,
+        performanceMonitoring: true,
         businessROI: true
       }
     };
@@ -495,26 +505,26 @@ export class ProductManufacturingOrchestrator {
       specificationId: job.specificationId,
       status: 'REVIEW',
       productIdentity: {
-        name: spec?.identity?.productName || job.productId,
+        name: v(spec?.identity?.productName, job.productId),
         ecosystem: job.ecosystem,
-        sector: spec?.domainSpecification?.sector || "General",
-        organization: spec?.identity?.organizationIdentity || "Institutional Authority",
-        purpose: spec?.identity?.productPurpose || "General Purpose Sovereign System",
-        targetUsers: spec?.identity?.targetAudience || "Institutional Staff",
-        operatingJurisdiction: spec?.identity?.operatingJurisdictions?.[0] || "National",
-        deploymentModel: spec?.identity?.geographicScope || "CENTRALIZED",
-        tenancyModel: spec?.businessSpecification?.tenancyModel || "SINGLE_TENANT"
+        sector: v(spec?.domainSpecification?.sector, "General"),
+        organization: v(spec?.identity?.organizationIdentity, "Institutional Authority"),
+        purpose: v(spec?.identity?.productPurpose, "General Purpose Sovereign System"),
+        targetUsers: v(spec?.identity?.targetAudience, "Institutional Staff"),
+        operatingJurisdiction: v(spec?.identity?.operatingJurisdictions, ["National"])[0],
+        deploymentModel: v(spec?.identity?.geographicScope, "CENTRALIZED"),
+        tenancyModel: v(spec?.businessSpecification?.tenancyModel, "SINGLE_TENANT")
       },
       experienceArchitecture: {
-        portals: spec?.functionalSpecification?.portals || ["Default Portal"],
-        mobileExperience: spec?.deviceExperience?.targets?.includes('MOBILE') || false,
+        portals: v(spec?.functionalSpecification?.portals, ["Default Portal"]),
+        mobileExperience: false,
         apiExperience: true,
         experienceBlueprintId: experienceBlueprint.id
       },
       experienceBlueprint,
       organizationalArchitecture: {
         ministries: [],
-        departments: spec?.businessSpecification?.organizationHierarchy?.split(' -> ') || ["Administration"],
+        departments: v(spec?.businessSpecification?.organizationHierarchy, "Administration").split(' -> '),
         directorates: [],
         divisions: [],
         branches: [],
@@ -526,8 +536,8 @@ export class ProductManufacturingOrchestrator {
         responsibilities: ["Data Management", "Workflow Approval", "System Monitoring"]
       },
       domainArchitecture: {
-        domainIdentifier: spec?.domainSpecification?.sector || "GENERAL",
-        coreWorkflows: spec?.businessSpecification?.businessProcesses || ["Default Intake"],
+        domainIdentifier: v(spec?.domainSpecification?.sector, "GENERAL"),
+        coreWorkflows: v(spec?.businessSpecification?.businessProcesses, ["Default Intake"]),
         dataEntitlements: ["Personal Data", "Financial Records", "Audit Logs"],
         businessRules: ["Mandatory Audit", "Role-based Access Control"]
       },
@@ -541,8 +551,8 @@ export class ProductManufacturingOrchestrator {
       },
       manufacturingDirectives: {
         requiredLayers: ["UI", "API", "DB", "AUTH", "WORKFLOW"],
-        priorityModules: spec?.functionalSpecification?.modules || [],
-        integrationTargets: spec?.domainSpecification?.industryProtocols || []
+        priorityModules: v(spec?.functionalSpecification?.modules, []),
+        integrationTargets: v(spec?.domainSpecification?.industryProtocols, [])
       },
       functionalArchitecture: {
         modules: [], submodules: [], capabilities: [], services: [], components: [], forms: [], reports: [], dashboards: [], workflows: [], notifications: [], documents: [], search: true, analytics: true
@@ -577,7 +587,7 @@ export class ProductManufacturingOrchestrator {
       },
       expansion: {
         summary: `Full architecture expansion for ${blueprint.productIdentity.name}. Expanded into ${blueprint.manufacturingDirectives.requiredLayers.length} manufacturing layers.`,
-        derivedRequirements: spec?.domainSpecification?.domainRequirements || [],
+        derivedRequirements: v(spec?.domainSpecification?.domainRequirements, []),
         domainDecomposition: blueprint.experienceArchitecture.portals.concat(blueprint.manufacturingDirectives.priorityModules)
       },
       architecture: {

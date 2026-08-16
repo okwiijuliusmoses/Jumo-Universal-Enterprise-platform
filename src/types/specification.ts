@@ -1,17 +1,28 @@
 // JUMO UEOS — Dynamic Schema-Driven Specification Contract Types
-// Authoritative definitions for the 19 layers of implementation-grade contracts.
+// Authoritative definitions for the 31 layers of implementation-grade contracts.
 
 export type ProductClassification = 'ERP_ECOSYSTEM' | 'COMMERCIAL_PLATFORM' | 'SOFTWARE_PROGRAM';
+
+export type SpecificationSource = 'HUMAN_SELECTED' | 'MINIMUM_STANDARD' | 'CONTEXT_GENERATED' | 'ENGINEERING_RECOMMENDED' | 'REGULATORY_REQUIRED';
+
+export interface TraceableValue<T> {
+  value: T;
+  source: SpecificationSource;
+  timestamp: string;
+  contributorId?: string;
+  rationale?: string;
+}
 
 export interface DynamicQuestion {
   id: string;
   label: string;
-  type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'list';
+  type: 'text' | 'number' | 'select' | 'boolean' | 'textarea' | 'list' | 'ecosystem_selector' | 'domain_selector' | 'guided_capacity' | 'guided_tenancy';
   placeholder?: string;
   options?: string[];
   required: boolean;
   defaultValue?: any;
-  category: string; // Maps to one of the 19 layers
+  category: string;
+  domainCategory?: 'PORTALS' | 'MODULES' | 'DEPARTMENTS' | 'AI_CAPABILITIES' | 'INTEGRATIONS' | 'WORKFLOWS' | 'REPORTS' | 'COMPLIANCE';
 }
 
 export interface SpecificationSectionSchema {
@@ -26,205 +37,279 @@ export interface ProductSpecificationSchema {
   sections: SpecificationSectionSchema[];
 }
 
-// Complete Implementation-Grade Specification Contract with 12 Core Dimensions
+// Complete Implementation-Grade Specification Contract with 31 Core Dimensions
 export interface ImplementationGradeSpecificationContract {
-  // 1. Product Identity
+  // 1. Ecosystem & Domain Classification
+  classification: {
+    ecosystem: TraceableValue<string>;
+    domain: TraceableValue<string>;
+    secondaryDomains?: TraceableValue<string[]>;
+    scope: TraceableValue<string>;
+  };
+
+  // 2. Product Identity
   identity: {
     productId: string;
-    productName: string;
-    tenantName: string;
+    productName: TraceableValue<string>;
+    tenantName: TraceableValue<string>;
     productClassification: ProductClassification;
-    productClass: string;
+    productClass: TraceableValue<string>;
     brandIdentity: {
-      primaryColor?: string;
-      secondaryColor?: string;
-      logoUrl?: string;
-      faviconUrl?: string;
-      typography?: string;
+      primaryColor?: TraceableValue<string>;
+      secondaryColor?: TraceableValue<string>;
+      logoUrl?: TraceableValue<string>;
+      typography?: TraceableValue<string>;
     };
-    organizationIdentity: string;
-    publicFacingName: string;
+    organizationIdentity: TraceableValue<string>;
+    publicFacingName: TraceableValue<string>;
     internalSystemIdentity: string;
-    productVersion: string;
-    productDescription: string;
-    productPurpose: string;
-    targetAudience: string;
-    geographicScope: string;
-    operatingJurisdictions: string[];
+    productVersion: TraceableValue<string>;
+    productDescription: TraceableValue<string>;
+    productPurpose: TraceableValue<string>;
+    targetAudience: TraceableValue<string>;
+    geographicScope: TraceableValue<string>;
+    operatingJurisdictions: TraceableValue<string[]>;
   };
 
-  // 2. Business Specification
+  // 3. Business Specification
   businessSpecification: {
-    tenancyModel: 'SINGLE_TENANT' | 'MULTI_TENANT' | 'HYBRID_TENANT';
-    tenantHierarchy: string;
-    organizationHierarchy: string;
-    businessProcesses: string[];
-    operatingCalendars: string;
+    tenancyModel: TraceableValue<'SINGLE_TENANT' | 'MULTI_TENANT' | 'HYBRID_TENANT'>;
+    tenantHierarchy: TraceableValue<string>;
+    organizationHierarchy: TraceableValue<string>;
+    businessProcesses: TraceableValue<string[]>;
+    operatingCalendars: TraceableValue<string>;
     capacity: {
-      usersCount: number;
-      concurrentUsersCount: number;
-      transactionsPerSecond: number;
-      storageGb: number;
+      usersCount: TraceableValue<number>;
+      concurrentUsersCount: TraceableValue<number>;
+      transactionsPerSecond: TraceableValue<number>;
+      storageGb: TraceableValue<number>;
     };
   };
 
-  // 3. Domain Specification
+  // 4. Domain Specification
   domainSpecification: {
-    sector: string;
-    domainRequirements: string[];
-    complianceStandards: string[];
-    industryProtocols: string[];
+    sector: TraceableValue<string>;
+    domainRequirements: TraceableValue<string[]>;
+    complianceStandards: TraceableValue<string[]>;
+    industryProtocols: TraceableValue<string[]>;
   };
 
-  // 4. Functional Specification
+  // 5. Functional Specification
   functionalSpecification: {
-    coreCapabilities: string[];
-    portals: string[];
-    modules: string[];
-    workflows: string[];
-    automationLevel: 'MANUAL_ASSISTED' | 'SEMI_AUTONOMOUS' | 'FULLY_AUTONOMOUS';
-    reportingRequirements: string[];
+    coreCapabilities: TraceableValue<string[]>;
+    portals: TraceableValue<string[]>;
+    modules: TraceableValue<string[]>;
+    workflows: TraceableValue<string[]>;
+    automationLevel: TraceableValue<'MANUAL_ASSISTED' | 'SEMI_AUTONOMOUS' | 'FULLY_AUTONOMOUS'>;
+    reportingRequirements: TraceableValue<string[]>;
   };
 
-  // 5. Digital Experience Specification
+  // 6. Digital Experience Specification
   digitalExperience: {
     publicExperience: {
-      enabled: boolean;
+      enabled: TraceableValue<boolean>;
       landingPage: {
-        pagePurpose: string;
-        heroTitle: string;
-        heroSubtitle: string;
-        primaryCTA: string;
-        secondaryCTAs: string[];
-        featuredServices: boolean;
-        sections: string[];
+        pagePurpose: TraceableValue<string>;
+        heroTitle: TraceableValue<string>;
+        heroSubtitle: TraceableValue<string>;
+        primaryCTA: TraceableValue<string>;
+        sections: TraceableValue<string[]>;
       };
       serviceDiscovery: {
-        catalogEnabled: boolean;
-        categories: string[];
-        searchEnabled: boolean;
-      };
-      footer: {
-        links: string[];
-        socialEnabled: boolean;
-        legalLinks: string[];
+        catalogEnabled: TraceableValue<boolean>;
+        categories: TraceableValue<string[]>;
       };
     };
     authenticatedExperience: {
-      onboardingRequired: boolean;
-      dashboardLayout: 'GRID' | 'WIDGETS' | 'LIST';
-      workspaceTheme: 'MODERN' | 'CLASSIC' | 'COMPACT';
-      navigationModel: 'SIDEBAR' | 'TOPBAR' | 'HYBRID';
-    };
-    headerArchitecture: {
-      brandLogoEnabled: boolean;
-      searchEnabled: boolean;
-      notificationsEnabled: boolean;
-      accountSwitching: boolean;
-      languageSelection: boolean;
-      contextSwitching: boolean;
-    };
-    navigationArchitecture: {
-      primaryNav: string[];
-      secondaryNav: string[];
-      breadcrumbs: boolean;
-      roleAware: boolean;
+      onboardingRequired: TraceableValue<boolean>;
+      dashboardLayout: TraceableValue<'GRID' | 'WIDGETS' | 'LIST'>;
+      workspaceTheme: TraceableValue<'MODERN' | 'CLASSIC' | 'COMPACT'>;
+      navigationModel: TraceableValue<'SIDEBAR' | 'TOPBAR' | 'HYBRID'>;
     };
     designSystem: {
-      typography: string;
-      density: 'COMPACT' | 'STANDARD' | 'SPACIOUS';
-      radius: number;
+      typography: TraceableValue<string>;
+      density: TraceableValue<'COMPACT' | 'STANDARD' | 'SPACIOUS'>;
+      radius: TraceableValue<number>;
     };
-    advertisingEnabled: boolean;
   };
 
-  // 6. AI Experience Specification
+  // 7. AI Experience Specification
   aiExperience: {
     publicAssistant: {
-      enabled: boolean;
-      assistantName: string;
-      welcomeBehavior: string;
-      knowledgeScope: string[];
+      enabled: TraceableValue<boolean>;
+      assistantName: TraceableValue<string>;
+      knowledgeScope: TraceableValue<string[]>;
     };
     authenticatedAssistant: {
-      enabled: boolean;
-      persona: 'EXECUTIVE' | 'ANALYST' | 'ADMINISTRATOR';
-      tools: string[];
+      enabled: TraceableValue<boolean>;
+      persona: TraceableValue<'EXECUTIVE' | 'ANALYST' | 'ADMINISTRATOR'>;
+      tools: TraceableValue<string[]>;
     };
-    domainAssistant: {
-      enabled: boolean;
-      domainFocus: string;
-    };
-    administrativeAssistant: {
-      enabled: boolean;
-    };
-    safetyGuardrails: string[];
+    safetyGuardrails: TraceableValue<string[]>;
   };
 
-  // 7. Localization Specification
+  // 8. Localization Specification
   localization: {
-    defaultLanguage: string;
-    supportedLanguages: string[];
-    locale: string;
-    dateFormat: string;
-    numberFormat: string;
-    currency: string;
-    timezone: string;
-    rtlSupport: boolean;
+    defaultLanguage: TraceableValue<string>;
+    supportedLanguages: TraceableValue<string[]>;
+    timezone: TraceableValue<string>;
+    rtlSupport: TraceableValue<boolean>;
   };
 
-  // 8. Accessibility Specification
+  // 9. Accessibility Specification
   accessibility: {
-    targetStandard: 'WCAG_AA' | 'WCAG_AAA';
-    keyboardNavigation: boolean;
-    screenReaderSupport: boolean;
-    reducedMotionSupport: boolean;
-    contrastTarget: string;
+    targetStandard: TraceableValue<'WCAG_AA' | 'WCAG_AAA'>;
+    screenReaderSupport: TraceableValue<boolean>;
+    contrastTarget: TraceableValue<string>;
   };
 
-  // 9. Security Experience Specification
+  // 10. Security & Identity Experience
   securityExperience: {
-    authenticationMethods: string[];
-    mfaRequired: boolean;
-    identityVerification: boolean;
-    privacyControlsEnabled: boolean;
-    sessionManagement: string;
-    termsAcceptanceRequired: boolean;
+    authenticationMethods: TraceableValue<string[]>;
+    mfaRequired: TraceableValue<boolean>;
+    identityVerification: TraceableValue<boolean>;
+    privacyControlsEnabled: TraceableValue<boolean>;
+    termsAcceptanceRequired: TraceableValue<boolean>;
   };
 
-  // 10. Communication Specification
+  // 11. Communication & Device Strategy
   communication: {
-    channels: Array<'IN_APP' | 'EMAIL' | 'SMS' | 'PUSH'>;
-    templatesRequired: boolean;
-    notificationPreferences: boolean;
-    criticalAlertsEnabled: boolean;
+    channels: TraceableValue<Array<'IN_APP' | 'EMAIL' | 'SMS' | 'PUSH'>>;
+    targets: TraceableValue<Array<'DESKTOP' | 'TABLET' | 'MOBILE' | 'PWA' | 'NATIVE'>>;
   };
 
-  // 11. Device Specification
-  deviceExperience: {
-    targets: Array<'DESKTOP' | 'TABLET' | 'MOBILE' | 'PWA' | 'NATIVE'>;
-    offlineCapability: boolean;
-    lowBandwidthOptimization: boolean;
+  // 12. Data Specification
+  dataSpecification: {
+    entities: TraceableValue<string[]>;
+    classification: TraceableValue<string>;
+    retentionPolicy: TraceableValue<string>;
+    residencyRequirements: TraceableValue<string>;
   };
 
-  // 12. Operational Specification
-  operational: {
-    deploymentType: 'CLOUD' | 'ON_PREMISE' | 'HYBRID';
-    availabilityTarget: number;
-    backupPolicy: string;
-    monitoringRequirements: string[];
-    analyticsExperience: {
-      usageAnalytics: boolean;
-      performanceMonitoring: boolean;
-      errorTracking: boolean;
-    };
+  // 13. Integration Specification
+  integrationSpecification: {
+    externalSystems: TraceableValue<string[]>;
+    apiProtocols: TraceableValue<string[]>;
+    webhookEvents: TraceableValue<string[]>;
   };
 
-  // Manufacturing Specification
-  manufacturing: {
-    requiredStudios: string[];
-    verificationGates: string[];
-    priority: 'NORMAL' | 'HIGH' | 'CRITICAL';
+  // 14. Financial & Transaction Specification
+  financialSpecification: {
+    currency: TraceableValue<string>;
+    paymentGateways: TraceableValue<string[]>;
+    taxationModels: TraceableValue<string[]>;
+    billingIntervals: TraceableValue<string[]>;
+  };
+
+  // 15. Workflow & Automation Specification
+  workflowSpecification: {
+    businessProcesses: TraceableValue<string[]>;
+    automationTriggers: TraceableValue<string[]>;
+    approvalChains: TraceableValue<string[]>;
+  };
+
+  // 16. Reporting & Analytics Specification
+  analyticsSpecification: {
+    kpis: TraceableValue<string[]>;
+    standardReports: TraceableValue<string[]>;
+    dashboards: TraceableValue<string[]>;
+  };
+
+  // 17. Content & Knowledge Specification
+  contentSpecification: {
+    knowledgeBases: TraceableValue<string[]>;
+    documentTypes: TraceableValue<string[]>;
+    ragSources?: TraceableValue<string[]>;
+  };
+
+  // 18. Advertising & Engagement Specification
+  engagementSpecification: {
+    campaignTypes: TraceableValue<string[]>;
+    adPlacements: TraceableValue<string[]>;
+    loyaltyPrograms: TraceableValue<boolean>;
+  };
+
+  // 19. Search & Discovery Specification
+  searchSpecification: {
+    searchScopes: TraceableValue<string[]>;
+    indexingFrequency: TraceableValue<string>;
+    aiSearchEnabled: TraceableValue<boolean>;
+  };
+
+  // 20. Support & Help Specification
+  supportSpecification: {
+    supportChannels: TraceableValue<string[]>;
+    slaLevels: TraceableValue<string[]>;
+    helpPortalEnabled: TraceableValue<boolean>;
+  };
+
+  // 21. Compliance & Governance Specification
+  complianceSpecification: {
+    regulatoryFrameworks: TraceableValue<string[]>;
+    auditRequirements: TraceableValue<string[]>;
+    dataGovernancePolicy: TraceableValue<string>;
+  };
+
+  // 22. Deployment & Installation Specification
+  deploymentSpecification: {
+    targets: TraceableValue<string[]>;
+    regions: TraceableValue<string[]>;
+    infrastructureRequirements: TraceableValue<string>;
+  };
+
+  // 23. Verification Specification
+  verificationSpecification: {
+    acceptanceCriteria: TraceableValue<string[]>;
+    verificationProtocols: TraceableValue<string[]>;
+    automatedTestsRequired: TraceableValue<boolean>;
+  };
+
+  // 24. Manufacturing Specification
+  manufacturingSpecification: {
+    manufacturingProfile: TraceableValue<string>;
+    qualityStandards: TraceableValue<string[]>;
+    priority: TraceableValue<'NORMAL' | 'HIGH' | 'CRITICAL'>;
+  };
+
+  // 25. Release & Certification Specification
+  certificationSpecification: {
+    releaseGates: TraceableValue<string[]>;
+    certificationTargets: TraceableValue<string[]>;
+    humanSignOffRequired: TraceableValue<boolean>;
+  };
+
+  // 26. Evolution & Upgrade Specification
+  evolutionSpecification: {
+    upgradePolicy: TraceableValue<string>;
+    featureEvolutionPath: TraceableValue<string>;
+    maintenanceWindows: TraceableValue<string>;
+  };
+
+  // 27. HUMAN GOVERNANCE SPECIFICATION
+  humanGovernance: {
+    mandatoryApprovalGates: TraceableValue<string[]>;
+    gatekeepers: TraceableValue<string[]>;
+    rejectionWorkflows: TraceableValue<string>;
+  };
+
+  // 28. REQUIREMENT PRIORITY & CONSTRAINTS
+  priorities: {
+    criticalRequirements: TraceableValue<string[]>;
+    technicalConstraints: TraceableValue<string[]>;
+    budgetaryConstraints: TraceableValue<string>;
+  };
+
+  // 29. REQUIREMENT TRACEABILITY
+  traceability: {
+    mappingRequirement: TraceableValue<string>;
+    auditTrailEnabled: TraceableValue<boolean>;
+  };
+
+  metadata: {
+    createdAt: string;
+    updatedAt: string;
+    version: number;
+    specificationCompleteness: number;
   };
 }
 

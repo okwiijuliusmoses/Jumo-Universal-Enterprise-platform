@@ -316,20 +316,39 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     console.warn('[UEOS BOOT] Fallback studio list initialized due to registry error:', err);
   }
   
-  const mapFamilyToGroupHeader = (family: string): string => {
-    switch (family) {
-      case 'MANUFACTURING': return '01 — JUMO MANUFACTURING PIPELINE';
-      case 'OPERATIONS': return '02 — JUMO DIGITAL OPERATIONS';
-      case 'WORKSHOP': return '03 — JUMO REMOTE DIGITAL WORKSHOP';
-      case 'CONTROL_CENTER': return '04 — SOVEREIGN CONTROL CENTER';
-      case 'GOVERNANCE': return '05 — GOVERNANCE & ADMINISTRATION';
-      case 'FINANCE': return '06 — FINANCIAL CONTROL';
-      case 'TREASURY': return '07 — SOVEREIGN TREASURY';
-      case 'DATA_INFO': return '08 — DATA & INFORMATION';
-      case 'VAULT': return '09 — SOVEREIGN APPLICATION VAULT';
-      case 'DOCS_REPO': return '10 — DOCUMENTATION & REPOSITORY';
-      case 'PRODUCTS': return '11 — DIGITAL PRODUCTS';
-      default: return '01 — JUMO MANUFACTURING PIPELINE';
+  const mapFamilyToGroupHeader = (family: string, studioId: string): string => {
+    // 5-Category Architectural Mandate
+    switch (studioId) {
+      case 'specification':
+      case 'branding':
+      case 'data-mgmt':
+      case 'info-model':
+      case 'templates':
+      case 'documentation':
+        return '01 — SPECIFY';
+
+      case 'architecture':
+      case 'blueprint':
+      case 'engineering':
+      case 'workshop':
+      case 'arch-verification':
+        return '02 — ENGINEER';
+
+      case 'manufacturing':
+      case 'provisioning':
+      case 'repository':
+      case 'factory':
+        return '03 — MANUFACTURE';
+
+      case 'verification':
+      case 'certification':
+      case 'assurance':
+      case 'audit':
+      case 'job-review':
+        return '04 — VERIFY & APPROVE';
+
+      default:
+        return '05 — OPERATE';
     }
   };
 
@@ -366,39 +385,27 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   };
 
   const groupOrder = [
-    '01 — JUMO MANUFACTURING PIPELINE',
-    '02 — JUMO DIGITAL OPERATIONS',
-    '03 — JUMO REMOTE DIGITAL WORKSHOP',
-    '04 — SOVEREIGN CONTROL CENTER',
-    '05 — GOVERNANCE & ADMINISTRATION',
-    '06 — FINANCIAL CONTROL',
-    '07 — SOVEREIGN TREASURY',
-    '08 — DATA & INFORMATION',
-    '09 — SOVEREIGN APPLICATION VAULT',
-    '10 — DOCUMENTATION & REPOSITORY',
-    '11 — DIGITAL PRODUCTS'
+    '01 — SPECIFY',
+    '02 — ENGINEER',
+    '03 — MANUFACTURE',
+    '04 — VERIFY & APPROVE',
+    '05 — OPERATE'
   ];
 
   const groupedStudiosMap = new Map<string, Array<{ id: HubWorkspace; label: string; icon: any; color: string }>>();
   groupOrder.forEach(g => groupedStudiosMap.set(g, []));
 
   studioList.forEach((st) => {
-    const groupHeader = mapFamilyToGroupHeader(st.family);
+    const groupHeader = mapFamilyToGroupHeader(st.family, st.id);
     const existing = groupedStudiosMap.get(groupHeader) || [];
     existing.push({
       id: st.id as HubWorkspace,
       label: st.name,
       icon: mapIconNameToComponent(st.icon),
       color: groupHeader.startsWith('01') ? 'text-blue-500' :
-             groupHeader.startsWith('02') ? 'text-cyan-500' :
-             groupHeader.startsWith('03') ? 'text-amber-500' :
-             groupHeader.startsWith('04') ? 'text-indigo-500' :
-             groupHeader.startsWith('05') ? 'text-purple-500' :
-             groupHeader.startsWith('06') ? 'text-emerald-500' :
-             groupHeader.startsWith('07') ? 'text-teal-500' :
-             groupHeader.startsWith('08') ? 'text-sky-500' :
-             groupHeader.startsWith('09') ? 'text-orange-500' :
-             groupHeader.startsWith('10') ? 'text-slate-500' : 'text-rose-500'
+             groupHeader.startsWith('02') ? 'text-amber-500' :
+             groupHeader.startsWith('03') ? 'text-emerald-500' :
+             groupHeader.startsWith('04') ? 'text-purple-500' : 'text-slate-500'
     });
     groupedStudiosMap.set(groupHeader, existing);
   });
