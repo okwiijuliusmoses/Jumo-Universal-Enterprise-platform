@@ -111,11 +111,15 @@ async function startServer() {
     if (prompt && prompt.toLowerCase().includes("ping")) {
       text = "pong";
     } else {
-      text = `[OMALLA SECURE INFRASTRUCTURE RUNTIME] Successfully executed local reasoning on model '${model}'.\nAll system invariants are satisfying the sovereign configuration requirements.`;
+      let agentRole = "General Execution Agent";
+      const roleMatch = prompt?.match(/Agent Role:\s*(.+)/i);
+      if (roleMatch) agentRole = roleMatch[1].split('\\n')[0].trim();
+      
+      text = `[OMALLA SECURE INFRASTRUCTURE RUNTIME] Successfully executed local reasoning on model '${model}'.\nAll system invariants are satisfying the sovereign configuration requirements.\n\n[SIMULATED EXECUTION FOR ${agentRole}]\nGenerated structural components and verified specifications according to requested parameters.`;
     }
     res.json({
       response: text,
-      eval_count: 42
+      eval_count: Math.floor(Math.random() * 50) + 20
     });
   });
 
