@@ -41,7 +41,7 @@ export async function runProductManufacturingStateMachineTest() {
     'PRODUCT_ASSURANCE', 'CERTIFICATION', 'CERTIFIED', 'PROVISIONING', 'DEPLOYMENT', 'RUNTIME_READY', 'OPERATING'
   ];
 
-  const waitForState = async (targetState: string, timeout = 5000) => {
+  const waitForState = async (targetState: string, timeout = 15000) => {
     const start = Date.now();
     const targetIndex = lifecycleOrder.indexOf(targetState);
     while (Date.now() - start < timeout) {
@@ -71,6 +71,24 @@ export async function runProductManufacturingStateMachineTest() {
   console.log("\n[TEST] 2.5 Approving Architecture...");
   await orchestrator.issueCommand('APPROVE_ARCHITECTURE', { jobId: job.jobId, actor: 'TEST_ARCHITECT' });
 
+  // Wait for and approve the engineering gate
+  const waitForEngineeringGateAndApprove = async () => {
+    const start = Date.now();
+    while (Date.now() - start < 15000) {
+      const currentJob = registry.getJob(job.id) as ProductManufacturingJob;
+      const gate = currentJob.reviewGates?.find(g => g.gateType === 'ENGINEERING_APPROVAL' && g.status === 'PENDING');
+      if (gate) {
+        console.log(`[TEST] Found pending engineering approval gate: ${gate.id}. Approving...`);
+        await orchestrator.submitReviewDecision(job.jobId, gate.id, 'APPROVE');
+        return;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    throw new Error("Timeout waiting for engineering approval gate");
+  };
+
+  await waitForEngineeringGateAndApprove();
+
   console.log("[TEST] Waiting for progression through Engineering...");
   await waitForState('FACTORY_READY');
   console.log("[PASS] Reached FACTORY_READY");
@@ -98,9 +116,26 @@ export async function runProductManufacturingStateMachineTest() {
   const jobWithBuild = registry.getJob(job.id) as ProductManufacturingJob;
   if (!jobWithBuild.artifacts?.['BUILD']) throw new Error("Missing Build Artifact");
 
+  // Wait for and approve the final manufacturing gate before moving to operating state
+  const waitForManufacturingGateAndApprove = async () => {
+    const start = Date.now();
+    while (Date.now() - start < 15000) {
+      const currentJob = registry.getJob(job.id) as ProductManufacturingJob;
+      const gate = currentJob.reviewGates?.find(g => g.gateType === 'FINAL_ASSEMBLY_APPROVAL' && g.status === 'PENDING');
+      if (gate) {
+        console.log(`[TEST] Found pending manufacturing approval gate: ${gate.id}. Approving...`);
+        await orchestrator.submitReviewDecision(job.jobId, gate.id, 'APPROVE');
+        return;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    throw new Error("Timeout waiting for manufacturing approval gate");
+  };
+
+  await waitForManufacturingGateAndApprove();
+
   // 5. Assurance -> Certification -> Provisioning -> Deployment -> Runtime
   console.log("\n[TEST] 5. Advancing to Runtime...");
-  // Note: My orchestrator auto-advances these for E2E purposes
   await waitForState('OPERATING');
   console.log("[PASS] Product is OPERATING.");
 

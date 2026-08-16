@@ -52,8 +52,10 @@ export class ManufacturingEngine {
         });
 
         // Continue to next stage if it's not a human approval gate
-        if (nextStatus !== 'HUMAN_ARCHITECT_APPROVAL' && nextStatus !== 'CERTIFICATION_AND_HUMAN_ACCEPTANCE') {
+        if (nextStatus !== 'AWAITING_HUMAN_ENGINEERING_APPROVAL' && nextStatus !== 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
            this.executeStage(jobId);
+        } else {
+           console.log(`[MANUFACTURING_ENGINE] Halting auto-advancement for Job ${jobId} at human review gate: ${nextStatus}`);
         }
       }, 3000);
     }
@@ -69,7 +71,7 @@ export class ManufacturingEngine {
       'ARCHITECTURE_EXPANSION',
       'ARCHITECTURE_VERIFICATION',
       'ARCHITECTURE_CONTRACT_GENERATION',
-      'HUMAN_ARCHITECT_APPROVAL',
+      'AWAITING_HUMAN_ENGINEERING_APPROVAL',
       'WORKFORCE_ORCHESTRATION',
       'REQUIREMENTS_DECOMPOSITION',
       'SYSTEM_DESIGN',
@@ -90,7 +92,7 @@ export class ManufacturingEngine {
       'INTEGRATION_VERIFICATION',
       'END_TO_END_SYSTEM_TESTING',
       'REGRESSION_AND_RESILIENCE_TESTING',
-      'CERTIFICATION_AND_HUMAN_ACCEPTANCE',
+      'AWAITING_HUMAN_MANUFACTURING_APPROVAL',
       'DEPLOYMENT_AND_PUBLISHING',
       'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'
     ];

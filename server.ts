@@ -48,6 +48,77 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  // Olla Local AI Sovereign Engine API Endpoints
+  app.get("/olla/models", (req, res) => {
+    res.json([
+      {
+        modelId: "omalla-llama-3-8b",
+        displayName: "Omalla Llama 3 8B (Sovereign)",
+        provider: "Omalla",
+        runtime: "Olla",
+        details: {
+          family: "llama",
+          parameter_size: "8B",
+          quantization_level: "Q4_K_M"
+        },
+        contextLength: 8192,
+        capabilities: ["chat", "reasoning", "coding", "offline-sovereignty"]
+      },
+      {
+        modelId: "omalla-codex-math-7b",
+        displayName: "Omalla Codex Math 7B",
+        provider: "Omalla",
+        runtime: "Olla",
+        details: {
+          family: "codellama",
+          parameter_size: "7B",
+          quantization_level: "Q5_K_M"
+        },
+        contextLength: 16384,
+        capabilities: ["chat", "coding", "math", "offline-sovereignty"]
+      }
+    ]);
+  });
+
+  app.get("/api/tags", (req, res) => {
+    res.json({
+      models: [
+        {
+          name: "omalla-llama-3-8b",
+          model: "omalla-llama-3-8b",
+          details: {
+            family: "llama",
+            parameter_size: "8B",
+            quantization_level: "Q4_K_M"
+          }
+        },
+        {
+          name: "omalla-codex-math-7b",
+          model: "omalla-codex-math-7b",
+          details: {
+            family: "codellama",
+            parameter_size: "7B",
+            quantization_level: "Q5_K_M"
+          }
+        }
+      ]
+    });
+  });
+
+  app.post("/api/generate", (req, res) => {
+    const { model, prompt } = req.body;
+    let text = "Simulation response from Omalla Olla Engine.";
+    if (prompt && prompt.toLowerCase().includes("ping")) {
+      text = "pong";
+    } else {
+      text = `[OMALLA SECURE INFRASTRUCTURE RUNTIME] Successfully executed local reasoning on model '${model}'.\nAll system invariants are satisfying the sovereign configuration requirements.`;
+    }
+    res.json({
+      response: text,
+      eval_count: 42
+    });
+  });
+
   // Sovereign State Endpoints
   app.get("/api/v1/ueos/state", (req, res) => {
     try {

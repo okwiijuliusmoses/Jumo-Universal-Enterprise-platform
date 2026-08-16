@@ -5,6 +5,7 @@ import { JumoAIProvider, OpenAIProvider, GeminiProvider, CopilotProvider, JumoLo
 import { CodexEngineeringProvider } from "./CodexEngineeringProvider";
 import { LocalJumoProvider } from "./LocalJumoProvider";
 import { AnthropicClaudeProvider } from "./AnthropicClaudeProvider";
+import { OllaProvider } from "../../../engine/ai/providers/local/OllaProvider";
 
 export class JumoAIProviderRegistry {
   private static instance: JumoAIProviderRegistry;
@@ -18,6 +19,7 @@ export class JumoAIProviderRegistry {
     this.register(new AnthropicClaudeProvider());
     this.register(new LocalJumoProvider());
     this.register(new JumoLocalReasoningProvider());
+    this.register(new OllaProvider());
     this.register(new FutureProviderAdapter());
   }
 

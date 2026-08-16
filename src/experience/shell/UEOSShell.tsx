@@ -306,114 +306,104 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     setPreferences(nextSettings);
   };
 
-  // === 11. SIDEBAR NAVIGATION GROUPS (DYNAMICALLY DERIVED FROM JUMO_STUDIO_REGISTRY) ===
-  let studioList: ReturnType<typeof JUMO_STUDIO_REGISTRY.list> = [];
-  try {
-    if (typeof JUMO_STUDIO_REGISTRY !== 'undefined' && JUMO_STUDIO_REGISTRY.list) {
-      studioList = JUMO_STUDIO_REGISTRY.list();
-    }
-  } catch (err) {
-    console.warn('[UEOS BOOT] Fallback studio list initialized due to registry error:', err);
-  }
-  
-  const mapFamilyToGroupHeader = (family: string, studioId: string): string => {
-    // 5-Category Architectural Mandate
-    switch (studioId) {
+  // === 11. SIDEBAR NAVIGATION GROUPS (CONSOLIDATED TO EXACTLY 5 TOP-LEVEL CLASSIFICATIONS) ===
+  const getCategoryOfTab = (tab: HubWorkspace): string => {
+    switch (tab) {
       case 'specification':
-      case 'branding':
-      case 'data-mgmt':
-      case 'info-model':
       case 'templates':
-      case 'documentation':
-        return '01 — SPECIFY';
+      case 'products':
+        return 'SPECIFICATION';
 
       case 'architecture':
       case 'blueprint':
       case 'engineering':
-      case 'workshop':
       case 'arch-verification':
-        return '02 — ENGINEER';
+        return 'ARCHITECTURE_ENGINEERING';
 
-      case 'manufacturing':
-      case 'provisioning':
-      case 'repository':
       case 'factory':
-        return '03 — MANUFACTURE';
+      case 'manufacturing':
+      case 'job-review':
+      case 'provisioning':
+      case 'certification':
+        return 'FACTORY';
 
       case 'verification':
-      case 'certification':
       case 'assurance':
-      case 'audit':
-      case 'job-review':
-        return '04 — VERIFY & APPROVE';
+      case 'overview':
+      case 'operations':
+      case 'workshop':
+      case 'lifecycle':
+        return 'ASSURANCE_OPERATIONS';
 
       default:
-        return '05 — OPERATE';
+        return 'GOVERNANCE';
     }
   };
 
-  const mapIconNameToComponent = (iconName: string) => {
-    switch (iconName) {
-      case 'file-text': return FileText;
-      case 'database': return Database;
-      case 'zap': return Zap;
-      case 'terminal': return Terminal;
-      case 'users': return Users;
-      case 'shield': return Shield;
-      case 'award': return Award;
-      case 'cloud': return Cloud;
-      case 'home': return Home;
-      case 'server': return Server;
-      case 'shield-check': return ShieldCheck;
-      case 'refresh-ccw': return RefreshCcw;
-      case 'layers': return Layers;
-      case 'activity': return Activity;
-      case 'settings': return Settings;
-      case 'credit-card': return CreditCard;
-      case 'sliders': return Sliders;
-      case 'wrench': return Wrench;
-      case 'bot': return Bot;
-      case 'landmark': return Landmark;
-      case 'boxes': return Boxes;
-      case 'cpu': return Cpu;
-      case 'building-2': return Building2;
-      case 'dollar-sign': return DollarSign;
-      case 'lock': return Lock;
-      case 'box': return Box;
-      default: return Box;
-    }
-  };
-
-  const groupOrder = [
-    '01 — SPECIFY',
-    '02 — ENGINEER',
-    '03 — MANUFACTURE',
-    '04 — VERIFY & APPROVE',
-    '05 — OPERATE'
-  ];
-
-  const groupedStudiosMap = new Map<string, Array<{ id: HubWorkspace; label: string; icon: any; color: string }>>();
-  groupOrder.forEach(g => groupedStudiosMap.set(g, []));
-
-  studioList.forEach((st) => {
-    const groupHeader = mapFamilyToGroupHeader(st.family, st.id);
-    const existing = groupedStudiosMap.get(groupHeader) || [];
-    existing.push({
-      id: st.id as HubWorkspace,
-      label: st.name,
-      icon: mapIconNameToComponent(st.icon),
-      color: groupHeader.startsWith('01') ? 'text-blue-500' :
-             groupHeader.startsWith('02') ? 'text-amber-500' :
-             groupHeader.startsWith('03') ? 'text-emerald-500' :
-             groupHeader.startsWith('04') ? 'text-purple-500' : 'text-slate-500'
-    });
-    groupedStudiosMap.set(groupHeader, existing);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(() => {
+    return getCategoryOfTab(activeTab);
   });
 
-  const sidebarGroups = groupOrder.map(header => ({
-    id: header,
-    items: groupedStudiosMap.get(header) || []
-  }));
+  useEffect(() => {
+    setExpandedCategory(getCategoryOfTab(activeTab));
+  }, [activeTab]);
+
+  const categories = [
+    {
+      id: "SPECIFICATION",
+      label: "SPECIFICATION",
+      icon: FileText,
+      color: "text-blue-500",
+      items: [
+        { id: "specification" as HubWorkspace, label: "Specification Studio", description: "Initialize new specification", icon: FileText, color: "text-blue-500" },
+        { id: "templates" as HubWorkspace, label: "Product Contract", description: "Registries and contracts", icon: Layers, color: "text-blue-500" }
+      ]
+    },
+    {
+      id: "ARCHITECTURE_ENGINEERING",
+      label: "ARCHITECTURE & ENGINEERING",
+      icon: Layers,
+      color: "text-amber-500",
+      items: [
+        { id: "architecture" as HubWorkspace, label: "Architecture Studio", description: "Topologies & expansion", icon: Layers, color: "text-amber-500" },
+        { id: "arch-verification" as HubWorkspace, label: "Architecture Verification", description: "Design verification", icon: ShieldCheck, color: "text-amber-500" },
+        { id: "engineering" as HubWorkspace, label: "Engineering Studio", description: "Application compilation", icon: Terminal, color: "text-amber-500" }
+      ]
+    },
+    {
+      id: "FACTORY",
+      label: "FACTORY",
+      icon: Zap,
+      color: "text-emerald-500",
+      items: [
+        { id: "factory" as HubWorkspace, label: "Digital Product Factory", description: "10-Stage active pipeline", icon: Zap, color: "text-emerald-500" },
+        { id: "job-review" as HubWorkspace, label: "Job Review Studio", description: "Review compiled builds & previews", icon: ShieldCheck, color: "text-emerald-500" },
+        { id: "provisioning" as HubWorkspace, label: "Provisioning & Deploy", description: "Deployments & instances", icon: Database, color: "text-emerald-500" }
+      ]
+    },
+    {
+      id: "ASSURANCE_OPERATIONS",
+      label: "ASSURANCE & OPERATIONS",
+      icon: Shield,
+      color: "text-purple-500",
+      items: [
+        { id: "verification" as HubWorkspace, label: "Verification & Validation", description: "Continuous integration gates", icon: Shield, color: "text-purple-500" },
+        { id: "operations" as HubWorkspace, label: "Runtime Operations", description: "Live system monitoring", icon: Activity, color: "text-purple-500" },
+        { id: "workshop" as HubWorkspace, label: "Remote Diagnostics", description: "Self-healing & repair logs", icon: Wrench, color: "text-purple-500" }
+      ]
+    },
+    {
+      id: "GOVERNANCE",
+      label: "GOVERNANCE",
+      icon: Cpu,
+      color: "text-slate-500",
+      items: [
+        { id: "control" as HubWorkspace, label: "Sovereign Control Center", description: "Zero-trust control plane", icon: Cpu, color: "text-slate-500" },
+        { id: "ai-control" as HubWorkspace, label: "AI Workforce Center", description: "Sovereign AI Workforce", icon: Bot, color: "text-slate-500" },
+        { id: "faap" as HubWorkspace, label: "Sovereign Ledger (FAAP)", description: "FAAP ledger double-entry audit", icon: Landmark, color: "text-slate-500" }
+      ]
+    }
+  ];
 
   const handleInspectorTriggerAction = (actionId: string, payload: any) => {
     console.log(`[INSPECTOR_ACTION] Intercepted in shell: ${actionId}`, payload);
@@ -570,46 +560,71 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             </div>
 
             {/* Navigation Groups */}
-            <div className="space-y-4">
-              {sidebarGroups.map((group) => (
-                <div key={group.id} className="space-y-1">
-                  {!sidebarCollapsed ? (
-                    <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest px-3 block mb-1">
-                      {group.id}
-                    </span>
-                  ) : (
-                    <div className="w-full h-px bg-slate-100 my-2"></div>
-                  )}
-
-                  {group.items.map((item) => {
-                    const isSelected = activeTab === item.id;
-                    const Icon = item.icon;
-                    return (
+            <div className="space-y-3">
+              {categories.map((group) => {
+                const isGroupExpanded = expandedCategory === group.id;
+                const GroupIcon = group.icon;
+                return (
+                  <div key={group.id} className="space-y-1">
+                    {!sidebarCollapsed ? (
                       <button
-                        key={item.id}
-                        onClick={() => navigateTo(item.id)}
-                        className={`w-full flex items-center gap-3 p-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer relative focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                          isSelected 
-                            ? "bg-slate-100 text-slate-950" 
-                            : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                        }`}
-                        title={`${item.label} (${sidebarCollapsed ? "Collapsed" : "Expanded"})`}
-                        aria-label={item.label}
+                        onClick={() => setExpandedCategory(isGroupExpanded ? null : group.id)}
+                        className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-black uppercase text-slate-400 tracking-wider hover:text-slate-700 cursor-pointer transition-colors"
                       >
-                        <Icon className={`w-4 h-4 shrink-0 ${item.color} ${isSelected ? "stroke-[2.5px]" : ""}`} />
-                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
-                        
-                        {isSelected && (
-                          <motion.div 
-                            layoutId="active-indicator"
-                            className="absolute left-0 top-1/5 bottom-1/5 w-1 bg-blue-600 rounded-r"
-                          />
-                        )}
+                        <div className="flex items-center gap-2">
+                          <GroupIcon className={`w-4 h-4 ${group.color}`} />
+                          <span>{group.label}</span>
+                        </div>
+                        <span className="text-[8px] font-bold text-slate-300">
+                          {isGroupExpanded ? "▼" : "►"}
+                        </span>
                       </button>
-                    );
-                  })}
-                </div>
-              ))}
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setSidebarCollapsed(false);
+                          setExpandedCategory(group.id);
+                        }}
+                        className="w-full flex justify-center py-2 text-slate-400 hover:text-slate-700 transition-colors"
+                        title={group.label}
+                      >
+                        <GroupIcon className={`w-5 h-5 ${group.color}`} />
+                      </button>
+                    )}
+
+                    {/* Render child items if group is expanded and sidebar is expanded */}
+                    {!sidebarCollapsed && isGroupExpanded && (
+                      <div className="pl-3 space-y-1 pt-1 border-l border-slate-100 ml-5">
+                        {group.items.map((item) => {
+                          const isSelected = activeTab === item.id;
+                          const ItemIcon = item.icon;
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => navigateTo(item.id)}
+                              className={`w-full flex items-center gap-3 p-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer relative focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                isSelected 
+                                  ? "bg-slate-100 text-slate-950" 
+                                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                              }`}
+                              title={item.description}
+                            >
+                              <ItemIcon className={`w-4 h-4 shrink-0 ${item.color} ${isSelected ? "stroke-[2.5px]" : ""}`} />
+                              <span className="truncate">{item.label}</span>
+                              {isSelected && (
+                                <motion.div 
+                                  layoutId="active-indicator"
+                                  className="absolute left-0 top-[20%] bottom-[20%] w-1 bg-blue-600 rounded-r"
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
           </div>
@@ -660,31 +675,50 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
                   </div>
 
                   <nav className="space-y-4">
-                    {sidebarGroups.map((group) => (
-                      <div key={group.id} className="space-y-1">
-                        <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider px-2 block">
-                          {group.id}
-                        </span>
-                        {group.items.map((item) => {
-                          const isSelected = activeTab === item.id;
-                          const Icon = item.icon;
-                          return (
-                            <button
-                              key={item.id}
-                              onClick={() => navigateTo(item.id)}
-                              className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-left text-xs font-bold transition-all cursor-pointer ${
-                                isSelected 
-                                  ? "bg-slate-100 text-slate-900" 
-                                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                              }`}
-                            >
-                              <Icon className={`w-4 h-4 shrink-0 ${item.color}`} />
-                              <span>{item.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ))}
+                    {categories.map((group) => {
+                      const isGroupExpanded = expandedCategory === group.id;
+                      const GroupIcon = group.icon;
+                      return (
+                        <div key={group.id} className="space-y-1">
+                          <button
+                            onClick={() => setExpandedCategory(isGroupExpanded ? null : group.id)}
+                            className="w-full flex items-center justify-between px-2 py-1.5 text-[10px] font-black uppercase text-slate-400 tracking-wider hover:text-slate-700 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <GroupIcon className={`w-3.5 h-3.5 ${group.color}`} />
+                              <span>{group.label}</span>
+                            </div>
+                            <span>{isGroupExpanded ? "▼" : "►"}</span>
+                          </button>
+                          
+                          {isGroupExpanded && (
+                            <div className="pl-3 space-y-1 pt-1 border-l border-slate-100 ml-3">
+                              {group.items.map((item) => {
+                                const isSelected = activeTab === item.id;
+                                const ItemIcon = item.icon;
+                                return (
+                                  <button
+                                    key={item.id}
+                                    onClick={() => {
+                                      navigateTo(item.id);
+                                      setMobileSidebarOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-3 p-2 rounded-xl text-left text-xs font-bold transition-all cursor-pointer ${
+                                      isSelected 
+                                        ? "bg-slate-100 text-slate-900" 
+                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                                    }`}
+                                  >
+                                    <ItemIcon className={`w-4 h-4 shrink-0 ${item.color}`} />
+                                    <span>{item.label}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </nav>
                 </div>
 

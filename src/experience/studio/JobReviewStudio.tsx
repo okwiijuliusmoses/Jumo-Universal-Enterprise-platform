@@ -89,9 +89,13 @@ export function JobReviewStudio() {
   ]);
   const [chatInput, setChatInput] = useState('');
 
-  // Rejection state
+  // Reviewer comment field
+  const [reviewerComment, setReviewerComment] = useState('');
+  
+  // Rejection & Return for correction state
   const [rejectionFeedback, setRejectionFeedback] = useState('');
   const [isRejecting, setIsRejecting] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
   const [affectedStage, setAffectedStage] = useState('01_SPECIFICATION');
   const [affectedRequirement, setAffectedRequirement] = useState('REQ-001 Sovereign Isolation');
   const [severityLevel, setSeverityLevel] = useState('CRITICAL');
@@ -113,7 +117,7 @@ export function JobReviewStudio() {
   const blueprint = selectedJob ? registry.getBlueprint(selectedJob.blueprintId || '') : null;
   const specContract = selectedJob ? (selectedJob.config?.specification || registry.getProductSpecification(selectedJob.productId)) : null;
 
-  const handleApprove = async () => {
+  const handleApproveAndContinue = async () => {
     if (!selectedJobId) return;
     const currentState = selectedJob?.currentLifecycleState || 'AWAITING_SPECIFICATION_APPROVAL';
     
@@ -123,29 +127,62 @@ export function JobReviewStudio() {
       targetState = 'ARCHITECTURE_APPROVED';
     } else if (currentState === 'AWAITING_HUMAN_ENGINEERING_APPROVAL') {
       targetState = 'ENGINEERING_APPROVED';
-    } else if (currentState === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
+    } else if (currentState === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL' || currentState === 'CERTIFICATION_AND_HUMAN_ACCEPTANCE') {
       targetState = 'MANUFACTURING_APPROVED';
     }
 
     await orchestrator.grantApproval(selectedJobId, targetState as any, 'Sovereign Reviewer Alpha');
     
+    registry.addLedgerEntry(
+      "Stage 10 Human Acceptance Granted",
+      "GOVERNANCE",
+      `Job ${selectedJobId} approved by Sovereign Reviewer Alpha. Comment: "${reviewerComment || 'No comments provided.'}"`
+    );
+
     // Publish standard approval notification
     JumoEventBus.publish('JOB_APPROVED', {
       jobId: selectedJobId,
       approver: 'Sovereign Reviewer Alpha',
       stage: currentState,
+      comment: reviewerComment,
       timestamp: new Date().toISOString()
     });
     
+    setReviewerComment('');
+    setSelectedJobId(null);
+  };
+
+  const handleReturnForCorrection = async () => {
+    if (!selectedJobId) return;
+    const commentToUse = requestedCorrection || reviewerComment || "Correction requested during Stage 10 human review.";
+    
+    JumoEventBus.publish('JOB_RETURNED_FOR_CORRECTION', {
+      jobId: selectedJobId,
+      reason: commentToUse,
+      affectedStage,
+      affectedRequirement,
+      timestamp: new Date().toISOString()
+    });
+
+    registry.addLedgerEntry(
+      "Job Returned for Correction", 
+      "GOVERNANCE", 
+      `Job ${selectedJobId} returned for correction at stage ${affectedStage}. Reason: ${commentToUse}`
+    );
+
+    setIsReturning(false);
+    setReviewerComment('');
+    setRequestedCorrection('');
     setSelectedJobId(null);
   };
 
   const handleReject = async () => {
-    if (!selectedJobId || !rejectionFeedback) return;
+    if (!selectedJobId) return;
+    const commentToUse = rejectionFeedback || reviewerComment || "Rejected during Stage 10 human review.";
     
     JumoEventBus.publish('JOB_REJECTED', {
       jobId: selectedJobId,
-      reason: rejectionFeedback,
+      reason: commentToUse,
       affectedStage,
       affectedRequirement,
       severity: severityLevel,
@@ -156,10 +193,11 @@ export function JobReviewStudio() {
     registry.addLedgerEntry(
       "Job Rejected", 
       "GOVERNANCE", 
-      `Job ${selectedJobId} rejected at stage ${affectedStage}. Severity: ${severityLevel}. Reason: ${rejectionFeedback}`
+      `Job ${selectedJobId} rejected at stage ${affectedStage}. Severity: ${severityLevel}. Reason: ${commentToUse}`
     );
 
     setIsRejecting(false);
+    setReviewerComment('');
     setRejectionFeedback('');
     setRequestedCorrection('');
     setSelectedJobId(null);
@@ -1064,26 +1102,52 @@ export function JobReviewStudio() {
               </div>
 
               {/* Action and Human Review Bar */}
-              <div className="p-4 border-t border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5 text-xs text-slate-500 font-semibold">
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>32-Stage Build Verified</span>
+              <div className="p-4 border-t border-slate-200 bg-white flex flex-col space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>STAGE 10 HUMAN ACCEPTANCE GATE</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400 font-semibold">Mandatory Reviewer Decision Required</span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                {/* Reviewer Comment Field */}
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase tracking-wider text-slate-500">
+                    Reviewer Comments / Observations (Optional for Approval, Required for Return/Reject)
+                  </label>
+                  <input
+                    type="text"
+                    value={reviewerComment}
+                    onChange={(e) => setReviewerComment(e.target.value)}
+                    placeholder="Enter compliance notes or approval context..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:ring-1 focus:ring-blue-500 font-mono"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-1">
                   <button 
                     onClick={() => setIsRejecting(true)}
-                    className="px-5 py-2.5 rounded-xl border border-rose-200 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-all flex items-center gap-2 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl border border-rose-200 bg-rose-50/50 text-rose-600 text-xs font-bold hover:bg-rose-100 transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <XCircle size={14} />
-                    Reject Job Build
+                    Reject Job
                   </button>
+
                   <button 
-                    onClick={handleApprove}
-                    className="px-7 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-lg hover:bg-slate-800 transition-all flex items-center gap-2 cursor-pointer"
+                    onClick={() => setIsReturning(true)}
+                    className="px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-bold hover:bg-amber-100 transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <AlertTriangle size={14} />
+                    Return for Correction
+                  </button>
+
+                  <button 
+                    onClick={handleApproveAndContinue}
+                    className="px-6 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-black shadow-md hover:bg-emerald-700 transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <CheckCircle2 size={14} />
-                    Verify & Release
+                    Approve & Continue
                   </button>
                 </div>
               </div>
@@ -1095,12 +1159,79 @@ export function JobReviewStudio() {
               </div>
               <div className="max-w-xs">
                 <h3 className="text-sm font-extrabold text-slate-950">Select Job for Inspection</h3>
-                <p className="text-xs text-slate-500 mt-1">Select an active manufacturing job from the left queue queue to inspect specifications, lineage, and preview the sandboxed app.</p>
+                <p className="text-xs text-slate-500 mt-1">Select an active manufacturing job from the left queue to inspect specifications, lineage, and preview the sandboxed app.</p>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Return for Correction Dialog */}
+      <AnimatePresence>
+        {isReturning && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden"
+            >
+              <div className="p-5 bg-amber-50 border-b border-amber-200 flex items-center gap-3">
+                <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-amber-600 shadow-sm border border-amber-200">
+                  <AlertTriangle size={18} />
+                </div>
+                <div>
+                  <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wide">Return for Correction</h3>
+                  <p className="text-[10px] text-amber-700 font-bold uppercase tracking-widest">Routing back to Architecture & Engineering Teams</p>
+                </div>
+              </div>
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase text-slate-700 tracking-wider">Affected Stage</label>
+                  <select 
+                    value={affectedStage}
+                    onChange={(e) => setAffectedStage(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[11px] outline-none"
+                  >
+                    <option>02_ARCHITECTURE</option>
+                    <option>03_ENGINEERING</option>
+                    <option>01_SPECIFICATION</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase text-slate-700 tracking-wider">Required Corrections & Instructions</label>
+                  <textarea 
+                    rows={4}
+                    value={requestedCorrection || reviewerComment}
+                    onChange={(e) => setRequestedCorrection(e.target.value)}
+                    placeholder="Specify necessary fixes for the engineering & architecture team..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-[11px] outline-none resize-none transition-all font-mono"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center gap-4">
+                  <button 
+                    onClick={() => {
+                      setIsReturning(false);
+                      setRequestedCorrection('');
+                    }}
+                    className="flex-1 py-2 rounded-xl border border-slate-200 text-slate-500 text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={handleReturnForCorrection}
+                    className="flex-1 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold shadow-lg hover:bg-amber-700 transition-all cursor-pointer"
+                  >
+                    Submit Return
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Rejection Workflow Overlay Dialog */}
       <AnimatePresence>
