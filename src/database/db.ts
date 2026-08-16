@@ -21,10 +21,10 @@ if (!isBrowser) {
 
 const getDBFilePath = () => {
   try {
-    if (!isBrowser && typeof process !== "undefined" && typeof process.cwd === "function" && nodePath) {
+    if (!isBrowser && nodePath && typeof process !== "undefined" && typeof process.cwd === "function") {
       return nodePath.join(process.cwd(), "assets", "ueos_database.json");
     }
-  } catch {
+  } catch (e) {
     // fallback
   }
   return "assets/ueos_database.json";

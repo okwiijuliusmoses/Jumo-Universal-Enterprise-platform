@@ -17,6 +17,7 @@ export interface SystemConfig {
   };
   geminiApiKey?: string;
   secureEncryptionKey: string;
+  sovereignInferenceEndpoint?: string;
 }
 
 export class ConfigService {
@@ -57,6 +58,7 @@ export class ConfigService {
     }
 
     const geminiApiKey = vault.getGeminiKey();
+    const sovereignInferenceEndpoint = process.env.JUMO_SOVEREIGN_INFERENCE_ENDPOINT;
 
     return {
       nodeEnv,
@@ -71,7 +73,8 @@ export class ConfigService {
         ssl: process.env.PGSSL === "true" || nodeEnv === "production"
       },
       geminiApiKey,
-      secureEncryptionKey
+      secureEncryptionKey,
+      sovereignInferenceEndpoint
     };
   }
 

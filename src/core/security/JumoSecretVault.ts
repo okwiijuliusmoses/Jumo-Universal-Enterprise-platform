@@ -247,7 +247,13 @@ export class JumoSecretVault {
 
   public getRepositoryRoot(): string {
     const path = require("path");
-    return process.env.JUMO_REPOSITORY_ROOT || path.resolve(process.cwd());
+    try {
+      if (typeof process !== "undefined" && typeof process.cwd === "function") {
+        const cwd = process.cwd();
+        return (process.env && process.env.JUMO_REPOSITORY_ROOT) || path.resolve(cwd);
+      }
+    } catch (e) {}
+    return (typeof process !== "undefined" && process.env && process.env.JUMO_REPOSITORY_ROOT) || "/";
   }
 
   public getArchitectureExpansionLevel(): "MIN" | "BALANCED" | "MAX" {

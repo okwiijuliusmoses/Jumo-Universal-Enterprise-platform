@@ -9,6 +9,7 @@ import { JumoAIGatewayEngine } from "../JumoAIGatewayEngine";
 import { AgentExecutionService } from "../execution/AgentExecutionService";
 import { AIAgentRecord, AIWorkforceDivision } from "../types/JumoAITypes";
 import { JumoSecretVault } from "../../security/JumoSecretVault";
+import { configService } from "../../../config/configService";
 
 export interface ProviderReadinessRecord {
   providerId: string;
@@ -27,6 +28,7 @@ export interface RuntimeReadinessRecord {
   endpoint: string;
   details: string;
   latencyMs?: number;
+  capability: 'MODEL_EXECUTABLE' | 'DETERMINISTIC_FALLBACK_CAPABLE' | 'UNAVAILABLE';
 }
 
 export interface ModelReadinessRecord {
@@ -50,6 +52,7 @@ export interface AgentReadinessRecord {
   activeExecutionProvider: string;
   fallbackStatus: 'ACTIVE' | 'NOT_REQUIRED' | 'FORBIDDEN' | 'FAILED';
   agentOperationality: 'OPERATIONAL' | 'DEGRADED' | 'BLOCKED';
+  capability: 'MODEL_EXECUTABLE' | 'DETERMINISTIC_FALLBACK_CAPABLE' | 'UNAVAILABLE';
 }
 
 export interface CognitiveFamilyReadinessRecord {
@@ -237,16 +240,19 @@ export class AIWorkforceReadinessService {
     const adapter = LocalInferenceAdapter.getInstance();
     const discovery = await adapter.discoverRuntime();
 
-    // Probe 1: Olla HTTP Daemon (Port 11434 / local process)
-    const ollaReachable = discovery.reachable && discovery.endpoint.includes('11434');
+    const configuredEndpoint = configService.get("sovereignInferenceEndpoint");
+    
+    // Probe 1: Olla HTTP Daemon
+    const ollaReachable = !!configuredEndpoint && discovery.reachable && discovery.endpoint === configuredEndpoint;
     const ollaRecord: RuntimeReadinessRecord = {
       runtimeId: 'JUMO_LOCAL_OLLA',
-      displayName: 'Olla / Ollama Native HTTP Daemon (127.0.0.1:11434)',
+      displayName: `Olla / Ollama Native HTTP Daemon (${configuredEndpoint || 'NOT_CONFIGURED'})`,
       status: ollaReachable ? 'OPERATIONAL' : 'UNAVAILABLE',
-      endpoint: 'http://127.0.0.1:11434',
+      endpoint: configuredEndpoint || 'NOT_CONFIGURED',
       details: ollaReachable 
-        ? 'Olla HTTP daemon active and responding on port 11434.' 
-        : 'Olla daemon unreachable at 127.0.0.1:11434. Port 3000 is occupied by JUMO Web App Server.'
+        ? 'Olla HTTP daemon active and responding.' 
+        : (configuredEndpoint ? 'Olla daemon unreachable at configured endpoint.' : 'Sovereign inference endpoint not configured.'),
+      capability: ollaReachable ? 'MODEL_EXECUTABLE' : 'UNAVAILABLE'
     };
 
     // Probe 2: Air-Gapped Sovereign Fallback Container
@@ -255,7 +261,8 @@ export class AIWorkforceReadinessService {
       displayName: 'JUMO Air-Gapped Sovereign Container Engine',
       status: 'OPERATIONAL',
       endpoint: 'in-process://sovereign-air-gapped-container',
-      details: 'Air-gapped sovereign container runtime operational with full offline schema verification capabilities.'
+      details: 'Air-gapped sovereign container runtime operational with full offline schema verification capabilities.',
+      capability: 'DETERMINISTIC_FALLBACK_CAPABLE'
     };
 
     // Probe 3: Cloud Gateway Router Runtime
@@ -306,9 +313,9 @@ export class AIWorkforceReadinessService {
       
       let prefStatus: 'CONFIGURED' | 'NOT_CONFIGURED' | 'DEGRADED' | 'UNAVAILABLE' = 'UNAVAILABLE';
       if (provRecord) {
-        if (provRecord.status === 'HEALTHY' || provRecord.status === 'OPERATIONAL') prefStatus = 'CONFIGURED';
+        if (provRecord.status === 'OPERATIONAL' || provRecord.status === 'DEGRADED') prefStatus = 'CONFIGURED';
         else if (provRecord.status === 'NOT_CONFIGURED') prefStatus = 'NOT_CONFIGURED';
-        else if (provRecord.status === 'DEGRADED') prefStatus = 'DEGRADED';
+        else if (provRecord.status === 'UNAVAILABLE') prefStatus = 'UNAVAILABLE';
       }
 
       let activeProvider = mappedProvId;
@@ -330,7 +337,7 @@ export class AIWorkforceReadinessService {
 
       records.push({
         agentId: agent.agentId,
-        agentName: agent.data?.displayName || agent.name || agent.role,
+        agentName: agent.data?.displayName || agent.jumoName || agent.role,
         division: agent.division,
         role: agent.role,
         specialization: agent.specialization,
@@ -339,7 +346,8 @@ export class AIWorkforceReadinessService {
         preferredProviderStatus: prefStatus,
         activeExecutionProvider: activeProvider,
         fallbackStatus,
-        agentOperationality: agentOp
+        agentOperationality: agentOp,
+        capability: prefStatus === 'CONFIGURED' ? 'MODEL_EXECUTABLE' : 'DETERMINISTIC_FALLBACK_CAPABLE'
       });
     }
 

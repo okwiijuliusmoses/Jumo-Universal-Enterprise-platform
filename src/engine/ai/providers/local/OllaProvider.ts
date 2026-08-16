@@ -1,5 +1,5 @@
 import { JumoModelRegistry, JumoModelDefinition } from "../../../../core/registry/JumoModelRegistry";
-import { JumoSecretVault } from "../../../../core/security/JumoSecretVault";
+import { configService } from "../../../../core/config/configService";
 import {
   JumoAIProvider,
   JumoAIRequest,
@@ -49,7 +49,7 @@ export class OllaProvider implements JumoAIProvider {
   readonly displayName = "Omalla Local AI Sovereign Engine (Olla)";
   readonly local = true;
 
-  private endpointUrl: string = "http://127.0.0.1:3000";
+  private endpointUrl: string = "";
   private discoveredModels: OllaDiscoveredModel[] = [];
   private currentState: OllaRuntimeState = 'PROVIDER_REGISTERED';
   private diagnostics: OllaDiagnosticsReport = {
@@ -60,7 +60,7 @@ export class OllaProvider implements JumoAIProvider {
     lastError: null,
     requestCount: 0,
     activeJobsCount: 0,
-    resolvedEndpoint: "http://127.0.0.1:3000",
+    resolvedEndpoint: "",
     discoveredModelCount: 0,
   };
 
@@ -69,15 +69,14 @@ export class OllaProvider implements JumoAIProvider {
   }
 
   /**
-   * Resolves endpoint dynamically from system environment or Secret Vault or fallback chain
+   * Resolves endpoint dynamically from system environment or configuration
    */
   private resolveEndpoint(): string {
-    const configured = JumoSecretVault.getKey("OMALLA_ENDPOINT") || JumoSecretVault.getKey("OLLA_ENDPOINT");
+    const configured = configService.get("sovereignInferenceEndpoint");
     if (configured) {
       this.endpointUrl = configured;
     } else {
-      // Default fallback probe order
-      this.endpointUrl = "http://127.0.0.1:3000";
+      this.endpointUrl = ""; // No default, must be explicitly configured
     }
     this.diagnostics.resolvedEndpoint = this.endpointUrl;
     return this.endpointUrl;
@@ -113,14 +112,8 @@ export class OllaProvider implements JumoAIProvider {
       // State 2: Runtime Discovered
       this.currentState = 'RUNTIME_DISCOVERED';
 
-      // Probe endpoints order: configured endpoint, then local dev server port 3000, then Ollama default 11434
-      const candidateEndpoints = Array.from(new Set([
-        this.endpointUrl,
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:11434",
-        "http://localhost:11434",
-        "" // relative path for in-browser Express proxy
-      ]));
+      // Probe endpoints order: only configured endpoint if present
+      const candidateEndpoints = this.endpointUrl ? [this.endpointUrl] : [];
 
       let reachableEndpoint: string | null = null;
 
@@ -409,10 +402,7 @@ export class OllaProvider implements JumoAIProvider {
         },
       };
 
-      const generateUrls = [
-        this.endpointUrl ? `${this.endpointUrl}/api/generate` : '/api/generate',
-        '/api/generate'
-      ];
+      const generateUrls = this.endpointUrl ? [`${this.endpointUrl}/api/generate`] : [];
 
       let responseText = "";
       let totalTokens = 50;
@@ -496,24 +486,18 @@ export class OllaProvider implements JumoAIProvider {
       this.diagnostics.activeJobsCount = Math.max(0, this.diagnostics.activeJobsCount - 1);
       this.diagnostics.lastError = err.message;
       
-      let agentRole = "General Execution Agent";
-      const roleMatch = systemPrompt.match(/Agent Role:\s*(.+)/i);
-      if (roleMatch) agentRole = roleMatch[1].split('\\n')[0].trim();
-      
-      const fallbackText = `[SOVEREIGN LOCAL ENGINE RESPONDING] System executed air-gapped reasoning.\n\nContext Note: Local Olla daemon at ${this.endpointUrl} reported: ${err.message}. Air-gapped fallback container executed reasoning successfully to preserve manufacturing continuity.\n\nResult: System constraints, schemas, and specifications verified under sovereign offline security policy.\n\n[SIMULATED FALLBACK EXECUTION FOR ${agentRole}]\nProcessed requirements and generated structural definitions for the requested component successfully.`;
-      
       return {
-        text: fallbackText,
+        text: `[DETERMINISTIC CONTINUITY FALLBACK] Inference engine at ${this.endpointUrl} is unreachable (${err.message}). Structural continuity maintained.`,
         modelId: modelId,
         providerId: this.providerId,
-        reasoning: true,
-        usage: { totalTokens: 100 },
+        reasoning: false,
+        usage: { totalTokens: 60 },
         metadata: {
           latencyMs: Date.now() - start,
-          engineType: "OMALLA_OLLA_FALLBACK",
+          engineType: "DETERMINISTIC_CONTINUITY_FALLBACK",
           error: err.message,
         },
-        trace: [`Sovereign local engine execution completed via air-gapped container: ${err.message}`],
+        trace: [`Deterministic fallback executed due to unreachable engine: ${err.message}`],
       };
     }
   }

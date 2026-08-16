@@ -1,0 +1,19 @@
+services:
+  jumo-ueos:
+    build: .
+    environment:
+      - JUMO_SOVEREIGN_INFERENCE_ENDPOINT=http://ollama:11434
+    depends_on:
+      - ollama
+    ports:
+      - "3000:3000"
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:

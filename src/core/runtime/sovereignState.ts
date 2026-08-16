@@ -94,9 +94,14 @@ export type {
 
 
 
-const STATE_FILE_PATH = (!isBrowser && nodePath && typeof process !== "undefined" && typeof process.cwd === "function") 
-  ? nodePath.join(process.cwd(), "sovereign-state.json") 
-  : "sovereign-state.json";
+const STATE_FILE_PATH = (() => {
+  try {
+    if (!isBrowser && nodePath && typeof process !== "undefined" && typeof process.cwd === "function") {
+      return nodePath.join(process.cwd(), "sovereign-state.json");
+    }
+  } catch (e) {}
+  return "sovereign-state.json";
+})();
 
 
 export class SovereignOperatingStateService {

@@ -127,7 +127,7 @@ export function JobReviewStudio() {
       targetState = 'ARCHITECTURE_APPROVED';
     } else if (currentState === 'AWAITING_HUMAN_ENGINEERING_APPROVAL') {
       targetState = 'ENGINEERING_APPROVED';
-    } else if (currentState === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL' || currentState === 'CERTIFICATION_AND_HUMAN_ACCEPTANCE') {
+    } else if (currentState === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
       targetState = 'MANUFACTURING_APPROVED';
     }
 

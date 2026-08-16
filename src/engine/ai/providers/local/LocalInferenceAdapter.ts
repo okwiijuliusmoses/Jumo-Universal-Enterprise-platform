@@ -1,5 +1,5 @@
 import { JumoModelRegistry, JumoModelDefinition } from "../../../../core/registry/JumoModelRegistry";
-import { JumoSecretVault } from "../../../../core/security/JumoSecretVault";
+import { configService } from "../../../../core/config/configService";
 
 export type LocalRuntimeState =
   | 'PROVIDER_REGISTERED'
@@ -52,17 +52,12 @@ export interface NormalizedLocalInferenceError {
 
 export class LocalInferenceAdapter {
   private static instance: LocalInferenceAdapter;
-  private primaryEndpoint: string = "http://127.0.0.1:3000";
+  private primaryEndpoint: string = "";
   private currentState: LocalRuntimeState = 'PROVIDER_REGISTERED';
   private cachedModels: LocalDiscoveredModel[] = [];
   private lastHealthResult: LocalInferenceHealthResult | null = null;
 
-  private candidateEndpoints: string[] = [
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:11434",
-    "http://localhost:11434",
-    ""
-  ];
+  private candidateEndpoints: string[] = [];
 
   public static getInstance(): LocalInferenceAdapter {
     if (!LocalInferenceAdapter.instance) {
@@ -76,15 +71,16 @@ export class LocalInferenceAdapter {
   }
 
   /**
-   * Resolves endpoint dynamically from system vault or environment
+   * Resolves endpoint dynamically from configuration
    */
   public resolveConfiguredEndpoint(): string {
-    const vaultKey = JumoSecretVault.getKey("OMALLA_ENDPOINT") || JumoSecretVault.getKey("OLLA_ENDPOINT");
-    if (vaultKey) {
-      this.primaryEndpoint = vaultKey;
-      if (!this.candidateEndpoints.includes(vaultKey)) {
-        this.candidateEndpoints.unshift(vaultKey);
-      }
+    const configured = configService.get("sovereignInferenceEndpoint");
+    if (configured) {
+      this.primaryEndpoint = configured;
+      this.candidateEndpoints = [configured];
+    } else {
+      this.primaryEndpoint = "";
+      this.candidateEndpoints = [];
     }
     return this.primaryEndpoint;
   }
@@ -246,14 +242,30 @@ export class LocalInferenceAdapter {
         modelId: m.modelId,
         displayName: m.modelName,
         providerId: "JUMO_LOCAL",
-        family: m.family,
+        // family removed
         parameterSize: m.parameterSize,
         contextLength: m.contextLength,
         capabilities: m.capabilities as any,
         costPer1kInputTokens: 0,
         costPer1kOutputTokens: 0,
-        localOnly: true,
-        sovereignTier: "TIER_0_AIR_GAPPED",
+        local: true,
+        deploymentType: 'LOCAL',
+        securityClassification: 'SECRET',
+        status: 'AVAILABLE',
+        reasoning: m.capabilities.includes('reasoning'),
+        coding: m.capabilities.includes('coding'),
+        architecture: false,
+        analysis: true,
+        multimodal: false,
+        toolCalling: m.capabilities.includes('tool-calling'),
+        structuredOutput: m.capabilities.includes('structured-output'),
+        streaming: true,
+        contextLength: m.contextLength,
+        maxOutputTokens: 4096,
+        costTier: 'ZERO_LOCAL',
+        latencyTier: 'FAST',
+        recommendedTasks: [],
+        purpose: 'Discovered local model',
         digest: m.digest,
       };
       JumoModelRegistry.registerModel(canonicalDef);
@@ -515,17 +527,16 @@ export class LocalInferenceAdapter {
       // Handled by air-gapped container fallback
     }
 
-    // Air-gapped container fallback
-    let agentRole = "General Execution Agent";
-    const roleMatch = systemPrompt?.match(/Agent Role:\s*(.+)/i);
-    if (roleMatch) agentRole = roleMatch[1].split('\\n')[0].trim();
-    
-    const fallbackText = `[SOVEREIGN LOCAL ENGINE RESPONDING]\nExecuted air-gapped local reasoning under sovereign security container.\n\nResult: System constraints, schemas, and specifications verified under local offline policy.\n\n[SIMULATED FALLBACK EXECUTION FOR ${agentRole}]\nProcessed requirements and successfully generated structural blueprint definitions.`;
+    // Deterministic continuity fallback
     return {
-      text: fallbackText,
+      text: "[DETERMINISTIC CONTINUITY FALLBACK] Inference engine is unreachable. Structural continuity maintained.",
       latencyMs: Date.now() - start,
       tokens: 60,
-      error: "Air-gapped fallback executed.",
+      error: "DETERMINISTIC_CONTINUITY_FALLBACK",
+      metadata: {
+        reasoning: false,
+        executionType: "DETERMINISTIC_CONTINUITY_FALLBACK"
+      }
     };
   }
 
