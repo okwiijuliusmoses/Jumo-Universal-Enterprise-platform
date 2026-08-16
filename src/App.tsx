@@ -5,7 +5,7 @@ import { UEOSErrorBoundary } from "./experience/components/UEOSErrorBoundary";
 
 export default function App() {
   useEffect(() => {
-    console.log('[JUMO BOOT 06] UEOS App render requested');
+    console.log('[JUMO BOOT 06] UEOS App render requested - Recovery Build verified');
   }, []);
 
   const [currentUser, setCurrentUser] = useState<any>(() => {

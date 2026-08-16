@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { SovereignOperatingStateService } from "./src/core/runtime/sovereignState";
 import { JumoInstitutionalDomainEngine } from "./src/core/tenant/JumoInstitutionalDomainEngine";
 import { JumoAIGatewayEngine } from "./src/core/ai/JumoAIGatewayEngine";
@@ -1759,7 +1760,25 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
+    let distPath = typeof process !== 'undefined' && typeof process.cwd === 'function' ? path.join(process.cwd(), 'dist') : 'dist';
+    try {
+      const candidates = [
+        distPath,
+        typeof __dirname !== 'undefined' ? __dirname : '',
+        typeof __dirname !== 'undefined' ? path.join(__dirname, 'dist') : '',
+        typeof process !== 'undefined' && typeof process.cwd === 'function' ? process.cwd() : '',
+      ].filter(Boolean);
+
+      for (const candidate of candidates) {
+        if (candidate && fs.existsSync(path.join(candidate, 'index.html'))) {
+          distPath = candidate;
+          break;
+        }
+      }
+    } catch (e) {
+      // Keep default distPath
+    }
+
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));

@@ -246,8 +246,14 @@ export class JumoSecretVault {
   }
 
   public getRepositoryRoot(): string {
-    const path = require("path");
+    // If running in a browser environment, return a safe default.
+    if (typeof window !== "undefined") {
+      return "/";
+    }
+
+    // Node-only environment
     try {
+      const path = require("path");
       if (typeof process !== "undefined" && typeof process.cwd === "function") {
         const cwd = process.cwd();
         return (process.env && process.env.JUMO_REPOSITORY_ROOT) || path.resolve(cwd);
