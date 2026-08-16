@@ -244,7 +244,6 @@ export class LocalInferenceAdapter {
         providerId: "JUMO_LOCAL",
         // family removed
         parameterSize: m.parameterSize,
-        contextLength: m.contextLength,
         capabilities: m.capabilities as any,
         costPer1kInputTokens: 0,
         costPer1kOutputTokens: 0,
