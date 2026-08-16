@@ -106,6 +106,22 @@ export class JumoSecretVault {
   // SECRETS ACCESSORS (NEVER exposed to Client)
   // ==========================================
 
+  public static getKey(keyName: string): string {
+    return (process.env[keyName] || process.env[`JUMO_${keyName}`] || "").trim();
+  }
+
+  public static hasKey(keyName: string): boolean {
+    return Boolean(this.getKey(keyName));
+  }
+
+  public getKey(keyName: string): string {
+    return JumoSecretVault.getKey(keyName);
+  }
+
+  public hasKey(keyName: string): boolean {
+    return JumoSecretVault.hasKey(keyName);
+  }
+
   public getOpenAIKey(): string {
     return (process.env.JUMO_OPENAI_API_KEY || process.env.OPENAI_API_KEY || "").trim();
   }

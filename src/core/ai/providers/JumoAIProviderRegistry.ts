@@ -43,8 +43,23 @@ export class JumoAIProviderRegistry {
 
   private normalizeKey(key: string): string {
     const cleaned = (key || '').trim().toUpperCase().replace(/[-_]/g, '');
-    if (cleaned === 'JUMOLOCAL' || cleaned === 'OLLALOCAL' || cleaned === 'LOCAL' || cleaned === 'JUMO') {
+    if (cleaned === 'JUMOLOCAL' || cleaned === 'OLLALOCAL' || cleaned === 'LOCAL' || cleaned === 'JUMO' || cleaned === 'OLLA') {
       return 'JUMO_LOCAL';
+    }
+    if (cleaned.includes('ANTHROPIC') || cleaned.includes('CLAUDE')) {
+      return 'ANTHROPIC';
+    }
+    if (cleaned.includes('CODEX')) {
+      return 'CODEX';
+    }
+    if (cleaned.includes('COPILOT')) {
+      return 'COPILOT';
+    }
+    if (cleaned.includes('OPENAI')) {
+      return 'OPENAI';
+    }
+    if (cleaned.includes('GEMINI') || cleaned.includes('GENAI') || cleaned === 'GOOGLE') {
+      return 'GEMINI';
     }
     return cleaned;
   }

@@ -108,11 +108,11 @@ export class JumoAIProviderGateway {
       trace.push(`[GATEWAY] Running in AIR-GAP mode. Bypassing external model backends.`);
     } else {
       const preferred = agent.modelPolicy.preferredProvider;
-      const hasPreferred = healthyProviders.find(p => p.providerId === preferred);
+      const hasPreferred = healthyProviders.find(p => p.providerId === preferred || (registry as any).normalizeKey?.(p.providerId) === (registry as any).normalizeKey?.(preferred));
       
       if (hasPreferred) {
-        targetProviderId = preferred;
-        trace.push(`[GATEWAY] Using agent-preferred provider: ${preferred}`);
+        targetProviderId = hasPreferred.providerId;
+        trace.push(`[GATEWAY] Using agent-preferred provider: ${hasPreferred.providerId}`);
       } else {
         // Fallback to highest priority available (external first)
         const externalHealthy = healthyProviders.filter(p => !p.local);

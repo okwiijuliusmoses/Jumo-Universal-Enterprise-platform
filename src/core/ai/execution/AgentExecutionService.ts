@@ -184,7 +184,11 @@ TASK: ${request.task}`;
 
     if (agent.division === 'SOFTWARE_ENGINEERING' && request.jobId) {
       // Agent is generating artifacts
-      SovereignOperatingStateService.recordBuildArtifact(request.jobId, hash, output.length, actor);
+      try {
+        SovereignOperatingStateService.recordBuildArtifact(request.jobId, hash, output.length, actor);
+      } catch {
+        SovereignOperatingStateService.logAudit(actor, "SOFTWARE_ARTIFACT_GENERATED", `Agent ${agent.jumoName} generated build artifact for job ${request.jobId}`);
+      }
     }
 
     if (agent.division === 'SECURITY_AEGIS' && request.jobId) {
