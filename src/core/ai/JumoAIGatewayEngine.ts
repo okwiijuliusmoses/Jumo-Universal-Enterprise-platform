@@ -84,10 +84,26 @@ export class JumoAIGatewayEngine {
       const prov = gateway.registeredProviders.find(p => p.providerId === provId);
       const quota = quotas.find(q => q.providerId === provId);
 
-      const isQuotaExhausted = quota ? quota.isExhausted : false;
-      const isAvailable = prov ? (prov.status === 'HEALTHY' || prov.status === 'DEGRADED') && prov.isAvailable : false;
+      // Perform live health check from registry to avoid stale static status
+      let liveStatus = prov?.status || 'UNAVAILABLE';
+      let isLiveAvailable = prov?.isAvailable || false;
+      try {
+        const { JumoAIProviderRegistry } = await import("./providers/JumoAIProviderRegistry");
+        const realProv = JumoAIProviderRegistry.getInstance().get(provId);
+        const health = await realProv.getHealth();
+        liveStatus = health.status;
+        isLiveAvailable = health.status === 'HEALTHY' || health.status === 'DEGRADED';
+        if (prov) {
+          prov.status = liveStatus as any;
+          prov.isAvailable = isLiveAvailable;
+        }
+      } catch {
+        // Fallback to recorded state if registry lookup fails
+      }
 
-      if (isAvailable && !isQuotaExhausted) {
+      const isQuotaExhausted = quota ? quota.isExhausted : false;
+
+      if (isLiveAvailable && !isQuotaExhausted) {
         selectedProvider = prov || null;
         if (provId === 'jumo_local' && req.preferredProvider && req.preferredProvider !== 'jumo_local') {
           fallbackTriggered = true;

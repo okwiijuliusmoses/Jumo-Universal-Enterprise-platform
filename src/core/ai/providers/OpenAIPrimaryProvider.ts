@@ -31,11 +31,11 @@ export class OpenAIPrimaryProvider implements JumoAIProvider {
     return Boolean(this.getClient());
   }
 
-  async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE"; latencyMs?: number; details?: string }> {
+  async getHealth(): Promise<{ status: "HEALTHY" | "DEGRADED" | "UNAVAILABLE" | "NOT_CONFIGURED"; latencyMs?: number; details?: string }> {
     const available = await this.isAvailable();
     return {
-      status: available ? "HEALTHY" : "UNAVAILABLE",
-      details: available ? "OpenAI API key configured" : "OpenAI API key missing"
+      status: available ? "HEALTHY" : "NOT_CONFIGURED",
+      details: available ? "OpenAI API key configured" : "OpenAI API key missing (JUMO_OPENAI_API_KEY)"
     };
   }
 

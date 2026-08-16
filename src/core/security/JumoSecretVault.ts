@@ -107,15 +107,15 @@ export class JumoSecretVault {
   // ==========================================
 
   public getOpenAIKey(): string {
-    return process.env.JUMO_OPENAI_API_KEY || "";
+    return (process.env.JUMO_OPENAI_API_KEY || process.env.OPENAI_API_KEY || "").trim();
   }
 
   public getGeminiKey(): string {
-    return process.env.JUMO_GEMINI_API_KEY || "";
+    return (process.env.JUMO_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "").trim();
   }
 
   public getCopilotKey(): string {
-    return process.env.JUMO_COPILOT_API_KEY || "";
+    return (process.env.JUMO_COPILOT_API_KEY || process.env.COPILOT_API_KEY || "").trim();
   }
 
   public getSecretEncryptionKey(): string {

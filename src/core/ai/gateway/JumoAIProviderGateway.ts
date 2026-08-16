@@ -298,20 +298,55 @@ We have executed the requested system tasks under the secure local isolation con
       targetProviderId = vault.getOpenAIKey() ? "OPENAI" : (vault.getGeminiKey() ? "GEMINI" : "jumo_local");
     }
 
-    const provider = registry.get(targetProviderId);
+    let provider = registry.get(targetProviderId);
     
-    const result = await provider.generate({
-      message: request.message,
-      systemPrompt: request.systemPrompt,
-      modelId: request.modelId,
-      temperature: request.temperature,
-      context: request.context
-    });
-    
-    return {
-      text: result.text,
-      modelId: result.modelId || request.modelId || "omalla-llama-3-8b",
-      providerId: targetProviderId
-    };
+    // Check dynamic health status of target provider
+    try {
+      const health = await provider.getHealth();
+      if (health.status !== "HEALTHY" && health.status !== "DEGRADED" && targetProviderId !== "jumo_local") {
+        console.warn(`[GATEWAY] Target provider ${targetProviderId} health is ${health.status} (${health.details}). Falling back to jumo_local.`);
+        provider = registry.get("jumo_local");
+        targetProviderId = "jumo_local";
+      }
+    } catch {
+      if (targetProviderId !== "jumo_local") {
+        provider = registry.get("jumo_local");
+        targetProviderId = "jumo_local";
+      }
+    }
+
+    try {
+      const result = await provider.generate({
+        message: request.message,
+        systemPrompt: request.systemPrompt,
+        modelId: request.modelId,
+        temperature: request.temperature,
+        context: request.context
+      });
+      
+      return {
+        text: result.text,
+        modelId: result.modelId || request.modelId || "omalla-llama-3-8b",
+        providerId: targetProviderId
+      };
+    } catch (err: any) {
+      if (targetProviderId !== "jumo_local") {
+        console.warn(`[GATEWAY] Primary provider ${targetProviderId} execution failed: ${err.message}. Triggering local fallback.`);
+        const localProvider = registry.get("jumo_local");
+        const localResult = await localProvider.generate({
+          message: request.message,
+          systemPrompt: request.systemPrompt,
+          modelId: request.modelId,
+          temperature: request.temperature,
+          context: request.context
+        });
+        return {
+          text: localResult.text,
+          modelId: localResult.modelId || "omalla-llama-3-8b",
+          providerId: "jumo_local"
+        };
+      }
+      throw err;
+    }
   }
 }
