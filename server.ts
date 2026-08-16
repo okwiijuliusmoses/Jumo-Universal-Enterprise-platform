@@ -1626,6 +1626,40 @@ async function startServer() {
     }
   });
 
+  // AI Cognitive Fabric Control Plane Index
+  // Explicitly claim the AI namespace root before the namespace catch-all.
+  // This is a read-only discovery endpoint and does not execute AI work.
+  app.get("/api/v1/ueos/ai", (req, res) => {
+    try {
+      const models = JumoModelRegistry.getAllModels();
+
+      res.json({
+        service: "JUMO UEOS AI Control Plane",
+        status: "operational",
+        namespace: "/api/v1/ueos/ai",
+        registry: {
+          modelCount: models.length,
+          authoritative: true
+        },
+        endpoints: [
+          "/api/v1/ueos/ai/models",
+          "/api/v1/ueos/ai/telemetry",
+          "/api/v1/ueos/ai/reasoning",
+          "/api/v1/ueos/ai/jumo-gpt/execute-intelligence",
+          "/api/v1/ueos/ai/codex/plan",
+          "/api/v1/ueos/ai/capability-router/rules",
+          "/api/v1/ueos/ai/capability-router/execute"
+        ],
+        timestamp: new Date().toISOString()
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        error: err.message,
+        code: "AI_CONTROL_PLANE_INDEX_FAILED"
+      });
+    }
+  });
+
   // AI Cognitive Fabric Telemetry & JUMO GPT Operating Intelligence Endpoints
   app.get("/api/v1/ueos/ai/telemetry", (req, res) => {
     try {
