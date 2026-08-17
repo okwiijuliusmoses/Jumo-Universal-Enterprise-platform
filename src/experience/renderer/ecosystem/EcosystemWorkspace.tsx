@@ -6,9 +6,11 @@ import {
 import { DigitalEcosystemSpecificationForm, EcosystemSpecification } from '../specification/DigitalEcosystemSpecificationForm';
 import { useSovereignState } from '../../../hooks/useSovereignState';
 import { JumoSpecificationCompiler } from '../../../core/specification/JumoSpecificationCompiler';
+import { EcosystemRegistry } from '../../../core/registry/EcosystemRegistry';
+import { ProductRegistry } from '../../../core/registry/ProductRegistry';
 
 interface EcosystemWorkspaceProps {
-  ecosystemId: 'eco-erp' | 'eco-cloud' | 'eco-software' | 'eco-commercial' | 'eco-research';
+  ecosystemId: string;
   onNavigate?: (ws: any) => void;
   onGenerateArchitectureContract?: (spec: any) => Promise<void>;
 }
@@ -17,40 +19,31 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
   const [activeTab, setActiveTab] = useState<'registry' | 'queue' | 'specifications' | 'architecture' | 'qa' | 'audit'>('registry');
   const { state } = useSovereignState();
 
-  const getEcoData = () => {
-    switch (ecosystemId) {
-      case 'eco-erp': return { label: 'ERP Ecosystem', icon: Box, color: 'text-blue-600', bg: 'bg-blue-100', category: 'ERP_ECOSYSTEM' };
-      case 'eco-cloud': return { label: 'JUMO Cloud Ecosystem', icon: Cloud, color: 'text-cyan-600', bg: 'bg-cyan-100', category: 'JUMO_CLOUD_ECOSYSTEM' };
-      case 'eco-software': return { label: 'Software Ecosystem', icon: Terminal, color: 'text-purple-600', bg: 'bg-purple-100', category: 'SOFTWARE_ECOSYSTEM' };
-      case 'eco-commercial': return { label: 'Commercial Products Ecosystem', icon: Briefcase, color: 'text-orange-600', bg: 'bg-orange-100', category: 'COMMERCIAL_PRODUCTS_ECOSYSTEM' };
-      case 'eco-research': return { label: 'Research & Innovation Ecosystem', icon: FlaskConical, color: 'text-pink-600', bg: 'bg-pink-100', category: 'RESEARCH_INNOVATION_ECOSYSTEM' };
-    }
+  const ecoRegistry = EcosystemRegistry.getInstance();
+  const prodRegistry = ProductRegistry.getInstance();
+  const ecosystem = ecoRegistry.getEcosystem(ecosystemId) || {
+    id: ecosystemId, name: 'Unknown Ecosystem', domain: 'Unknown', capabilities: []
   };
 
-  const { label, icon: Icon, color, bg, category } = getEcoData();
+  const label = ecosystem.name;
+  const Icon = Box;
+  const color = 'text-blue-600';
+  const bg = 'bg-blue-100';
 
-  // Registry Filter
-  const registryRecords = state?.assets.filter(a => a.type === category) || [];
+  const products = prodRegistry.getProductsByEcosystem(ecosystemId);
 
-  const quickTemplates = [
-    { id: 'milk', name: 'Milk Hub ERP', icon: Box, description: 'Dairy collection, processing & sales' },
-    { id: 'coffee', name: 'Coffee Hub ERP', icon: Layers, description: 'Coffee washing, drying & export' },
-    { id: 'sacco', name: 'SACCO Hub ERP', icon: Cpu, description: 'Savings, credit & dividends' },
-    { id: 'school', name: 'School Hub ERP', icon: FileText, description: 'Academic & financial management' }
-  ];
-
-  const handleQuickLaunch = (tplId: string) => {
-    const tpl = quickTemplates.find(t => t.id === tplId);
-    if (!tpl || !onGenerateArchitectureContract) return;
+  const handleQuickLaunch = (productId: string) => {
+    const prod = prodRegistry.getProduct(productId);
+    if (!prod || !onGenerateArchitectureContract) return;
     
     const compiledSpec = JumoSpecificationCompiler.compileSpecification({
-      productName: tpl.name,
+      productName: prod.name,
       productType: 'General Enterprise ERP',
       productFamily: 'ENTERPRISE_MANAGEMENT',
-      purpose: tpl.description,
+      purpose: prod.domain,
       sector: 'Private',
       organizationModel: {
-        targetOrganization: `${tpl.name} Cooperative`,
+        targetOrganization: `${prod.name} Cooperative`,
         organizationType: 'Cooperative',
         hierarchyNodes: ['Board of Directors', 'Management', 'Operations']
       }
@@ -104,19 +97,19 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
           <div className="space-y-6">
             {ecosystemId === 'eco-erp' && (
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Quick Launch Hub Templates</h3>
+                <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Available Ecosystem Products</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {quickTemplates.map((tpl) => (
+                  {products.map((prod) => (
                     <button
-                      key={tpl.id}
-                      onClick={() => handleQuickLaunch(tpl.id)}
+                      key={prod.id}
+                      onClick={() => handleQuickLaunch(prod.id)}
                       className="p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-600 hover:shadow-md transition-all text-left group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        <tpl.icon className="w-4 h-4" />
+                        <Box className="w-4 h-4" />
                       </div>
-                      <h4 className="text-xs font-black text-slate-900 uppercase tracking-tight">{tpl.name}</h4>
-                      <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{tpl.description}</p>
+                      <h4 className="text-xs font-black text-slate-900 uppercase tracking-tight">{prod.name}</h4>
+                      <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{prod.domain}</p>
                     </button>
                   ))}
                 </div>
@@ -125,15 +118,15 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
 
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">Manufactured Registry</h3>
-              {registryRecords.length === 0 && <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No products manufactured in this ecosystem.</div>}
-              {registryRecords.map((asset, i) => (
-              <div key={i} className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+              {products.length === 0 && <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No products manufactured in this ecosystem.</div>}
+              {products.map((asset, i) => (
+              <div key={asset.id} className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-slate-900">{asset.name}</h4>
-                  <p className="text-sm text-slate-500">Status: {asset.status} | Step: {asset.step}</p>
+                  <p className="text-sm text-slate-500">Status: {asset.lifecycleState} | Domain: {asset.domain}</p>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${asset.status === 'OPERATIONAL' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'}`}>
-                  {asset.status}
+                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${asset.lifecycleState === 'DEPLOYED' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'}`}>
+                  {asset.lifecycleState}
                 </div>
               </div>
             ))}

@@ -20,6 +20,7 @@ import { UEOSRightInspector } from "./UEOSRightInspector";
 import { JumoFloatingAssistant } from "./JumoFloatingAssistant";
 import { JobNavigationProvider, useJobNavigation } from "./JobNavigationContext";
 import { JobTreeProvider } from "./JobTreeProvider";
+import { NavigationRegistry } from "../../core/registry/NavigationRegistry";
 
 interface UEOSShellProps {
   user: {
@@ -43,6 +44,10 @@ export function UEOSShell(props: UEOSShellProps) {
 
 function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
   const { jobs, selectedJobId, setSelectedJobId } = useJobNavigation();
+
+  useEffect(() => {
+    UEOSCommandRegistry.setContext({ selectedJobId });
+  }, [selectedJobId]);
 
   // === 1. BASIC SHELL STATES ===
   const [activeTab, setActiveTab] = useState<HubWorkspace>(() => {
@@ -372,33 +377,48 @@ function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
     setExpandedCategory(getCategoryOfTab(activeTab));
   }, [activeTab]);
 
+  const navigationRegistry = NavigationRegistry.getInstance();
+  const rawItems = navigationRegistry.getNavigationItems();
+
   const categories = [
     {
       id: "STUDIO_1",
       label: "1. SPEC & ARCHITECTURE",
       icon: FileText,
       color: "text-indigo-600",
-      items: [
-        { id: "spec-arch-eng" as HubWorkspace, label: "Spec & Arch Studio", description: "Intent, Spec, Arch & Engineering Compiler", icon: FileText, color: "text-indigo-600" }
-      ]
+      items: rawItems.filter(i => i.studio === 'STUDIO_1').map(i => ({
+        id: i.route as HubWorkspace,
+        label: i.title,
+        description: i.description,
+        icon: FileText,
+        color: "text-indigo-600"
+      }))
     },
     {
       id: "STUDIO_2",
       label: "2. MFG & VERIFICATION",
       icon: Zap,
       color: "text-emerald-600",
-      items: [
-        { id: "mfg-ver-cert" as HubWorkspace, label: "Mfg & Verify Studio", description: "Automated production and cryptographic signs", icon: Zap, color: "text-emerald-600" }
-      ]
+      items: rawItems.filter(i => i.studio === 'STUDIO_2').map(i => ({
+        id: i.route as HubWorkspace,
+        label: i.title,
+        description: i.description,
+        icon: Zap,
+        color: "text-emerald-600"
+      }))
     },
     {
       id: "STUDIO_3",
       label: "3. INST & DEPLOYMENT",
       icon: Globe,
       color: "text-indigo-600",
-      items: [
-        { id: "inst-exp-deploy" as HubWorkspace, label: "Inst & Deploy Studio", description: "Tenant customisation, enclaves & runtime ops", icon: Globe, color: "text-indigo-600" }
-      ]
+      items: rawItems.filter(i => i.studio === 'STUDIO_3').map(i => ({
+        id: i.route as HubWorkspace,
+        label: i.title,
+        description: i.description,
+        icon: Globe,
+        color: "text-indigo-600"
+      }))
     }
   ];
 

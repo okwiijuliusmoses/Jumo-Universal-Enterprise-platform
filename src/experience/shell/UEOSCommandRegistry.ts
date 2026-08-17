@@ -3,6 +3,7 @@ import {
   ShieldCheck, BookOpen, CreditCard, Settings, RefreshCw, LogOut,
   Terminal, Search, Cpu, HardDrive
 } from "lucide-react";
+import { NavigationRegistry } from "../../core/registry/NavigationRegistry";
 
 export interface UEOSCommand {
   id: string;
@@ -12,25 +13,54 @@ export interface UEOSCommand {
   icon?: any;
   action: () => void;
   description?: string;
+  contextRequired?: string;
 }
 
 export class UEOSCommandRegistry {
-  private static commands: Map<string, UEOSCommand> = new Map();
+  private static baseCommands: Map<string, UEOSCommand> = new Map();
+  private static dynamicContext: any = null;
+
+  public static setContext(context: any): void {
+    this.dynamicContext = context;
+  }
 
   public static register(command: UEOSCommand): void {
-    this.commands.set(command.id, command);
+    this.baseCommands.set(command.id, command);
   }
 
   public static getAll(): UEOSCommand[] {
-    return Array.from(this.commands.values());
+    const commands = Array.from(this.baseCommands.values());
+    
+    // Dynamically inject contextual commands
+    if (this.dynamicContext?.selectedJobId) {
+      commands.push({
+        id: `cmd-job-${this.dynamicContext.selectedJobId}-inspect`,
+        label: `Inspect Requirements for ${this.dynamicContext.selectedJobId}`,
+        category: "Dynamic Context",
+        icon: Search,
+        action: () => console.log('Inspect Job', this.dynamicContext.selectedJobId),
+        description: "View specific artifacts for the active job"
+      });
+      commands.push({
+        id: `cmd-job-${this.dynamicContext.selectedJobId}-verify`,
+        label: `Verify Gates for ${this.dynamicContext.selectedJobId}`,
+        category: "Dynamic Context",
+        icon: ShieldCheck,
+        action: () => console.log('Verify Job', this.dynamicContext.selectedJobId),
+        description: "Execute assurance verification for the active job"
+      });
+    }
+
+    return commands;
   }
 
   public static search(query: string): UEOSCommand[] {
+    const all = this.getAll();
     if (!query || query.trim() === "") {
-      return this.getAll();
+      return all;
     }
     const q = query.toLowerCase().trim();
-    return this.getAll().filter(cmd => 
+    return all.filter(cmd => 
       cmd.label.toLowerCase().includes(q) || 
       cmd.category.toLowerCase().includes(q) ||
       (cmd.description && cmd.description.toLowerCase().includes(q)) ||
@@ -39,14 +69,14 @@ export class UEOSCommandRegistry {
   }
 
   public static execute(id: string): void {
-    const cmd = this.commands.get(id);
+    const cmd = this.getAll().find(c => c.id === id);
     if (cmd && typeof cmd.action === "function") {
       cmd.action();
     }
   }
 
   public static clear(): void {
-    this.commands.clear();
+    this.baseCommands.clear();
   }
 }
 
@@ -58,104 +88,18 @@ export function initializeSovereignCommandRegistry(context: {
 }): void {
   UEOSCommandRegistry.clear();
 
-  // Navigation Commands
-  const navCommands: UEOSCommand[] = [
-    {
-      id: "cmd-nav-spec",
-      label: "Navigate: Specification & Intake Studio",
-      category: "Navigation",
-      icon: FileText,
-      shortcut: "G S",
-      action: () => context.navigate("specification"),
-      description: "Open the 19-section institutional specification compiler"
-    },
-    {
-      id: "cmd-nav-arch",
-      label: "Navigate: Architecture Studio",
-      category: "Navigation",
-      icon: Layers,
-      shortcut: "G A",
-      action: () => context.navigate("architecture"),
-      description: "Inspect sovereign architecture contracts and layers"
-    },
-    {
-      id: "cmd-nav-mfg",
-      label: "Navigate: Manufacturing Factory",
-      category: "Navigation",
-      icon: Zap,
-      shortcut: "G M",
-      action: () => context.navigate("manufacturing"),
-      description: "Monitor the 20-stage enterprise manufacturing pipeline"
-    },
-    {
-      id: "cmd-nav-config",
-      label: "Navigate: Configuration & Branding Studio",
-      category: "Navigation",
-      icon: Sliders,
-      action: () => context.navigate("config"),
-      description: "Configure product parameters, capability matrix, and theme"
-    },
-    {
-      id: "cmd-nav-verif",
-      label: "Navigate: Verification & Testing Gates",
-      category: "Navigation",
-      icon: Shield,
-      shortcut: "G V",
-      action: () => context.navigate("verification"),
-      description: "Run 16-stage integrity and architecture conformance gates"
-    },
-    {
-      id: "cmd-nav-cert",
-      label: "Navigate: Certification & Assurance",
-      category: "Navigation",
-      icon: Award,
-      action: () => context.navigate("certification"),
-      description: "Issue sovereign certification seals and audit compliance"
-    },
-    {
-      id: "cmd-nav-deploy",
-      label: "Navigate: Provision & Deployment",
-      category: "Navigation",
-      icon: Cloud,
-      shortcut: "G D",
-      action: () => context.navigate("deployment"),
-      description: "Manage runtime deployment slots and scaling"
-    },
-    {
-      id: "cmd-nav-ops",
-      label: "Navigate: Runtime Operations",
-      category: "Navigation",
-      icon: Home,
-      shortcut: "G O",
-      action: () => context.navigate("overview"),
-      description: "Real-time telemetry, memory, and cluster health"
-    },
-    {
-      id: "cmd-nav-control",
-      label: "Navigate: Sovereign Control & Governance",
-      category: "Navigation",
-      icon: ShieldCheck,
-      action: () => context.navigate("control"),
-      description: "National emergency controls and panic switch"
-    },
-    {
-      id: "cmd-nav-templates",
-      label: "Navigate: Registries & Standards",
-      category: "Navigation",
-      icon: BookOpen,
-      action: () => context.navigate("templates"),
-      description: "Browse ERP ecosystem registry and commercial products"
-    },
-    {
-      id: "cmd-nav-faap",
-      label: "Navigate: Sovereign FAAP Ledger",
-      category: "Navigation",
-      icon: CreditCard,
-      shortcut: "G F",
-      action: () => context.navigate("faap"),
-      description: "Access sovereign double-entry accounting and treasury"
-    }
-  ];
+  // Navigation Commands generated from NavigationRegistry
+  const navRegistry = NavigationRegistry.getInstance();
+  const navItems = navRegistry.getNavigationItems();
+
+  const navCommands: UEOSCommand[] = navItems.map(item => ({
+    id: `cmd-nav-${item.id}`,
+    label: `Navigate: ${item.title}`,
+    category: "Navigation",
+    icon: Layers,
+    action: () => context.navigate(item.route),
+    description: item.description
+  }));
 
   navCommands.forEach(cmd => UEOSCommandRegistry.register(cmd));
 

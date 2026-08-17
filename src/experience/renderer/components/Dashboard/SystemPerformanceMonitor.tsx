@@ -1,42 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Cpu, Database, Zap, Shield, AlertCircle } from 'lucide-react';
-
-interface Metric {
-  label: string;
-  value: number;
-  unit: string;
-  trend: 'up' | 'down' | 'stable';
-  history: number[];
-}
+import { TelemetryAggregationService, TelemetryMetric } from '../../../../core/telemetry/TelemetryAggregationService';
 
 export const SystemPerformanceMonitor: React.FC = () => {
-  const [metrics, setMetrics] = useState<Record<string, Metric>>({
-    cpu: { label: 'Kernel CPU', value: 42, unit: '%', trend: 'stable', history: Array(20).fill(40).map(v => v + Math.random() * 10) },
-    memory: { label: 'System RAM', value: 68, unit: '%', trend: 'stable', history: Array(20).fill(65).map(v => v + Math.random() * 5) },
-    latency: { label: 'AI Latency', value: 124, unit: 'ms', trend: 'stable', history: Array(20).fill(120).map(v => v + Math.random() * 20) },
-    io: { label: 'Ledger I/O', value: 850, unit: 'ops/s', trend: 'stable', history: Array(20).fill(800).map(v => v + Math.random() * 100) }
-  });
+  const [metrics, setMetrics] = useState<TelemetryMetric[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(prev => {
-        const next = { ...prev };
-        Object.keys(next).forEach(key => {
-          const m = next[key];
-          const variance = key === 'io' ? 50 : 2;
-          const newVal = Math.max(0, Math.min(key === 'io' ? 2000 : 100, m.value + (Math.random() - 0.5) * variance));
-          
-          next[key] = {
-            ...m,
-            value: Number(newVal.toFixed(1)),
-            trend: newVal > m.value ? 'up' : (newVal < m.value ? 'down' : 'stable'),
-            history: [...m.history.slice(1), newVal]
-          };
-        });
-        return next;
-      });
-    }, 2000);
+    const service = TelemetryAggregationService.getInstance();
+    
+    const updateMetrics = () => {
+      setMetrics(service.getAllMetrics().filter(m => m.category === 'PLATFORM' || m.category === 'AI'));
+    };
+
+    updateMetrics();
+    const interval = setInterval(updateMetrics, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -64,12 +42,12 @@ export const SystemPerformanceMonitor: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {Object.entries(metrics).map(([key, m]) => (
-            <div key={key} className="bg-slate-950 border border-slate-800/50 p-4 rounded-2xl hover:border-slate-700 transition-all">
+          {metrics.map((m) => (
+            <div key={m.id} className="bg-slate-950 border border-slate-800/50 p-4 rounded-2xl hover:border-slate-700 transition-all">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m.label}</span>
-                <span className={`text-[10px] font-mono ${m.trend === 'up' ? 'text-blue-400' : (m.trend === 'down' ? 'text-amber-400' : 'text-slate-400')}`}>
-                  {m.trend === 'up' ? '↑' : (m.trend === 'down' ? '↓' : '•')}
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m.name}</span>
+                <span className={`text-[10px] font-mono ${m.status === 'HEALTHY' ? 'text-blue-400' : 'text-slate-400'}`}>
+                  {m.status === 'HEALTHY' ? '●' : '•'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
@@ -77,18 +55,10 @@ export const SystemPerformanceMonitor: React.FC = () => {
                 <span className="text-[10px] font-bold text-slate-500 uppercase">{m.unit}</span>
               </div>
               
-              <div className="mt-4 flex items-end gap-1 h-8">
-                {m.history.map((val, i) => {
-                  const max = key === 'io' ? 2000 : 100;
-                  const height = (val / max) * 100;
-                  return (
-                    <div 
-                      key={i} 
-                      className={`flex-1 rounded-t-sm transition-all duration-500 ${i === m.history.length - 1 ? 'bg-blue-500' : 'bg-slate-800'}`}
-                      style={{ height: `${height}%` }}
-                    />
-                  );
-                })}
+              <div className="mt-4 flex items-end gap-1 h-2">
+                <div className="flex-1 rounded-sm bg-blue-500/30 h-full"></div>
+                <div className="flex-1 rounded-sm bg-blue-500/50 h-full"></div>
+                <div className="flex-1 rounded-sm bg-blue-500 h-full"></div>
               </div>
             </div>
           ))}
