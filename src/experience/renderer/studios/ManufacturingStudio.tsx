@@ -15,6 +15,12 @@ import { ProductManufacturingOrchestrator, TEN_HIGH_LEVEL_STAGES, PIPELINE_STAGE
 import { JumoAIAgentRegistry } from '../../../core/ai/registry/JumoAIAgentRegistry';
 import { JumoStandardsAlignmentEngine } from '../../../core/standards/JumoStandardsAlignmentEngine';
 import { JDPMLineageInspector } from '../components/JDPMLineageInspector';
+import { ManufacturedProductExplorer } from '../components/ManufacturedProductExplorer';
+import { ManufacturingGateEngineComponent } from '../components/ManufacturingGateEngine';
+import { ManufacturingDependencyGraph } from '../components/ManufacturingDependencyGraph';
+import { ManufacturingExecutionBoard } from '../components/ManufacturingExecutionBoard';
+import { ManufacturingQualityDashboard } from '../components/ManufacturingQualityDashboard';
+import { ManufacturingResourcePlanning } from '../components/ManufacturingResourcePlanning';
 
 export interface ManufacturingStudioProps {
   initialJobId?: string;
@@ -43,7 +49,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   const [expandedSpecSection, setExpandedSpecSection] = useState<string | null>('identity');
   
   // Human Review Sub-Tabs
-  const [reviewTab, setReviewTab] = useState<'brief' | 'specification' | 'blueprint' | 'history32' | 'preview'>('brief');
+  const [reviewTab, setReviewTab] = useState<'product_explorer' | 'gate_review' | 'brief' | 'specification' | 'blueprint' | 'history32' | 'preview'>('product_explorer');
   const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop');
   const [previewMode, setPreviewMode] = useState<'landing' | 'catalogue' | 'portal'>('landing');
   const [showAssistantModal, setShowAssistantModal] = useState<boolean>(false);
@@ -865,6 +871,8 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
                         <div className="flex items-center gap-1 bg-slate-200/50 p-1 rounded-xl border border-slate-200 overflow-x-auto">
                           {[
+                            { id: 'product_explorer', label: '1. Navigable Product Explorer' },
+                            { id: 'gate_review', label: '2. Authoritative Gate Review' },
                             { id: 'brief', label: 'Brief' },
                             { id: 'specification', label: 'Specifications' },
                             { id: 'blueprint', label: 'Blueprint' },
@@ -885,9 +893,17 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                       </div>
 
                       {/* Workspace Body */}
-                      <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30">
+                      <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 space-y-6">
                         
-                        {/* 1. Brief Sub-Tab */}
+                        {/* 0. Navigable Product Structure Explorer */}
+                        {reviewTab === 'product_explorer' && (
+                          <ManufacturedProductExplorer job={selectedJob} />
+                        )}
+
+                        {/* 0.1 Authoritative Gate Review Engine */}
+                        {reviewTab === 'gate_review' && (
+                          <ManufacturingGateEngineComponent job={selectedJob} onDecisionExecuted={fetchFactoryState} />
+                        )}
                         {reviewTab === 'brief' && (
                           <div className="space-y-6 max-w-4xl">
                             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-4">
@@ -1262,6 +1278,12 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
               exit={{ opacity: 0, y: -8 }}
               className="space-y-6"
             >
+              {/* Dependency Topology Graph */}
+              {selectedJob && <ManufacturingDependencyGraph job={selectedJob} />}
+
+              {/* Execution Board */}
+              {selectedJob && <ManufacturingExecutionBoard job={selectedJob} />}
+
               {/* Components Section */}
               <div className="space-y-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-xs">
@@ -1351,6 +1373,8 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
               exit={{ opacity: 0, y: -8 }}
               className="space-y-6"
             >
+              {/* Manufacturing Resource Planning (MRP) */}
+              <ManufacturingResourcePlanning />
               {/* Cognitive AI Workforce Grid & Audit Summary */}
               <div className="space-y-4">
                 {(() => {
@@ -1486,6 +1510,8 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
               exit={{ opacity: 0, y: -8 }}
               className="space-y-6"
             >
+              {/* Quality Control & Impact Dashboard */}
+              {selectedJob && <ManufacturingQualityDashboard job={selectedJob} />}
               {/* JDPM Lineage & Artifact Provenance Traversal Engine */}
               <div className="pt-4">
                 <JDPMLineageInspector 
