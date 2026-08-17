@@ -82,7 +82,35 @@ export class DigitalProductManufacturingOrchestrator {
   }
 
   public async certifyProduct(jobId: string, authority: string) {
-    return await this.orchestrator.issueCommand('CERTIFY_PRODUCT', { jobId, authority });
+    return await this.orchestrator.certifyProduct(jobId, authority);
+  }
+
+  public async deployProduct(jobId: string, node?: string) {
+    return await this.orchestrator.deployProduct(jobId, node);
+  }
+
+  public async acceptGoLive(jobId: string, authority: string) {
+    return await this.orchestrator.acceptGoLive(jobId, authority);
+  }
+
+  public async pauseJob(jobId: string) {
+    return await this.orchestrator.pauseJob(jobId);
+  }
+
+  public async resumeJob(jobId: string) {
+    return await this.orchestrator.resumeJob(jobId);
+  }
+
+  public async cancelJob(jobId: string, reason?: string) {
+    return await this.orchestrator.cancelJob(jobId, reason);
+  }
+
+  public async retryFailedPackage(jobId: string) {
+    return await this.orchestrator.retryFailedPackage(jobId);
+  }
+
+  public async submitReviewDecision(jobId: string, gateId: string, decision: 'APPROVE' | 'REJECT', feedback?: any) {
+    return await this.orchestrator.submitReviewDecision(jobId, gateId, decision, feedback);
   }
 
   public getAllArtifacts() {

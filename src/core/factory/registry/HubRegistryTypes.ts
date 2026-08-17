@@ -145,12 +145,18 @@ export interface ReviewGate {
   jobId: string;
   lifecycleStage: string;
   manufacturingStage?: string;
-  gateType: 'ENGINEERING_APPROVAL' | 'STAGE_APPROVAL' | 'FINAL_ASSEMBLY_APPROVAL';
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  lifecyclePhaseId?: number;
+  lifecyclePhaseName?: string;
+  gateType: 'ENGINEERING_APPROVAL' | 'STAGE_APPROVAL' | 'FINAL_ASSEMBLY_APPROVAL' | 'GO_LIVE_APPROVAL';
+  status: 'PENDING' | 'APPROVED' | 'APPROVED_WITH_CONDITIONS' | 'REJECTED' | 'CORRECTION_REQUESTED' | 'EVIDENCE_REQUESTED' | 'ESCALATED' | 'DELEGATED' | 'PAUSED';
+  riskLevel?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  requiredAuthority?: string;
+  requiredEvidence?: string[];
   artifactRefs: string[];
   evidenceRefs: string[];
   reviewer?: string;
-  decision?: 'APPROVE' | 'REJECT';
+  reviewerRole?: string;
+  decision?: 'APPROVE' | 'APPROVE_WITH_CONDITIONS' | 'REJECT' | 'REQUEST_CORRECTION' | 'REQUEST_EVIDENCE' | 'ESCALATE' | 'DELEGATE' | 'PAUSE';
   feedback?: {
     rejectionReason?: string;
     requiredCorrection?: string;
@@ -158,7 +164,18 @@ export interface ReviewGate {
     affectedArchitectureElement?: string;
     priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     additionalInstructions?: string;
+    conditions?: string[];
   };
+  evidenceSnapshot?: Record<string, any>;
+  artifactHash?: string;
+  previousRevision?: string;
+  newRevision?: string;
+  auditEvents?: Array<{
+    timestamp: string;
+    actor: string;
+    action: string;
+    notes?: string;
+  }>;
   createdAt: string;
   decidedAt?: string;
   nextTransition?: string;

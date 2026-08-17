@@ -70,6 +70,137 @@ export const STATUS_ORDER: ManufacturingJobStatus[] = [
   "RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT"
 ];
 
+export const PIPELINE_STAGES = STATUS_ORDER.map((statusKey, index) => ({
+  stage: index + 1,
+  statusKey,
+  label: statusKey.replace(/_/g, ' '),
+  desc: `Work package ${index + 1} of 32 in sovereign manufacturing lifecycle (${statusKey}).`,
+  requiresApproval: statusKey === 'AWAITING_HUMAN_ENGINEERING_APPROVAL' || statusKey === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL'
+}));
+
+// 17 Internationally Aligned Manufacturing Phases (ISO/IEC/IEEE 15288 & 12207 mapped)
+export const SEVENTEEN_MANUFACTURING_PHASES = [
+  {
+    phaseId: 1,
+    code: 'PHASE_01_INTAKE',
+    name: 'Phase 01 — Intake & Specification Readiness',
+    description: 'Ingesting raw specification, property normalization, completeness audit, and tenancy validation.',
+    workPackages: ['DIGITAL_INTAKE', 'SPECIFICATION_NORMALIZATION'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 2,
+    code: 'PHASE_02_ARCHITECTURE',
+    name: 'Phase 02 — Architecture & Engineering',
+    description: 'Multi-layer system expansion, security architecture, data architecture, and contract lock.',
+    workPackages: ['PLATFORM_INSTANCE_DEFINITION', 'PROVISIONING', 'ARCHITECTURE_DISCOVERY', 'ARCHITECTURE_EXPANSION'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 3,
+    code: 'PHASE_03_BLUEPRINT',
+    name: 'Phase 03 — Blueprint & Design Assurance',
+    description: 'Dependency graph analysis, risk analysis, zero-trust boundary verification, and design clearance.',
+    workPackages: ['ARCHITECTURE_VERIFICATION', 'ARCHITECTURE_CONTRACT_GENERATION'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 4,
+    code: 'PHASE_04_RATIFICATION',
+    name: 'Phase 04 — Engineering Ratification',
+    description: 'Authoritative human governor review gate with risk assessment, conditions, and evidence snapshot.',
+    workPackages: ['AWAITING_HUMAN_ENGINEERING_APPROVAL'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 5,
+    code: 'PHASE_05_PLANNING',
+    name: 'Phase 05 — Factory Planning',
+    description: 'Cognitive workforce allocation, resource planning, manufacturing schedule, and environment setup.',
+    workPackages: ['WORKFORCE_ORCHESTRATION', 'REQUIREMENTS_DECOMPOSITION'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 6,
+    code: 'PHASE_06_COMPONENT_MFG',
+    name: 'Phase 06 — Component Manufacturing',
+    description: 'UI components, backend services, domain models, data structures, and AI prompt templates.',
+    workPackages: ['SYSTEM_DESIGN', 'DATA_ARCHITECTURE'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 7,
+    code: 'PHASE_07_MODULE_MFG',
+    name: 'Phase 07 — Module Manufacturing',
+    description: 'Domain module packaging, workflow engine compilation, forms, and service integrations.',
+    workPackages: ['API_AND_INTEGRATION_ENGINEERING', 'SECURITY_ENGINEERING', 'APPLICATION_ENGINEERING'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 8,
+    code: 'PHASE_08_ASSEMBLY',
+    name: 'Phase 08 — Application Assembly',
+    description: 'Composing components and modules, resolving package dependencies, compiling sources, and packaging release candidates.',
+    workPackages: ['COMMERCIAL_PRODUCT_ENGINEERING', 'AI_AND_AUTOMATION_ENGINEERING', 'INFRASTRUCTURE_ENGINEERING'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 9,
+    code: 'PHASE_09_CONFIGURATION',
+    name: 'Phase 09 — Configuration & Institutionalization',
+    description: 'Tenant parameters, white-label branding, role policies, regional workflows, and immutable baselining.',
+    workPackages: ['DEPENDENCY_RESOLUTION', 'SCHEMA_MANUFACTURING'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 10,
+    code: 'PHASE_10_VERIFICATION',
+    name: 'Phase 10 — Verification & Validation',
+    description: '20-gate automated test suite, security scan, architecture conformance, and performance stress testing.',
+    workPackages: ['SOURCE_AND_ARTIFACT_GENERATION', 'COMPILATION', 'BUILD_ASSEMBLY', 'APPLICATION_COMPLETENESS_VERIFICATION', 'SECURITY_AND_ZERO_TRUST_VERIFICATION', 'INTEGRATION_VERIFICATION', 'END_TO_END_SYSTEM_TESTING', 'REGRESSION_AND_RESILIENCE_TESTING'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 11,
+    code: 'PHASE_11_CERTIFICATION',
+    name: 'Phase 11 — Certification & Release',
+    description: 'Cryptographic artifact signing, provenance validation, release candidate sealing, and sovereign certification.',
+    workPackages: ['AWAITING_HUMAN_MANUFACTURING_APPROVAL'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 12,
+    code: 'PHASE_12_PROVISIONING',
+    name: 'Phase 12 — Provisioning & Deployment',
+    description: 'Target enclave validation, database migrations, container deployment, and smoke testing.',
+    workPackages: ['DEPLOYMENT_AND_PUBLISHING'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 13,
+    code: 'PHASE_13_COMMISSIONING',
+    name: 'Phase 13 — Institutional Commissioning',
+    description: 'Tenant onboarding, admin acceptance, operational readiness verification, and security clearance.',
+    workPackages: ['RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 14,
+    code: 'PHASE_14_GO_LIVE',
+    name: 'Phase 14 — Go-Live Acceptance',
+    description: 'Explicit human acceptance sign-off, public DNS cutover, and operational handover.',
+    workPackages: ['RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 15,
+    code: 'PHASE_15_OPERATIONS',
+    name: 'Phase 15 — Operations & Telemetry',
+    description: 'Continuous runtime telemetry, SLA monitoring, AI health tracking, and security auditing.',
+    workPackages: ['RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 16,
+    code: 'PHASE_16_MAINTENANCE',
+    name: 'Phase 16 — Maintenance & Evolution',
+    description: 'Change request analysis, patch application, rolling upgrades, and re-verification.',
+    workPackages: ['RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'] as ManufacturingJobStatus[]
+  },
+  {
+    phaseId: 17,
+    code: 'PHASE_17_RETIREMENT',
+    name: 'Phase 17 — Retirement & Archival',
+    description: 'Decommissioning authorization, data export, cryptographically sealed archive, and audit preservation.',
+    workPackages: ['RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'] as ManufacturingJobStatus[]
+  }
+];
+
 // 10 Internationally Understandable Manufacturing Stages mapping
 export const TEN_HIGH_LEVEL_STAGES = [
   {
@@ -499,10 +630,26 @@ export class ProductManufacturingOrchestrator {
 
   public async submitReviewDecision(jobId: string, gateId: string, decision: 'APPROVE' | 'REJECT', feedback?: any) {
     const job = this.registry.getJob(jobId) as ProductManufacturingJob;
-    if (!job) throw new Error("Job not found");
+    if (!job) throw new Error("Job not found: " + jobId);
 
-    const gate = job.reviewGates.find(g => g.id === gateId);
-    if (!gate) throw new Error("Gate not found");
+    if (!job.reviewGates) job.reviewGates = [];
+    let gate = job.reviewGates.find(g => g.id === gateId || g.gateType === gateId);
+    
+    if (!gate) {
+      const isAssembly = job.status === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL' || gateId?.includes('FINAL') || gateId?.includes('MANUFACTURING');
+      gate = {
+        id: gateId || `GATE-${Date.now()}`,
+        jobId: jobId,
+        lifecycleStage: job.currentLifecycleState || 'AWAITING_HUMAN_ENGINEERING_APPROVAL',
+        gateType: isAssembly ? 'FINAL_ASSEMBLY_APPROVAL' : 'ENGINEERING_APPROVAL',
+        status: 'PENDING',
+        artifactRefs: [],
+        evidenceRefs: [],
+        revision: 1,
+        createdAt: new Date().toISOString()
+      };
+      job.reviewGates.push(gate);
+    }
 
     gate.status = decision === 'APPROVE' ? 'APPROVED' : 'REJECTED';
     gate.decision = decision;
@@ -510,27 +657,153 @@ export class ProductManufacturingOrchestrator {
     gate.decidedAt = new Date().toISOString();
 
     if (decision === 'APPROVE') {
-      if (gate.gateType === 'ENGINEERING_APPROVAL') {
+      if (gate.gateType === 'ENGINEERING_APPROVAL' || job.status === 'AWAITING_HUMAN_ENGINEERING_APPROVAL') {
         job.status = 'WORKFORCE_ORCHESTRATION';
         job.currentLifecycleState = 'ENGINEERING_INTAKE';
-        job.logs.push("Human systems architect approved engineering and experience blueprints. Commencing autonomous workforce allocation.");
+        job.logs.push(`[RATIFICATION] Human governor ${feedback?.approver || 'Authority'} approved engineering blueprint and ratified architecture. Commencing manufacturing execution.`);
         this.registry.registerJob(job);
-        // Resume automatic execution
         this.advanceJobPipeline(jobId);
-      } else if (gate.gateType === 'FINAL_ASSEMBLY_APPROVAL') {
+      } else if (gate.gateType === 'FINAL_ASSEMBLY_APPROVAL' || job.status === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL') {
         job.status = 'DEPLOYMENT_AND_PUBLISHING';
         job.currentLifecycleState = 'DEPLOYMENT';
-        job.logs.push("Sovereign certification seal issued by authority. Activating production deployment.");
+        job.logs.push(`[RATIFICATION] Final assembly certified by ${feedback?.approver || 'Authority'}. Activating production deployment.`);
         this.registry.registerJob(job);
-        // Resume automatic execution
+        this.advanceJobPipeline(jobId);
+      } else {
+        job.logs.push(`[RATIFICATION] Approval granted for stage ${job.status} by ${feedback?.approver || 'Authority'}.`);
+        this.registry.registerJob(job);
         this.advanceJobPipeline(jobId);
       }
     } else {
       job.status = 'FAILED';
       job.currentLifecycleState = 'FAILED';
-      job.logs.push(`Rejection feedback received: ${feedback?.rejectionReason || 'No reason specified'}`);
+      job.logs.push(`[RATIFICATION] Blueprint/Assembly rejected by ${feedback?.approver || 'Authority'}. Reason: ${feedback?.rejectionReason || feedback?.comments || 'No reason specified'}`);
       this.registry.registerJob(job);
     }
+  }
+
+  public async pauseJob(jobId: string): Promise<ProductManufacturingJob> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    job.status = 'PAUSED' as any;
+    job.logs.push(`[CONTROL] Manufacturing job paused by operator authority.`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    return job;
+  }
+
+  public async resumeJob(jobId: string): Promise<ProductManufacturingJob> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    job.status = 'WORKFORCE_ORCHESTRATION';
+    job.logs.push(`[CONTROL] Manufacturing job resumed by operator authority.`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    this.advanceJobPipeline(jobId);
+    return job;
+  }
+
+  public async cancelJob(jobId: string, reason?: string): Promise<ProductManufacturingJob> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    job.status = 'FAILED';
+    job.currentLifecycleState = 'FAILED';
+    job.logs.push(`[CONTROL] Job cancelled by operator authority. Reason: ${reason || 'Manual cancellation'}`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    return job;
+  }
+
+  public async retryFailedPackage(jobId: string): Promise<ProductManufacturingJob> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    job.status = 'DIGITAL_INTAKE';
+    job.progress = 0;
+    job.logs.push(`[CONTROL] Retrying failed manufacturing package. Re-initiating pipeline.`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    this.advanceJobPipeline(jobId);
+    return job;
+  }
+
+  public async certifyProduct(jobId: string, authority: string): Promise<{ certId: string; timestamp: string }> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    const certId = `CERT-SOVEREIGN-${Date.now().toString(36).toUpperCase()}`;
+    job.certificationId = certId;
+    job.logs.push(`[CERTIFICATION] Official Sovereign Certification ${certId} issued by authority ${authority}.`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    return { certId, timestamp: job.updatedAt };
+  }
+
+  public async deployProduct(jobId: string, node?: string): Promise<{ deploymentId: string; endpoint: string }> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    if (job.runtimeInstanceId) {
+      return { deploymentId: job.runtimeInstanceId, endpoint: `https://${job.productId.toLowerCase()}.jumo.internal` };
+    }
+    await this.createRuntimeInstance(job);
+    return { deploymentId: job.runtimeInstanceId || `DEP-${jobId}`, endpoint: `https://${job.productId.toLowerCase()}.jumo.internal` };
+  }
+
+  public async acceptGoLive(jobId: string, authority: string): Promise<{ status: string; timestamp: string }> {
+    const job = this.registry.getJob(jobId) as ProductManufacturingJob;
+    if (!job) throw new Error("Job not found: " + jobId);
+    job.status = 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT';
+    job.currentLifecycleState = 'OPERATING';
+    job.progress = 100;
+    job.logs.push(`[GO-LIVE] Product accepted and activated live on production network by ${authority}.`);
+    job.updatedAt = new Date().toISOString();
+    this.registry.registerJob(job);
+    return { status: 'LIVE_ACTIVE', timestamp: job.updatedAt };
+  }
+
+  public getDerivedFactoryHealth(): {
+    status: 'HEALTHY' | 'DEGRADED' | 'BLOCKED' | 'FAILED' | 'UNKNOWN';
+    activeJobsCount: number;
+    failedJobsCount: number;
+    blockedGatesCount: number;
+    reasons: string[];
+  } {
+    const jobs = Array.from(this.registry.getAllJobs()) as ProductManufacturingJob[];
+    if (jobs.length === 0) {
+      return {
+        status: 'UNKNOWN',
+        activeJobsCount: 0,
+        failedJobsCount: 0,
+        blockedGatesCount: 0,
+        reasons: ['No active or historical manufacturing jobs registered in factory registry.']
+      };
+    }
+
+    const failed = jobs.filter(j => j.status === 'FAILED');
+    const blocked = jobs.filter(j => j.status === 'AWAITING_HUMAN_ENGINEERING_APPROVAL' || j.status === 'AWAITING_HUMAN_MANUFACTURING_APPROVAL' || j.status === 'BLOCKED');
+
+    const reasons: string[] = [];
+    if (failed.length > 0) {
+      reasons.push(`${failed.length} manufacturing job(s) in FAILED state.`);
+    }
+    if (blocked.length > 0) {
+      reasons.push(`${blocked.length} job(s) pending human ratification gate review.`);
+    }
+
+    let status: 'HEALTHY' | 'DEGRADED' | 'BLOCKED' | 'FAILED' | 'UNKNOWN' = 'HEALTHY';
+    if (failed.length > 0) {
+      status = 'FAILED';
+    } else if (blocked.length > 0) {
+      status = 'BLOCKED';
+    } else {
+      status = 'HEALTHY';
+    }
+
+    return {
+      status,
+      activeJobsCount: jobs.length,
+      failedJobsCount: failed.length,
+      blockedGatesCount: blocked.length,
+      reasons: reasons.length > 0 ? reasons : ['All manufacturing pipelines executing normally.']
+    };
   }
 
   public getAllArtifacts(): ProductArtifactManifest[] {

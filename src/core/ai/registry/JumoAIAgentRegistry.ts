@@ -733,4 +733,112 @@ export class JumoAIAgentRegistry {
       status: `Rebalanced ${reassigned} workload tasks across cognitive workforce.`
     };
   }
+
+  // 10. AUDIT COGNITIVE WORKFORCE & CLASSIFY AGENTS BY PHASE & EXECUTION REALITY
+  public static auditCognitiveWorkforce(): {
+    totalRegistered: number;
+    executingEngineers: number;
+    registeredIdle: number;
+    capabilityNoExecutor: number;
+    configurationPlaceholders: number;
+    mockSimulated: number;
+    classifications: Record<string, number>;
+  } {
+    const all = this.getAllAgents();
+    let executingEngineers = 0;
+    let registeredIdle = 0;
+    let capabilityNoExecutor = 0;
+    let configurationPlaceholders = 0;
+    let mockSimulated = 0;
+
+    for (const agent of all) {
+      // Perform automated classification based on tools, provider, and execution status
+      let classification: import('../types/JumoAITypes').AgentWorkforceClassification = 'REAL_REGISTERED_IDLE';
+
+      if (agent.status === 'EXECUTING' || agent.status === 'ACTIVE' || agent.workload > 0) {
+        if (agent.modelPolicy?.preferredProvider === 'GOOGLE_GENAI' || agent.modelPolicy?.preferredProvider === 'GOOGLE_GEMINI' || agent.modelPolicy?.preferredProvider === 'OPENAI') {
+          classification = 'REAL_EXECUTING_ENGINEER';
+          executingEngineers++;
+        } else {
+          classification = 'REAL_CAPABILITY_NO_EXECUTOR';
+          capabilityNoExecutor++;
+        }
+      } else if (agent.authorizedTools && agent.authorizedTools.length > 0) {
+        classification = 'REAL_REGISTERED_IDLE';
+        registeredIdle++;
+      } else if (agent.jumoName.toLowerCase().includes('placeholder') || agent.jumoName.toLowerCase().includes('template')) {
+        classification = 'CONFIGURATION_PLACEHOLDER';
+        configurationPlaceholders++;
+      } else {
+        classification = 'MOCK_SIMULATED_AGENT';
+        mockSimulated++;
+      }
+
+      // Map agent division to lifecycle phase (1 to 17)
+      let phaseId = 1;
+      let phaseName = 'Phase 01 — Intake & Specification Readiness';
+      switch (agent.division) {
+        case 'ARCHITECTURE':
+          phaseId = 2;
+          phaseName = 'Phase 02 — Architecture & Engineering';
+          break;
+        case 'SOFTWARE_ENGINEERING':
+        case 'ERP_ENGINEERING':
+          phaseId = 6;
+          phaseName = 'Phase 06 — Component Manufacturing';
+          break;
+        case 'COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING':
+          phaseId = 7;
+          phaseName = 'Phase 07 — Module Manufacturing';
+          break;
+        case 'INTELLIGENCE':
+          phaseId = 8;
+          phaseName = 'Phase 08 — Application Assembly';
+          break;
+        case 'SECURITY_AEGIS':
+          phaseId = 3;
+          phaseName = 'Phase 03 — Blueprint & Design Assurance';
+          break;
+        case 'TESTING_VERIFICATION':
+          phaseId = 10;
+          phaseName = 'Phase 10 — Verification & Validation';
+          break;
+        case 'GUARDIAN_GOVERNANCE':
+          phaseId = 4;
+          phaseName = 'Phase 04 — Engineering Ratification';
+          break;
+        case 'MANUFACTURING_ORCHESTRATION':
+          phaseId = 5;
+          phaseName = 'Phase 05 — Factory Planning';
+          break;
+      }
+
+      agent.workforceClassification = classification;
+      agent.assignedPhaseId = phaseId;
+      agent.assignedPhaseName = phaseName;
+      agent.executionAdapter = agent.modelPolicy?.preferredProvider || 'JUMO_LOCAL_RUNTIME';
+      agent.evidenceGeneratedCount = agent.executionHistory?.length || 0;
+    }
+
+    return {
+      totalRegistered: all.length,
+      executingEngineers,
+      registeredIdle,
+      capabilityNoExecutor,
+      configurationPlaceholders,
+      mockSimulated,
+      classifications: {
+        REAL_EXECUTING_ENGINEER: executingEngineers,
+        REAL_REGISTERED_IDLE: registeredIdle,
+        REAL_CAPABILITY_NO_EXECUTOR: capabilityNoExecutor,
+        CONFIGURATION_PLACEHOLDER: configurationPlaceholders,
+        MOCK_SIMULATED_AGENT: mockSimulated
+      }
+    };
+  }
+
+  public static getAgentsByPhase(phaseId: number): AIAgentRecord[] {
+    this.auditCognitiveWorkforce();
+    return this.getAllAgents().filter(a => a.assignedPhaseId === phaseId);
+  }
 }

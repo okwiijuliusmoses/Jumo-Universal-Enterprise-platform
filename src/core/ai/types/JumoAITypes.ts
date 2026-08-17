@@ -1,6 +1,13 @@
 // JUMO UEOS — Native AI Engineering Workforce Architecture Types
 // Authoritative JUMO-owned AI Workforce definitions & lifecycle types
 
+export type AgentWorkforceClassification = 
+  | 'REAL_EXECUTING_ENGINEER'
+  | 'REAL_REGISTERED_IDLE'
+  | 'REAL_CAPABILITY_NO_EXECUTOR'
+  | 'CONFIGURATION_PLACEHOLDER'
+  | 'MOCK_SIMULATED_AGENT';
+
 export type AIWorkforceDivision = 
   | 'ARCHITECTURE'
   | 'ERP_ENGINEERING'
@@ -126,6 +133,13 @@ export interface AIAgentRecord {
 
   // Mandatory data contract payload for UI & verification inspectors
   data?: Record<string, any>;
+
+  // Workforce Audit & Phase Assignment Extensions
+  workforceClassification?: AgentWorkforceClassification;
+  assignedPhaseId?: number;
+  assignedPhaseName?: string;
+  executionAdapter?: string;
+  evidenceGeneratedCount?: number;
 
   // Highly-Detailed Operational Extensions for 420+ cognitive agents
   responsibilities?: string[];
