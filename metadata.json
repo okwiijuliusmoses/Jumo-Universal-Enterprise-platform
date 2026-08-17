@@ -1,0 +1,8 @@
+{
+  "name": "JUMO Universal Enterprise Operating System (UEOS)",
+  "description": "Enterprise sovereign operating system and digital product manufacturing platform for sovereign financial infrastructure, runtime operations, and automated lifecycle governance.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
