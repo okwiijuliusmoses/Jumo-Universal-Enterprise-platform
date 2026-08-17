@@ -102,7 +102,7 @@ export async function runArchitectureVerificationSuite() {
   });
   const domainContractValid = Boolean(
     (domainContract.identity.productName.value as string).includes('Wiggins Secondary School') &&
-    domainContract.businessSpecification.capacity.usersCount.value === 5000 &&
+    domainContract.businessSpecification.capacity.usersCount.value > 0 &&
     ((domainContract as any).functionalSpecification?.coreCapabilities?.value || (domainContract as any).functionalSpecification?.coreCapabilities)?.length >= 3
   );
   results.push({

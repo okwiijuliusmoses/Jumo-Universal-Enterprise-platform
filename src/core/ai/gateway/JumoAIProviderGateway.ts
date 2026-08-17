@@ -381,15 +381,19 @@ We have executed the requested system tasks under the secure local isolation con
       const health = await provider.getHealth();
       if (health.status !== "HEALTHY" && health.status !== "DEGRADED" && targetProviderId !== "JUMO_LOCAL") {
         console.warn(`[GATEWAY] Provider ${targetProviderId} is unhealthy: ${health.status} (${health.details}).`);
-        
-        // If mandatory and unhealthy, and fallback is enabled, we might want to switch early
-        if (vault.getAIFallbackEnabled() && targetProviderId !== "JUMO_LOCAL") {
-           throw new Error(`AI_PROVIDER_UNAVAILABLE: Provider ${targetProviderId} is in state ${health.status}. ${health.details}`);
+        if (vault.getAIFallbackEnabled()) {
+          console.warn(`[GATEWAY] Unhealthy primary provider ${targetProviderId}. Switching to local fallback provider JUMO_LOCAL.`);
+          provider = registry.get("JUMO_LOCAL");
+          targetProviderId = "JUMO_LOCAL";
         }
       }
     } catch (err: any) {
       console.warn(`[GATEWAY] Health check failed for ${targetProviderId}: ${err.message}`);
-      if (targetProviderId !== "JUMO_LOCAL") throw err;
+      if (vault.getAIFallbackEnabled() && targetProviderId !== "JUMO_LOCAL") {
+        console.warn(`[GATEWAY] Health check exception for ${targetProviderId}. Switching to local fallback provider JUMO_LOCAL.`);
+        provider = registry.get("JUMO_LOCAL");
+        targetProviderId = "JUMO_LOCAL";
+      }
     }
 
     try {
