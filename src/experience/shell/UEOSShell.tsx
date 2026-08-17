@@ -19,6 +19,7 @@ import { UEOSSettingsCenter, UEOSSettings } from "./UEOSSettingsCenter";
 import { UEOSRightInspector } from "./UEOSRightInspector";
 import { JumoFloatingAssistant } from "./JumoFloatingAssistant";
 import { JobNavigationProvider, useJobNavigation } from "./JobNavigationContext";
+import { JobTreeProvider } from "./JobTreeProvider";
 
 interface UEOSShellProps {
   user: {
@@ -33,7 +34,9 @@ interface UEOSShellProps {
 export function UEOSShell(props: UEOSShellProps) {
   return (
     <JobNavigationProvider>
-      <UEOSShellContent {...props} />
+      <JobTreeProvider>
+        <UEOSShellContent {...props} />
+      </JobTreeProvider>
     </JobNavigationProvider>
   );
 }

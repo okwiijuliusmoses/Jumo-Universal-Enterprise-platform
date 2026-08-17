@@ -17,6 +17,10 @@ import { JumoStandardsAlignmentEngine } from '../../../core/standards/JumoStanda
 import { JDPMLineageInspector } from '../components/JDPMLineageInspector';
 import { ManufacturedProductExplorer } from '../components/ManufacturedProductExplorer';
 import { useJobNavigation } from '../../shell/JobNavigationContext';
+import { useJobTree } from '../../shell/JobTreeProvider';
+import { JobHierarchyTree } from '../components/JobHierarchyTree';
+import { JobNodeDossier } from '../components/JobNodeDossier';
+import { FactoryMaturityAudit } from '../components/FactoryMaturityAudit';
 import { RatificationInspector } from '../components/RatificationInspector';
 import { ManufacturingDependencyGraph } from '../components/ManufacturingDependencyGraph';
 import { ManufacturingExecutionBoard } from '../components/ManufacturingExecutionBoard';
@@ -52,7 +56,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   const [expandedSpecSection, setExpandedSpecSection] = useState<string | null>('identity');
   
   // Human Review Sub-Tabs
-  const [reviewTab, setReviewTab] = useState<'product_explorer' | 'operational_layers' | 'standards_matrix' | 'job_dossier' | 'gate_review' | 'brief' | 'specification' | 'blueprint' | 'history32' | 'preview'>('product_explorer');
+  const [reviewTab, setReviewTab] = useState<'product_explorer' | 'operational_layers' | 'standards_matrix' | 'job_dossier' | 'gate_review' | 'brief' | 'specification' | 'blueprint' | 'history32' | 'preview' | 'job_tree_navigator' | 'maturity_audit'>('product_explorer');
   const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop');
   const [previewMode, setPreviewMode] = useState<'landing' | 'catalogue' | 'portal'>('landing');
   const [showAssistantModal, setShowAssistantModal] = useState<boolean>(false);
@@ -953,6 +957,8 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                             { id: 'standards_matrix', label: '3. Standards Assurance Matrix' },
                             { id: 'job_dossier', label: '4. Complete Operational Dossier' },
                             { id: 'gate_review', label: '5. Authoritative Gate Review' },
+                            { id: 'job_tree_navigator', label: '6. Active Job Artifact Tree' },
+                            { id: 'maturity_audit', label: '7. Factory Maturity Audit' },
                             { id: 'brief', label: 'Brief' },
                             { id: 'specification', label: 'Specifications' },
                             { id: 'blueprint', label: 'Blueprint' },
@@ -998,6 +1004,23 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                         {/* 0.4 Authoritative Gate Review Engine */}
                         {reviewTab === 'gate_review' && (
                           <RatificationInspector job={selectedJob} onDecisionExecuted={fetchFactoryState} reviewerName={operatorName} />
+                        )}
+
+                        {/* 0.5 Integrated Active Job Artifact Tree Explorer */}
+                        {reviewTab === 'job_tree_navigator' && (
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <div className="lg:col-span-4">
+                              <JobHierarchyTree />
+                            </div>
+                            <div className="lg:col-span-8">
+                              <JobNodeDossier />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 0.6 Factory Operational Maturity Audit Mode */}
+                        {reviewTab === 'maturity_audit' && (
+                          <FactoryMaturityAudit />
                         )}
                         {reviewTab === 'brief' && (
                           <div className="space-y-6 max-w-4xl">
