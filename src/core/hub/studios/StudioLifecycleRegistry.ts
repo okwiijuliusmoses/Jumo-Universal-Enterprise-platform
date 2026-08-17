@@ -318,6 +318,60 @@ export class StudioLifecycleRegistry {
         { id: 'DRIFT_DETECTION', code: 'DRIFT_DETECTION', name: 'Drift Detection', description: 'Zero-trust parameter drift detection audit', order: 3, capabilities: ['DRIFT_AUDIT'], requiredRoles: ['AUDITOR'], requiredServices: ['HierarchicalConfigurationEngine'], requiredEvidence: ['Drift Audit Report'], entryConditions: ['Parameters Resolved'], exitConditions: ['Drift Cleared'], status: 'PENDING' }
       ]
     });
+
+    // 12. MASTER STUDIO 1: Specification, Architecture & Engineering Studio
+    this.registerStudioLifecycle({
+      studioId: 'spec-arch-eng',
+      studioName: 'Specification, Architecture & Engineering Studio',
+      category: 'PLATFORM',
+      activeStageId: 'SPEC_CORE_INTAKE',
+      globalStageMapping: ['01_INTENT', '02_SPECIFICATION', '03_ARCHITECTURE', '04_ENGINEERING', '05_BLUEPRINT'],
+      stages: [
+        { id: 'SPEC_CORE_INTAKE', code: 'INTENT', name: 'Intent Intake', description: 'Mandate intake and classification', order: 1, capabilities: ['INTAKE'], requiredRoles: ['GOVERNOR', 'SPEC_ARCHITECT'], requiredServices: ['SpecificationService'], requiredEvidence: ['Sovereign Mandate'], entryConditions: ['Initiated'], exitConditions: ['Intake Complete'], status: 'COMPLETED' },
+        { id: 'SPEC_CORE_FORM', code: 'SPECIFICATION', name: 'Specification synthesis', description: '19-layer spec parameter expansion', order: 2, capabilities: ['SPEC_SYNTHESIS'], requiredRoles: ['SPEC_ARCHITECT'], requiredServices: ['SpecificationService'], requiredEvidence: ['Normalized Spec Digest'], entryConditions: ['Intake Complete'], exitConditions: ['Spec Approved'], status: 'COMPLETED' },
+        { id: 'SPEC_CORE_ARCH', code: 'ARCHITECTURE', name: 'Architecture Design', description: 'Sovereign layout and enclave mapping', order: 3, capabilities: ['ARCH_COMPILATION'], requiredRoles: ['CHIEF_ARCHITECT'], requiredServices: ['ArchitectureEngine'], requiredEvidence: ['Architecture Blueprint Contract'], entryConditions: ['Spec Approved'], exitConditions: ['Arch Approved'], status: 'IN_PROGRESS' },
+        { id: 'SPEC_CORE_ENG', code: 'ENGINEERING', name: 'Engineering Structure', description: 'Application structure decomposition', order: 4, capabilities: ['ENG_DECOMPOSITION'], requiredRoles: ['CHIEF_ARCHITECT'], requiredServices: ['EngineeringBlueprintGenerator'], requiredEvidence: ['Engineering Registry Digest'], entryConditions: ['Arch Approved'], exitConditions: ['Decomposition Complete'], status: 'PENDING' },
+        { id: 'SPEC_CORE_BLUEPRINT', code: 'BLUEPRINT', name: 'Blueprint Compilation', description: 'Blueprint ready gate check', order: 5, capabilities: ['BLUEPRINT_LOCK'], requiredRoles: ['CHIEF_ARCHITECT'], requiredServices: ['DigitalProductManufacturingOrchestrator'], requiredEvidence: ['BLUEPRINT_READY Seal'], entryConditions: ['Decomposition Complete'], exitConditions: ['BLUEPRINT_READY Approved'], status: 'PENDING' }
+      ]
+    });
+
+    // 13. MASTER STUDIO 2: Manufacturing, Verification & Certification Studio
+    this.registerStudioLifecycle({
+      studioId: 'mfg-ver-cert',
+      studioName: 'Manufacturing, Verification & Certification Studio',
+      category: 'MANUFACTURING',
+      activeStageId: 'MFG_CORE_PREPARE',
+      globalStageMapping: ['07_COMPONENT_MFG', '08_MODULE_MFG', '09_SERVICE_INTEGRATION_MFG', '10_APPLICATION_ASSEMBLY', '12_VERIFICATION_VALIDATION', '13_CERTIFICATION_RELEASE'],
+      stages: [
+        { id: 'MFG_CORE_PREPARE', code: 'PREPARE', name: 'Prepare', description: 'Blueprint ingestion and jobs queuing', order: 1, capabilities: ['PREPARE'], requiredRoles: ['FACTORY_OPERATOR'], requiredServices: ['ProductManufacturingOrchestrator'], requiredEvidence: ['Queue Receipt'], entryConditions: ['BLUEPRINT_READY APPROVED'], exitConditions: ['Ready for Assembly'], status: 'COMPLETED' },
+        { id: 'MFG_CORE_MANUFACTURE', code: 'MANUFACTURE', name: 'Manufacture', description: 'Subfactory component and module compilation', order: 2, capabilities: ['MANUFACTURE'], requiredRoles: ['FACTORY_OPERATOR'], requiredServices: ['ProductManufacturingOrchestrator'], requiredEvidence: ['Component Build Hash'], entryConditions: ['Ready for Assembly'], exitConditions: ['Manufacture Complete'], status: 'IN_PROGRESS' },
+        { id: 'MFG_CORE_ASSEMBLE', code: 'ASSEMBLE', name: 'Assemble', description: 'Integrated artifact structure assembly', order: 3, capabilities: ['ASSEMBLE'], requiredRoles: ['FACTORY_OPERATOR'], requiredServices: ['ProductManufacturingOrchestrator'], requiredEvidence: ['Assembled Bundle Digest'], entryConditions: ['Manufacture Complete'], exitConditions: ['Assembly Complete'], status: 'PENDING' },
+        { id: 'MFG_CORE_INTEGRATE', code: 'INTEGRATE', name: 'Integrate', description: 'External and cross-domain APIs integration', order: 4, capabilities: ['INTEGRATE'], requiredRoles: ['FACTORY_OPERATOR'], requiredServices: ['ProductManufacturingOrchestrator'], requiredEvidence: ['API Integration Receipt'], entryConditions: ['Assembly Complete'], exitConditions: ['Integration Verified'], status: 'PENDING' },
+        { id: 'MFG_CORE_VERIFY', code: 'VERIFY', name: 'Verify', description: 'Unit, security, performance, and regression tests', order: 5, capabilities: ['VERIFY'], requiredRoles: ['QA_LEAD'], requiredServices: ['VerificationGateEngine'], requiredEvidence: ['Signed Test Evidence Pack'], entryConditions: ['Integration Verified'], exitConditions: ['Verification Passed'], status: 'PENDING' },
+        { id: 'MFG_CORE_CERTIFY', code: 'CERTIFY', name: 'Certify', description: 'Sovereign standards verification and signing', order: 6, capabilities: ['CERTIFY'], requiredRoles: ['SOVEREIGN_AUTHORITY'], requiredServices: ['StandardsAlignmentEngine'], requiredEvidence: ['Sovereign Certificate Seal'], entryConditions: ['Verification Passed'], exitConditions: ['Certified'], status: 'PENDING' },
+        { id: 'MFG_CORE_RELEASE', code: 'RELEASE', name: 'Release', description: 'Release to national registry and catalog', order: 7, capabilities: ['RELEASE'], requiredRoles: ['SOVEREIGN_AUTHORITY'], requiredServices: ['ProductManufacturingOrchestrator'], requiredEvidence: ['RELEASE_PASSPORT Hash'], entryConditions: ['Certified'], exitConditions: ['Released'], status: 'PENDING' }
+      ]
+    });
+
+    // 14. MASTER STUDIO 3: Institutionalization, Experience & Deployment Studio
+    this.registerStudioLifecycle({
+      studioId: 'inst-exp-deploy',
+      studioName: 'Institutionalization, Experience & Deployment Studio',
+      category: 'OPERATIONS',
+      activeStageId: 'OPS_CORE_INSTITUTIONAL',
+      globalStageMapping: ['11_CONFIGURATION_INSTITUTIONALIZATION', '14_PROVISIONING_DEPLOYMENT', '15_INSTITUTIONAL_COMMISSIONING', '16_GO_LIVE_ACCEPTANCE', '17_OPERATIONS_MONITORING'],
+      stages: [
+        { id: 'OPS_CORE_INSTITUTIONAL', code: 'INSTITUTIONALIZE', name: 'Institutionalize', description: 'Define corporate organization structure', order: 1, capabilities: ['INSTITUTIONALIZE'], requiredRoles: ['TENANT_ADMINISTRATOR'], requiredServices: ['InstitutionalCommissioningEngine'], requiredEvidence: ['Organization Map'], entryConditions: ['RELEASED APPROVED'], exitConditions: ['Structure Configured'], status: 'COMPLETED' },
+        { id: 'OPS_CORE_CONFIGURE', code: 'CONFIGURE', name: 'Configure', description: 'Configure custom operational parameters', order: 2, capabilities: ['CONFIGURE'], requiredRoles: ['TENANT_ADMINISTRATOR'], requiredServices: ['InstitutionalCommissioningEngine'], requiredEvidence: ['Parameter Override Set'], entryConditions: ['Structure Configured'], exitConditions: ['Parameters Set'], status: 'IN_PROGRESS' },
+        { id: 'OPS_CORE_EXPERIENCE', code: 'EXPERIENCE', name: 'Experience', description: 'Configure public and auth portals', order: 3, capabilities: ['EXPERIENCE'], requiredRoles: ['TENANT_ADMINISTRATOR'], requiredServices: ['ExperienceSynthesisEngine'], requiredEvidence: ['Portal Map Registry'], entryConditions: ['Parameters Set'], exitConditions: ['Experience Synthesized'], status: 'PENDING' },
+        { id: 'OPS_CORE_BRAND', code: 'BRAND', name: 'Brand', description: 'White-label assets and brand styling customization', order: 4, capabilities: ['BRAND'], requiredRoles: ['TENANT_ADMINISTRATOR'], requiredServices: ['ExperienceSynthesisEngine'], requiredEvidence: ['Branded Styles Digest'], entryConditions: ['Experience Synthesized'], exitConditions: ['Branding Locked'], status: 'PENDING' },
+        { id: 'OPS_CORE_PROVISION', code: 'PROVISION', name: 'Provision', description: 'Set up database enclaves and network segments', order: 5, capabilities: ['PROVISION'], requiredRoles: ['OPS_ENGINEER'], requiredServices: ['EnclaveDeploymentEngine'], requiredEvidence: ['Provisioning Receipt'], entryConditions: ['Branding Locked'], exitConditions: ['Infrastructure Ready'], status: 'PENDING' },
+        { id: 'OPS_CORE_INSTALL', code: 'INSTALL', name: 'Install', description: 'Install container stack and security credentials', order: 6, capabilities: ['INSTALL'], requiredRoles: ['OPS_ENGINEER'], requiredServices: ['EnclaveDeploymentEngine'], requiredEvidence: ['mTLS Credentials Digest'], entryConditions: ['Infrastructure Ready'], exitConditions: ['Software Installed'], status: 'PENDING' },
+        { id: 'OPS_CORE_DEPLOY', code: 'DEPLOY', name: 'Deploy', description: 'Perform container push and schema migrations', order: 7, capabilities: ['DEPLOY'], requiredRoles: ['OPS_ENGINEER'], requiredServices: ['EnclaveDeploymentEngine'], requiredEvidence: ['Live Deployment Record'], entryConditions: ['Software Installed'], exitConditions: ['Deployed'], status: 'PENDING' },
+        { id: 'OPS_CORE_GOLIVE', code: 'GO-LIVE', name: 'Go-Live', description: 'Sovereign cutover gate and endpoints switch', order: 8, capabilities: ['GOLIVE'], requiredRoles: ['GO_LIVE_CONTROLLER'], requiredServices: ['InstitutionalCommissioningEngine'], requiredEvidence: ['Go-Live Certificate'], entryConditions: ['Deployed'], exitConditions: ['Live Active'], status: 'PENDING' },
+        { id: 'OPS_CORE_HANDOVER', code: 'HANDOVER', name: 'Handover', description: 'Transfer to operations with live telemetry', order: 9, capabilities: ['HANDOVER'], requiredRoles: ['GO_LIVE_CONTROLLER'], requiredServices: ['InstitutionalCommissioningEngine'], requiredEvidence: ['Handover Signed Receipt'], entryConditions: ['Live Active'], exitConditions: ['Handover Complete'], status: 'PENDING' }
+      ]
+    });
   }
 }
 

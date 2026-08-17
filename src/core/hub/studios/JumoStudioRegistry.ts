@@ -170,6 +170,11 @@ export const JUMO_STUDIO_REGISTRY = new JumoStudioRegistry([
   studio('products', 'Digital Products Catalogue', 'PRODUCTS', 'Manufactured ERP ecosystems and platforms catalogue.', ['Products', 'Catalogue'], 'boxes'),
   studio('templates', 'Registry Fabric', 'PRODUCTS', 'Authoritative source for base registries.', ['Registries', 'Orchestration'], 'layers'),
   studio('job-review', 'Job Review & Verification', 'GOVERNANCE', 'Authoritative human governance gate for manufacturing jobs.', ['Review', 'Approval', 'Governance'], 'shield-check'),
+
+  // Three Consolidated Master Studios
+  studio('spec-arch-eng', 'Specification, Architecture & Engineering Studio', 'MANUFACTURING', 'Coherent workspace for INTENT → SPECIFICATION → ARCHITECTURE → ENGINEERING → BLUEPRINT.', ['Intake', 'Specification', 'Architecture', 'Engineering', 'Blueprint'], 'file-text'),
+  studio('mfg-ver-cert', 'Manufacturing, Verification & Certification Studio', 'MANUFACTURING', 'Live control surface for PREPARE → MANUFACTURE → ASSEMBLE → INTEGRATE → VERIFY → CERTIFY → RELEASE.', ['Manufacturing', 'Verification', 'Certification', 'Lineage', 'Release'], 'zap'),
+  studio('inst-exp-deploy', 'Institutionalization, Experience & Deployment Studio', 'OPERATIONS', 'Sovereign plane for INSTITUTIONALIZE → CONFIGURE → EXPERIENCE → BRAND → PROVISION → INSTALL → DEPLOY → GO-LIVE → HANDOVER.', ['Institutionalization', 'Configuration', 'Experience', 'Branding', 'Provisioning', 'Deployment'], 'globe'),
 ]);
 
 

@@ -35,6 +35,9 @@ import {
 import { SovereignGovernanceRegistry } from "../../services/gov/SovereignGovernanceRegistry";
 import { JumoEventBus } from "../../core/common/events/JumoEventBus";
 import { SpecificationStudio } from "./studios/SpecificationStudio";
+import { SpecificationArchitectureEngineeringStudio } from './studios/SpecificationArchitectureEngineeringStudio';
+import { ManufacturingVerificationCertificationStudio } from './studios/ManufacturingVerificationCertificationStudio';
+import { InstitutionalizationExperienceDeploymentStudio } from './studios/InstitutionalizationExperienceDeploymentStudio';
 
 import { FAAPLedgerStudio } from './studios/FAAPLedgerStudio';
 import { BrandingStudio } from './studios/BrandingStudio';
@@ -143,38 +146,44 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   // Map any incoming sub-category or alias workspaces to their canonical studio tabs or direct renderers
   const getCanonicalGroup = (ws: HubWorkspace): HubWorkspace => {
     switch (ws) {
-      case 'specification': return 'specification';
-      case 'provisioning': return 'provisioning';
-      case 'architecture': return 'architecture';
-      case 'arch-verification': return 'arch-verification';
+      case 'specification':
+      case 'architecture':
+      case 'arch-verification':
+      case 'engineering':
+      case 'templates':
+      case 'spec-arch-eng' as HubWorkspace:
+        return 'spec-arch-eng' as HubWorkspace;
+
       case 'factory':
       case 'manufacturing':
-        return 'factory';
-      case 'engineering': return 'engineering';
-      case 'workforce': return 'workforce';
-      case 'config':
-      case 'branding':
-        return 'branding';
       case 'assurance':
       case 'verification':
-        return 'verification';
       case 'certification':
-        return 'certification';
+      case 'job-review':
+      case 'mfg-ver-cert' as HubWorkspace:
+        return 'mfg-ver-cert' as HubWorkspace;
+
+      case 'branding':
+      case 'config':
+      case 'provisioning':
+      case 'deployment':
+      case 'cloud':
       case 'operations':
       case 'overview':
-        return 'operations';
-      case 'deployment': return 'deployment';
-      case 'cloud': return 'cloud';
       case 'security':
       case 'control':
-        return 'control';
-      case 'migration': return 'migration';
-      case 'lifecycle': return 'lifecycle';
+      case 'lifecycle':
+      case 'migration':
       case 'governance':
       case 'audit':
-        return 'governance';
-      case 'templates': return 'templates';
-      case 'faap': return 'faap';
+      case 'faap':
+      case 'ai-control':
+      case 'workshop':
+      case 'financial':
+      case 'products':
+      case 'inst-exp-deploy' as HubWorkspace:
+        return 'inst-exp-deploy' as HubWorkspace;
+
       default:
         return ws;
     }
@@ -271,6 +280,20 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
   };
 
   const renderStudio = () => {
+    const ws = getCanonicalGroup(activeWorkspaceState);
+    switch (ws) {
+      case 'spec-arch-eng' as HubWorkspace:
+        return <SpecificationArchitectureEngineeringStudio />;
+      case 'mfg-ver-cert' as HubWorkspace:
+        return <ManufacturingVerificationCertificationStudio />;
+      case 'inst-exp-deploy' as HubWorkspace:
+        return <InstitutionalizationExperienceDeploymentStudio />;
+      default:
+        return <SpecificationArchitectureEngineeringStudio />;
+    }
+  };
+
+  const _legacyRenderStudio = () => {
     const ws = activeWorkspaceState;
     switch (ws) {
       case 'specification':
@@ -479,17 +502,21 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
           </div>
 
           <div className="flex items-center gap-1 p-1 bg-slate-200/50 rounded-xl border border-slate-200 w-fit">
-            {(['specification', 'architecture', 'factory', 'assurance', 'operations', 'governance'] as HubWorkspace[]).map(ws => (
+            {([
+              { id: 'spec-arch-eng' as HubWorkspace, label: '1. Spec, Arch & Eng' },
+              { id: 'mfg-ver-cert' as HubWorkspace, label: '2. Mfg, Verify & Cert' },
+              { id: 'inst-exp-deploy' as HubWorkspace, label: '3. Inst, Exp & Deploy' }
+            ]).map(item => (
               <button
-                key={ws}
-                onClick={() => onNavigateInternal(ws)}
+                key={item.id}
+                onClick={() => onNavigateInternal(item.id)}
                 className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all whitespace-nowrap ${
-                  canonicalActive === ws 
+                  canonicalActive === item.id 
                   ? 'bg-slate-900 text-white shadow-md' 
                   : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                {ws}
+                {item.label}
               </button>
             ))}
           </div>

@@ -169,7 +169,7 @@ function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
   };
 
   const handleParent = () => {
-    navigateTo("specification");
+    navigateTo("spec-arch-eng" as HubWorkspace);
   };
 
   // === 9. UNIFIED KEYBOARD CONTROLLER ===
@@ -339,36 +339,28 @@ function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
     setPreferences(nextSettings);
   };
 
-  // === 11. SIDEBAR NAVIGATION GROUPS (CONSOLIDATED TO EXACTLY 5 TOP-LEVEL CLASSIFICATIONS) ===
+  // === 11. SIDEBAR NAVIGATION GROUPS (CONSOLIDATED TO EXACTLY THREE MASTER STUDIOS) ===
   const getCategoryOfTab = (tab: HubWorkspace): string => {
     switch (tab) {
       case 'specification':
-      case 'templates':
-      case 'products':
-        return 'SPECIFICATION';
-
       case 'architecture':
-      case 'engineering':
       case 'arch-verification':
-        return 'ARCHITECTURE_ENGINEERING';
+      case 'engineering':
+      case 'templates':
+      case 'spec-arch-eng' as HubWorkspace:
+        return 'STUDIO_1';
 
       case 'factory':
       case 'manufacturing':
-      case 'job-review':
-      case 'provisioning':
-      case 'certification':
-        return 'FACTORY';
-
-      case 'verification':
       case 'assurance':
-      case 'overview':
-      case 'operations':
-      case 'workshop':
-      case 'lifecycle':
-        return 'ASSURANCE_OPERATIONS';
+      case 'verification':
+      case 'certification':
+      case 'job-review':
+      case 'mfg-ver-cert' as HubWorkspace:
+        return 'STUDIO_2';
 
       default:
-        return 'GOVERNANCE';
+        return 'STUDIO_3';
     }
   };
 
@@ -382,57 +374,30 @@ function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
 
   const categories = [
     {
-      id: "SPECIFICATION",
-      label: "SPECIFICATION",
+      id: "STUDIO_1",
+      label: "1. SPEC & ARCHITECTURE",
       icon: FileText,
-      color: "text-blue-500",
+      color: "text-indigo-600",
       items: [
-        { id: "specification" as HubWorkspace, label: "Specification Studio", description: "Initialize new specification", icon: FileText, color: "text-blue-500" },
-        { id: "templates" as HubWorkspace, label: "Product Contract", description: "Registries and contracts", icon: Layers, color: "text-blue-500" }
+        { id: "spec-arch-eng" as HubWorkspace, label: "Spec & Arch Studio", description: "Intent, Spec, Arch & Engineering Compiler", icon: FileText, color: "text-indigo-600" }
       ]
     },
     {
-      id: "ARCHITECTURE_ENGINEERING",
-      label: "ARCHITECTURE & ENGINEERING",
-      icon: Layers,
-      color: "text-amber-500",
-      items: [
-        { id: "architecture" as HubWorkspace, label: "Architecture Studio", description: "Topologies & expansion", icon: Layers, color: "text-amber-500" },
-        { id: "arch-verification" as HubWorkspace, label: "Architecture Verification", description: "Design verification", icon: ShieldCheck, color: "text-amber-500" },
-        { id: "engineering" as HubWorkspace, label: "Engineering Studio", description: "Application compilation", icon: Terminal, color: "text-amber-500" }
-      ]
-    },
-    {
-      id: "FACTORY",
-      label: "FACTORY",
+      id: "STUDIO_2",
+      label: "2. MFG & VERIFICATION",
       icon: Zap,
-      color: "text-emerald-500",
+      color: "text-emerald-600",
       items: [
-        { id: "factory" as HubWorkspace, label: "Digital Product Factory", description: "10-Stage active pipeline", icon: Zap, color: "text-emerald-500" },
-        { id: "job-review" as HubWorkspace, label: "Job Review Studio", description: "Review compiled builds & previews", icon: ShieldCheck, color: "text-emerald-500" },
-        { id: "provisioning" as HubWorkspace, label: "Provisioning & Deploy", description: "Deployments & instances", icon: Database, color: "text-emerald-500" }
+        { id: "mfg-ver-cert" as HubWorkspace, label: "Mfg & Verify Studio", description: "Automated production and cryptographic signs", icon: Zap, color: "text-emerald-600" }
       ]
     },
     {
-      id: "ASSURANCE_OPERATIONS",
-      label: "ASSURANCE & OPERATIONS",
-      icon: Shield,
-      color: "text-purple-500",
+      id: "STUDIO_3",
+      label: "3. INST & DEPLOYMENT",
+      icon: Globe,
+      color: "text-indigo-600",
       items: [
-        { id: "verification" as HubWorkspace, label: "Verification & Validation", description: "Continuous integration gates", icon: Shield, color: "text-purple-500" },
-        { id: "operations" as HubWorkspace, label: "Runtime Operations", description: "Live system monitoring", icon: Activity, color: "text-purple-500" },
-        { id: "workshop" as HubWorkspace, label: "Remote Diagnostics", description: "Self-healing & repair logs", icon: Wrench, color: "text-purple-500" }
-      ]
-    },
-    {
-      id: "GOVERNANCE",
-      label: "GOVERNANCE",
-      icon: Cpu,
-      color: "text-slate-500",
-      items: [
-        { id: "control" as HubWorkspace, label: "Sovereign Control Center", description: "Zero-trust control plane", icon: Cpu, color: "text-slate-500" },
-        { id: "ai-control" as HubWorkspace, label: "AI Workforce Center", description: "Sovereign AI Workforce", icon: Bot, color: "text-slate-500" },
-        { id: "faap" as HubWorkspace, label: "Sovereign Ledger (FAAP)", description: "FAAP ledger double-entry audit", icon: Landmark, color: "text-slate-500" }
+        { id: "inst-exp-deploy" as HubWorkspace, label: "Inst & Deploy Studio", description: "Tenant customisation, enclaves & runtime ops", icon: Globe, color: "text-indigo-600" }
       ]
     }
   ];

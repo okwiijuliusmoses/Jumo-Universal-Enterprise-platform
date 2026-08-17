@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   Palette, Type, Image as ImageIcon, Layout, Eye, 
   Accessibility, Globe, Lock, Save, RefreshCw, 
   CheckCircle2, Hexagon, Fingerprint, Shield
 } from 'lucide-react';
+import { useJobNavigation } from '../../shell/JobNavigationContext';
 
 export const BrandingStudio: React.FC = () => {
+  const { selectedJob } = useJobNavigation();
   const [activeTab, setActiveTab] = useState<'identity' | 'theme' | 'experience'>('identity');
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
+
+  const [institutionName, setInstitutionName] = useState('JUMO National Enterprise');
+  const [slogan, setSlogan] = useState('Sovereign Digital Infrastructure for the Future');
+
+  useEffect(() => {
+    if (selectedJob) {
+      setInstitutionName(selectedJob.productName || selectedJob.id);
+      setSlogan(selectedJob.productPurpose || 'Sovereign Digital Infrastructure for the Future');
+    }
+  }, [selectedJob]);
 
   const handleSave = () => {
     setSaving(true);
@@ -86,7 +98,8 @@ export const BrandingStudio: React.FC = () => {
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Institution Name</label>
                       <input 
                         type="text" 
-                        defaultValue="JUMO National Enterprise"
+                        value={institutionName}
+                        onChange={(e) => setInstitutionName(e.target.value)}
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 outline-none transition-all"
                       />
                     </div>
@@ -94,7 +107,8 @@ export const BrandingStudio: React.FC = () => {
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Slogan / Descriptor</label>
                       <input 
                         type="text" 
-                        defaultValue="Sovereign Digital Infrastructure for the Future"
+                        value={slogan}
+                        onChange={(e) => setSlogan(e.target.value)}
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 outline-none transition-all"
                       />
                     </div>
@@ -294,8 +308,8 @@ export const BrandingStudio: React.FC = () => {
                 </div>
                 <div className="p-4 space-y-4">
                   <div className="space-y-1">
-                    <div className="h-3 w-2/3 bg-slate-100 rounded-md"></div>
-                    <div className="h-2 w-full bg-slate-50 rounded-md"></div>
+                    <span className="text-[10px] font-black text-slate-800 uppercase block">{institutionName}</span>
+                    <span className="text-[8px] text-slate-400 font-medium block leading-tight">{slogan}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="h-16 bg-slate-50 rounded-lg border border-slate-100"></div>
