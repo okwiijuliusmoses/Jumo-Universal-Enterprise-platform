@@ -344,30 +344,7 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       case 'factory':
       case 'manufacturing':
         return (
-          <ManufacturingStudio 
-            jobs={jobs}
-            contracts={archContracts}
-            onPromoteJob={async (jobId: string) => {
-              const job = jobs.find(j => j.id === jobId);
-              if (job) {
-                if (job.currentLifecycleState === 'AWAITING_SPECIFICATION_APPROVAL') {
-                  await orchestrator.grantApproval(jobId, 'SPECIFICATION_APPROVED', 'Sovereign Governor');
-                } else if (job.currentLifecycleState === 'AWAITING_ARCHITECTURE_APPROVAL') {
-                  await orchestrator.grantApproval(jobId, 'ARCHITECTURE_APPROVED', 'Chief Architect');
-                } else if (job.currentLifecycleState === 'FACTORY_READY') {
-                  await orchestrator.startManufacturing(jobId);
-                } else if (job.currentLifecycleState === 'MANUFACTURING_VERIFIED') {
-                  await orchestrator.startBuild(jobId);
-                } else if (job.currentLifecycleState === 'BUILD_VERIFIED') {
-                  await orchestrator.verifyProduct(jobId);
-                }
-              }
-            }}
-            onPauseJob={async (jobId: string) => {
-              // Placeholder for pause if needed
-            }}
-            eventLog={[]}
-          />
+          <ManufacturingStudio />
         );
       case 'engineering':
       case 'workforce':
@@ -548,11 +525,11 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
             <div className="pt-4 space-y-3">
               <div className="flex items-center justify-between text-[10px] font-bold">
                 <span className="text-slate-400">Ledger Hash</span>
-                <span className="font-mono text-blue-400">0d39c3...aeebe5</span>
+                <span className="font-mono text-slate-500">UNAVAILABLE</span>
               </div>
               <div className="flex items-center justify-between text-[10px] font-bold">
                 <span className="text-slate-400">Compliance</span>
-                <span className="text-emerald-400">100% SECURE</span>
+                <span className="text-slate-500">NOT MEASURED</span>
               </div>
             </div>
           </div>

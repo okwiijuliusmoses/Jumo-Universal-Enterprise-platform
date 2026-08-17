@@ -29,8 +29,8 @@ export const GovernanceStudio: React.FC<GovernanceStudioProps> = ({
   const [gptHistory, setGptHistory] = useState<Array<{ role: string; text: string; model: string; time: string }>>([
     {
       role: 'assistant',
-      text: `JUMO UEOS Sovereign Enterprise Control Foundation Initialized. Primary Intelligence: OpenAI GPT-5.6 Sol. Specialist Coding Engine: Gemini 3.7 Flash. All ${JumoAIAgentRegistry.getAllAgents().length} AI agents and 40 JDPM standards active. How may I direct the platform?`,
-      model: 'OpenAI GPT-5.6 Sol (Primary)',
+      text: `JUMO UEOS Sovereign Enterprise Control Foundation Initialized. Authentic execution fabric is running.`,
+      model: 'System',
       time: new Date().toLocaleTimeString()
     }
   ]);
@@ -132,26 +132,26 @@ export const GovernanceStudio: React.FC<GovernanceStudioProps> = ({
               <StatCard 
                 icon={<Layers className="text-blue-600" />} 
                 label="Active Blueprints" 
-                value={stats?.activeBlueprints || 16} 
-                trend="+12% vs last month"
+                value={stats?.activeBlueprints !== undefined ? stats.activeBlueprints : 'NOT MEASURED'} 
+                trend="UNAVAILABLE"
               />
               <StatCard 
                 icon={<Box className="text-emerald-600" />} 
                 label="Certified Products" 
-                value={stats?.certifiedProducts || 6} 
-                trend="All gates verified"
+                value={stats?.certifiedProducts !== undefined ? stats.certifiedProducts : 'NOT MEASURED'} 
+                trend="UNAVAILABLE"
               />
               <StatCard 
                 icon={<Users className="text-indigo-600" />} 
                 label="AI Workforce" 
                 value={JumoAIAgentRegistry.getAllAgents().length} 
-                trend={`${JumoAIAgentRegistry.getAllAgents().length} Agents Active`}
+                trend="UNAVAILABLE"
               />
               <StatCard 
                 icon={<Activity className="text-rose-600" />} 
                 label="Compliance Score" 
-                value={`${stats?.nationalStandardCompliance || 100}%`} 
-                trend="40/40 JDPM Standards"
+                value={stats?.nationalStandardCompliance !== undefined ? `${stats.nationalStandardCompliance}%` : 'NOT MEASURED'} 
+                trend="UNAVAILABLE"
               />
 
               <div className="col-span-1 md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col h-full">

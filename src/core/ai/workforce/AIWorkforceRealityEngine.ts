@@ -65,6 +65,19 @@ export class AIWorkforceRealityEngine {
     return this.workers.get(id);
   }
 
+  public updateWorkerStatus(workerId: string, status: AIWorkerRecord['status'], task?: string) {
+    const worker = this.workers.get(workerId);
+    if (worker) {
+      worker.status = status;
+      worker.currentTask = task;
+      if (status === 'REAL_EXECUTING_ENGINEER') {
+        worker.invocationCount++;
+        worker.lastExecution = new Date().toISOString();
+      }
+      this.workers.set(workerId, worker);
+    }
+  }
+
   public getAllWorkers(): AIWorkerRecord[] {
     return Array.from(this.workers.values());
   }

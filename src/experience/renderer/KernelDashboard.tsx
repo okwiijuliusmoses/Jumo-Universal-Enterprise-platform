@@ -69,16 +69,6 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
 
     loadMetrics();
     loadLockData();
-
-    // Simulation of live updates
-    const interval = setInterval(() => {
-      setAiInsight(prev => prev.includes("No anomalies") 
-        ? "AI Insight: New platform architecture configuration ready for review."
-        : "Analyzing national infrastructure telemetry... No anomalies detected in the last 24 hours."
-      );
-    }, 15000);
-
-    return () => clearInterval(interval);
   }, []);
 
   if (isLoading) {

@@ -76,8 +76,7 @@ export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ jobs = [],
         body: JSON.stringify({
           agentId: selectedAgentId,
           taskTitle: promptText.trim(),
-          division: selectedAgent?.division,
-          specialization: selectedAgent?.specialization,
+          discipline: selectedAgent?.discipline,
           jobId: jobs[0]?.id // Default to most recent job if available
         })
       });
@@ -90,7 +89,7 @@ export const EngineeringStudio: React.FC<EngineeringStudioProps> = ({ jobs = [],
       setAiResponse({
         requestId: workLog.id,
         mode: 'execution',
-        understoodIntent: `Execute ${selectedAgent?.specialization} task: ${promptText.trim()}`,
+        understoodIntent: `Execute ${selectedAgent?.discipline} task: ${promptText.trim()}`,
         response: workLog.result,
         timestamp: workLog.timestamp,
         delegation: { required: false },

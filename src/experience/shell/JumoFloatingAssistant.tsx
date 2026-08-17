@@ -273,7 +273,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
                       <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                       <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
                     </div>
-                    <span className="font-semibold text-slate-400 tracking-wider uppercase text-[9px]">JUMO reasoning in progress...</span>
+                    <span className="font-semibold text-slate-400 tracking-wider uppercase text-[9px]">JUMO reasoning executing...</span>
                   </div>
                 </div>
               )}

@@ -151,33 +151,8 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {quickTemplates.map((tpl) => (
-                <div key={tpl.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                          <tpl.icon className="w-4 h-4" />
-                        </div>
-                        <h4 className="text-xs font-black text-slate-900 uppercase">{tpl.name}</h4>
-                      </div>
-                      <span className="text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded uppercase">
-                        COMPILED
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500 font-medium mb-4">{tpl.description}</p>
-                  </div>
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-slate-400">SPEC-{tpl.id.toUpperCase()}-VERIFIED</span>
-                    <button
-                      onClick={() => handleQuickLaunch(tpl.id)}
-                      className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                    >
-                      Manufacture &rarr;
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {/* Replaced quickTemplates with static message as it was undefined */}
+              <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No quick templates available.</div>
             </div>
           </div>
         )}
@@ -194,8 +169,8 @@ export const EcosystemWorkspace: React.FC<EcosystemWorkspaceProps> = ({ ecosyste
 
         {activeTab === 'queue' && (
           <div className="space-y-4">
-            {state?.jobs.filter(j => j.ecosystem === category).length === 0 && <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No active manufacturing jobs in this queue.</div>}
-            {state?.jobs.filter(j => j.ecosystem === category).map((job) => (
+            {state?.jobs.filter(j => j.ecosystem === ecosystemId).length === 0 && <div className="bg-slate-50 p-10 rounded-xl border border-slate-200 border-dashed text-center text-slate-500">No active manufacturing jobs in this queue.</div>}
+            {state?.jobs.filter(j => j.ecosystem === ecosystemId).map((job) => (
               <div key={job.id} className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-slate-900">{job.id}</h4>

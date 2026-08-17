@@ -110,11 +110,11 @@ export function ManufacturingVerificationCertificationStudio() {
       {/* Main Workspace Frame */}
       <div className="min-h-[50vh]">
         {activeTab === 'factory' && (
-          <ManufacturingStudio initialTab="job_board" />
+          <ManufacturingStudio initialTab="overview" />
         )}
 
         {activeTab === 'explorer' && (
-          <ManufacturingStudio initialTab="human_review" />
+          <ManufacturingStudio initialTab="evidence" />
         )}
 
         {activeTab === 'certification' && (
