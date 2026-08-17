@@ -243,6 +243,7 @@ export class ManufacturingGateEngine {
     job.status = newStatus;
     job.updatedAt = new Date().toISOString();
     job.reviewGate = {
+      id: 'GATE-' + auditDigest.substring(0, 8),
       jobId: request.jobId,
       lifecycleStage: job.status,
       gateType: request.gateType,
@@ -252,6 +253,7 @@ export class ManufacturingGateEngine {
       reviewerRole: request.reviewerRole,
       artifactRefs: job.artifactsGenerated || [],
       evidenceRefs: ['EVIDENCE-GATE-' + auditDigest.substring(0, 8)],
+      revision: (job.reviewGate?.revision || 0) + 1,
       feedback: {
         rejectionReason: request.decision === 'REJECT' ? request.feedbackNotes : undefined,
         requiredCorrection: request.feedbackNotes,

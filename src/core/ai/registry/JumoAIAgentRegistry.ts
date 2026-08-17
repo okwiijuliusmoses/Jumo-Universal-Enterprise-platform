@@ -829,10 +829,16 @@ export class JumoAIAgentRegistry {
       mockSimulated,
       classifications: {
         REAL_EXECUTING_ENGINEER: executingEngineers,
-        REAL_REGISTERED_IDLE: registeredIdle,
-        REAL_CAPABILITY_NO_EXECUTOR: capabilityNoExecutor,
+        REAL_REGISTERED_ENGINEER: registeredIdle,
+        REGISTERED_BUT_IDLE: registeredIdle,
+        CAPABILITY_ONLY: capabilityNoExecutor,
+        NO_EXECUTION_ADAPTER: capabilityNoExecutor,
+        NO_PROVIDER: capabilityNoExecutor,
         CONFIGURATION_PLACEHOLDER: configurationPlaceholders,
-        MOCK_SIMULATED_AGENT: mockSimulated
+        MOCK: mockSimulated,
+        SIMULATION: mockSimulated,
+        INVALID: 0,
+        DUPLICATE: 0
       }
     };
   }

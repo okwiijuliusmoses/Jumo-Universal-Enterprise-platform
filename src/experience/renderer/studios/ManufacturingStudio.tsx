@@ -21,6 +21,9 @@ import { ManufacturingDependencyGraph } from '../components/ManufacturingDepende
 import { ManufacturingExecutionBoard } from '../components/ManufacturingExecutionBoard';
 import { ManufacturingQualityDashboard } from '../components/ManufacturingQualityDashboard';
 import { ManufacturingResourcePlanning } from '../components/ManufacturingResourcePlanning';
+import { ManufacturingOperationalLayers } from '../components/ManufacturingOperationalLayers';
+import { ManufacturingStandardsMatrix } from '../components/ManufacturingStandardsMatrix';
+import { ManufacturingJobDossier } from '../components/ManufacturingJobDossier';
 
 export interface ManufacturingStudioProps {
   initialJobId?: string;
@@ -49,7 +52,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   const [expandedSpecSection, setExpandedSpecSection] = useState<string | null>('identity');
   
   // Human Review Sub-Tabs
-  const [reviewTab, setReviewTab] = useState<'product_explorer' | 'gate_review' | 'brief' | 'specification' | 'blueprint' | 'history32' | 'preview'>('product_explorer');
+  const [reviewTab, setReviewTab] = useState<'product_explorer' | 'operational_layers' | 'standards_matrix' | 'job_dossier' | 'gate_review' | 'brief' | 'specification' | 'blueprint' | 'history32' | 'preview'>('product_explorer');
   const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop');
   const [previewMode, setPreviewMode] = useState<'landing' | 'catalogue' | 'portal'>('landing');
   const [showAssistantModal, setShowAssistantModal] = useState<boolean>(false);
@@ -872,7 +875,10 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                         <div className="flex items-center gap-1 bg-slate-200/50 p-1 rounded-xl border border-slate-200 overflow-x-auto">
                           {[
                             { id: 'product_explorer', label: '1. Navigable Product Explorer' },
-                            { id: 'gate_review', label: '2. Authoritative Gate Review' },
+                            { id: 'operational_layers', label: '2. 27 Operational Concerns (A–AA)' },
+                            { id: 'standards_matrix', label: '3. Standards Assurance Matrix' },
+                            { id: 'job_dossier', label: '4. Complete Operational Dossier' },
+                            { id: 'gate_review', label: '5. Authoritative Gate Review' },
                             { id: 'brief', label: 'Brief' },
                             { id: 'specification', label: 'Specifications' },
                             { id: 'blueprint', label: 'Blueprint' },
@@ -900,7 +906,22 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                           <ManufacturedProductExplorer job={selectedJob} />
                         )}
 
-                        {/* 0.1 Authoritative Gate Review Engine */}
+                        {/* 0.1 27 Operational Concerns (A - AA) */}
+                        {reviewTab === 'operational_layers' && (
+                          <ManufacturingOperationalLayers job={selectedJob} />
+                        )}
+
+                        {/* 0.2 International Standards Assurance Matrix */}
+                        {reviewTab === 'standards_matrix' && (
+                          <ManufacturingStandardsMatrix />
+                        )}
+
+                        {/* 0.3 Complete Job Operational Dossier */}
+                        {reviewTab === 'job_dossier' && (
+                          <ManufacturingJobDossier job={selectedJob} />
+                        )}
+
+                        {/* 0.4 Authoritative Gate Review Engine */}
                         {reviewTab === 'gate_review' && (
                           <ManufacturingGateEngineComponent job={selectedJob} onDecisionExecuted={fetchFactoryState} />
                         )}

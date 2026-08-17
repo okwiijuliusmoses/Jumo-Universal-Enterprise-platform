@@ -53,6 +53,12 @@ export type ProductLifecycleState =
   | 'DEPRECATED'
   | 'RETIRED';
 
+export type GateType = 
+  | 'ENGINEERING_APPROVAL' 
+  | 'STAGE_APPROVAL' 
+  | 'FINAL_ASSEMBLY_APPROVAL' 
+  | 'GO_LIVE_APPROVAL';
+
 export type ManufacturingJobStatus = 
   | 'INTAKE'
   | 'SPECIFICATION'
@@ -67,6 +73,7 @@ export type ManufacturingJobStatus =
   | 'CERTIFICATION'
   | 'DEPLOYMENT'
   | 'RUNTIME_ACTIVE'
+  | 'COMPLETED'
   | 'FAILED'
   | 'BLOCKED'
   | 'DIGITAL_INTAKE'
@@ -398,6 +405,19 @@ export interface ProductManufacturingJob extends ManufacturingJob {
   manufacturingArtifactId?: string;
   certificationId?: string;
   runtimeInstanceId?: string;
+
+  // Convenience & Extension fields
+  productName?: string;
+  productPurpose?: string;
+  ecosystemDomain?: string;
+  operatorName?: string;
+  specArtifacts?: Record<string, any>;
+  archArtifacts?: Record<string, any>;
+  blueprintArtifacts?: Record<string, any>;
+  verificationLogs?: any[];
+  compiledModulesCount?: number;
+  reviewGate?: ReviewGate;
+  artifactsGenerated?: string[];
 }
 
 export interface ArchitectureContract {
