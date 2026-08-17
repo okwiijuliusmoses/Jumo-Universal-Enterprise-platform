@@ -14,6 +14,7 @@ import {
 import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 import { EcosystemWorkspace } from "./ecosystem/EcosystemWorkspace";
+import { useJobNavigation } from '../shell/JobNavigationContext';
 
 import { ArchitectureStudio } from './studios/ArchitectureStudio';
 import { ManufacturingStudio } from './studios/ManufacturingStudio';
@@ -124,7 +125,8 @@ const STAGE_TO_STUDIO_MAP: Record<string, HubWorkspace> = {
 
 export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { activeWorkspace: HubWorkspace; onNavigate?: (ws: HubWorkspace) => void }) {
   const [activeWorkspaceState, setActiveWorkspaceState] = useState<HubWorkspace>(activeWorkspace || 'specification');
-  const [activeJob, setActiveJob] = useState<ManufacturingJob | null>(null);
+  const { selectedJob, setSelectedJobId } = useJobNavigation();
+  const activeJob = selectedJob;
   const [archContracts, setArchContracts] = useState<ArchitectureContract[]>([]);
   const [jobs, setJobs] = useState<ManufacturingJob[]>([]);
   const [deploymentRecords, setDeploymentRecords] = useState<DeploymentRecord[]>([]);
@@ -192,7 +194,9 @@ export function NationalManufacturingHub({ activeWorkspace, onNavigate }: { acti
       
       // Find the most relevant active job
       const currentJob = allJobs.find(j => j.status !== 'FAILED') || allJobs[allJobs.length - 1];
-      setActiveJob(currentJob || null);
+      if (currentJob && !selectedJob) {
+        setSelectedJobId(currentJob.id);
+      }
 
       setDeploymentRecords(registry.getDeploymentRecords());
       setCertificationRecords(registry.getCertificationRecords());

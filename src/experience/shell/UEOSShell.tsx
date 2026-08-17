@@ -18,6 +18,7 @@ import { initializeSovereignCommandRegistry, UEOSCommandRegistry, UEOSCommand } 
 import { UEOSSettingsCenter, UEOSSettings } from "./UEOSSettingsCenter";
 import { UEOSRightInspector } from "./UEOSRightInspector";
 import { JumoFloatingAssistant } from "./JumoFloatingAssistant";
+import { JobNavigationProvider, useJobNavigation } from "./JobNavigationContext";
 
 interface UEOSShellProps {
   user: {
@@ -29,7 +30,17 @@ interface UEOSShellProps {
   onLogout: () => void;
 }
 
-export function UEOSShell({ user, onLogout }: UEOSShellProps) {
+export function UEOSShell(props: UEOSShellProps) {
+  return (
+    <JobNavigationProvider>
+      <UEOSShellContent {...props} />
+    </JobNavigationProvider>
+  );
+}
+
+function UEOSShellContent({ user, onLogout }: UEOSShellProps) {
+  const { jobs, selectedJobId, setSelectedJobId } = useJobNavigation();
+
   // === 1. BASIC SHELL STATES ===
   const [activeTab, setActiveTab] = useState<HubWorkspace>(() => {
     const saved = localStorage.getItem("jumo_ueos_active_workspace");
@@ -284,6 +295,22 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       });
     });
 
+    // Index Jobs
+    jobs.forEach((j) => {
+      if (!q || j.id.toLowerCase().includes(q) || (j.productName && j.productName.toLowerCase().includes(q))) {
+        results.push({
+          id: j.id,
+          name: j.productName || `Job ${j.id}`,
+          type: `Manufacturing Job • Stage ${j.currentManufacturingStage || 1}`,
+          status: j.status || "ACTIVE",
+          workspace: "factory",
+          icon: Zap,
+          isJob: true,
+          data: j
+        });
+      }
+    });
+
     return results;
   };
 
@@ -291,6 +318,9 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     setCommandPaletteOpen(false);
     if (item.isCommand) {
       item.action();
+    } else if (item.isJob) {
+      setSelectedJobId(item.id);
+      navigateTo("factory");
     } else {
       // It's a registry resource item — navigate to workspace and open in Right Inspector!
       navigateTo(item.workspace);

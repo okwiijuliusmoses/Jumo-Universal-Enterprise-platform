@@ -16,6 +16,7 @@ import { JumoAIAgentRegistry } from '../../../core/ai/registry/JumoAIAgentRegist
 import { JumoStandardsAlignmentEngine } from '../../../core/standards/JumoStandardsAlignmentEngine';
 import { JDPMLineageInspector } from '../components/JDPMLineageInspector';
 import { ManufacturedProductExplorer } from '../components/ManufacturedProductExplorer';
+import { useJobNavigation } from '../../shell/JobNavigationContext';
 import { ManufacturingGateEngineComponent } from '../components/ManufacturingGateEngine';
 import { ManufacturingDependencyGraph } from '../components/ManufacturingDependencyGraph';
 import { ManufacturingExecutionBoard } from '../components/ManufacturingExecutionBoard';
@@ -46,8 +47,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
   // Primary State
   const [activeTab, setActiveTab] = useState<'job_board' | 'assembly_line' | 'human_review' | 'resources' | 'build_log' | 'operations'>(initialTab);
-  const [jobs, setJobs] = useState<ProductManufacturingJob[]>(propsJobs || []);
-  const [selectedJobId, setSelectedJobId] = useState<string | null>(initialJobId || null);
+  const { jobs, selectedJobId, setSelectedJobId, refreshJobs } = useJobNavigation();
   const [expandedStages, setExpandedStages] = useState<number[]>([1, 2, 3]);
   const [expandedSpecSection, setExpandedSpecSection] = useState<string | null>('identity');
   
@@ -68,6 +68,12 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
   const [affectedRequirement, setAffectedRequirement] = useState<string>('REQ-SOVEREIGN-001');
   const [rejectionSeverity, setRejectionSeverity] = useState<'MINOR' | 'MAJOR' | 'CRITICAL'>('MAJOR');
   const [requestedCorrection, setRequestedCorrection] = useState<string>('');
+
+  // Live Experience Navigation state
+  const [previewPath, setPreviewPath] = useState<string>('landing');
+  const [selectedRole, setSelectedRole] = useState<string>('Student');
+  const [previewInputs, setPreviewInputs] = useState<Record<string, string>>({});
+  const [previewState, setPreviewState] = useState<Record<string, any>>({});
 
   // Execution & Action UI State
   const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
@@ -111,7 +117,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
         currentJobs = govRegistry.getAllJobs() as ProductManufacturingJob[];
       }
 
-      setJobs(currentJobs);
+      refreshJobs();
 
       if (currentJobs.length > 0) {
         if (!selectedJobId || !currentJobs.some(j => j.id === selectedJobId)) {
@@ -317,6 +323,74 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
   const toggleStageExpand = (phaseId: number) => {
     setExpandedStages(prev => prev.includes(phaseId) ? prev.filter(p => p !== phaseId) : [...prev, phaseId]);
+  };
+
+  const isArtifactTypeManufactured = (type: string, currentJobStatus: string) => {
+    const currentIdx = pipelineStages.findIndex(s => s.statusKey === currentJobStatus);
+    if (currentIdx === -1) return false;
+    
+    switch (type) {
+      case 'PRODUCT':
+      case 'PRODUCT_IDENTITY':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'SPECIFICATION_NORMALIZATION');
+      case 'PRODUCT_BLUEPRINT':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'ARCHITECTURE_CONTRACT_GENERATION');
+      case 'TENANT_INSTITUTION':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'PLATFORM_INSTANCE_DEFINITION');
+      case 'EXPERIENCE':
+      case 'PORTAL':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'AWAITING_HUMAN_ENGINEERING_APPROVAL');
+      case 'DIRECTORATE_DEPARTMENT':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'REQUIREMENTS_DECOMPOSITION');
+      case 'MODULE':
+      case 'SUBMODULE':
+      case 'FEATURE':
+      case 'COMPONENT':
+      case 'FORM':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'APPLICATION_ENGINEERING');
+      case 'SERVICE':
+      case 'API':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'API_AND_INTEGRATION_ENGINEERING');
+      case 'DATA_SCHEMA':
+      case 'DATABASE_OBJECT':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'SCHEMA_MANUFACTURING');
+      case 'WORKFLOW':
+      case 'BUSINESS_RULE':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'SOURCE_AND_ARTIFACT_GENERATION');
+      case 'AI_CAPABILITY':
+      case 'AI_AGENT':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'AI_AND_AUTOMATION_ENGINEERING');
+      case 'REPORT':
+      case 'DASHBOARD':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'COMMERCIAL_PRODUCT_ENGINEERING');
+      case 'SECURITY_CONTROL':
+      case 'SECURITY_POLICY':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'SECURITY_ENGINEERING');
+      case 'INFRASTRUCTURE':
+      case 'DEPLOYMENT_UNIT':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'INFRASTRUCTURE_ENGINEERING');
+      case 'TEST':
+      case 'VERIFICATION_EVIDENCE':
+      case 'CERTIFICATION':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'APPLICATION_COMPLETENESS_VERIFICATION');
+      case 'DEPLOYMENT':
+      case 'DEPLOYMENT_PACKAGE':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'DEPLOYMENT_AND_PUBLISHING');
+      case 'RUNTIME':
+      case 'OPERATIONAL_RUNBOOK':
+      case 'OPERATIONS':
+        return currentIdx >= pipelineStages.findIndex(s => s.statusKey === 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT');
+      default:
+        return true;
+    }
+  };
+
+  const getJobProgress = (job: any) => {
+    if (!job) return 0;
+    const currentIdx = pipelineStages.findIndex(s => s.statusKey === job.status);
+    if (currentIdx === -1) return 0;
+    if (job.status === 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT') return 100;
+    return Math.round((currentIdx / pipelineStages.length) * 100);
   };
 
   // Phase State Helper
@@ -541,7 +615,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                             }`}>
                               {(job.status || 'ACTIVE').replace(/_/g, ' ')}
                             </span>
-                            <span className="text-[9px] font-mono font-bold text-slate-400 mt-1 block">{Math.round(job.progress || 0)}% progress</span>
+                            <span className="text-[9px] font-mono font-bold text-slate-400 mt-1 block">{getJobProgress(job)}% progress</span>
                           </div>
                         </button>
                       );
@@ -842,7 +916,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                                 <span>{new Date(job.createdAt).toLocaleTimeString()}</span>
                               </div>
                               <span className="text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded">
-                                {Math.round(job.progress || 0)}%
+                                {getJobProgress(job)}%
                               </span>
                             </div>
                           </button>
@@ -1122,7 +1196,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
                         {/* 5. Interactive Product Preview Sub-Tab */}
                         {reviewTab === 'preview' && (
-                          <div className="space-y-4 max-w-5xl">
+                          <div className="space-y-6 max-w-5xl">
                             {/* Control Bar */}
                             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
                               <div className="flex items-center gap-2">
@@ -1148,20 +1222,10 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                               </div>
 
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-black uppercase text-slate-400 font-mono">View Mode:</span>
-                                <div className="flex items-center bg-slate-100 p-1 rounded-lg">
-                                  {(['landing', 'catalogue', 'portal'] as const).map(m => (
-                                    <button 
-                                      key={m}
-                                      onClick={() => setPreviewMode(m)}
-                                      className={`px-3 py-1 rounded text-[10px] font-black uppercase transition-all ${
-                                        previewMode === m ? 'bg-slate-900 text-white shadow-2xs' : 'text-slate-500'
-                                      }`}
-                                    >
-                                      {m}
-                                    </button>
-                                  ))}
-                                </div>
+                                <span className="text-[10px] font-black uppercase text-slate-400 font-mono">Simulated Route:</span>
+                                <span className="text-[10px] font-mono font-bold bg-slate-100 text-purple-700 px-2 py-1 rounded-md border border-slate-250 uppercase truncate max-w-xs">
+                                  /{previewPath}
+                                </span>
                               </div>
 
                               <button 
@@ -1172,46 +1236,648 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
                               </button>
                             </div>
 
-                            {/* Preview Frame */}
-                            <div className={`mx-auto transition-all ${previewViewport === 'mobile' ? 'max-w-sm' : 'w-full'}`}>
-                              <div className="bg-slate-900 rounded-2xl border-4 border-slate-800 shadow-2xl overflow-hidden min-h-[480px] flex flex-col text-slate-100">
-                                {/* Browser Bar */}
-                                <div className="bg-slate-950 px-4 py-2 border-b border-slate-800 flex items-center gap-2 text-[10px] font-mono text-slate-400">
-                                  <div className="flex gap-1">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
-                                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
-                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
-                                  </div>
-                                  <div className="flex-1 bg-slate-900 px-3 py-1 rounded-md text-slate-300 font-medium truncate text-center">
-                                    https://{selectedJob.productId.toLowerCase()}.jumo.internal/
-                                  </div>
-                                </div>
-
-                                {/* Mock Interactive App Body */}
-                                <div className="p-8 flex-1 bg-gradient-to-b from-slate-900 to-slate-950 space-y-6">
-                                  <div className="inline-block px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-[10px] font-mono text-blue-300 uppercase font-black">
-                                    Sovereign Sandbox Active
-                                  </div>
-                                  <h1 className="text-2xl font-black text-white">
-                                    {getVal(selectedJob.blueprint?.productIdentity?.name, 'ATUTUR SEED SECONDARY SCHOOL')}
-                                  </h1>
-                                  <p className="text-xs text-slate-300 leading-relaxed max-w-xl">
-                                    {getVal(selectedJob.blueprint?.productIdentity?.purpose, 'Institutional Operations Management & Digital Administration Service Platform.')}
+                            {/* Viewport & Roadmap Grid */}
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                              {/* Left Navigation: Step Checklist */}
+                              <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 shadow-xs space-y-3">
+                                <div>
+                                  <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">User Journey Checklist</h4>
+                                  <p className="text-[10px] text-slate-500 mt-0.5">
+                                    Simulate and ratify each route of the manufactured system.
                                   </p>
+                                </div>
+                                <div className="space-y-1 overflow-y-auto max-h-[420px] pr-1">
+                                  {[
+                                    { id: 'landing', label: 'Public Landing Page', requiredType: 'EXPERIENCE' },
+                                    { id: 'identity', label: 'Institution Identity', requiredType: 'PRODUCT_IDENTITY' },
+                                    { id: 'services', label: 'Public Services Catalogue', requiredType: 'SERVICE' },
+                                    { id: 'notices', label: 'Public Announcements', requiredType: 'MODULE' },
+                                    { id: 'admissions', label: 'Student Admissions Intake', requiredType: 'WORKFLOW' },
+                                    { id: 'info', label: 'Public Information Portal', requiredType: 'OPERATIONAL_RUNBOOK' },
+                                    { id: 'support', label: 'Contact & Support Desks', requiredType: 'OPERATIONAL_RUNBOOK' },
+                                    { id: 'login', label: 'Identity Authentication', requiredType: 'SECURITY_POLICY' },
+                                    { id: 'register', label: 'User Registration', requiredType: 'SECURITY_POLICY' },
+                                    { id: 'verify-identity', label: 'National ID OCR Verification', requiredType: 'SECURITY_POLICY' },
+                                    { id: 'tenant', label: 'Tenant Administration', requiredType: 'DEPLOYMENT_PACKAGE' },
+                                    { id: 'role-resolution', label: 'Role Selection / Resolution', requiredType: 'SECURITY_POLICY' },
+                                    { id: 'workspace', label: 'Authenticated OS App', requiredType: 'OPERATIONAL_RUNBOOK' },
+                                  ].map((step, idx) => {
+                                    const isStepManufactured = isArtifactTypeManufactured(step.requiredType, selectedJob.status);
+                                    const isActive = previewPath === step.id;
+                                    return (
+                                      <button
+                                        key={step.id}
+                                        onClick={() => setPreviewPath(step.id)}
+                                        className={`w-full text-left p-2 rounded-lg text-xs flex items-start gap-2.5 transition-all border ${
+                                          isActive 
+                                            ? 'bg-purple-50 border-purple-200 text-purple-900 font-extrabold'
+                                            : 'bg-white border-transparent text-slate-600 hover:bg-slate-50'
+                                        }`}
+                                      >
+                                        <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono shrink-0 font-bold ${
+                                          isStepManufactured 
+                                            ? 'bg-emerald-100 text-emerald-800' 
+                                            : 'bg-rose-100 text-rose-800 animate-pulse'
+                                        }`}>
+                                          {isStepManufactured ? '✓' : '!'}
+                                        </span>
+                                        <div className="truncate">
+                                          <div className="flex items-center gap-1.5 justify-between">
+                                            <span className="truncate">{step.label}</span>
+                                            <span className="text-[8px] font-mono opacity-60 text-slate-500">{(idx + 1).toString().padStart(2, '0')}</span>
+                                          </div>
+                                          <div className="text-[8px] font-mono text-slate-400 mt-0.5 uppercase tracking-wider">
+                                            Req: {step.requiredType}
+                                          </div>
+                                        </div>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
 
-                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-4">
-                                    <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
-                                      <div className="text-[10px] font-bold text-slate-400 uppercase">Student Intake</div>
-                                      <div className="text-lg font-black text-white mt-1">1,240 Registered</div>
+                              {/* Right Browser Viewport */}
+                              <div className={`lg:col-span-8 space-y-4 ${previewViewport === 'mobile' ? 'max-w-sm mx-auto w-full' : 'w-full'}`}>
+                                <div className="bg-slate-900 rounded-2xl border-4 border-slate-800 shadow-2xl overflow-hidden min-h-[480px] flex flex-col text-slate-100">
+                                  {/* Browser Address Bar */}
+                                  <div className="bg-slate-950 px-4 py-2 border-b border-slate-800 flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                                    <div className="flex gap-1">
+                                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                                     </div>
-                                    <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
-                                      <div className="text-[10px] font-bold text-slate-400 uppercase">Faculty Portal</div>
-                                      <div className="text-lg font-black text-emerald-400 mt-1">48 Active Staff</div>
+                                    <div className="flex-1 bg-slate-900 px-3 py-1 rounded-md text-slate-300 font-medium truncate text-center font-mono">
+                                      https://{selectedJob.productId.toLowerCase()}.jumo.internal/{previewPath}
                                     </div>
-                                    <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
-                                      <div className="text-[10px] font-bold text-slate-400 uppercase">Curriculum Modules</div>
-                                      <div className="text-lg font-black text-blue-400 mt-1">32 Enrolled</div>
-                                    </div>
+                                  </div>
+
+                                  {/* Viewport Content */}
+                                  <div className="p-6 flex-1 bg-gradient-to-b from-slate-900 to-slate-950 flex flex-col justify-between min-h-[400px]">
+                                    {(() => {
+                                      const currentStep = [
+                                        { id: 'landing', label: 'Public Landing Page', requiredType: 'EXPERIENCE', phaseName: 'Phase 05 - Experience Architecture' },
+                                        { id: 'identity', label: 'Institution Identity', requiredType: 'PRODUCT_IDENTITY', phaseName: 'Phase 01 - Specification Intake' },
+                                        { id: 'services', label: 'Public Services Catalogue', requiredType: 'SERVICE', phaseName: 'Phase 08 - API Engineering' },
+                                        { id: 'notices', label: 'Public Announcements', requiredType: 'MODULE', phaseName: 'Phase 07 - Module Manufacturing' },
+                                        { id: 'admissions', label: 'Student Admissions Intake', requiredType: 'WORKFLOW', phaseName: 'Phase 09 - Process Workflow Integration' },
+                                        { id: 'info', label: 'Public Information Portal', requiredType: 'OPERATIONAL_RUNBOOK', phaseName: 'Phase 17 - Runtime Validation' },
+                                        { id: 'support', label: 'Contact & Support Desks', requiredType: 'OPERATIONAL_RUNBOOK', phaseName: 'Phase 17 - Runtime Validation' },
+                                        { id: 'login', label: 'Identity Authentication', requiredType: 'SECURITY_POLICY', phaseName: 'Phase 10 - Security Engineering' },
+                                        { id: 'register', label: 'User Registration', requiredType: 'SECURITY_POLICY', phaseName: 'Phase 10 - Security Engineering' },
+                                        { id: 'verify-identity', label: 'National ID OCR Verification', requiredType: 'SECURITY_POLICY', phaseName: 'Phase 10 - Security Engineering' },
+                                        { id: 'tenant', label: 'Tenant Administration', requiredType: 'DEPLOYMENT_PACKAGE', phaseName: 'Phase 15 - Deployment & Go-Live' },
+                                        { id: 'role-resolution', label: 'Role Selection / Resolution', requiredType: 'SECURITY_POLICY', phaseName: 'Phase 10 - Security Engineering' },
+                                        { id: 'workspace', label: 'Authenticated OS App', requiredType: 'OPERATIONAL_RUNBOOK', phaseName: 'Phase 17 - Runtime Validation' },
+                                      ].find(s => s.id === previewPath);
+
+                                      if (!currentStep) return null;
+
+                                      const isStepManufactured = isArtifactTypeManufactured(currentStep.requiredType, selectedJob.status);
+
+                                      if (!isStepManufactured) {
+                                        return (
+                                          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 space-y-4 max-w-md mx-auto">
+                                            <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 animate-pulse">
+                                              <AlertTriangle size={24} />
+                                            </div>
+                                            <div>
+                                              <span className="text-[9px] font-mono font-black uppercase text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full">
+                                                NOT MANUFACTURED
+                                              </span>
+                                              <h4 className="text-sm font-black uppercase text-white mt-2 tracking-wider">
+                                                {currentStep.label} Unavailable
+                                              </h4>
+                                              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                                                This step requires the <span className="font-mono font-bold bg-slate-800 px-1 rounded text-rose-300">{currentStep.requiredType}</span> artifact model, which is generated during <span className="font-semibold text-slate-250">{currentStep.phaseName}</span>.
+                                              </p>
+                                            </div>
+                                            <div className="text-[10px] font-mono text-slate-500 border border-slate-800 rounded px-2.5 py-1 bg-slate-950">
+                                              Pipeline is currently: {selectedJob.status.replace(/_/g, ' ')}
+                                            </div>
+                                          </div>
+                                        );
+                                      }
+
+                                      switch (previewPath) {
+                                        case 'landing':
+                                          return (
+                                            <div className="space-y-6">
+                                              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                                                <div className="text-xs font-bold font-mono text-slate-400 flex items-center gap-1.5">
+                                                  <span>{getVal(selectedJob.blueprint?.productIdentity?.name, 'ATUTUR SEED SECONDARY SCHOOL')}</span>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                  <button onClick={() => setPreviewPath('login')} className="text-[10px] font-bold bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded cursor-pointer">Login</button>
+                                                  <button onClick={() => setPreviewPath('register')} className="text-[10px] font-bold bg-purple-600 hover:bg-purple-500 px-2.5 py-1 rounded cursor-pointer">Register</button>
+                                                </div>
+                                              </div>
+                                              <div className="space-y-3">
+                                                <span className="px-2 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded text-[9px] font-mono text-purple-300 font-bold uppercase">Public Landing Experience</span>
+                                                <h1 className="text-xl font-black text-white">{getVal(selectedJob.blueprint?.productIdentity?.name, 'ATUTUR SEED SECONDARY SCHOOL')}</h1>
+                                                <p className="text-xs text-slate-300 leading-relaxed max-w-xl">
+                                                  {getVal(selectedJob.blueprint?.productIdentity?.purpose, 'Sovereign Institutional Operations, Educational Management & Community Administration Portal.')}
+                                                </p>
+                                              </div>
+                                              <div className="grid grid-cols-2 gap-3 pt-4">
+                                                <button onClick={() => setPreviewPath('admissions')} className="p-4 bg-slate-800/50 hover:bg-slate-800/80 border border-slate-700/50 rounded-xl text-left transition-colors cursor-pointer text-slate-100">
+                                                  <span className="text-[10px] font-mono text-purple-300 font-bold">01 / ADMISSIONS INTAKE</span>
+                                                  <h5 className="text-xs font-bold text-white mt-1">Apply for Admission</h5>
+                                                  <p className="text-[10px] text-slate-400 mt-1">Submit digital application and enroll student record securely.</p>
+                                                </button>
+                                                <button onClick={() => setPreviewPath('services')} className="p-4 bg-slate-800/50 hover:bg-slate-800/80 border border-slate-700/50 rounded-xl text-left transition-colors cursor-pointer text-slate-100">
+                                                  <span className="text-[10px] font-mono text-purple-300 font-bold">02 / SERVICES</span>
+                                                  <h5 className="text-xs font-bold text-white mt-1">Explore Public Services</h5>
+                                                  <p className="text-[10px] text-slate-400 mt-1">Class schedules, academic performance trackers, and registries.</p>
+                                                </button>
+                                              </div>
+                                            </div>
+                                          );
+                                        case 'identity':
+                                          return (
+                                            <div className="space-y-4">
+                                              <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 rounded text-[9px] font-mono text-blue-300 font-bold uppercase">Sovereign Institution Identity</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 font-mono text-[11px] text-slate-300">
+                                                <div className="grid grid-cols-3 gap-2 border-b border-slate-900 pb-2">
+                                                  <span className="text-slate-500 font-bold">Property</span>
+                                                  <span className="col-span-2 text-slate-400">Value Record</span>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2 border-b border-slate-900/50 pb-2">
+                                                  <span className="text-slate-400">Full Name</span>
+                                                  <span className="col-span-2 text-white font-sans font-bold">{getVal(selectedJob.blueprint?.productIdentity?.name, 'ATUTUR SEED SECONDARY SCHOOL')}</span>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2 border-b border-slate-900/50 pb-2">
+                                                  <span className="text-slate-400">Jurisdiction</span>
+                                                  <span className="col-span-2 text-emerald-400">Republic of Uganda</span>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2 border-b border-slate-900/50 pb-2">
+                                                  <span className="text-slate-400">Audience</span>
+                                                  <span className="col-span-2 text-slate-300 font-sans">{getVal(selectedJob.blueprint?.productIdentity?.targetUsers, 'Students, Faculty, School Administrators, Ministry Officials')}</span>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                  <span className="text-slate-400">Tenancy</span>
+                                                  <span className="col-span-2 text-purple-400">{getVal(selectedJob.blueprint?.productIdentity?.tenancyModel, 'SINGLE_TENANT')}</span>
+                                                </div>
+                                              </div>
+                                              <button onClick={() => setPreviewPath('services')} className="w-full py-2 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Proceed to Public Services <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'services':
+                                          return (
+                                            <div className="space-y-4">
+                                              <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 rounded text-[9px] font-mono text-emerald-300 font-bold uppercase">Public Services Catalogue</span>
+                                              <div className="space-y-2">
+                                                {[
+                                                  { name: 'Student Academic Performance API', type: 'REST Endpoint', desc: 'Secure query of PLE/UCE performance metrics per registration hash.' },
+                                                  { name: 'National Curriculum Registry Sync', type: 'GraphQL Service', desc: 'Sovereign synchronization tool connecting directly to UNEB.' },
+                                                  { name: 'Financial Bursary Assessment Engine', type: 'Autonomous Workflow', desc: 'Sovereign intelligence calculating scholarship eligibilities.' }
+                                                ].map((srv, sIdx) => (
+                                                  <div key={sIdx} className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                                                    <div>
+                                                      <h5 className="text-xs font-bold text-white">{srv.name}</h5>
+                                                      <p className="text-[10px] text-slate-400 mt-0.5">{srv.desc}</p>
+                                                    </div>
+                                                    <span className="px-2 py-0.5 bg-slate-850 text-slate-300 text-[8px] font-mono rounded border border-slate-700 uppercase font-black shrink-0">
+                                                      {srv.type}
+                                                    </span>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                              <div className="flex gap-2">
+                                                <button onClick={() => setPreviewPath('landing')} className="flex-1 py-1.5 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg text-slate-400 cursor-pointer">Back</button>
+                                                <button onClick={() => setPreviewPath('notices')} className="flex-1 py-1.5 bg-purple-600 hover:bg-purple-500 text-xs font-bold rounded-lg text-white cursor-pointer">Next: Announcements</button>
+                                              </div>
+                                            </div>
+                                          );
+                                        case 'notices':
+                                          return (
+                                            <div className="space-y-4">
+                                              <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 rounded text-[9px] font-mono text-amber-300 font-bold uppercase">Public Announcements</span>
+                                              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                                                {(previewState.notices || [
+                                                  { title: 'Term 1 Registration Active', date: 'August 15, 2026', body: 'All admissions are open under direct government seed sponsorship.' },
+                                                  { title: 'UNEB Center Registration Complete', date: 'August 12, 2026', body: 'Center operations have been fully verified by JUMO Autonomous Audit.' }
+                                                ]).map((not: any, nIdx: number) => (
+                                                  <div key={nIdx} className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1 text-left">
+                                                    <div className="flex items-center justify-between">
+                                                      <h5 className="text-xs font-bold text-white">{not.title}</h5>
+                                                      <span className="text-[9px] font-mono text-slate-500">{not.date}</span>
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-300 leading-relaxed">{not.body}</p>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                              <div className="bg-slate-950 p-2.5 border border-slate-800 rounded-xl flex items-center gap-2">
+                                                <input 
+                                                  type="text" 
+                                                  placeholder="Post announcement..." 
+                                                  value={previewInputs.newNotice || ''}
+                                                  onChange={(e) => setPreviewInputs(prev => ({ ...prev, newNotice: e.target.value }))}
+                                                  className="flex-1 bg-slate-900 border border-slate-850 text-xs text-white rounded px-2.5 py-1 font-sans focus:outline-none focus:ring-1 focus:ring-purple-500"
+                                                />
+                                                <button 
+                                                  onClick={() => {
+                                                    if (!previewInputs.newNotice) return;
+                                                    const notices = previewState.notices || [
+                                                      { title: 'Term 1 Registration Active', date: 'August 15, 2026', body: 'All admissions are open under direct government seed sponsorship.' },
+                                                      { title: 'UNEB Center Registration Complete', date: 'August 12, 2026', body: 'Center operations have been fully verified by JUMO Autonomous Audit.' }
+                                                    ];
+                                                    setPreviewState(prev => ({
+                                                      ...prev,
+                                                      notices: [
+                                                        { title: previewInputs.newNotice, date: 'Today', body: 'Simulated announcement posted directly by Human Reviewer.' },
+                                                        ...notices
+                                                      ]
+                                                    }));
+                                                    setPreviewInputs(prev => ({ ...prev, newNotice: '' }));
+                                                  }}
+                                                  className="px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded text-xs text-white font-bold cursor-pointer"
+                                                >
+                                                  Post
+                                                </button>
+                                              </div>
+                                              <button onClick={() => setPreviewPath('admissions')} className="w-full py-2 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Proceed to Application Form <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'admissions':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 rounded text-[9px] font-mono text-blue-300 font-bold uppercase">Digital Application Intake</span>
+                                              {previewState.admissionsSubmitted ? (
+                                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center space-y-3">
+                                                  <div className="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center text-emerald-400 mx-auto">
+                                                    ✓
+                                                  </div>
+                                                  <div>
+                                                    <h5 className="text-sm font-bold text-white">Application Recorded Successfully</h5>
+                                                    <p className="text-xs text-slate-300 mt-1">Your applicant tracking hash: <span className="font-mono bg-slate-900 px-1 py-0.5 rounded text-emerald-400">APP-HASH-998274</span></p>
+                                                  </div>
+                                                  <button onClick={() => setPreviewState(prev => ({ ...prev, admissionsSubmitted: false }))} className="px-3 py-1 bg-slate-800 text-[10px] rounded hover:bg-slate-700 text-slate-300 cursor-pointer">Submit Another</button>
+                                                </div>
+                                              ) : (
+                                                <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs">
+                                                  <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                      <label className="text-[10px] font-mono text-slate-400 uppercase">Applicant Name</label>
+                                                      <input 
+                                                        type="text" 
+                                                        placeholder="e.g. Julius Moses" 
+                                                        value={previewInputs.applicantName || ''}
+                                                        onChange={(e) => setPreviewInputs(prev => ({ ...prev, applicantName: e.target.value }))}
+                                                        className="w-full bg-slate-900 border border-slate-805 rounded px-2.5 py-1 text-white focus:outline-none focus:ring-1 focus:ring-purple-500"
+                                                      />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                      <label className="text-[10px] font-mono text-slate-400 uppercase">Primary School</label>
+                                                      <input 
+                                                        type="text" 
+                                                        placeholder="e.g. Atutur Primary" 
+                                                        value={previewInputs.primarySchool || ''}
+                                                        onChange={(e) => setPreviewInputs(prev => ({ ...prev, primarySchool: e.target.value }))}
+                                                        className="w-full bg-slate-900 border border-slate-805 rounded px-2.5 py-1 text-white focus:outline-none focus:ring-1 focus:ring-purple-500"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <div className="grid grid-cols-2 gap-3">
+                                                    <div className="space-y-1">
+                                                      <label className="text-[10px] font-mono text-slate-400 uppercase">PLE Aggregate</label>
+                                                      <input 
+                                                        type="number" 
+                                                        placeholder="e.g. 8" 
+                                                        value={previewInputs.pleScore || ''}
+                                                        onChange={(e) => setPreviewInputs(prev => ({ ...prev, pleScore: e.target.value }))}
+                                                        className="w-full bg-slate-900 border border-slate-805 rounded px-2.5 py-1 text-white focus:outline-none focus:ring-1 focus:ring-purple-500"
+                                                      />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                      <label className="text-[10px] font-mono text-slate-400 uppercase">Guardian Name</label>
+                                                      <input 
+                                                        type="text" 
+                                                        placeholder="e.g. Moses Okwii" 
+                                                        value={previewInputs.guardianName || ''}
+                                                        onChange={(e) => setPreviewInputs(prev => ({ ...prev, guardianName: e.target.value }))}
+                                                        className="w-full bg-slate-900 border border-slate-805 rounded px-2.5 py-1 text-white focus:outline-none"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                  <button 
+                                                    onClick={() => {
+                                                      if (!previewInputs.applicantName) return;
+                                                      setPreviewState(prev => ({ ...prev, admissionsSubmitted: true }));
+                                                    }}
+                                                    className="w-full py-2 bg-purple-600 hover:bg-purple-500 font-bold rounded-lg transition-colors text-white cursor-pointer"
+                                                  >
+                                                    Submit Application Form
+                                                  </button>
+                                                </div>
+                                              )}
+                                              <button onClick={() => setPreviewPath('info')} className="w-full py-1.5 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Next: Public Info Portal <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'info':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/30 rounded text-[9px] font-mono text-indigo-300 font-bold uppercase">Sovereign Information Portal</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs leading-relaxed text-slate-300">
+                                                <h5 className="font-extrabold text-white text-xs uppercase">Institutional Operations Disclosure</h5>
+                                                <p>This secondary school operations platform is manufactured on behalf of the Ministry of Education & Sports under compliance directive <span className="font-mono bg-slate-900 px-1 py-0.2 text-emerald-400">COMP-UG-774</span>.</p>
+                                                <p>All core modules, database architectures, and API frameworks are verified autonomously against the National Zero-Trust Security Sandbox.</p>
+                                              </div>
+                                              <button onClick={() => setPreviewPath('support')} className="w-full py-2 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Next: Help Desk Support <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'support':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-pink-500/10 border border-pink-500/30 rounded text-[9px] font-mono text-pink-300 font-bold uppercase">Contact & Support Desks</span>
+                                              {previewState.ticketSubmitted ? (
+                                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center space-y-2">
+                                                  <div className="w-8 h-8 rounded-full bg-emerald-500/15 flex items-center justify-center text-emerald-400 mx-auto">✓</div>
+                                                  <h5 className="text-xs font-bold text-white">Support Query Dispatched</h5>
+                                                  <p className="text-[10px] text-slate-300 font-mono">Your sovereign ticket hash: <span className="text-emerald-400">TCK-72990</span></p>
+                                                </div>
+                                              ) : (
+                                                <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs">
+                                                  <div className="space-y-1">
+                                                    <label className="text-[10px] font-mono text-slate-400 uppercase">Your Email / Account</label>
+                                                    <input 
+                                                      type="text" 
+                                                      placeholder="governor@atutur.edu.go.ug" 
+                                                      className="w-full bg-slate-900 border border-slate-850 rounded px-2.5 py-1 text-white focus:outline-none"
+                                                    />
+                                                  </div>
+                                                  <div className="space-y-1">
+                                                    <label className="text-[10px] font-mono text-slate-400 uppercase">Support Issue Description</label>
+                                                    <textarea 
+                                                      rows={2}
+                                                      placeholder="Describe query or operational incident..." 
+                                                      className="w-full bg-slate-900 border border-slate-850 rounded px-2.5 py-1 text-white focus:outline-none font-sans"
+                                                    />
+                                                  </div>
+                                                  <button 
+                                                    onClick={() => setPreviewState(prev => ({ ...prev, ticketSubmitted: true }))}
+                                                    className="w-full py-1.5 bg-purple-600 hover:bg-purple-500 font-bold rounded-lg transition-colors text-white text-xs cursor-pointer"
+                                                  >
+                                                    Submit Ticket
+                                                  </button>
+                                                </div>
+                                              )}
+                                              <button onClick={() => setPreviewPath('login')} className="w-full py-2 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Enter Authentication Portal <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'login':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/30 rounded text-[9px] font-mono text-rose-300 font-bold uppercase">Identity Authentication</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs max-w-sm mx-auto">
+                                                <div className="text-center pb-2">
+                                                  <h5 className="font-extrabold text-white text-sm">SECURE SIGN IN</h5>
+                                                  <p className="text-[10px] text-slate-500 mt-0.5 font-mono">SOVEREIGN OIDC PROVIDER</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                  <label className="text-[9px] font-mono text-slate-400 uppercase">Authorized Email</label>
+                                                  <input 
+                                                    type="email" 
+                                                    placeholder="governor@atutur.edu.go.ug" 
+                                                    value={previewInputs.email || ''}
+                                                    onChange={(e) => setPreviewInputs(prev => ({ ...prev, email: e.target.value }))}
+                                                    className="w-full bg-slate-900 border border-slate-850 rounded px-2.5 py-1 text-white focus:outline-none"
+                                                  />
+                                                </div>
+                                                <div className="space-y-1">
+                                                  <label className="text-[9px] font-mono text-slate-400 uppercase">Access Passphrase</label>
+                                                  <input 
+                                                    type="password" 
+                                                    placeholder="••••••••" 
+                                                    value={previewInputs.password || ''}
+                                                    onChange={(e) => setPreviewInputs(prev => ({ ...prev, password: e.target.value }))}
+                                                    className="w-full bg-slate-900 border border-slate-850 rounded px-2.5 py-1 text-white focus:outline-none"
+                                                  />
+                                                </div>
+                                                <button 
+                                                  onClick={() => setPreviewPath('verify-identity')}
+                                                  className="w-full py-2 bg-purple-600 hover:bg-purple-500 font-bold rounded-lg transition-colors text-white font-mono uppercase text-[10px] tracking-wider cursor-pointer"
+                                                >
+                                                  Verify Authentication Access
+                                                </button>
+                                              </div>
+                                              <button onClick={() => setPreviewPath('register')} className="w-full py-1 bg-slate-850 hover:bg-slate-800 text-[10px] font-bold rounded text-slate-300 cursor-pointer">
+                                                No account? Go to registration
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'register':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded text-[9px] font-mono text-purple-300 font-bold uppercase">Sovereign Registration Flow</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs max-w-sm mx-auto">
+                                                <div className="space-y-1">
+                                                  <label className="text-[9px] font-mono text-slate-400 uppercase">Select Role Type</label>
+                                                  <select 
+                                                    value={selectedRole} 
+                                                    onChange={(e) => setSelectedRole(e.target.value)}
+                                                    className="w-full bg-slate-900 border border-slate-850 rounded px-2 py-1 text-white focus:outline-none font-sans"
+                                                  >
+                                                    <option value="Student">Student</option>
+                                                    <option value="Teacher">Teacher / Instructor</option>
+                                                    <option value="Registrar">School Registrar</option>
+                                                    <option value="Governor">Institutional Governor</option>
+                                                  </select>
+                                                </div>
+                                                <div className="space-y-1">
+                                                  <label className="text-[9px] font-mono text-slate-400 uppercase">National ID Number (NIN)</label>
+                                                  <input 
+                                                    type="text" 
+                                                    placeholder="e.g. CM89072189X7Z" 
+                                                    className="w-full bg-slate-900 border border-slate-850 rounded px-2.5 py-1 text-white focus:outline-none font-mono"
+                                                  />
+                                                </div>
+                                                <button 
+                                                  onClick={() => setPreviewPath('verify-identity')}
+                                                  className="w-full py-1.5 bg-purple-600 hover:bg-purple-500 font-bold rounded text-white text-xs cursor-pointer"
+                                                >
+                                                  Proceed to Verification
+                                                </button>
+                                              </div>
+                                            </div>
+                                          );
+                                        case 'verify-identity':
+                                          return (
+                                            <div className="space-y-4">
+                                              <span className="px-2 py-0.5 bg-teal-500/10 border border-teal-500/30 rounded text-[9px] font-mono text-teal-300 font-bold uppercase">National ID OCR Verification</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 text-center space-y-4 text-xs max-w-sm mx-auto">
+                                                <div className="border-2 border-dashed border-slate-800 rounded-xl p-6 space-y-2 hover:border-purple-500 cursor-pointer transition-colors">
+                                                  <Smartphone className="w-8 h-8 text-slate-500 mx-auto animate-pulse" />
+                                                  <p className="font-bold text-slate-300">Scan or Upload National ID Card</p>
+                                                  <p className="text-[10px] text-slate-500 font-sans">Supports NIRA National ID formats (PDF, JPEG)</p>
+                                                </div>
+                                                <button 
+                                                  onClick={() => {
+                                                    setPreviewState(prev => ({ ...prev, idVerified: true }));
+                                                    setTimeout(() => {
+                                                      setPreviewPath('tenant');
+                                                    }, 1500);
+                                                  }}
+                                                  className="w-full py-1.5 bg-purple-600 hover:bg-purple-500 font-bold rounded text-white text-xs cursor-pointer"
+                                                >
+                                                  Simulate Automated OCR Match
+                                                </button>
+                                                {previewState.idVerified && (
+                                                  <div className="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 font-mono text-[10px] font-bold">
+                                                    ✓ BIOMETRIC & RECORD MATCH VALIDATED VIA NIRA API
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          );
+                                        case 'tenant':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded text-[9px] font-mono text-purple-300 font-bold uppercase">Tenant Space Administration</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 text-xs leading-relaxed">
+                                                <h5 className="font-bold text-white">Sovereign Tenant Context</h5>
+                                                <div className="grid grid-cols-2 gap-2 font-mono text-[10px] text-slate-400">
+                                                  <div>TENANT ID: <span className="text-white">TNT-ATUTUR-98</span></div>
+                                                  <div>DEPLOYMENT ENCLAVE: <span className="text-emerald-400 font-bold">Active</span></div>
+                                                  <div>RESOURCE ALLOCATION: <span className="text-white">COGNITIVE vCPU x4</span></div>
+                                                  <div>STORAGE ASSIGNMENT: <span className="text-white">20GB NVMe</span></div>
+                                                </div>
+                                                <p className="text-slate-400 text-[11px]">This space represents the private isolation boundary for school databases, student profiles, financial logs, and secure local OIDC directories.</p>
+                                              </div>
+                                              <button onClick={() => setPreviewPath('role-resolution')} className="w-full py-2 bg-slate-850 hover:bg-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer text-slate-300">
+                                                Next: Role Multi-Factor Selection <ArrowRight size={12} />
+                                              </button>
+                                            </div>
+                                          );
+                                        case 'role-resolution':
+                                          return (
+                                            <div className="space-y-4 text-left">
+                                              <span className="px-2 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded text-[9px] font-mono text-purple-300 font-bold uppercase">Role Selection & Multi-Factor Resolution</span>
+                                              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 max-w-sm mx-auto text-xs">
+                                                <h5 className="font-bold text-white text-center">CHOOSE SYSTEM CONTEXT</h5>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                  {['Student', 'Teacher', 'Registrar', 'Governor'].map(role => (
+                                                    <button 
+                                                      key={role}
+                                                      onClick={() => setSelectedRole(role)}
+                                                      className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                                                        selectedRole === role 
+                                                          ? 'bg-purple-600/20 border-purple-500 text-white font-extrabold shadow-sm' 
+                                                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-850'
+                                                      }`}
+                                                    >
+                                                      <span className="block font-mono text-[10px] font-bold text-purple-400">ROLE</span>
+                                                      <span className="block text-xs mt-0.5">{role}</span>
+                                                    </button>
+                                                  ))}
+                                                </div>
+                                                <button 
+                                                  onClick={() => setPreviewPath('workspace')}
+                                                  className="w-full py-2 bg-purple-600 hover:bg-purple-500 font-bold rounded-lg text-white font-mono text-[10px] uppercase tracking-wider mt-2 cursor-pointer"
+                                                >
+                                                  Enter Sovereign Workspace Dashboard
+                                                </button>
+                                              </div>
+                                            </div>
+                                          );
+                                        case 'workspace':
+                                          return (
+                                            <div className="space-y-4 flex-1 flex flex-col justify-between text-left">
+                                              <div>
+                                                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                                                  <div className="flex items-center gap-1.5">
+                                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                                                    <span className="text-[10px] font-bold font-mono text-white uppercase tracking-wider">{selectedRole} Desktop</span>
+                                                  </div>
+                                                  <span className="text-[9px] font-mono font-bold bg-slate-800 px-2 py-0.5 rounded text-slate-300">
+                                                    TNT-ATUTUR-98
+                                                  </span>
+                                                </div>
+
+                                                <div className="pt-4 space-y-4">
+                                                  <h4 className="text-base font-black text-white">Sovereign Enterprise Dashboard</h4>
+                                                  
+                                                  {selectedRole === 'Governor' ? (
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">National Seed Budget</span>
+                                                        <div className="text-base font-black text-emerald-400 mt-1">UGX 420M / 500M</div>
+                                                        <span className="text-[8px] text-slate-400">84% Released by Governor Authority</span>
+                                                      </div>
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Faculty Alignment</span>
+                                                        <div className="text-base font-black text-blue-400 mt-1">100% Audited</div>
+                                                        <span className="text-[8px] text-slate-400">32 Core staff registry profiles verified</span>
+                                                      </div>
+                                                    </div>
+                                                  ) : selectedRole === 'Teacher' ? (
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Active Classes</span>
+                                                        <div className="text-base font-black text-white mt-1">12 Enrolled Units</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans">Senior 1 through Senior 4</span>
+                                                      </div>
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Marking Pipeline</span>
+                                                        <div className="text-base font-black text-amber-400 mt-1">14 Pending Audits</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans">Midterm terminal examinations</span>
+                                                      </div>
+                                                    </div>
+                                                  ) : selectedRole === 'Registrar' ? (
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Admissions Desk</span>
+                                                        <div className="text-base font-black text-purple-400 mt-1">148 Applied</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans">UNEB primary matches complete</span>
+                                                      </div>
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Biometric Cards</span>
+                                                        <div className="text-base font-black text-emerald-400 mt-1">94% Synthesized</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans font-medium">Local isolation boundary cards</span>
+                                                      </div>
+                                                    </div>
+                                                  ) : (
+                                                    // Student Role
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">My Class Attendance</span>
+                                                        <div className="text-base font-black text-emerald-400 mt-1">98.4% Present</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans">Verified via local node telemetry</span>
+                                                      </div>
+                                                      <div className="bg-slate-950 p-3 border border-slate-800 rounded-xl">
+                                                        <span className="text-[9px] font-mono text-slate-500 uppercase">Terminal Exams GPA</span>
+                                                        <div className="text-base font-black text-blue-400 mt-1">AGGREGATE 9 (Div 1)</div>
+                                                        <span className="text-[8px] text-slate-400 font-sans">Report cards verified against registry</span>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+
+                                              <button 
+                                                onClick={() => {
+                                                  setPreviewPath('landing');
+                                                  setPreviewState({});
+                                                }}
+                                                className="w-full py-2 bg-slate-800 hover:bg-slate-750 text-xs font-bold text-slate-300 mt-4 transition-colors cursor-pointer"
+                                              >
+                                                Exit Workspace (Logout & Clear Simulation)
+                                              </button>
+                                            </div>
+                                          );
+                                        default:
+                                          return null;
+                                      }
+                                    })()}
                                   </div>
                                 </div>
                               </div>
@@ -1846,6 +2512,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         runtimeList={runtimeList}
+        getJobProgress={getJobProgress}
       />
     </div>
   );
@@ -1861,9 +2528,10 @@ interface HierarchicalSidebarProps {
   activeTab: string;
   setActiveTab: (tab: any) => void;
   runtimeList: any[];
+  getJobProgress: (job: any) => number;
 }
 
-const HierarchicalSidebar: React.FC<HierarchicalSidebarProps> = ({ job, activeTab, setActiveTab, runtimeList }) => {
+const HierarchicalSidebar: React.FC<HierarchicalSidebarProps> = ({ job, activeTab, setActiveTab, runtimeList, getJobProgress }) => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['PRODUCT', 'RATIFICATION', 'MANUFACTURING']);
 
   const toggleCategory = (catId: string) => {
@@ -1921,7 +2589,7 @@ const HierarchicalSidebar: React.FC<HierarchicalSidebarProps> = ({ job, activeTa
       icon: <Settings2 className="w-4 h-4" />,
       subcategories: [
         { id: 'stages', label: '32 Work Packages', detail: selectedJob?.currentManufacturingStage ? `Stage ${selectedJob.currentManufacturingStage}/32` : 'Active' },
-        { id: 'progress', label: 'Completion', detail: `${Math.round(selectedJob?.progress || 0)}%` },
+        { id: 'progress', label: 'Completion', detail: `${getJobProgress(selectedJob)}%` },
       ]
     },
     {
