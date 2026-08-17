@@ -17,7 +17,7 @@ import { JumoStandardsAlignmentEngine } from '../../../core/standards/JumoStanda
 import { JDPMLineageInspector } from '../components/JDPMLineageInspector';
 import { ManufacturedProductExplorer } from '../components/ManufacturedProductExplorer';
 import { useJobNavigation } from '../../shell/JobNavigationContext';
-import { ManufacturingGateEngineComponent } from '../components/ManufacturingGateEngine';
+import { RatificationInspector } from '../components/RatificationInspector';
 import { ManufacturingDependencyGraph } from '../components/ManufacturingDependencyGraph';
 import { ManufacturingExecutionBoard } from '../components/ManufacturingExecutionBoard';
 import { ManufacturingQualityDashboard } from '../components/ManufacturingQualityDashboard';
@@ -997,7 +997,7 @@ export const ManufacturingStudio: React.FC<ManufacturingStudioProps> = ({
 
                         {/* 0.4 Authoritative Gate Review Engine */}
                         {reviewTab === 'gate_review' && (
-                          <ManufacturingGateEngineComponent job={selectedJob} onDecisionExecuted={fetchFactoryState} />
+                          <RatificationInspector job={selectedJob} onDecisionExecuted={fetchFactoryState} reviewerName={operatorName} />
                         )}
                         {reviewTab === 'brief' && (
                           <div className="space-y-6 max-w-4xl">
