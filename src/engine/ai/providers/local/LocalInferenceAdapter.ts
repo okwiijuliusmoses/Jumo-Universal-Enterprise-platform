@@ -245,8 +245,6 @@ export class LocalInferenceAdapter {
         // family removed
         parameterSize: m.parameterSize,
         capabilities: m.capabilities as any,
-        costPer1kInputTokens: 0,
-        costPer1kOutputTokens: 0,
         local: true,
         deploymentType: 'LOCAL',
         securityClassification: 'SECRET',
@@ -531,11 +529,7 @@ export class LocalInferenceAdapter {
       text: "[DETERMINISTIC CONTINUITY FALLBACK] Inference engine is unreachable. Structural continuity maintained.",
       latencyMs: Date.now() - start,
       tokens: 60,
-      error: "DETERMINISTIC_CONTINUITY_FALLBACK",
-      metadata: {
-        reasoning: false,
-        executionType: "DETERMINISTIC_CONTINUITY_FALLBACK"
-      }
+      error: "DETERMINISTIC_CONTINUITY_FALLBACK"
     };
   }
 

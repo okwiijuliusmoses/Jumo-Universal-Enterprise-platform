@@ -9,7 +9,7 @@ import { JumoAIGatewayEngine } from "../JumoAIGatewayEngine";
 import { AgentExecutionService } from "../execution/AgentExecutionService";
 import { AIAgentRecord, AIWorkforceDivision } from "../types/JumoAITypes";
 import { JumoSecretVault } from "../../security/JumoSecretVault";
-import { configService } from "../../../config/configService";
+import { configService } from "../../config/configService";
 
 export interface ProviderReadinessRecord {
   providerId: string;
@@ -271,7 +271,8 @@ export class AIWorkforceReadinessService {
       displayName: 'JUMO Multi-Cloud AI Gateway Router',
       status: 'OPERATIONAL',
       endpoint: 'gateway://jumo-ai-fabric',
-      details: 'Multi-cloud routing policies active with dynamic local/cloud failover capability.'
+      details: 'Multi-cloud routing policies active with dynamic local/cloud failover capability.',
+      capability: 'DETERMINISTIC_FALLBACK_CAPABLE'
     };
 
     return [ollaRecord, airGappedRecord, cloudGatewayRecord];
@@ -417,7 +418,7 @@ export class AIWorkforceReadinessService {
         blockedCount,
         familyStatus,
         representativeAgentId: representative.agentId,
-        representativeAgentName: representative.data?.displayName || representative.name || representative.role,
+        representativeAgentName: representative.data?.displayName || representative.displayName || representative.role,
         representativeTestResult: repResult
       });
     }
