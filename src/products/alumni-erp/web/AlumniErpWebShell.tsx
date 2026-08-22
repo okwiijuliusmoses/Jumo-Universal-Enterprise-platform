@@ -6,7 +6,7 @@ import {
   Calendar, HeartHandshake, TrendingUp, RefreshCw, Layers, ShieldCheck,
   Gift, GraduationCap, Building2, MapPin, Send, Check
 } from 'lucide-react';
-import { PlatformSwitcher } from '../../../components/PlatformSwitcher';
+import { AppLauncherPopup } from '../../../components/AppLauncherPopup';
 
 // Submodules
 import { AlumniDashboard } from './modules/AlumniDashboard';
@@ -265,7 +265,17 @@ export const AlumniErpWebShell: React.FC<AlumniErpWebShellProps> = ({
       <header className="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-13 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <PlatformSwitcher currentProductId="alumni-erp" onNavigate={onNavigate} />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center text-white font-black text-sm shadow-xs">
+                <Award className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="font-bold text-sm tracking-tight text-white block leading-none">
+                  JUMO <span className="text-rose-400 font-normal">ALUMNI ERP</span>
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">Institutional Advancement OS</span>
+              </div>
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -284,6 +294,18 @@ export const AlumniErpWebShell: React.FC<AlumniErpWebShellProps> = ({
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-2">
+            {/* Home / Launchpad Button */}
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate('/')}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-300 hover:text-white rounded-lg border border-slate-800 text-xs font-semibold transition cursor-pointer"
+                title="Return to Application Launcher"
+              >
+                <Home className="w-3.5 h-3.5 text-rose-400" />
+                <span className="hidden sm:inline">Launchpad</span>
+              </button>
+            )}
+
             <button 
               onClick={() => openContextualAi('Advancement & Alumni Copilot')}
               className="px-2.5 py-1 text-xs font-bold text-rose-300 bg-rose-950/60 hover:bg-rose-900/80 border border-rose-800/60 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
@@ -291,6 +313,14 @@ export const AlumniErpWebShell: React.FC<AlumniErpWebShellProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-rose-400" />
               <span className="hidden sm:inline">AI</span>
             </button>
+
+            {/* App Switcher */}
+            {onNavigate && (
+              <AppLauncherPopup 
+                currentProduct="JUMO-ALUMNI"
+                onNavigate={onNavigate}
+              />
+            )}
 
             <button 
               onClick={() => setActiveTab('MOD_ALUMNI_DASHBOARD')}

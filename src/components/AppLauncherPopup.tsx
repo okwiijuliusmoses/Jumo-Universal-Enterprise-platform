@@ -1,20 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   CreditCard, GraduationCap, Users, LayoutGrid, ArrowRight,
-  Settings, ChevronRight, X, Sparkles, Terminal, Home
+  Settings, ChevronRight, X, Sparkles, Terminal, Home, Church
 } from 'lucide-react';
 
 interface AppLauncherPopupProps {
-  currentProductId?: 'fintech' | 'education' | 'alumni' | 'owner';
+  currentProductId?: string;
+  currentProduct?: string;
   onNavigate?: (route: string) => void;
 }
 
 export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
   currentProductId,
+  currentProduct,
   onNavigate
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const activeId = (currentProductId || currentProduct || '').toLowerCase();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,22 +42,25 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
   };
 
   const getProductInfo = () => {
-    switch (currentProductId) {
-      case 'fintech':
-        return { name: 'JUMO FINTECH', icon: CreditCard, color: 'text-emerald-400', badge: 'Financial Platform' };
-      case 'education':
-        return { name: 'JUMO SCHOOL ERP', icon: GraduationCap, color: 'text-blue-400', badge: 'Education ERP' };
-      case 'alumni':
-        return { name: 'JUMO ALUMNI ERP', icon: Users, color: 'text-violet-400', badge: 'Alumni Network' };
-      case 'owner':
-        return { name: 'JUMO UEOS', icon: Settings, color: 'text-amber-400', badge: 'Owner Console' };
-      default:
-        return { name: 'JUMO UEOS', icon: LayoutGrid, color: 'text-slate-400', badge: 'Platform' };
+    if (activeId.includes('fintech') || activeId.includes('faap')) {
+      return { name: 'JUMO FINTECH', icon: CreditCard, color: 'text-emerald-400', badge: 'Financial Platform' };
     }
+    if (activeId.includes('edu') || activeId.includes('school')) {
+      return { name: 'JUMO SCHOOL ERP', icon: GraduationCap, color: 'text-blue-400', badge: 'Education ERP' };
+    }
+    if (activeId.includes('alumni')) {
+      return { name: 'JUMO ALUMNI ERP', icon: Users, color: 'text-rose-400', badge: 'Alumni Network' };
+    }
+    if (activeId.includes('church') || activeId.includes('diocese')) {
+      return { name: 'JUMO CHURCH ERP', icon: Church, color: 'text-purple-400', badge: 'Ecclesiastical OS' };
+    }
+    if (activeId.includes('owner') || activeId.includes('control')) {
+      return { name: 'JUMO UEOS', icon: Settings, color: 'text-amber-400', badge: 'Owner Console' };
+    }
+    return { name: 'JUMO APPLICATIONS', icon: LayoutGrid, color: 'text-slate-400', badge: 'Workspace' };
   };
 
   const current = getProductInfo();
-  const CurrentIcon = current.icon;
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -62,7 +69,7 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-white transition-colors cursor-pointer group"
-        title="JUMO Application Launcher"
+        title="JUMO Application Switcher"
       >
         <div className="w-5 h-5 rounded bg-slate-800 group-hover:bg-slate-700 flex items-center justify-center text-slate-300">
           <LayoutGrid className="w-3.5 h-3.5" />
@@ -77,7 +84,7 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
 
       {/* App Launcher Modal Popover */}
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-80 rounded-2xl bg-slate-950 border border-slate-800 shadow-2xl shadow-black/80 z-50 p-3.5 text-slate-100 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute right-0 sm:left-0 sm:right-auto mt-2 w-80 rounded-2xl bg-slate-950 border border-slate-800 shadow-2xl shadow-black/80 z-50 p-3.5 text-slate-100 animate-in fade-in zoom-in-95 duration-100">
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3 px-1">
             <div className="flex items-center gap-2">
@@ -94,13 +101,13 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
             </button>
           </div>
 
-          {/* 3 Approved Independent Applications */}
+          {/* 4 Approved Independent Applications */}
           <div className="space-y-1.5">
-            {/* Fintech */}
+            {/* 1. Fintech */}
             <button
               onClick={() => handleSelectApp('/fintech')}
               className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                currentProductId === 'fintech'
+                activeId.includes('fintech')
                   ? 'bg-emerald-950/40 border-emerald-800/80 text-white'
                   : 'bg-slate-900/40 border-slate-800/60 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
               }`}
@@ -112,7 +119,7 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
                 <div>
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>JUMO FINTECH</span>
-                    {currentProductId === 'fintech' && (
+                    {activeId.includes('fintech') && (
                       <span className="text-[9px] px-1.5 py-0.2 bg-emerald-900 text-emerald-300 rounded font-mono">ACTIVE</span>
                     )}
                   </div>
@@ -122,11 +129,11 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
               <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
             </button>
 
-            {/* Universal School ERP */}
+            {/* 2. Universal School ERP */}
             <button
               onClick={() => handleSelectApp('/education')}
               className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                currentProductId === 'education'
+                activeId.includes('edu') || activeId.includes('school')
                   ? 'bg-blue-950/40 border-blue-800/80 text-white'
                   : 'bg-slate-900/40 border-slate-800/60 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
               }`}
@@ -138,37 +145,63 @@ export const AppLauncherPopup: React.FC<AppLauncherPopupProps> = ({
                 <div>
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>JUMO SCHOOL ERP</span>
-                    {currentProductId === 'education' && (
+                    {(activeId.includes('edu') || activeId.includes('school')) && (
                       <span className="text-[9px] px-1.5 py-0.2 bg-blue-900 text-blue-300 rounded font-mono">ACTIVE</span>
                     )}
                   </div>
-                  <div className="text-[10px] text-slate-400">SIS • Bursary • Senate • Campus</div>
+                  <div className="text-[10px] text-slate-400">Pre-Primary • Primary • Secondary • Higher Ed</div>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
             </button>
 
-            {/* Alumni ERP */}
+            {/* 3. Alumni ERP */}
             <button
               onClick={() => handleSelectApp('/alumni')}
               className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                currentProductId === 'alumni'
-                  ? 'bg-violet-950/40 border-violet-800/80 text-white'
+                activeId.includes('alumni')
+                  ? 'bg-rose-950/40 border-rose-800/80 text-white'
                   : 'bg-slate-900/40 border-slate-800/60 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-violet-950 border border-violet-800/60 flex items-center justify-center text-violet-400 shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-rose-950 border border-rose-800/60 flex items-center justify-center text-rose-400 shrink-0">
                   <Users className="w-4 h-4" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>JUMO ALUMNI ERP</span>
-                    {currentProductId === 'alumni' && (
-                      <span className="text-[9px] px-1.5 py-0.2 bg-violet-900 text-violet-300 rounded font-mono">ACTIVE</span>
+                    {activeId.includes('alumni') && (
+                      <span className="text-[9px] px-1.5 py-0.2 bg-rose-900 text-rose-300 rounded font-mono">ACTIVE</span>
                     )}
                   </div>
                   <div className="text-[10px] text-slate-400">Advancement • Giving • Chapters</div>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
+            </button>
+
+            {/* 4. Church ERP */}
+            <button
+              onClick={() => handleSelectApp('/church')}
+              className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                activeId.includes('church')
+                  ? 'bg-purple-950/40 border-purple-800/80 text-white'
+                  : 'bg-slate-900/40 border-slate-800/60 text-slate-300 hover:bg-slate-900 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-purple-950 border border-purple-800/60 flex items-center justify-center text-purple-400 shrink-0">
+                  <Church className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>JUMO CHURCH ERP</span>
+                    {activeId.includes('church') && (
+                      <span className="text-[9px] px-1.5 py-0.2 bg-purple-900 text-purple-300 rounded font-mono">ACTIVE</span>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-400">Diocese • Parishes • Sacraments • Tithes</div>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />

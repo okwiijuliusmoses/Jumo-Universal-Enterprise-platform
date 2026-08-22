@@ -169,13 +169,20 @@ function AppContent() {
     );
   }
 
-  // 5. Special Domain Runtime: Church ERP (if accessed directly)
-  if (routePath.includes('church') || routePath.includes('diocese')) {
+  // 5. Sovereign Product 4: JUMO CHURCH ERP (Ecclesiastical & Diocesan Platform)
+  if (
+    routePath.startsWith('/products/church') ||
+    routePath === '/church' ||
+    routePath.startsWith('/church/') ||
+    routePath === '/church-erp' ||
+    routePath.includes('church') || 
+    routePath.includes('diocese')
+  ) {
     const isMobile = routePath.includes('/mobile');
     return isMobile ? (
       <ChurchErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/church')} />
     ) : (
-      <PlatformShell platformId="church" onNavigate={handleNavigate} currentUser={user || undefined} onLogout={handleLogout} />
+      <ChurchPlatform onNavigate={handleNavigate} />
     );
   }
 

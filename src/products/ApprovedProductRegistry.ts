@@ -209,6 +209,44 @@ export const ApprovedProductRegistry: ApprovedProductDefinition[] = [
     apis: ['GET /api/alumni/directory', 'POST /api/alumni/donations', 'POST /api/alumni/chapters/join', 'POST /api/alumni/mentorship/match']
   },
 
+  // 4. JUMO CHURCH ERP
+  {
+    id: 'JUMO-CHURCH',
+    code: 'JUMO-CH-01',
+    name: 'JUMO CHURCH ERP',
+    badge: 'ECCLESIASTICAL SOVEREIGN',
+    description: 'Sovereign diocese, parish, and ministry operating system. Coordinates diocesan synods, parish registers, sacramental records, clergy management, tithes, pastoral care, and church projects.',
+    category: 'Authoritative JUMO Products',
+    version: 'v14.5.0',
+    owner: 'JUMO Ecclesiastical & Diocesan Authority',
+    tenantAvailability: 'Multi-Tenant Isolated',
+    route: '/products/church',
+    icon: Church,
+    iconName: 'Church',
+    color: 'text-purple-600',
+    bgAccent: 'bg-purple-600',
+    borderAccent: 'border-purple-200',
+    accentColor: 'text-purple-600',
+    accentHover: 'hover:bg-purple-50 hover:text-purple-700',
+    monthlyPrice: 349,
+    navigationRegistry: [
+      { id: 'MOD_CH_DASHBOARD', label: 'Diocesan & Parish Overview', icon: LayoutGrid, category: 'Overview' },
+      { id: 'MOD_CH_DIOCESE', label: 'Diocese & Bishop Synod', icon: Building2, category: 'Diocese' },
+      { id: 'MOD_CH_PARISH', label: 'Parish & Curate Stations', icon: Church, category: 'Diocese' },
+      { id: 'MOD_CH_SACRAMENTS', label: 'Sacraments (Baptism, Matrimony)', icon: Heart, category: 'Ministry' },
+      { id: 'MOD_CH_MEMBERSHIP', label: 'Parishioner Census & Directory', icon: Users, category: 'Ministry' },
+      { id: 'MOD_CH_TITHES', label: 'Tithes & Stewardship Giving', icon: DollarSign, category: 'Finance' },
+      { id: 'MOD_CH_CLERGY', label: 'Clergy & Pastoral Appointments', icon: ShieldCheck, category: 'Clergy' },
+      { id: 'MOD_CH_PROJECTS', label: 'Parish Development Projects', icon: Layers, category: 'Projects' }
+    ],
+    aiCapabilityMapping: [
+      { agentId: 'AGENT_PASTORAL_CARE', name: 'Pastoral Care Copilot', description: 'Identifies parishioner wellness triggers, hospital visit needs, and bereavement support.', modelAlias: 'gemini-2.5-flash' },
+      { agentId: 'AGENT_STEWARDSHIP_AUDITOR', name: 'Tithe Stewardship Auditor', description: 'Validates diocesan parish remittances and general ledger postings.', modelAlias: 'gemini-2.5-pro' }
+    ],
+    modules: ['Diocese Hierarchy', 'Parish Directory', 'Sacramental Registers', 'Clergy Deployment', 'Tithe Ledger', 'Pastoral Care Hub'],
+    apis: ['GET /api/church/parishes', 'POST /api/church/sacraments/register', 'POST /api/church/tithes/post', 'GET /api/church/clergy']
+  },
+
   // PLATFORM STORE & SOVEREIGN CONTROL
   {
     id: 'JUMO-CONTROL',
@@ -249,6 +287,7 @@ export const WaffleAppsList = [
   { name: 'JUMO FINTECH', route: '/products/fintech', icon: DollarSign, color: 'text-emerald-700 bg-emerald-50', productId: 'JUMO-FINTECH' },
   { name: 'JUMO Universal Education ERP', route: '/products/education', icon: GraduationCap, color: 'text-blue-700 bg-blue-50', productId: 'JUMO-EDU-UNIVERSAL' },
   { name: 'JUMO Alumni Association ERP', route: '/products/alumni', icon: Award, color: 'text-rose-700 bg-rose-50', productId: 'JUMO-ALUMNI' },
+  { name: 'JUMO Church ERP', route: '/products/church', icon: Church, color: 'text-purple-700 bg-purple-50', productId: 'JUMO-CHURCH' },
   { name: 'Sovereign Control Center', route: '/control-center', icon: Sliders, color: 'text-indigo-700 bg-indigo-50', productId: 'JUMO-CONTROL' },
   { name: 'Platform Store', route: '/control-center/store', icon: Package, color: 'text-slate-700 bg-slate-50', productId: 'JUMO-CONTROL' }
 ];
@@ -269,6 +308,9 @@ export function getApprovedProduct(idOrAlias?: string): ApprovedProductDefinitio
     (lower.includes('alumni') && p.id === 'JUMO-ALUMNI') ||
     (lower.includes('edu') && p.id === 'JUMO-EDU-UNIVERSAL') ||
     (lower.includes('school') && p.id === 'JUMO-EDU-UNIVERSAL') ||
+    (lower.includes('church') && p.id === 'JUMO-CHURCH') ||
+    (lower.includes('diocese') && p.id === 'JUMO-CHURCH') ||
+    (lower.includes('parish') && p.id === 'JUMO-CHURCH') ||
     (lower.includes('control') && p.id === 'JUMO-CONTROL') ||
     (lower.includes('admin') && p.id === 'JUMO-CONTROL')
   );
@@ -276,11 +318,12 @@ export function getApprovedProduct(idOrAlias?: string): ApprovedProductDefinitio
   return found || ApprovedProductRegistry[0];
 }
 
-export function mapPlatformIdToApprovedKey(platformId?: string): 'fintech' | 'education' | 'alumni' | 'control' {
+export function mapPlatformIdToApprovedKey(platformId?: string): 'fintech' | 'education' | 'alumni' | 'church' | 'control' {
   if (!platformId) return 'fintech';
   const lower = platformId.toLowerCase();
   if (lower.includes('alumni')) return 'alumni';
   if (lower.includes('edu') || lower.includes('school')) return 'education';
+  if (lower.includes('church') || lower.includes('diocese') || lower.includes('parish')) return 'church';
   if (lower.includes('control') || lower.includes('admin') || lower.includes('store') || lower.includes('owner')) return 'control';
   return 'fintech';
 }
