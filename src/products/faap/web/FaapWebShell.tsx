@@ -23,6 +23,15 @@ import { AccountsPayable } from './modules/AccountsPayable';
 import { AccountsReceivable } from './modules/AccountsReceivable';
 import { BankingModule } from './modules/BankingModule';
 import { InstitutionalFinanceSuite } from './modules/InstitutionalFinanceSuite';
+import { InventoryModule } from './modules/InventoryModule';
+import { PayrollModule } from './modules/PayrollModule';
+import { FixedAssetsModule } from './modules/FixedAssetsModule';
+import { MultiCurrencyModule } from './modules/MultiCurrencyModule';
+import { ProjectAccountingModule } from './modules/ProjectAccountingModule';
+import { TaxModule } from './modules/TaxModule';
+import { AuditModule } from './modules/AuditModule';
+import { FinancialReportsModule } from './modules/FinancialReportsModule';
+import { FaapAdminModule } from './modules/FaapAdminModule';
 
 type AppState = 'LANDING' | 'REGISTRATION' | 'LOGIN' | 'APP';
 
@@ -209,6 +218,33 @@ export const FaapWebShell: React.FC<{ onNavigate?: (route: string) => void }> = 
     if (activeTab === 'MOD_FAAP_FINANCIAL_ANALYSIS' || activeTab === 'FINANCIAL_ANALYSIS') {
       return <InstitutionalFinanceSuite initialSubView="FINANCIAL_ANALYSIS" />;
     }
+    if (activeTab === 'MOD_FAAP_INVENTORY' || activeTab === 'INVENTORY') {
+      return <InventoryModule />;
+    }
+    if (activeTab === 'MOD_FAAP_PAYROLL' || activeTab === 'PAYROLL') {
+      return <PayrollModule />;
+    }
+    if (activeTab === 'MOD_FAAP_ASSETS' || activeTab === 'FIXED_ASSETS') {
+      return <FixedAssetsModule />;
+    }
+    if (activeTab === 'MOD_FAAP_FX' || activeTab === 'MULTI_CURRENCY') {
+      return <MultiCurrencyModule />;
+    }
+    if (activeTab === 'MOD_FAAP_PROJECTS' || activeTab === 'PROJECT_ACCOUNTING') {
+      return <ProjectAccountingModule />;
+    }
+    if (activeTab === 'MOD_FAAP_TAX' || activeTab === 'TAX') {
+      return <TaxModule />;
+    }
+    if (activeTab === 'MOD_FAAP_AUDIT' || activeTab === 'AUDIT') {
+      return <AuditModule />;
+    }
+    if (activeTab === 'MOD_FAAP_REPORTS' || activeTab === 'REPORTS') {
+      return <FinancialReportsModule />;
+    }
+    if (activeTab === 'MOD_FAAP_ADMIN' || activeTab === 'ADMIN') {
+      return <FaapAdminModule />;
+    }
 
     const activeModuleDef = ModuleRegistry.find(m => m.id === activeTab);
     if (!activeModuleDef) return <FaapDashboard />;
@@ -331,7 +367,6 @@ export const FaapWebShell: React.FC<{ onNavigate?: (route: string) => void }> = 
         </div>
         
         <div className="flex items-center gap-2">
-          {onNavigate && <PlatformSwitcher onNavigate={onNavigate} />}
           <button onClick={() => setAppState('LANDING')} className="ml-2 flex items-center gap-2 pl-2 border-l border-slate-700 hover:opacity-80 transition-opacity text-[13px] font-medium">
             Sign Out
           </button>

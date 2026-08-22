@@ -28,6 +28,15 @@ import { AccountsPayable } from '../faap/web/modules/AccountsPayable';
 import { AccountsReceivable } from '../faap/web/modules/AccountsReceivable';
 import { BankingModule } from '../faap/web/modules/BankingModule';
 import { InstitutionalFinanceSuite } from '../faap/web/modules/InstitutionalFinanceSuite';
+import { InventoryModule } from '../faap/web/modules/InventoryModule';
+import { PayrollModule } from '../faap/web/modules/PayrollModule';
+import { FixedAssetsModule } from '../faap/web/modules/FixedAssetsModule';
+import { MultiCurrencyModule } from '../faap/web/modules/MultiCurrencyModule';
+import { ProjectAccountingModule } from '../faap/web/modules/ProjectAccountingModule';
+import { TaxModule } from '../faap/web/modules/TaxModule';
+import { AuditModule } from '../faap/web/modules/AuditModule';
+import { FinancialReportsModule } from '../faap/web/modules/FinancialReportsModule';
+import { FaapAdminModule } from '../faap/web/modules/FaapAdminModule';
 
 import { TransactionsModule } from '../digital-pay/web/modules/TransactionsModule';
 import { MerchantsModule } from '../digital-pay/web/modules/MerchantsModule';
@@ -256,8 +265,20 @@ export const FintechShell: React.FC<FintechShellProps> = ({
                   { id: 'journal', label: 'General Journal' },
                   { id: 'ap', label: 'Accounts Payable' },
                   { id: 'ar', label: 'Accounts Receivable' },
-                  { id: 'banking', label: 'Banking' },
-                  { id: 'suite', label: 'Institutional Suite' }
+                  { id: 'cashbook', label: 'Cashbooks' },
+                  { id: 'banking', label: 'Banking & Feeds' },
+                  { id: 'recon', label: 'Reconciliation' },
+                  { id: 'budget', label: 'Budget & Variance' },
+                  { id: 'votebook', label: 'Vote Book' },
+                  { id: 'inventory', label: 'Inventory' },
+                  { id: 'payroll', label: 'Payroll' },
+                  { id: 'assets', label: 'Fixed Assets' },
+                  { id: 'fx', label: 'Multi-Currency' },
+                  { id: 'projects', label: 'Job Costing' },
+                  { id: 'tax', label: 'Tax' },
+                  { id: 'audit', label: 'Audit & Controls' },
+                  { id: 'reports', label: 'Financial Reports' },
+                  { id: 'admin', label: 'FAAP Admin' }
                 ].map(tab => (
                   <button
                     key={tab.id}
@@ -282,8 +303,20 @@ export const FintechShell: React.FC<FintechShellProps> = ({
               {faapSubTab === 'journal' && <GeneralJournal />}
               {faapSubTab === 'ap' && <AccountsPayable />}
               {faapSubTab === 'ar' && <AccountsReceivable />}
+              {faapSubTab === 'cashbook' && <InstitutionalFinanceSuite initialSubView="TRIPLE_CASH_BOOK" />}
               {faapSubTab === 'banking' && <BankingModule />}
-              {faapSubTab === 'suite' && <InstitutionalFinanceSuite />}
+              {faapSubTab === 'recon' && <InstitutionalFinanceSuite initialSubView="AUDITOR_BOOKS" />}
+              {faapSubTab === 'budget' && <InstitutionalFinanceSuite initialSubView="BUDGET_BOOK" />}
+              {faapSubTab === 'votebook' && <InstitutionalFinanceSuite initialSubView="VOTE_BOOK" />}
+              {faapSubTab === 'inventory' && <InventoryModule />}
+              {faapSubTab === 'payroll' && <PayrollModule />}
+              {faapSubTab === 'assets' && <FixedAssetsModule />}
+              {faapSubTab === 'fx' && <MultiCurrencyModule />}
+              {faapSubTab === 'projects' && <ProjectAccountingModule />}
+              {faapSubTab === 'tax' && <TaxModule />}
+              {faapSubTab === 'audit' && <AuditModule />}
+              {faapSubTab === 'reports' && <FinancialReportsModule />}
+              {faapSubTab === 'admin' && <FaapAdminModule />}
             </div>
           </div>
         );
