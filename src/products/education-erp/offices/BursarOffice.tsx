@@ -37,7 +37,7 @@ interface StudentFeeRecord {
 }
 
 export const BursarOffice: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'LEDGER' | 'CASHBOOK' | 'VOUCHERS' | 'RECON'>('LEDGER');
+  const [activeTab, setActiveTab] = useState<'LEDGER' | 'INVOICES' | 'BUDGET' | 'CASHBOOK' | 'VOUCHERS' | 'RECON'>('LEDGER');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
@@ -46,6 +46,22 @@ export const BursarOffice: React.FC = () => {
   const [receiptAmount, setReceiptAmount] = useState('500000');
   const [paymentChannel, setPaymentChannel] = useState('Stanbic Bank Direct');
   const [receiptSuccessMsg, setReceiptSuccessMsg] = useState<string | null>(null);
+
+  const [invoices, setInvoices] = useState([
+    { invoiceNo: 'INV-2026-001', lin: 'LIN-2026-0891', studentName: 'Okello Brian', classStream: 'S.4 Sciences (East)', term: '2026 Term 1', amount: 1250000, dueDate: '2026-08-30', status: 'PAID', prn: 'PRN-99827101' },
+    { invoiceNo: 'INV-2026-002', lin: 'LIN-2026-0892', studentName: 'Nakato Sarah', classStream: 'S.3 Arts (North)', term: '2026 Term 1', amount: 1100000, dueDate: '2026-08-30', status: 'PARTIAL', prn: 'PRN-99827102' },
+    { invoiceNo: 'INV-2026-003', lin: 'LIN-2026-0893', studentName: 'Kato Emmanuel', classStream: 'S.6 PCM (West)', term: '2026 Term 1', amount: 1450000, dueDate: '2026-08-30', status: 'PAID', prn: 'PRN-99827103' },
+    { invoiceNo: 'INV-2026-004', lin: 'LIN-2026-0894', studentName: 'Achieng Grace', classStream: 'S.2 Day (South)', term: '2026 Term 1', amount: 750000, dueDate: '2026-08-15', status: 'OVERDUE', prn: 'PRN-99827104' },
+    { invoiceNo: 'INV-2026-005', lin: 'LIN-2026-0895', studentName: 'Mukasa David', classStream: 'S.5 BCM (East)', term: '2026 Term 1', amount: 1450000, dueDate: '2026-08-30', status: 'PENDING', prn: 'PRN-99827105' }
+  ]);
+
+  const [budgetLines, setBudgetLines] = useState([
+    { code: 'BGT-001', category: 'Academic & Science Supplies', department: 'Science Labs Office', allocated: 85000000, spentYtd: 42500000, encumbered: 12000000, remaining: 30500000, utilizationPct: 64, status: 'ON_TRACK' },
+    { code: 'BGT-002', category: 'Boarding & Student Welfare Feeding', department: 'Boarding Office', allocated: 220000000, spentYtd: 175000000, encumbered: 30000000, remaining: 15000000, utilizationPct: 93, status: 'WARNING' },
+    { code: 'BGT-003', category: 'ICT Network Infrastructure & Fuel', department: 'Laboratories Office', allocated: 45000000, spentYtd: 21000000, encumbered: 5000000, remaining: 19000000, utilizationPct: 58, status: 'ON_TRACK' },
+    { code: 'BGT-004', category: 'Textbooks & Electronic Library Subscriptions', department: 'Library Office', allocated: 30000000, spentYtd: 18500000, encumbered: 4000000, remaining: 7500000, utilizationPct: 75, status: 'ON_TRACK' },
+    { code: 'BGT-005', category: 'Staff Payroll & UNEB Invigilation Subventions', department: 'Head Teacher Office', allocated: 380000000, spentYtd: 240000000, encumbered: 40000000, remaining: 100000000, utilizationPct: 74, status: 'ON_TRACK' }
+  ]);
 
   const [studentRecords, setStudentRecords] = useState<StudentFeeRecord[]>([
     { 
@@ -276,6 +292,28 @@ export const BursarOffice: React.FC = () => {
         </button>
         <button
           type="button"
+          onClick={() => setActiveTab('INVOICES')}
+          className={`py-3 px-3.5 border-b-2 font-bold whitespace-nowrap transition ${
+            activeTab === 'INVOICES'
+              ? 'border-emerald-600 text-emerald-700'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          Invoice Tracking & Billing
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('BUDGET')}
+          className={`py-3 px-3.5 border-b-2 font-bold whitespace-nowrap transition ${
+            activeTab === 'BUDGET'
+              ? 'border-emerald-600 text-emerald-700'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          Budget Monitoring & Variance
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab('CASHBOOK')}
           className={`py-3 px-3.5 border-b-2 font-bold whitespace-nowrap transition ${
             activeTab === 'CASHBOOK'
@@ -472,6 +510,102 @@ export const BursarOffice: React.FC = () => {
               </table>
             )}
 
+            {activeTab === 'INVOICES' && (
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-100/70 text-slate-600 font-semibold sticky top-0 z-10">
+                    <th className="py-2.5 px-4">Invoice No</th>
+                    <th className="py-2.5 px-4">LIN / Student Name</th>
+                    <th className="py-2.5 px-4">Class Stream</th>
+                    <th className="py-2.5 px-4">Term</th>
+                    <th className="py-2.5 px-4 text-right">Invoiced Amount</th>
+                    <th className="py-2.5 px-4 font-mono">Due Date</th>
+                    <th className="py-2.5 px-4 font-mono">PRN Reference</th>
+                    <th className="py-2.5 px-4 text-center">Invoice Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 bg-white">
+                  {invoices.map((inv) => (
+                    <tr key={inv.invoiceNo} className="hover:bg-slate-50">
+                      <td className="py-3 px-4 font-mono font-bold text-emerald-800">{inv.invoiceNo}</td>
+                      <td className="py-3 px-4 text-slate-900">
+                        <span className="font-semibold block">{inv.studentName}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">{inv.lin}</span>
+                      </td>
+                      <td className="py-3 px-4 text-slate-600">{inv.classStream}</td>
+                      <td className="py-3 px-4 text-slate-700">{inv.term}</td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                        UGX {inv.amount.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 font-mono text-slate-600">{inv.dueDate}</td>
+                      <td className="py-3 px-4 font-mono text-slate-600 text-[11px]">{inv.prn}</td>
+                      <td className="py-3 px-4 text-center">
+                        <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
+                          inv.status === 'PAID'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : inv.status === 'PARTIAL'
+                            ? 'bg-amber-100 text-amber-800'
+                            : inv.status === 'OVERDUE'
+                            ? 'bg-rose-100 text-rose-800'
+                            : 'bg-slate-100 text-slate-800'
+                        }`}>
+                          {inv.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {activeTab === 'BUDGET' && (
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-100/70 text-slate-600 font-semibold sticky top-0 z-10">
+                    <th className="py-2.5 px-4">Budget Line Code</th>
+                    <th className="py-2.5 px-4">Category Description</th>
+                    <th className="py-2.5 px-4">Department / Office</th>
+                    <th className="py-2.5 px-4 text-right">Annual Approved</th>
+                    <th className="py-2.5 px-4 text-right">Spent YTD</th>
+                    <th className="py-2.5 px-4 text-right">Encumbered</th>
+                    <th className="py-2.5 px-4 text-right">Remaining Balance</th>
+                    <th className="py-2.5 px-4 text-center">Utilization</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 bg-white">
+                  {budgetLines.map((b) => (
+                    <tr key={b.code} className="hover:bg-slate-50">
+                      <td className="py-3 px-4 font-mono font-bold text-purple-800">{b.code}</td>
+                      <td className="py-3 px-4 font-bold text-slate-900">{b.category}</td>
+                      <td className="py-3 px-4 text-slate-600">{b.department}</td>
+                      <td className="py-3 px-4 text-right font-mono font-semibold text-slate-900">
+                        UGX {b.allocated.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono text-emerald-700">
+                        UGX {b.spentYtd.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono text-amber-700">
+                        UGX {b.encumbered.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">
+                        UGX {b.remaining.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex items-center gap-1.5 justify-center">
+                          <div className="w-16 bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className={`h-full ${b.utilizationPct > 85 ? 'bg-rose-500' : 'bg-emerald-500'}`} 
+                              style={{ width: `${Math.min(100, b.utilizationPct)}%` }}
+                            />
+                          </div>
+                          <span className="font-mono font-bold text-[10px] text-slate-700">{b.utilizationPct}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
             {(activeTab === 'VOUCHERS' || activeTab === 'RECON') && (
               <div className="p-8 text-center text-slate-500">
                 <ShieldCheck className="w-12 h-12 text-emerald-600 mx-auto mb-3" />

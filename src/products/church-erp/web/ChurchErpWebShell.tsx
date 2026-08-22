@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Building2, Users, Heart, Calendar, DollarSign, PieChart, 
+  Building2, Building, Users, Heart, Calendar, DollarSign, PieChart, 
   Settings, Menu, Search, Bell, Home, ChevronRight, Lock, 
   ShieldCheck, Church, Sparkles, RefreshCw, X, Plus, Layers,
   CheckCircle2, BookOpen, AlertCircle, FileText, Sliders, Code,
@@ -8,6 +8,13 @@ import {
 } from 'lucide-react';
 import { ChurchErpControlCenter } from './portals/ChurchErpControlCenter';
 import { ChurchErpDeveloperCenter } from './portals/ChurchErpDeveloperCenter';
+import { 
+  BishopOffice, 
+  ParishPriestOffice, 
+  SacramentalOffice, 
+  ChurchFinanceOffice, 
+  ChurchProjectsOffice 
+} from '../offices';
 
 export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void }> = ({ onNavigate }) => {
   const [activeModule, setActiveModule] = useState<string>('MOD_CH_PARISH');
@@ -144,9 +151,10 @@ export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void 
                 { id: 'MOD_CH_PARISH', label: 'Parish & Curate Stations', icon: Church },
                 { id: 'MOD_CH_SACRAMENTS', label: 'Sacramental Registers', icon: Heart, badge: 'OFFICIAL' },
                 { id: 'MOD_CH_TITHES', label: 'Tithes & Diocesan Quota', icon: DollarSign, badge: 'FAAP' },
+                { id: 'MOD_CH_DIOCESE', label: 'Synod & Bishop Office', icon: Building2 },
+                { id: 'MOD_CH_PROJECTS', label: 'Capital Projects & Works', icon: Building, badge: 'BUILD' },
                 { id: 'MOD_CH_MEMBERSHIP', label: 'Parishioner Census Roll', icon: Users },
                 { id: 'MOD_CH_CLERGY', label: 'Clergy & Pastoral Roster', icon: ShieldCheck },
-                { id: 'MOD_CH_DIOCESE', label: 'Synod & Bishop Office', icon: Building2 },
               ].map((item) => {
                 const Icon = item.icon;
                 const isSelected = activeModule === item.id;
@@ -218,182 +226,19 @@ export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void 
             {activeModule === 'PORTAL_CHURCH_CONTROL' && <ChurchErpControlCenter />}
             {activeModule === 'PORTAL_CHURCH_DEV' && <ChurchErpDeveloperCenter />}
 
-            {activeModule === 'MOD_CH_PARISH' && (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
-                <div className="border-b border-slate-200 bg-slate-50/50 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-purple-600 flex items-center justify-center text-white font-bold shadow-xs">
-                      <Church className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-bold text-slate-900 tracking-tight">PARISH & CURATE STATIONS</h2>
-                      <p className="text-xs text-slate-500">Diocesan Parishes, Archdeaconries & Communicant Rolls</p>
-                    </div>
-                  </div>
-
-                  <button 
-                    type="button"
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-xs transition"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Register New Parish Station</span>
-                  </button>
-                </div>
-
-                <div className="p-6">
-                  <div className="border border-slate-200 rounded-lg overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
-                        <tr>
-                          <th className="px-4 py-2.5">Code</th>
-                          <th className="px-4 py-2.5">Parish Name</th>
-                          <th className="px-4 py-2.5">Archdeaconry</th>
-                          <th className="px-4 py-2.5">Vicar / Curate</th>
-                          <th className="px-4 py-2.5">Communicants</th>
-                          <th className="px-4 py-2.5 text-right">Monthly Tithe</th>
-                          <th className="px-4 py-2.5 text-center">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                        {parishes.map((p) => (
-                          <tr key={p.id} className="hover:bg-slate-50/80 transition">
-                            <td className="px-4 py-2.5 font-mono text-purple-700 font-bold">{p.id}</td>
-                            <td className="px-4 py-2.5 font-bold text-slate-900">{p.name}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{p.archdeaconry}</td>
-                            <td className="px-4 py-2.5 text-slate-700">{p.curate}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{p.members}</td>
-                            <td className="px-4 py-2.5 text-right font-mono text-emerald-600 font-bold">{p.titheMonth}</td>
-                            <td className="px-4 py-2.5 text-center">
-                              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">
-                                {p.status}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeModule === 'MOD_CH_SACRAMENTS' && (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
-                <div className="border-b border-slate-200 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-pink-600 flex items-center justify-center text-white font-bold shadow-xs">
-                      <Heart className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-bold text-slate-900 tracking-tight">CANONICAL SACRAMENTAL REGISTERS</h2>
-                      <p className="text-xs text-slate-500">Holy Baptism, Confirmation, and Holy Matrimony Records</p>
-                    </div>
-                  </div>
-
-                  <button 
-                    type="button"
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-xs font-bold shadow-xs transition"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Issue Sacramental Certificate</span>
-                  </button>
-                </div>
-
-                <div className="p-6">
-                  <div className="border border-slate-200 rounded-lg overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
-                        <tr>
-                          <th className="px-4 py-2.5">Register Ref</th>
-                          <th className="px-4 py-2.5">Sacrament</th>
-                          <th className="px-4 py-2.5">Recipient(s)</th>
-                          <th className="px-4 py-2.5">Officiating Minister</th>
-                          <th className="px-4 py-2.5">Parish Station</th>
-                          <th className="px-4 py-2.5">Date</th>
-                          <th className="px-4 py-2.5 text-center">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                        {sacraments.map((s) => (
-                          <tr key={s.ref} className="hover:bg-slate-50/80 transition">
-                            <td className="px-4 py-2.5 font-mono text-purple-700 font-bold">{s.ref}</td>
-                            <td className="px-4 py-2.5 font-bold text-slate-900">{s.type}</td>
-                            <td className="px-4 py-2.5 text-slate-800">{s.recipient}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{s.officiant}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{s.parish}</td>
-                            <td className="px-4 py-2.5 text-slate-500 font-mono">{s.date}</td>
-                            <td className="px-4 py-2.5 text-center">
-                              <span className="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-[10px] font-bold">
-                                {s.status}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeModule === 'MOD_CH_TITHES' && (
-              <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
-                <div className="border-b border-slate-200 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold shadow-xs">
-                      <DollarSign className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-bold text-slate-900 tracking-tight">STEWARDSHIP, TITHES & DIOCESAN QUOTA</h2>
-                      <p className="text-xs text-slate-500">Live Double-Entry Integration with JUMO FAAP Ledger Backbone</p>
-                    </div>
-                  </div>
-
-                  <button 
-                    type="button"
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs transition"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Record Tithe Remittance</span>
-                  </button>
-                </div>
-
-                <div className="p-6">
-                  <div className="border border-slate-200 rounded-lg overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
-                        <tr>
-                          <th className="px-4 py-2.5">Transaction ID</th>
-                          <th className="px-4 py-2.5">Giver / Fellowship Pledge</th>
-                          <th className="px-4 py-2.5">Giving Type</th>
-                          <th className="px-4 py-2.5">Payment Channel</th>
-                          <th className="px-4 py-2.5 text-right">Amount ($)</th>
-                          <th className="px-4 py-2.5 text-right">Timestamp</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                        {tithes.map((t) => (
-                          <tr key={t.id} className="hover:bg-slate-50/80 transition">
-                            <td className="px-4 py-2.5 font-mono text-slate-500 font-bold">{t.id}</td>
-                            <td className="px-4 py-2.5 font-bold text-slate-900">{t.giver}</td>
-                            <td className="px-4 py-2.5 text-purple-700 font-semibold">{t.type}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{t.channel}</td>
-                            <td className="px-4 py-2.5 text-right font-mono text-emerald-600 font-bold">{t.amount}</td>
-                            <td className="px-4 py-2.5 text-right text-slate-500 text-[11px]">{t.time}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
+            {activeModule === 'MOD_CH_PARISH' && <ParishPriestOffice />}
+            {activeModule === 'MOD_CH_SACRAMENTS' && <SacramentalOffice />}
+            {activeModule === 'MOD_CH_TITHES' && <ChurchFinanceOffice />}
+            {activeModule === 'MOD_CH_DIOCESE' && <BishopOffice />}
+            {activeModule === 'MOD_CH_PROJECTS' && <ChurchProjectsOffice />}
 
             {activeModule !== 'PORTAL_CHURCH_CONTROL' && 
              activeModule !== 'PORTAL_CHURCH_DEV' && 
              activeModule !== 'MOD_CH_PARISH' && 
              activeModule !== 'MOD_CH_SACRAMENTS' && 
-             activeModule !== 'MOD_CH_TITHES' && (
+             activeModule !== 'MOD_CH_TITHES' &&
+             activeModule !== 'MOD_CH_DIOCESE' &&
+             activeModule !== 'MOD_CH_PROJECTS' && (
               <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
                 <Church className="w-10 h-10 text-slate-400 mx-auto mb-2" />
                 <h3 className="text-sm font-bold text-slate-800">{activeModule} Workspace</h3>

@@ -11,7 +11,12 @@ import {
 import EducationTemplateService, { EducationTemplateId, EDUCATION_TEMPLATES } from '../domain/TemplateRegistry';
 
 // Office Portals & Interface Templates
-import { BursarOffice, RegistrarOffice, HeadTeacherOffice } from '../offices';
+import { 
+  BursarOffice, RegistrarOffice, HeadTeacherOffice,
+  AcademicDosOffice, BoardingOffice, PrimarySchoolOffice,
+  PrePrimaryNurseryOffice, LaboratoriesOffice, LibraryOffice,
+  DisciplineWelfareOffice
+} from '../offices';
 import { BursarOfficePortal } from './portals/BursarOfficePortal';
 import { RegistrarOfficePortal } from './portals/RegistrarOfficePortal';
 import { AcademicDosPortal } from './portals/AcademicDosPortal';
@@ -101,27 +106,48 @@ export const EducationErpWebShell: React.FC<EducationErpWebShellProps> = ({
       case 'MOD_REGISTRAR':
       case 'SEC_STUDENTS':
       case 'PRI_PUPILS':
-      case 'ECD_CHILDREN':
         return <RegistrarOffice />;
 
       case 'PORTAL_ACADEMIC_DOS':
+      case 'OFFICE_DOS':
       case 'MOD_DOS':
       case 'SEC_EXAMS':
       case 'PRI_ASSESSMENT':
       case 'PRI_REPORTS':
-        return <AcademicDosPortal />;
+        return <AcademicDosOffice />;
+
+      case 'PORTAL_BOARDING':
+      case 'OFFICE_BOARDING':
+      case 'SEC_BOARDING':
+      case 'MOD_TERTIARY_HOSTEL':
+        return <BoardingOffice />;
+
+      case 'PORTAL_LABS':
+      case 'OFFICE_LABS':
+      case 'SEC_LABS':
+      case 'TVET_WORKSHOPS':
+        return <LaboratoriesOffice />;
+
+      case 'PORTAL_LIBRARY':
+      case 'OFFICE_LIBRARY':
+      case 'SEC_LIBRARY':
+      case 'MOD_TERTIARY_LIBRARY':
+        return <LibraryOffice />;
+
+      case 'PORTAL_DISCIPLINE':
+      case 'OFFICE_DISCIPLINE':
+      case 'SEC_DISCIPLINE':
+        return <DisciplineWelfareOffice />;
 
       case 'PORTAL_HEAD_TEACHER':
       case 'OFFICE_HEAD_TEACHER':
       case 'MOD_HT':
       case 'SEC_DEPARTMENTS':
-      case 'PRI_CLASSES':
         return <HeadTeacherOffice />;
 
       case 'PORTAL_TEACHER':
       case 'MOD_TEACHER':
       case 'PRI_ATTENDANCE':
-      case 'ECD_ATTENDANCE':
         return <TeacherGradebookPortal />;
 
       case 'PORTAL_PARENT_STUDENT':
@@ -138,10 +164,18 @@ export const EducationErpWebShell: React.FC<EducationErpWebShellProps> = ({
 
       // 3. Specialized Template Comprehensive Views
       case 'TMPL_PRE_PRIMARY':
-        return <PrePrimaryTemplateView activeSubmodule={activeView} />;
+      case 'ECD_CHILDREN':
+      case 'ECD_ATTENDANCE':
+      case 'ECD_MILESTONES':
+      case 'ECD_CARE':
+        return <PrePrimaryNurseryOffice />;
 
       case 'TMPL_PRIMARY':
-        return <PrimarySchoolTemplateView activeSubmodule={activeView} />;
+      case 'PRI_CLASSES':
+      case 'PRI_PLE':
+      case 'PRI_THEMATIC':
+      case 'PRI_TRANSPORT':
+        return <PrimarySchoolOffice />;
 
       case 'TMPL_SECONDARY':
         return <SecondarySchoolTemplateView activeSubmodule={activeView} />;
@@ -161,17 +195,9 @@ export const EducationErpWebShell: React.FC<EducationErpWebShellProps> = ({
       case 'PRI_HEALTH':
         return <ClinicModule />;
 
-      case 'MOD_TERTIARY_LIBRARY':
-      case 'SEC_LIBRARY':
-        return <LibraryModule />;
-
-      case 'MOD_TERTIARY_HOSTEL':
-      case 'SEC_BOARDING':
-        return <HostelModule />;
-
       default:
         // Default to Bursar or Registrar workspace
-        return <BursarOfficePortal />;
+        return <BursarOffice />;
     }
   };
 
