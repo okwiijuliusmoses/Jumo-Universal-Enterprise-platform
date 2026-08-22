@@ -1,0 +1,26 @@
+{
+  "productIdentity": {
+    "productId": "PROD_DP",
+    "name": "JUMO Digital Pay",
+    "version": "1.0.4",
+    "type": "STANDALONE_ERP",
+    "tagline": "Universal Payment & Settlement Rail Switch",
+    "author": "JUMO Software Ltd"
+  },
+  "runtime": {
+    "nodeVersion": ">=18.0.0",
+    "database": "PostgreSQL 14+ / Cloud SQL / Local Storage",
+    "pwaSupport": true
+  },
+  "offices": [
+    { "id": "OFF_DP_MERCHANT", "label": "Merchant Account & Payment Link Desk" },
+    { "id": "OFF_DP_RAILS", "label": "Mobile Money, Cards & Bank Rails" },
+    { "id": "OFF_DP_CLEARING", "label": "Master Treasury 1.5% Settlement Clearing" },
+    { "id": "OFF_DP_LEDGER", "label": "Real-Time Payment Receipts & Settlement Logs" }
+  ],
+  "installationHooks": {
+    "migration": "npm run db:migrate",
+    "seed": "npm run db:seed:digital-pay",
+    "healthCheck": "/api/digital-pay/health"
+  }
+}

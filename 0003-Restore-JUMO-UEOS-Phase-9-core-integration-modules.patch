@@ -1,0 +1,132 @@
+From dea268ea19050a0eb13022142d153686ed722b17 Mon Sep 17 00:00:00 2001
+From: Julius Moses Okwi <okwiijuliusmoses@gmail.com>
+Date: Tue, 21 Jul 2026 13:55:51 +0000
+Subject: [PATCH 3/4] Restore JUMO UEOS Phase 9 core integration modules
+
+---
+ assets/ueos_database.json                     |  4 +--
+ .../public/experience/services/apiClient.js   | 33 +++++++++++++++++--
+ public/experience/services/apiClient.js       | 33 +++++++++++++++++--
+ 3 files changed, 62 insertions(+), 8 deletions(-)
+
+diff --git a/assets/ueos_database.json b/assets/ueos_database.json
+index 6f66b54..7e791b3 100644
+--- a/assets/ueos_database.json
++++ b/assets/ueos_database.json
+@@ -206,7 +206,7 @@
+       "triggerEvent": "APPROVAL_CHAIN",
+       "status": "APPROVED",
+       "approvers": "SecOps_Administrator",
+-      "lastTriggered": "2026-07-21T13:17:57.832Z"
++      "lastTriggered": "2026-07-21T13:49:06.838Z"
+     },
+     {
+       "id": "WF-TASK-101",
+@@ -214,7 +214,7 @@
+       "triggerEvent": "APPROVAL_CHAIN",
+       "status": "PENDING",
+       "approvers": "FAAP_Controller,SecOps_Administrator",
+-      "lastTriggered": "2026-07-21T13:17:57.832Z"
++      "lastTriggered": "2026-07-21T13:49:06.838Z"
+     }
+   ],
+   "ai_agent_memory": [],
+diff --git a/experience/public/experience/services/apiClient.js b/experience/public/experience/services/apiClient.js
+index 55dc58b..fd511ca 100644
+--- a/experience/public/experience/services/apiClient.js
++++ b/experience/public/experience/services/apiClient.js
+@@ -54,13 +54,40 @@ class JumoApiClient {
+   }
+ 
+   // Identity & Auth
+-  async login(email, role = 'SecOps_Administrator') {
+-    // Standard mock session handler for experience layer authentication flow
++  async login(email, role = 'SecOps_Administrator', tenantId = 'Global') {
++    try {
++      // Attempt real server login with dual-contract endpoints
++      const response = await this.request('/api/v1/ueos/identity/login', {
++        method: 'POST',
++        body: JSON.stringify({
++          username: email,
++          password: 'password123',
++          tenant: tenantId
++        })
++      });
++      if (response && response.success) {
++        const user = {
++          email,
++          name: email.split('@')[0],
++          role: response.session.user.role,
++          tenantId: response.session.user.tenant,
++          trustLevel: 'L4_High_Trust',
++          token: response.session.token
++        };
++        localStorage.setItem('jumo_current_user', JSON.stringify(user));
++        localStorage.setItem('jumo_session_token', response.session.token);
++        return { success: true, user };
++      }
++    } catch (err) {
++      console.warn('Backend identity bridge offline or deferred. Falling back to local state management.', err);
++    }
++
++    // Standard mock session handler fallback for experience layer authentication flow
+     const mockUser = {
+       email,
+       name: email.split('@')[0],
+       role,
+-      tenantId: 'JUMO-HQ-01',
++      tenantId: tenantId || 'JUMO-HQ-01',
+       trustLevel: 'L4_High_Trust',
+     };
+     localStorage.setItem('jumo_current_user', JSON.stringify(mockUser));
+diff --git a/public/experience/services/apiClient.js b/public/experience/services/apiClient.js
+index 55dc58b..fd511ca 100644
+--- a/public/experience/services/apiClient.js
++++ b/public/experience/services/apiClient.js
+@@ -54,13 +54,40 @@ class JumoApiClient {
+   }
+ 
+   // Identity & Auth
+-  async login(email, role = 'SecOps_Administrator') {
+-    // Standard mock session handler for experience layer authentication flow
++  async login(email, role = 'SecOps_Administrator', tenantId = 'Global') {
++    try {
++      // Attempt real server login with dual-contract endpoints
++      const response = await this.request('/api/v1/ueos/identity/login', {
++        method: 'POST',
++        body: JSON.stringify({
++          username: email,
++          password: 'password123',
++          tenant: tenantId
++        })
++      });
++      if (response && response.success) {
++        const user = {
++          email,
++          name: email.split('@')[0],
++          role: response.session.user.role,
++          tenantId: response.session.user.tenant,
++          trustLevel: 'L4_High_Trust',
++          token: response.session.token
++        };
++        localStorage.setItem('jumo_current_user', JSON.stringify(user));
++        localStorage.setItem('jumo_session_token', response.session.token);
++        return { success: true, user };
++      }
++    } catch (err) {
++      console.warn('Backend identity bridge offline or deferred. Falling back to local state management.', err);
++    }
++
++    // Standard mock session handler fallback for experience layer authentication flow
+     const mockUser = {
+       email,
+       name: email.split('@')[0],
+       role,
+-      tenantId: 'JUMO-HQ-01',
++      tenantId: tenantId || 'JUMO-HQ-01',
+       trustLevel: 'L4_High_Trust',
+     };
+     localStorage.setItem('jumo_current_user', JSON.stringify(mockUser));
+-- 
+2.34.1
+

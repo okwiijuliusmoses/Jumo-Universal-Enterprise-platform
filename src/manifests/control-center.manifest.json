@@ -1,0 +1,23 @@
+{
+  "productId": "PROD_CC",
+  "productName": "JUMO Control Center",
+  "version": "14.4.0-LTS",
+  "description": "Privileged Sovereign Owner Command Center, Infrastructure & Capabilities Host",
+  "type": "control-center",
+  "category": "Sovereign Control Plane",
+  "capabilities": [
+    "platform-store",
+    "aegis-security",
+    "ai-command",
+    "jumo-trust",
+    "cloud-console",
+    "runtime-operations",
+    "monitoring",
+    "governance",
+    "audit",
+    "configuration"
+  ],
+  "defaultRoute": "/control-center",
+  "ownerOnly": true,
+  "zeroTrustEnforced": true
+}

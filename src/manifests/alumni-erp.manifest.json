@@ -1,0 +1,17 @@
+{
+  "productId": "PROD_ALUMNI",
+  "name": "JUMO Alumni ERP",
+  "displayName": "JUMO Alumni Advancement & Endowment Network",
+  "version": "14.0.0",
+  "description": "Independent sovereign alumni census, verified credentials, global chapters, giving campaigns, and career networking.",
+  "category": "Advancement & Endowments",
+  "status": "PRODUCTION",
+  "modules": [
+    "Census",
+    "Chapters",
+    "Giving",
+    "Career",
+    "Mentorship",
+    "IdentityWallet"
+  ]
+}
