@@ -43,6 +43,7 @@ import { ProductLoginView } from '../experience/pages/ProductLoginView';
 import { OwnerControlCenterLaunchpad } from './control-center/launchpad/OwnerControlCenterLaunchpad';
 import { TelemetryMonitoringCenter } from './control-center/monitoring';
 import { SystemSettingsCenter } from './control-center/settings';
+import { TraceabilityMatrix } from './diagnostics/TraceabilityMatrix';
 import { JumoIdentityScannerView } from './components/identity/JumoIdentityScannerView';
 
 function AppContent() {
@@ -141,6 +142,9 @@ function AppContent() {
   }
   if (routePath === '/operations' || routePath === '/developer-center' || routePath === '/monitoring') {
     return <TelemetryMonitoringCenter onNavigate={handleNavigate} />;
+  }
+  if (routePath === '/control-center/traceability') {
+    return <TraceabilityMatrix />;
   }
   if (routePath === '/settings') {
     return <SystemSettingsCenter onNavigate={handleNavigate} />;

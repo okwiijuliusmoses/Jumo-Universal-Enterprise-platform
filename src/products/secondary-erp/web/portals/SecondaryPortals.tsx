@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   School, Users, BookOpen, Calculator, Microscope, Laptop, 
   Library, ShieldAlert, Award, Calendar, CheckCircle2, Plus, 
   Search, Filter, Download, DollarSign, TrendingUp, Landmark,
-  FileText, ClipboardList
+  FileText, ClipboardList, X
 } from 'lucide-react';
 import { PortalAuthenticationGate } from '../../../PortalAuthenticationGate';
+import { SecondaryService, SecondaryStudent } from '../../domain/SecondaryService';
 
 export const SecondarySenatePortal: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ export const SecondarySenatePortal: React.FC = () => {
       requiredRoles={['ROLE_SECONDARY_HEADTEACHER', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
       onAuthenticated={() => {}}
     >
+      {/* ... rest of existing Senate content remains similar but could be made dynamic ... */}
       <div className="space-y-6 animate-in fade-in duration-300 pb-12">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
@@ -63,24 +65,29 @@ export const SecondarySenatePortal: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="font-bold text-slate-800 text-sm">Senate Session & Minutes Roll</h3>
-          </div>
-          <div className="p-8 text-center space-y-3">
-            <div className="inline-flex p-3 rounded-full bg-slate-50 text-slate-300">
-              <FileText className="w-8 h-8" />
-            </div>
-            <p className="text-xs text-slate-500 max-w-xs mx-auto">No senate sessions recorded for the current term. Initialize academic policy framework.</p>
-          </div>
-        </div>
       </div>
     </PortalAuthenticationGate>
   );
 };
 
 export const SecondaryRegistrarPortal: React.FC = () => {
+  const service = SecondaryService.getInstance();
+  const [students, setStudents] = useState<SecondaryStudent[]>(service.getStudents());
+  const [showModal, setShowModal] = useState(false);
+  
+  // Form State
+  const [name, setName] = useState('');
+  const [studentClass, setStudentClass] = useState('Senior One');
+  const [guardian, setGuardian] = useState('');
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    service.registerStudent({ name, class: studentClass, guardian });
+    setStudents([...service.getStudents()]);
+    setShowModal(false);
+    setName('');
+  };
+
   return (
     <PortalAuthenticationGate
       portalId="secondary-registrar"
@@ -89,60 +96,88 @@ export const SecondaryRegistrarPortal: React.FC = () => {
       requiredRoles={['ROLE_SECONDARY_REGISTRAR', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
       onAuthenticated={() => {}}
     >
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-          <Users className="w-8 h-8 text-blue-600" />
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Registrar Office & Student Information (SIS)</h2>
-            <p className="text-xs text-slate-500">Student enrollment, LIN verification, UCE/UACE registration & index numbers.</p>
+      <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+          <div className="flex items-center gap-3">
+            <Users className="w-8 h-8 text-blue-600" />
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Registrar Office & Student Information (SIS)</h2>
+              <p className="text-xs text-slate-500">Student enrollment, LIN verification, UCE/UACE registration & index numbers.</p>
+            </div>
           </div>
+          <button 
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition"
+          >
+            Register Student
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 text-sm">O-Level Enrollment (S.1 - S.4)</h3>
-              <span className="text-[10px] font-mono font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded">UCE 2026 Ready</span>
-            </div>
-            <div className="space-y-2">
-              {[
-                { class: 'Senior One', count: 320 },
-                { class: 'Senior Two', count: 305 },
-                { class: 'Senior Three', count: 295 },
-                { class: 'Senior Four', count: 280 }
-              ].map(c => (
-                <div key={c.class} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-                  <span className="text-xs text-slate-600 font-medium">{c.class}</span>
-                  <span className="text-xs font-mono font-bold text-slate-900">{c.count} Students</span>
-                </div>
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4">ID</th>
+                <th className="px-6 py-4">Name</th>
+                <th className="px-6 py-4">Class</th>
+                <th className="px-6 py-4">Guardian</th>
+                <th className="px-6 py-4 text-right">Fee Balance</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {students.map(s => (
+                <tr key={s.id} className="hover:bg-slate-50">
+                  <td className="px-6 py-4 font-mono text-xs font-bold">{s.id}</td>
+                  <td className="px-6 py-4 font-bold text-slate-900">{s.name}</td>
+                  <td className="px-6 py-4 text-slate-600">{s.class}</td>
+                  <td className="px-6 py-4 text-slate-600">{s.guardian}</td>
+                  <td className="px-6 py-4 text-right font-mono font-bold text-rose-600">{s.feeBalance.toLocaleString()} UGX</td>
+                </tr>
               ))}
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 text-sm">A-Level Enrollment (S.5 - S.6)</h3>
-              <span className="text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">UACE 2026 Ready</span>
-            </div>
-            <div className="space-y-2">
-              {[
-                { class: 'Senior Five', count: 330 },
-                { class: 'Senior Six', count: 310 }
-              ].map(c => (
-                <div key={c.class} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-                  <span className="text-xs text-slate-600 font-medium">{c.class}</span>
-                  <span className="text-xs font-mono font-bold text-slate-900">{c.count} Students</span>
-                </div>
-              ))}
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
+
+        {showModal && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-slate-900">New Secondary Student Admission</h3>
+                <button onClick={() => setShowModal(false)}><X className="w-5 h-5" /></button>
+              </div>
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Full Name</label>
+                  <input value={name} onChange={e => setName(e.target.value)} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Class</label>
+                    <select value={studentClass} onChange={e => setStudentClass(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
+                      <option>Senior One</option>
+                      <option>Senior Two</option>
+                      <option>Senior Three</option>
+                      <option>Senior Four</option>
+                      <option>Senior Five</option>
+                      <option>Senior Six</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Guardian</label>
+                    <input value={guardian} onChange={e => setGuardian(e.target.value)} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm" />
+                  </div>
+                </div>
+                <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm">Admit Student</button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </PortalAuthenticationGate>
   );
 };
 
-export const SecondaryAcademicDosPortal: React.FC = () => {
+export const SecondaryDosPortal: React.FC = () => {
   return (
     <PortalAuthenticationGate
       portalId="secondary-dos"
@@ -199,6 +234,23 @@ export const SecondaryAcademicDosPortal: React.FC = () => {
 };
 
 export const SecondaryBursarPortal: React.FC = () => {
+  const service = SecondaryService.getInstance();
+  const [students, setStudents] = useState<SecondaryStudent[]>(service.getStudents());
+  const [showModal, setShowModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<SecondaryStudent | null>(null);
+  const [payAmount, setPayAmount] = useState<number>(0);
+
+  const handlePayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedStudent && payAmount > 0) {
+      service.collectFee(selectedStudent.id, payAmount, 'Tuition');
+      setStudents([...service.getStudents()]);
+      setShowModal(false);
+      setSelectedStudent(null);
+      setPayAmount(0);
+    }
+  };
+
   return (
     <PortalAuthenticationGate
       portalId="secondary-bursar"
@@ -219,55 +271,66 @@ export const SecondaryBursarPortal: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs col-span-2">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Fee Collections (Term 1)</span>
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Outstanding Secondary Fees</span>
+              <TrendingUp className="w-4 h-4 text-rose-500" />
             </div>
-            <p className="text-3xl font-black text-slate-900 font-mono tracking-tight">1,240,500,000 UGX</p>
+            <p className="text-3xl font-black text-rose-600 font-mono tracking-tight">
+              {students.reduce((acc, s) => acc + s.feeBalance, 0).toLocaleString()} UGX
+            </p>
             <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-[11px]">
-              <span className="text-slate-500">Collection Target: 1.35B</span>
-              <span className="text-emerald-600 font-black">91.8% RECONCILED</span>
+              <span className="text-slate-500">Synced with FAAP General Ledger</span>
+              <span className="text-emerald-600 font-black">REAL-TIME</span>
             </div>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lab Fees Pending</span>
-            <p className="text-xl font-black text-rose-600 mt-2 font-mono">12.5M UGX</p>
-            <p className="text-[11px] text-slate-400 mt-1">O & A Level Science</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Staff Payroll (FAAP)</span>
-            <p className="text-xl font-black text-indigo-700 mt-2 font-mono">142M UGX</p>
-            <p className="text-[11px] text-slate-400 mt-1">Term 1 Salary Budget</p>
           </div>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <h3 className="font-bold text-slate-800 text-sm">Sovereign High Academy — FAAP Digital Cashbook</h3>
-            <button className="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">Open Ledger Console</button>
-          </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              {[
-                { ref: 'FAAP-SEC-9001', desc: 'Boarding Fee Collection - S.4 A', amt: '+ 850,000', status: 'VERIFIED' },
-                { ref: 'FAAP-SEC-9002', desc: 'Science Lab Equipment - Procurement', amt: '- 4,200,000', status: 'AUDITED' },
-                { ref: 'FAAP-SEC-9003', desc: 'UCE Exam Registration - UNEB', amt: '- 12,450,000', status: 'VERIFIED' }
-              ].map(entry => (
-                <div key={entry.ref} className="flex items-center justify-between text-xs py-1 border-b border-slate-50 last:border-0 pb-2">
-                  <div className="flex flex-col">
-                    <span className="font-mono text-[10px] text-slate-400">{entry.ref}</span>
-                    <span className="font-bold text-slate-800">{entry.desc}</span>
-                  </div>
-                  <div className="text-right flex flex-col items-end">
-                    <span className={`font-mono font-black ${entry.amt.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{entry.amt} UGX</span>
-                    <span className="text-[9px] font-bold bg-slate-100 text-slate-500 px-1.5 rounded uppercase">{entry.status}</span>
-                  </div>
-                </div>
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4">Student</th>
+                <th className="px-6 py-4">Class</th>
+                <th className="px-6 py-4 text-right">Balance</th>
+                <th className="px-6 py-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {students.map(s => (
+                <tr key={s.id} className="hover:bg-slate-50">
+                  <td className="px-6 py-4 font-bold text-slate-900">{s.name}</td>
+                  <td className="px-6 py-4 text-slate-600">{s.class}</td>
+                  <td className="px-6 py-4 text-right font-mono font-bold text-rose-600">{s.feeBalance.toLocaleString()} UGX</td>
+                  <td className="px-6 py-4 text-center">
+                    <button 
+                      onClick={() => { setSelectedStudent(s); setShowModal(true); }}
+                      className="text-xs font-bold text-amber-600 hover:text-amber-700"
+                    >
+                      Process Payment
+                    </button>
+                  </td>
+                </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+
+        {showModal && selectedStudent && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-slate-900">Process Fee — {selectedStudent.name}</h3>
+                <button onClick={() => setShowModal(false)}><X className="w-5 h-5" /></button>
+              </div>
+              <form onSubmit={handlePayment} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Amount (UGX)</label>
+                  <input type="number" value={payAmount || ''} onChange={e => setPayAmount(Number(e.target.value))} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-mono font-bold" />
+                </div>
+                <button type="submit" className="w-full py-3 bg-amber-600 text-white rounded-xl font-bold text-sm">Post to FAAP Ledger</button>
+              </form>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </PortalAuthenticationGate>
   );

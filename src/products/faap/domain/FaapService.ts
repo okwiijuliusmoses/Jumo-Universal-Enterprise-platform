@@ -70,6 +70,17 @@ export class FaapService {
     { id: 'fa2', assetCode: 'AST-OFC-002', name: 'Ergonomic Standing Workstations Hub 01', acquisitionCost: 6000000, accumulatedDepreciation: 500000, netBookValue: 5500000 }
   ];
 
+  // Vote Book Ledger
+  private votes: FaapVoteBookEntry[] = [
+    { id: 'v1', voteCode: 'VOTE-ACAD-101', voteName: 'Academic Reagents & laboratory Consumables', annualBudget: 150000000, commitments: 25000000, expenditure: 65000000, balanceAvailable: 60000000 },
+    { id: 'v2', voteCode: 'VOTE-ICT-102', voteName: 'Campus Fibre Backhaul & Cloud Compute Nodes', annualBudget: 220000000, commitments: 45000000, expenditure: 120000000, balanceAvailable: 55000000 }
+  ];
+
+  // Cash Book Ledger
+  private cashEntries: FaapCashBookEntry[] = [
+    { id: 'c1', date: '2026-08-01', description: 'Opening Balance Cash & Bank', folioReference: 'OB', accountCode: '1010', cashAmount: 5000000, bankAmount: 45000000, type: 'RECEIPT' }
+  ];
+
   private constructor() {}
 
   public static getInstance(): FaapService {
@@ -104,6 +115,34 @@ export class FaapService {
       status: 'POSTED'
     };
     this.journals.push(newEntry);
+    return newEntry;
+  }
+
+  // --- VOTE BOOK ---
+  getVoteBook() { return this.votes; }
+  
+  commitEncumbrance(voteCode: string, amount: number, description: string) {
+    const vote = this.votes.find(v => v.voteCode === voteCode);
+    if (!vote) throw new Error(`Vote ${voteCode} not found.`);
+    
+    if (amount > vote.balanceAvailable) {
+      throw new Error(`Insufficient budget in ${voteCode}. Available: ${vote.balanceAvailable}`);
+    }
+
+    vote.commitments += amount;
+    vote.balanceAvailable -= amount;
+    return vote;
+  }
+
+  // --- CASH BOOK ---
+  getCashBook() { return this.cashEntries; }
+
+  recordCashEntry(entry: Omit<FaapCashBookEntry, 'id'>) {
+    const newEntry: FaapCashBookEntry = {
+      ...entry,
+      id: `cb_${Math.random().toString(36).substr(2, 9)}`
+    };
+    this.cashEntries.push(newEntry);
     return newEntry;
   }
 

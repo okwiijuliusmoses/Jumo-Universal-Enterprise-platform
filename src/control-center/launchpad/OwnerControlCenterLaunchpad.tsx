@@ -75,6 +75,15 @@ export const OwnerControlCenterLaunchpad: React.FC<OwnerControlCenterLaunchpadPr
       badge: 'OBSERVABILITY'
     },
     {
+      id: 'traceability',
+      name: 'Traceability Matrix',
+      desc: 'Benchmark mapping of JUMO modules to industry-standard systems.',
+      icon: FileText,
+      route: '/control-center/traceability',
+      color: 'text-purple-700 bg-purple-50 border-purple-200',
+      badge: 'BENCHMARK'
+    },
+    {
       id: 'settings',
       name: 'System Settings Vault',
       desc: 'Global configurations, secrets, and environment parameters.',
