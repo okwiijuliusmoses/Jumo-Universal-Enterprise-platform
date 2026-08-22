@@ -1,10 +1,4 @@
-/**
- * JUMO UEOS — Sovereign Module Portal Registry
- * Manifest, icon mappings, routes, authorization roles, and capability baselines
- * for every independent portal in Fintech, School ERP, Church ERP, and Alumni ERP.
- * 
- * Absolute Isolation Guarantee: Zero reliance on universal shells or cross-product sidebars.
- */
+import { Building2, Users, Landmark, BookOpen, Clipboard, DollarSign, Activity, Zap, Church, Heart, Globe, ShieldCheck, Layers } from 'lucide-react';
 
 export interface PortalCapability {
   id: string;
@@ -15,7 +9,7 @@ export interface PortalCapability {
 
 export interface ModulePortalManifest {
   id: string;
-  productId: 'JUMO-FINTECH' | 'JUMO-SCHOOL-ERP' | 'JUMO-CHURCH-ERP' | 'JUMO-ALUMNI-ERP';
+  productId: 'JUMO-FINTECH' | 'JUMO-PRIMARY-ERP' | 'JUMO-SECONDARY-ERP' | 'JUMO-NURSERY-ERP' | 'JUMO-CHURCH-ERP' | 'JUMO-ALUMNI-ERP';
   portalName: string;
   category: string;
   description: string;
@@ -27,791 +21,217 @@ export interface ModulePortalManifest {
 }
 
 export const FINTECH_PORTALS: ModulePortalManifest[] = [
-  {
-    id: 'FAAP-PORTAL-GL',
-    productId: 'JUMO-FINTECH',
-    portalName: 'FAAP General Ledger Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Double-entry general ledger, real-time journal posting, trial balance & $0.00 debit/credit parity auditor.',
-    iconName: 'BookOpen',
-    route: '/fintech/gl',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-GL-01', name: 'Real-Time Journal Entry Posting', description: 'Immediate debit and credit posting to double-entry general ledger.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-GL-02', name: 'Parity Audit Guard', description: '$0.00 debit/credit offset validator blocking imbalanced commits.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-GL-03', name: 'Trial Balance & Ledger Reports', description: 'Automated trial balance compilation with drill-down transaction trails.', status: 'ENHANCED' },
-      { id: 'CAP-FAAP-GL-04', name: 'Accounting Period & Closing Procedures', description: 'Fiscal year setup, retained earnings roll-forward, period locks.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-COA',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Chart of Accounts Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Hierarchical chart of accounts, account numbering, types, balances, and opening balance setup.',
-    iconName: 'Layers',
-    route: '/fintech/coa',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-COA-01', name: '5-Digit Account Code Hierarchy', description: 'Structured Assets, Liabilities, Equity, Revenue, Expense codes.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-COA-02', name: 'Opening Balance Setup & Sub-Accounts', description: 'Opening balance entry and multi-level parent/child account relationships.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-COA-03', name: 'Account Registers', description: 'Detailed account register transaction history.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-AP',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Accounts Payable Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Vendor/supplier registry, purchase bills, recurring bills, supplier statements, aging & payment scheduling.',
-    iconName: 'FileText',
-    route: '/fintech/ap',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-AP-01', name: 'Vendor Directory & Billing', description: 'Supplier profile management and purchase bill processing.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-AP-02', name: 'Payables Aging & Voucher Approval', description: '30/60/90-day AP aging analysis and voucher authorization.', status: 'ENHANCED' },
-      { id: 'CAP-FAAP-AP-03', name: 'Vendor Credits & Purchase Orders', description: 'Credit notes, supplier statement reconciliation, and PO linkage.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-AR',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Accounts Receivable Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Customer directory, invoices, quotes, receipts, credit notes, receivables aging & overdue reminders.',
-    iconName: 'CreditCard',
-    route: '/fintech/ar',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-AR-01', name: 'Customer Invoicing & Receipts', description: 'Itemized invoice generation, sales receipts, and PRN payment matching.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-AR-02', name: 'Receivables Aging & Customer Statements', description: 'Real-time aging schedules and automated customer account statements.', status: 'ENHANCED' },
-      { id: 'CAP-FAAP-AR-03', name: 'Estimates, Quotes & Credit Memos', description: 'Sales quotes conversion to invoice, credit memos, and refund tracking.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-CASHBOOK',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Cashbooks & Cash Management Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Single-column, double-column, and triple-column cashbooks, petty cash registers, daily cash closure.',
-    iconName: 'DollarSign',
-    route: '/fintech/cashbook',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_TREASURER', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-CB-01', name: 'Triple-Column Cashbook Architecture', description: 'Cash, Bank, and Discount columns with automated contra entry posting.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-CB-02', name: 'Petty Cash & Voucher Management', description: 'Imprest petty cashbook, voucher receipts, and cash float balancing.', status: 'ENHANCED' },
-      { id: 'CAP-FAAP-CB-03', name: 'Daily Cash Position & Closure', description: 'End-of-day physical cash count and ledger cash register reconciliation.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-BANKING',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Banking & Feeds Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Bank account management, automated transaction feeds, bank rules, matching, transfers & deposits.',
-    iconName: 'Landmark',
-    route: '/fintech/banking',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_TREASURER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-BNK-01', name: 'Live Banking Statement Import', description: 'Direct API and CSV bank statement feed integration.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-BNK-02', name: 'Auto-Categorization & Rules', description: 'Bank feed transaction rule matching and automated ledger posting.', status: 'ENHANCED' },
-      { id: 'CAP-FAAP-BNK-03', name: 'Inter-Account Cash Transfers', description: 'Controlled bank-to-bank and bank-to-cash transfer vouchers.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-RECON',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Bank Reconciliation Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Automated bank statement reconciliation, un-cleared checks tracking, discrepancy resolution & audit reports.',
-    iconName: 'CheckCircle2',
-    route: '/fintech/recon',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_AUDITOR', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-REC-01', name: 'Automated Statement Matching', description: 'Match bank feed records against General Ledger cashbook entries.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-REC-02', name: 'Discrepancy Resolution & Audit Certificate', description: 'Identify timing differences, un-cleared deposits, and generate clearance certificates.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-BUDGET',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Budget & Variance Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Institutional budgeting, cost center allocations, budget vs actual variance analysis & revision tracking.',
-    iconName: 'PieChart',
-    route: '/fintech/budget',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-BDG-01', name: 'Departmental Budget Allocation', description: 'Fiscal budget limits by department and expense account.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-BDG-02', name: 'Budget vs Actual Variance Analysis', description: 'Real-time percentage utilization tracking and alert thresholds.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-VOTEBOOK',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Vote Book & Commitment Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Public sector & institutional Vote Book, pre-expenditure encumbrance validation & LPO clearance.',
-    iconName: 'Calculator',
-    route: '/fintech/votebook',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-VB-01', name: 'Pre-Expenditure Encumbrance Check', description: 'Automated blocking of purchase requisitions exceeding available vote budget.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-VB-02', name: 'Vote Ledger & Commitment Tracking', description: 'Itemized tracking of approved budget, encumbered funds, and actual disbursements.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-INVENTORY',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Inventory & Stock Accounting Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Item catalogue, stock quantities, valuation (FIFO/AVCO), stock adjustments & sales/purchase linkage.',
-    iconName: 'Boxes',
-    route: '/fintech/inventory',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-INV-01', name: 'Stock Valuation & COGS', description: 'Inventory valuation models integrated with Cost of Goods Sold ledger.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-INV-02', name: 'Reorder Alerts & Stock Adjustments', description: 'Low stock thresholds, damage write-offs, and physical stock count audit.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-PAYROLL',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Payroll & Human Capital Ledger Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Employee registry, salary components, statutory deductions (PAYE, NSSF), payslips & payroll posting.',
-    iconName: 'Users',
-    route: '/fintech/payroll',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-PAY-01', name: 'Uganda Statutory Payroll Processing', description: 'Automated calculation of PAYE, NSSF, Local Service Tax, and net salaries.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-PAY-02', name: 'Payslip Generation & GL Journal Linkage', description: 'Itemized digital payslips and automatic salary expense posting to General Ledger.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-ASSETS',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Fixed Assets & Depreciation Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Asset register, acquisition, straight-line/reducing balance depreciation schedules & asset disposals.',
-    iconName: 'Building',
-    route: '/fintech/assets',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-AST-01', name: 'Fixed Asset Register', description: 'Categorized capital assets, serial numbers, locations, and historical costs.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-AST-02', name: 'Automated Depreciation Engine', description: 'Monthly/annual depreciation calculations and accumulative depreciation GL posting.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-FX',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Multi-Currency & FX Desk Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Currencies, spot exchange rates, foreign transaction posting & realized/unrealized FX gain/loss accounting.',
-    iconName: 'Globe',
-    route: '/fintech/fx',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_TREASURER', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-FX-01', name: 'Multi-Currency Journal Posting', description: 'Post transactions in USD, EUR, KES, UGX with automated exchange rate conversion.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-FX-02', name: 'Unrealized FX Gain/Loss Revaluation', description: 'Period-end currency revaluation for foreign bank and currency balance accounts.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-PROJECTS',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Job Costing & Project Finance Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Project accounting, job cost codes, project revenue/expenses, labor allocation & profitability reports.',
-    iconName: 'Briefcase',
-    route: '/fintech/projects',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-PRJ-01', name: 'Job Costing & Work-in-Progress', description: 'Track direct materials, direct labor, and overheads per project/contract.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-FAAP-PRJ-02', name: 'Project Profitability & Ledger Audit', description: 'Compare project revenues against actual incurred expenses.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-TAX',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Tax & Statutory Compliance Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Tax codes, VAT 18%, withholding tax, tax-inclusive/exclusive pricing & statutory compliance reports.',
-    iconName: 'Receipt',
-    route: '/fintech/tax',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-TAX-01', name: 'VAT & Statutory Withholding Tax', description: 'Automated 18% VAT and 6% WHT calculation on invoices and bills.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-TAX-02', name: 'Statutory Tax Filing Exports', description: 'Generate monthly URA-compliant e-returns and tax liability schedules.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-AUDIT',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Financial Audit & Controls Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Auditor worksheets, immutable transaction history, period locks, role permissions & anomaly detection.',
-    iconName: 'ShieldAlert',
-    route: '/fintech/audit',
-    authorizedRoles: ['ROLE_AUDITOR', 'ROLE_CONTROLLER', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-AUD-01', name: 'Immutable Audit Trail', description: 'Cryptographically logged user actions, transaction revisions, and timestamps.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-AUD-02', name: 'AI Anomaly & Fraud Detection', description: 'Automated flagging of irregular journal entries, round sums, or off-hour postings.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-REPORTS',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Financial Reporting & Statements Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Balance Sheet, Income Statement (P&L), Cash Flow Statement, Trial Balance & custom management reports.',
-    iconName: 'FileSpreadsheet',
-    route: '/fintech/reports',
-    authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_CFO', 'ROLE_AUDITOR', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-REP-01', name: 'IFRS-Compliant Financial Statements', description: 'One-click Balance Sheet, Income Statement, and Cash Flow Statement.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-REP-02', name: 'Export & Management Dashboards', description: 'Export to Excel, PDF, CSV, and interactive financial ratio charts.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'FAAP-PORTAL-ADMIN',
-    productId: 'JUMO-FINTECH',
-    portalName: 'FAAP Administration & Settings Portal',
-    category: 'Financial Accounting (FAAP)',
-    description: 'Fiscal period controls, base currency, approval workflows, user permissions & ledger security.',
-    iconName: 'Settings',
-    route: '/fintech/faap-admin',
-    authorizedRoles: ['ROLE_FINTECH_ADMIN', 'ROLE_CFO'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FAAP-ADM-01', name: 'Ledger Security & Period Locks', description: 'Lock completed financial months to prevent retro-active edits.', status: 'PRESERVED' },
-      { id: 'CAP-FAAP-ADM-02', name: 'Multi-Tenant Ledger Isolation', description: 'Strict tenant-scoped database row filtering for workspace security.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-PRN',
-    productId: 'JUMO-FINTECH',
-    portalName: 'SchoolPay PRN & Collections Portal',
-    category: 'Digital Pay Switch',
-    description: 'Student Payment Reference Number (PRN) generator, real-time fee payment receipts & bank notifications.',
-    iconName: 'Key',
-    route: '/fintech/prn',
-    authorizedRoles: ['ROLE_OPS', 'ROLE_MERCHANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-PRN-01', name: 'Real-Time PRN Reference Issuance', description: 'Generate unique 10-digit PRNs mapped to student LIN and fee categories.', status: 'PRESERVED' },
-      { id: 'CAP-DP-PRN-02', name: 'Bank Switch Notification Hook', description: 'Instant webhook processing when fees are paid via Stanbic/Centenary/NMB.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-TUITION',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Tuition Fee Switch Portal',
-    category: 'Digital Pay Switch',
-    description: 'Direct institutional fee collection switch, parent channel integration & allocation rules.',
-    iconName: 'GraduationCap',
-    route: '/fintech/tuition',
-    authorizedRoles: ['ROLE_OPS', 'ROLE_MERCHANT', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-TUIT-01', name: 'Direct Institution Fee Clearing', description: 'Automated routing of incoming tuition payments to school bank accounts.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-SETTLEMENT',
-    productId: 'JUMO-FINTECH',
-    portalName: '1.5% Protocol Settlement Fee Portal',
-    category: 'Digital Pay Switch',
-    description: 'Global 1.5% settlement fee splitting engine, master treasury ledger debits & revenue reporting.',
-    iconName: 'Scale',
-    route: '/fintech/settlement',
-    authorizedRoles: ['ROLE_TREASURER', 'ROLE_OPS', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-STL-01', name: '1.5% Clearing Fee Treasury Split', description: 'Automatically deduct 1.5% fee on all switch transactions to JUMO Master Treasury.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-POS',
-    productId: 'JUMO-FINTECH',
-    portalName: 'POS & Agency Banking Network Portal',
-    category: 'Digital Pay Switch',
-    description: 'Agency POS terminal management, agent float balances, cash-in/cash-out & agent commission ledgers.',
-    iconName: 'Server',
-    route: '/fintech/pos',
-    authorizedRoles: ['ROLE_AGENT', 'ROLE_OPS', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-POS-01', name: 'ISO 8583 Terminal Switch Engine', description: 'Real-time agent POS transaction processing and float validation.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-MOMO',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Mobile Money & Digital Wallet Switch Portal',
-    category: 'Digital Pay Switch',
-    description: 'MTN MoMo, Airtel Money, and M-Pesa gateway switching, C2B/B2C disburse & wallet ledger.',
-    iconName: 'ArrowRightLeft',
-    route: '/fintech/momo',
-    authorizedRoles: ['ROLE_OPS', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-MOMO-01', name: 'Unified MoMo Gateway', description: 'C2B fee collection and B2C bulk payouts across MTN and Airtel.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-SACCO',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Microfinance & SACCO Credit Portal',
-    category: 'Digital Pay Switch',
-    description: 'SACCO member savings accounts, loan application appraisal, repayment schedules & dividend books.',
-    iconName: 'HeartHandshake',
-    route: '/fintech/sacco',
-    authorizedRoles: ['ROLE_CREDIT_OFFICER', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FIN-SACCO-01', name: 'SACCO Savings & Loan Books', description: 'Member shares, loan principal disbursement, and interest accruals.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-MERCHANT',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Merchant Acquiring & QR Payments Portal',
-    category: 'Digital Pay Switch',
-    description: 'EMVCo compliant QR code payments, merchant store codes, daily settlement & till management.',
-    iconName: 'Briefcase',
-    route: '/fintech/merchant',
-    authorizedRoles: ['ROLE_MERCHANT', 'ROLE_OPS', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-MERCH-01', name: 'Dynamic QR Merchant Checkout', description: 'Generate instant payment QR codes for point-of-sale customer scanning.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-TREASURY',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Treasury & Liquidity Routing Portal',
-    category: 'Digital Pay Switch',
-    description: 'Inter-bank liquidity routing, automated sweep rules, reserve monitoring & yield optimization.',
-    iconName: 'TrendingUp',
-    route: '/fintech/treasury',
-    authorizedRoles: ['ROLE_TREASURER', 'ROLE_CFO', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FIN-TRS-01', name: 'Master Treasury Router', description: 'Inter-bank liquidity balancing and surplus account sweeping.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'DP-PORTAL-RISK',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Fraud Radar & Risk Sentinel Portal',
-    category: 'Digital Pay Switch',
-    description: 'Real-time transaction velocity checks, AML/sanctions screening & automated account freezing.',
-    iconName: 'ShieldAlert',
-    route: '/fintech/risk',
-    authorizedRoles: ['ROLE_RISK_ANALYST', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-DP-RSK-01', name: 'Aegis Real-Time Fraud Radar', description: 'Sub-second risk scoring and automated high-risk transaction blocking.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'FINTECH-DEV-HUB',
-    productId: 'JUMO-FINTECH',
-    portalName: 'Fintech Developer Hub & API Portal',
-    category: 'Developer & API',
-    description: 'API key management, webhook subscriptions, sandbox testing console & live switch telemetry.',
-    iconName: 'Cpu',
-    route: '/fintech/developer',
-    authorizedRoles: ['ROLE_DEVELOPER', 'ROLE_FINTECH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-FIN-DEV-01', name: 'Developer REST API Gateway', description: 'OAuth2 credential issuance, API usage logs, and sandbox simulation.', status: 'PRESERVED' }
-    ]
-  }
+  // FINANCIAL CORE & LEDGER
+  { id: 'PORTAL_FIN_CFO', productId: 'JUMO-FINTECH', portalName: 'CFO Office', category: 'Financial Core & Ledger', description: 'Global financial strategy.', iconName: 'Building2', route: '/fintech/cfo', authorizedRoles: ['ROLE_CFO'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_LEDGER', productId: 'JUMO-FINTECH', portalName: 'FAAP General Ledger', category: 'Financial Core & Ledger', description: 'Central double-entry control.', iconName: 'Landmark', route: '/fintech/gl', authorizedRoles: ['ROLE_CONTROLLER', 'ROLE_ACCOUNTANT'], verificationStatus: 'PRESERVED', capabilities: [] },
+  { id: 'PORTAL_FIN_TAX', productId: 'JUMO-FINTECH', portalName: 'Tax & Revenue Management', category: 'Financial Core & Ledger', description: 'Statutory compliance engine.', iconName: 'DollarSign', route: '/fintech/tax', authorizedRoles: ['ROLE_TAX_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_COMPLIANCE', productId: 'JUMO-FINTECH', portalName: 'Financial Compliance (AML)', category: 'Financial Core & Ledger', description: 'AML & Sanctions Guard.', iconName: 'ShieldCheck', route: '/fintech/compliance', authorizedRoles: ['ROLE_COMPLIANCE_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_DATA_INT', productId: 'JUMO-FINTECH', portalName: 'Financial Data Intelligence', category: 'Financial Core & Ledger', description: 'Predictive finance AI.', iconName: 'Activity', route: '/fintech/data-int', authorizedRoles: ['ROLE_DATA_ANALYST'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_PAYROLL', productId: 'JUMO-FINTECH', portalName: 'Payroll & Salary Payments', category: 'Financial Core & Ledger', description: 'Mass salary disbursements.', iconName: 'Users', route: '/fintech/payroll', authorizedRoles: ['ROLE_PAYROLL_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // PAYMENT & SWITCH OPERATIONS
+  { id: 'PORTAL_FIN_SWITCH', productId: 'JUMO-FINTECH', portalName: 'Universal Payment Switch', category: 'Payment & Switch Operations', description: 'Payment rail monitoring.', iconName: 'Zap', route: '/fintech/switch', authorizedRoles: ['ROLE_SWITCH_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_MOMO', productId: 'JUMO-FINTECH', portalName: 'Mobile Money Core (USSD)', category: 'Payment & Switch Operations', description: 'MoMo rails.', iconName: 'Activity', route: '/fintech/momo', authorizedRoles: ['ROLE_MOMO_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_GATEWAY', productId: 'JUMO-FINTECH', portalName: 'Payment Gateway Checkout', category: 'Payment & Switch Operations', description: 'E-commerce checkout.', iconName: 'Globe', route: '/fintech/gateway', authorizedRoles: ['ROLE_GATEWAY_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_COLLECTIONS', productId: 'JUMO-FINTECH', portalName: 'Institutional Collections', category: 'Payment & Switch Operations', description: 'PRN engine.', iconName: 'DollarSign', route: '/fintech/collections', authorizedRoles: ['ROLE_COLLECTIONS_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_PAYOUTS', productId: 'JUMO-FINTECH', portalName: 'Bulk Payouts', category: 'Payment & Switch Operations', description: 'EFT disbursements.', iconName: 'DollarSign', route: '/fintech/payouts', authorizedRoles: ['ROLE_PAYOUTS_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_BANK_PAY', productId: 'JUMO-FINTECH', portalName: 'Bank Payments (EFT/RTGS)', category: 'Payment & Switch Operations', description: 'Interbank clearing.', iconName: 'Landmark', route: '/fintech/bank-pay', authorizedRoles: ['ROLE_BANK_PAY_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_BILLS', productId: 'JUMO-FINTECH', portalName: 'Utility & Bill Payments', category: 'Payment & Switch Operations', description: 'Biller aggregations.', iconName: 'Zap', route: '/fintech/bills', authorizedRoles: ['ROLE_BILLS_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_STABLECOIN', productId: 'JUMO-FINTECH', portalName: 'Stablecoin Settlement Rails', category: 'Payment & Switch Operations', description: 'Digital asset clearing.', iconName: 'Globe', route: '/fintech/stablecoin', authorizedRoles: ['ROLE_CRYPTO_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // MERCHANT & CARD SERVICES
+  { id: 'PORTAL_FIN_MERCH_SRV', productId: 'JUMO-FINTECH', portalName: 'Merchant Services', category: 'Merchant & Card Services', description: 'Dynamic QR & POS.', iconName: 'Building2', route: '/fintech/merch-srv', authorizedRoles: ['ROLE_MERCHANT_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_MERCH_ACQ', productId: 'JUMO-FINTECH', portalName: 'Merchant Acquiring', category: 'Merchant & Card Services', description: 'Card acquiring switch.', iconName: 'DollarSign', route: '/fintech/merch-acq', authorizedRoles: ['ROLE_ACQUIRING_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_CARDS', productId: 'JUMO-FINTECH', portalName: 'Cards Issuing', category: 'Merchant & Card Services', description: 'Card program management.', iconName: 'Globe', route: '/fintech/cards', authorizedRoles: ['ROLE_CARDS_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_ATM', productId: 'JUMO-FINTECH', portalName: 'ATM & Self-Service', category: 'Merchant & Card Services', description: 'ATM kiosk gateway.', iconName: 'Landmark', route: '/fintech/atm', authorizedRoles: ['ROLE_ATM_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // GLOBAL BANKING & TREASURY
+  { id: 'PORTAL_FIN_DIGI_WALLET', productId: 'JUMO-FINTECH', portalName: 'Digital Wallets', category: 'Global Banking & Treasury', description: 'Stored value facilities.', iconName: 'DollarSign', route: '/fintech/digi-wallet', authorizedRoles: ['ROLE_WALLET_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_MULTI_CURR', productId: 'JUMO-FINTECH', portalName: 'Multi-Currency Accounts', category: 'Global Banking & Treasury', description: 'Global balances.', iconName: 'Globe', route: '/fintech/multi-curr', authorizedRoles: ['ROLE_MULTI_CURR_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_GLOBAL_ACC', productId: 'JUMO-FINTECH', portalName: 'Global Accounts (vIBAN)', category: 'Global Banking & Treasury', description: 'Virtual IBAN routing.', iconName: 'Globe', route: '/fintech/global-acc', authorizedRoles: ['ROLE_GLOBAL_ACC_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_CROSS_BORDER', productId: 'JUMO-FINTECH', portalName: 'Cross-Border Payments', category: 'Global Banking & Treasury', description: 'FX clearing & SWIFT.', iconName: 'Globe', route: '/fintech/cross-border', authorizedRoles: ['ROLE_CROSS_BORDER_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_REMITTANCE', productId: 'JUMO-FINTECH', portalName: 'Diaspora Remittance', category: 'Global Banking & Treasury', description: 'P2P remittance platform.', iconName: 'Users', route: '/fintech/remittance', authorizedRoles: ['ROLE_REMITTANCE_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_FX', productId: 'JUMO-FINTECH', portalName: 'FX Dealing Desk', category: 'Global Banking & Treasury', description: 'Foreign exchange trading.', iconName: 'Activity', route: '/fintech/fx', authorizedRoles: ['ROLE_FX_DEALER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_TREASURY', productId: 'JUMO-FINTECH', portalName: 'Corporate Treasury', category: 'Global Banking & Treasury', description: 'Liquidity forecasting.', iconName: 'Landmark', route: '/fintech/treasury', authorizedRoles: ['ROLE_TREASURER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // AGENCY, MICROFINANCE & LENDING
+  { id: 'PORTAL_FIN_AGENT', productId: 'JUMO-FINTECH', portalName: 'Agent Banking Hub', category: 'Agency & Microfinance', description: 'Liquidity float management.', iconName: 'Users', route: '/fintech/agent', authorizedRoles: ['ROLE_AGENT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_DIGI_BANK', productId: 'JUMO-FINTECH', portalName: 'Core Digital Banking', category: 'Agency & Microfinance', description: 'Account servicing.', iconName: 'Landmark', route: '/fintech/digi-bank', authorizedRoles: ['ROLE_DIGI_BANK_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_SAVINGS', productId: 'JUMO-FINTECH', portalName: 'Savings & Deposits', category: 'Agency & Microfinance', description: 'Interest accrual.', iconName: 'DollarSign', route: '/fintech/savings', authorizedRoles: ['ROLE_SAVINGS_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_MICRO', productId: 'JUMO-FINTECH', portalName: 'Microfinance (JLG)', category: 'Agency & Microfinance', description: 'Joint Liability Group lending.', iconName: 'Users', route: '/fintech/micro', authorizedRoles: ['ROLE_MICROFINANCE_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_LENDING', productId: 'JUMO-FINTECH', portalName: 'Credit Underwriting', category: 'Agency & Microfinance', description: 'Loan origination.', iconName: 'Activity', route: '/fintech/lending', authorizedRoles: ['ROLE_CREDIT_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_SACCO', productId: 'JUMO-FINTECH', portalName: 'SACCO Core', category: 'Agency & Microfinance', description: 'Cooperative finance.', iconName: 'Building2', route: '/fintech/sacco', authorizedRoles: ['ROLE_SACCO_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_EMBEDDED', productId: 'JUMO-FINTECH', portalName: 'Embedded Finance (BNPL)', category: 'Agency & Microfinance', description: 'B2B Buy Now Pay Later.', iconName: 'Zap', route: '/fintech/embedded', authorizedRoles: ['ROLE_BNPL_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_AGRI', productId: 'JUMO-FINTECH', portalName: 'Agricultural Finance', category: 'Agency & Microfinance', description: 'Value chain credit.', iconName: 'Layers', route: '/fintech/agri', authorizedRoles: ['ROLE_AGRI_FINANCE_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // WEALTH, ASSETS & DEVELOPER
+  { id: 'PORTAL_FIN_INVEST', productId: 'JUMO-FINTECH', portalName: 'Investment & Wealth', category: 'Wealth & Assets', description: 'Asset management.', iconName: 'Activity', route: '/fintech/invest', authorizedRoles: ['ROLE_WEALTH_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_CUSTODY', productId: 'JUMO-FINTECH', portalName: 'Securities Custody', category: 'Wealth & Assets', description: 'Asset administration.', iconName: 'ShieldCheck', route: '/fintech/custody', authorizedRoles: ['ROLE_CUSTODIAN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_INSURANCE', productId: 'JUMO-FINTECH', portalName: 'Insurance & Insurtech', category: 'Wealth & Assets', description: 'Policy administration.', iconName: 'ShieldCheck', route: '/fintech/insurance', authorizedRoles: ['ROLE_INSURANCE_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_TRADE', productId: 'JUMO-FINTECH', portalName: 'Trade Finance (LC)', category: 'Wealth & Assets', description: 'Letter of credit.', iconName: 'Globe', route: '/fintech/trade', authorizedRoles: ['ROLE_TRADE_FINANCE_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_FIN_API', productId: 'JUMO-FINTECH', portalName: 'Financial Developer API', category: 'Wealth & Assets', description: 'API provisioning.', iconName: 'Zap', route: '/fintech/api', authorizedRoles: ['ROLE_FINTECH_DEVELOPER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
 ];
 
-export const SCHOOL_PORTALS: ModulePortalManifest[] = [
-  {
-    id: 'EDU-PORTAL-NURSERY',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Nursery & Pre-Primary Office Portal',
-    category: 'Pre-Primary / Nursery Tier',
-    description: 'Early Childhood Development (ECD) milestones, toddler daily care logs, infant nutrition & guardian pickup security.',
-    iconName: 'HeartHandshake',
-    route: '/education/nursery',
-    authorizedRoles: ['ROLE_NURSERY_HEAD', 'ROLE_CARE_TEACHER', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-NUR-01', name: 'ECD Milestone Tracking', description: 'Track physical, cognitive, and social development milestones.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-EDU-NUR-02', name: 'Guardian Pickup Authorization', description: 'Biometric/photo pickup verification cards for child safety.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-PRIMARY',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Primary School Office Portal',
-    category: 'Primary School Tier',
-    description: 'Hillside Naalya Primary benchmark model, P.1-P.7 Pupil Census, Thematic Curriculum, PLE UNEB candidate index.',
-    iconName: 'GraduationCap',
-    route: '/education/primary',
-    authorizedRoles: ['ROLE_PRIMARY_HEAD', 'ROLE_CLASS_TEACHER', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-PRI-01', name: 'P.1-P.7 Pupil Census & LIN', description: 'National Learner Identification Number allocation and class registers.', status: 'RECONSTRUCTED' },
-      { id: 'CAP-EDU-PRI-02', name: 'PLE UNEB Examination Index', description: 'Primary Leaving Examination registration and mock exam analysis.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-BURSAR',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Bursar Office & Treasury Portal',
-    category: 'Institutional Finance',
-    description: 'Student fees ledgers, itemized tuition invoices, SchoolPay PRN tracking, Vote Book spending & FAAP cashbook.',
-    iconName: 'Calculator',
-    route: '/education/bursar',
-    authorizedRoles: ['ROLE_BURSAR', 'ROLE_SCHOOL_ACCOUNTANT', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-BUR-01', name: 'Student Fees Ledger & PRN Tracking', description: 'Real-time tuition fee tracking with instant payment receipting.', status: 'PRESERVED' },
-      { id: 'CAP-EDU-BUR-02', name: 'Invoice Tracking & Term Billing', description: 'Automated termly invoice dispatch and overdue fees aging.', status: 'ENHANCED' },
-      { id: 'CAP-EDU-BUR-03', name: 'Budget Monitoring & Variance', description: 'Departmental budget allocations and encumbrance tracking.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-REGISTRAR',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Academic Registrar Office Portal',
-    category: 'Secondary School Tier',
-    description: 'Student admissions, National LIN registry, transfer clearance certificates, cumulative academic archives.',
-    iconName: 'UserCheck',
-    route: '/education/registrar',
-    authorizedRoles: ['ROLE_REGISTRAR', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-REG-01', name: 'Learner Identification Number (LIN) Registry', description: 'Centralized Ministry of Education LIN profile management.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-HEAD',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Head Teacher & Governance Portal',
-    category: 'Secondary School Tier',
-    description: 'St. Lawrence Academy benchmark model, institutional KPI dashboard, staff workload audit & Board of Governors minutes.',
-    iconName: 'Award',
-    route: '/education/headteacher',
-    authorizedRoles: ['ROLE_HEAD_TEACHER', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-HT-01', name: 'Executive Institutional Governance', description: 'Overall school performance, ministry compliance, and staff load audit.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-DOS',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Academic DOS Office Portal',
-    category: 'Secondary School Tier',
-    description: 'Director of Studies office, O-Level & A-Level subject combinations, NCDC Competency Curriculum, UNEB center status.',
-    iconName: 'BookOpen',
-    route: '/education/dos',
-    authorizedRoles: ['ROLE_DOS', 'ROLE_HEAD_TEACHER', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-DOS-01', name: 'O/A Level Subject Combination Engine', description: 'Curriculum combination assignment for S.1-S.6 students.', status: 'PRESERVED' },
-      { id: 'CAP-EDU-DOS-02', name: 'UNEB Candidate Index Matrix', description: 'UCE and UACE candidate registration and exam center management.', status: 'ENHANCED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-BOARDING',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Boarding & Hostel Management Portal',
-    category: 'Secondary School Tier',
-    description: 'Dormitory house roll calls, bed allocations, hostel capacity maps & student exeat permission workflow.',
-    iconName: 'Building',
-    route: '/education/boarding',
-    authorizedRoles: ['ROLE_WARDEN', 'ROLE_MATRON', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-BRD-01', name: 'Dormitory Allocation & Exeat Logs', description: 'Real-time bed assignment and digital exeat pass issuance.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-LABS',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Science & ICT Laboratories Portal',
-    category: 'Secondary School Tier',
-    description: 'Physics/Chemistry/Biology apparatus stock, reagent MSDS tracking & 85-terminal ICT lab booking.',
-    iconName: 'Cpu',
-    route: '/education/labs',
-    authorizedRoles: ['ROLE_LAB_MASTER', 'ROLE_ICT_ADMIN', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-LAB-01', name: 'Apparatus & Reagent Inventory', description: 'Laboratory equipment tracking and safety compliance.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-LIBRARY',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Library & Learning Center Portal',
-    category: 'Secondary School Tier',
-    description: '12,400 volume ISBN catalogue, barcode scanner check-out, overdue book fines & e-resource portal.',
-    iconName: 'BookOpen',
-    route: '/education/library',
-    authorizedRoles: ['ROLE_LIBRARIAN', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-LIB-01', name: 'ISBN Book Circulation & Loans', description: 'Automated lending, due date alerts, and missing volume tracking.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-DISCIPLINE',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Discipline, Prefects & Student Welfare Portal',
-    category: 'Secondary School Tier',
-    description: 'Disciplinary committee hearing logs, prefects council roster, guidance counseling sessions & welfare tracking.',
-    iconName: 'ShieldAlert',
-    route: '/education/discipline',
-    authorizedRoles: ['ROLE_DISCIPLINE_MASTER', 'ROLE_COUNSELOR', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-DISC-01', name: 'Disciplinary Case Hearing Registry', description: 'Record student infractions, sanctions, and parent notification letters.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'EDU-PORTAL-CONTROL',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'School Control Center Portal',
-    category: 'Administration',
-    description: 'School configuration, term dates, fee structures, role permissions & system health monitoring.',
-    iconName: 'Settings',
-    route: '/education/control',
-    authorizedRoles: ['ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-CTRL-01', name: 'Institutional Parameter Config', description: 'Academic calendar, class streams, and grading scale parameters.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'EDU-DEV-HUB',
-    productId: 'JUMO-SCHOOL-ERP',
-    portalName: 'Education Developer Hub Portal',
-    category: 'Developer & API',
-    description: 'API keys, webhooks for Ministry data export, integration logs & sandbox test console.',
-    iconName: 'Server',
-    route: '/education/developer',
-    authorizedRoles: ['ROLE_DEVELOPER', 'ROLE_SCHOOL_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-EDU-DEV-01', name: 'Ministry Sync REST API Gateway', description: 'Secure API endpoints for exporting census and exam data to Ministry servers.', status: 'PRESERVED' }
-    ]
-  }
+export const PRIMARY_ERP_PORTALS: ModulePortalManifest[] = [
+  // GOVERNANCE
+  { id: 'PORTAL_PRI_HEAD', productId: 'JUMO-PRIMARY-ERP', portalName: 'Head Teacher Office', category: 'Governance', description: 'Executive management.', iconName: 'Building2', route: '/primary/head', authorizedRoles: ['ROLE_HEAD_TEACHER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_SMC', productId: 'JUMO-PRIMARY-ERP', portalName: 'SMC Office', category: 'Governance', description: 'School Management Committee.', iconName: 'Users', route: '/primary/smc', authorizedRoles: ['ROLE_SMC_MEMBER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_QUALITY', productId: 'JUMO-PRIMARY-ERP', portalName: 'Quality Assurance', category: 'Governance', description: 'Curriculum inspection.', iconName: 'ShieldCheck', route: '/primary/quality', authorizedRoles: ['ROLE_INSPECTOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  
+  // ACADEMIC
+  { id: 'PORTAL_PRI_DOS', productId: 'JUMO-PRIMARY-ERP', portalName: 'Director of Studies', category: 'Academic', description: 'Thematic curriculum.', iconName: 'BookOpen', route: '/primary/dos', authorizedRoles: ['ROLE_DOS'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_EXAMS', productId: 'JUMO-PRIMARY-ERP', portalName: 'Examinations Office', category: 'Academic', description: 'Marks entry.', iconName: 'Clipboard', route: '/primary/exams', authorizedRoles: ['ROLE_EXAM_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_LIBRARY', productId: 'JUMO-PRIMARY-ERP', portalName: 'Library', category: 'Academic', description: 'Book lending.', iconName: 'BookOpen', route: '/primary/library', authorizedRoles: ['ROLE_LIBRARIAN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_TIMETABLE', productId: 'JUMO-PRIMARY-ERP', portalName: 'Timetabling', category: 'Academic', description: 'Master schedule.', iconName: 'Activity', route: '/primary/timetable', authorizedRoles: ['ROLE_TIMETABLER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_E_LEARNING', productId: 'JUMO-PRIMARY-ERP', portalName: 'E-Learning Center', category: 'Academic', description: 'Digital content.', iconName: 'Globe', route: '/primary/elearning', authorizedRoles: ['ROLE_ELEARNING_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // FINANCE
+  { id: 'PORTAL_PRI_BURSAR', productId: 'JUMO-PRIMARY-ERP', portalName: 'Primary Bursar', category: 'Finance', description: 'Fees and FAAP.', iconName: 'DollarSign', route: '/primary/bursar', authorizedRoles: ['ROLE_BURSAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_PROCUREMENT', productId: 'JUMO-PRIMARY-ERP', portalName: 'Procurement', category: 'Finance', description: 'Purchasing.', iconName: 'Layers', route: '/primary/procurement', authorizedRoles: ['ROLE_PROCUREMENT_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_INVENTORY', productId: 'JUMO-PRIMARY-ERP', portalName: 'Stores', category: 'Finance', description: 'Stock tracking.', iconName: 'Clipboard', route: '/primary/stores', authorizedRoles: ['ROLE_STORES_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // OPERATIONS
+  { id: 'PORTAL_PRI_ADMISSION', productId: 'JUMO-PRIMARY-ERP', portalName: 'Admissions', category: 'Operations', description: 'New enrollments.', iconName: 'Users', route: '/primary/admissions', authorizedRoles: ['ROLE_ADMISSIONS_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_RECORDS', productId: 'JUMO-PRIMARY-ERP', portalName: 'Records', category: 'Operations', description: 'Student files.', iconName: 'Clipboard', route: '/primary/records', authorizedRoles: ['ROLE_REGISTRAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_HR', productId: 'JUMO-PRIMARY-ERP', portalName: 'HR', category: 'Operations', description: 'Staff payroll.', iconName: 'Users', route: '/primary/hr', authorizedRoles: ['ROLE_HR_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_COMM', productId: 'JUMO-PRIMARY-ERP', portalName: 'Communications', category: 'Operations', description: 'Parent SMS.', iconName: 'Globe', route: '/primary/comm', authorizedRoles: ['ROLE_COMMUNICATIONS_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // WELFARE
+  { id: 'PORTAL_PRI_CLINIC', productId: 'JUMO-PRIMARY-ERP', portalName: 'Clinic', category: 'Welfare', description: 'Sick bay.', iconName: 'Heart', route: '/primary/clinic', authorizedRoles: ['ROLE_SCHOOL_NURSE'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_HOSTEL', productId: 'JUMO-PRIMARY-ERP', portalName: 'Hostel', category: 'Welfare', description: 'Dormitories.', iconName: 'Building2', route: '/primary/hostel', authorizedRoles: ['ROLE_MATRON', 'ROLE_PATRON'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_DISCIPLINE', productId: 'JUMO-PRIMARY-ERP', portalName: 'Discipline', category: 'Welfare', description: 'Conduct logs.', iconName: 'ShieldCheck', route: '/primary/discipline', authorizedRoles: ['ROLE_DISCIPLINE_MASTER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_TRANSPORT', productId: 'JUMO-PRIMARY-ERP', portalName: 'Transport', category: 'Welfare', description: 'Bus routing.', iconName: 'Zap', route: '/primary/transport', authorizedRoles: ['ROLE_TRANSPORT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_CATERING', productId: 'JUMO-PRIMARY-ERP', portalName: 'Catering', category: 'Welfare', description: 'Meal plans.', iconName: 'Activity', route: '/primary/catering', authorizedRoles: ['ROLE_CATERING_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_PRI_SPORTS', productId: 'JUMO-PRIMARY-ERP', portalName: 'Sports', category: 'Welfare', description: 'Athletics.', iconName: 'Users', route: '/primary/sports', authorizedRoles: ['ROLE_SPORTS_MASTER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
 ];
 
-export const CHURCH_PORTALS: ModulePortalManifest[] = [
-  {
-    id: 'CH-PORTAL-BISHOP',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Episcopal Chancery & Bishop Portal',
-    category: 'Diocesan Chancery',
-    description: 'Diocesan Synod decrees, Archdeaconry quota assessment, clergy postings, bishop mandates & Chancery finance.',
-    iconName: 'Award',
-    route: '/church/diocese',
-    authorizedRoles: ['ROLE_BISHOP', 'ROLE_CHANCELLOR', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-BISH-01', name: 'Diocesan Synod Decrees & Quota Assessment', description: 'Archdeaconry quota assessment and official bishop decree management.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'CH-PORTAL-PARISH',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Parish Priest & Vicar Office Portal',
-    category: 'Parish Administration',
-    description: 'Sunday & midweek liturgical service rosters, communicants roll, parish family directory & sub-parish curate supervision.',
-    iconName: 'Compass',
-    route: '/church/parish',
-    authorizedRoles: ['ROLE_PARISH_PRIEST', 'ROLE_VICAR', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-PAR-01', name: 'Liturgy Roster & Communicants Roll', description: 'Manage parish family members and liturgical service assignments.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'CH-PORTAL-SACRAMENTS',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Sacramental Registrar Portal',
-    category: 'Canonical Registers',
-    description: 'Canonical Holy Baptism, Episcopal Confirmation, Holy Matrimony, and Burial registers with cryptographic certificate QR codes.',
-    iconName: 'FileCheck',
-    route: '/church/sacraments',
-    authorizedRoles: ['ROLE_SACRAMENTAL_OFFICER', 'ROLE_PARISH_PRIEST', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-SAC-01', name: 'Canonical Sacramental Registers', description: 'Immutable digital record keeping for Baptism, Confirmation, and Marriage.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'CH-PORTAL-FINANCE',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Church Finance & Tithes Portal',
-    category: 'Stewardship & Treasury',
-    description: 'Member tithe remittance ledger, Sunday offertory collections, harvest thanksgiving pledges & FAAP General Ledger sync.',
-    iconName: 'Calculator',
-    route: '/church/tithes',
-    authorizedRoles: ['ROLE_CHURCH_TREASURER', 'ROLE_PARISH_PRIEST', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-FIN-01', name: 'Tithe Ledger & Diocesan Quota Remittance', description: 'Itemized member tithe tracking and automatic quota remittance calculation.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'CH-PORTAL-PROJECTS',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Capital Works & Building Projects Portal',
-    category: 'Capital Projects',
-    description: 'Cathedral & parish expansion budgets, solar borehole projects, contractor payment vouchers & fundraising progress.',
-    iconName: 'Building',
-    route: '/church/projects',
-    authorizedRoles: ['ROLE_PROJECTS_DIRECTOR', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-PRJ-01', name: 'Church Building Works Procurement', description: 'Capital project budget tracking and contractor voucher approvals.', status: 'RECONSTRUCTED' }
-    ]
-  },
-  {
-    id: 'CH-PORTAL-CONTROL',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Church Control Center Portal',
-    category: 'Administration',
-    description: 'Church configuration, archdeaconry settings, role permissions & system telemetry.',
-    iconName: 'Settings',
-    route: '/church/control',
-    authorizedRoles: ['ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-CTRL-01', name: 'Diocesan Jurisdiction Settings', description: 'Configure parish boundaries, archdeaconries, and user security roles.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'CH-DEV-HUB',
-    productId: 'JUMO-CHURCH-ERP',
-    portalName: 'Church Developer Hub Portal',
-    category: 'Developer & API',
-    description: 'API keys, sacramental verification QR code API, SMS/WhatsApp pastoral broadcast gateway.',
-    iconName: 'Cpu',
-    route: '/church/developer',
-    authorizedRoles: ['ROLE_DEVELOPER', 'ROLE_CHURCH_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-CH-DEV-01', name: 'Sacramental QR Verification API', description: 'Public API endpoint for validating authenticity of baptism and marriage certificates.', status: 'PRESERVED' }
-    ]
-  }
+export const SECONDARY_ERP_PORTALS: ModulePortalManifest[] = [
+  // GOVERNANCE
+  { id: 'PORTAL_SEC_PRINCIPAL', productId: 'JUMO-SECONDARY-ERP', portalName: 'Principal Office', category: 'Governance', description: 'Executive governance.', iconName: 'Building2', route: '/secondary/principal', authorizedRoles: ['ROLE_PRINCIPAL'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_SENATE', productId: 'JUMO-SECONDARY-ERP', portalName: 'Academic Senate', category: 'Governance', description: 'Academic policy.', iconName: 'Users', route: '/secondary/senate', authorizedRoles: ['ROLE_SENATE_MEMBER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_BOG', productId: 'JUMO-SECONDARY-ERP', portalName: 'BOG', category: 'Governance', description: 'Strategic oversight.', iconName: 'ShieldCheck', route: '/secondary/bog', authorizedRoles: ['ROLE_BOG_MEMBER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  
+  // ACADEMIC
+  { id: 'PORTAL_SEC_REGISTRAR', productId: 'JUMO-SECONDARY-ERP', portalName: 'Registrar (UNEB)', category: 'Academic', description: 'UNEB records.', iconName: 'Users', route: '/secondary/registrar', authorizedRoles: ['ROLE_REGISTRAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_DOS', productId: 'JUMO-SECONDARY-ERP', portalName: 'Director of Studies', category: 'Academic', description: 'Combinations.', iconName: 'BookOpen', route: '/secondary/dos', authorizedRoles: ['ROLE_DOS'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_EXAMS', productId: 'JUMO-SECONDARY-ERP', portalName: 'Examinations', category: 'Academic', description: 'UNEB grading.', iconName: 'Clipboard', route: '/secondary/exams', authorizedRoles: ['ROLE_EXAM_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_LABS', productId: 'JUMO-SECONDARY-ERP', portalName: 'Science Labs', category: 'Academic', description: 'Equipment.', iconName: 'Activity', route: '/secondary/labs', authorizedRoles: ['ROLE_LAB_TECHNICIAN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_LIBRARY', productId: 'JUMO-SECONDARY-ERP', portalName: 'Library', category: 'Academic', description: 'Catalog.', iconName: 'BookOpen', route: '/secondary/library', authorizedRoles: ['ROLE_LIBRARIAN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_ELEARNING', productId: 'JUMO-SECONDARY-ERP', portalName: 'E-Learning', category: 'Academic', description: 'LMS.', iconName: 'Globe', route: '/secondary/elearning', authorizedRoles: ['ROLE_ELEARNING_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // FINANCE
+  { id: 'PORTAL_SEC_BURSAR', productId: 'JUMO-SECONDARY-ERP', portalName: 'Secondary Bursar', category: 'Finance', description: 'Secondary fees.', iconName: 'DollarSign', route: '/secondary/bursar', authorizedRoles: ['ROLE_BURSAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_PROC', productId: 'JUMO-SECONDARY-ERP', portalName: 'Procurement', category: 'Finance', description: 'Tenders.', iconName: 'Layers', route: '/secondary/procurement', authorizedRoles: ['ROLE_PROCUREMENT_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_STORES', productId: 'JUMO-SECONDARY-ERP', portalName: 'Stores', category: 'Finance', description: 'Inventory.', iconName: 'Clipboard', route: '/secondary/stores', authorizedRoles: ['ROLE_STORES_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // OPERATIONS
+  { id: 'PORTAL_SEC_ADMISSIONS', productId: 'JUMO-SECONDARY-ERP', portalName: 'Admissions', category: 'Operations', description: 'S.1/S.5 Intakes.', iconName: 'Users', route: '/secondary/admissions', authorizedRoles: ['ROLE_ADMISSIONS_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_HR', productId: 'JUMO-SECONDARY-ERP', portalName: 'HR', category: 'Operations', description: 'TSC records.', iconName: 'Users', route: '/secondary/hr', authorizedRoles: ['ROLE_HR_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_ESTATES', productId: 'JUMO-SECONDARY-ERP', portalName: 'Estates', category: 'Operations', description: 'Maintenance.', iconName: 'Building2', route: '/secondary/estates', authorizedRoles: ['ROLE_ESTATES_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_IT', productId: 'JUMO-SECONDARY-ERP', portalName: 'IT Helpdesk', category: 'Operations', description: 'Device support.', iconName: 'Zap', route: '/secondary/it', authorizedRoles: ['ROLE_IT_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // WELFARE
+  { id: 'PORTAL_SEC_WARDEN', productId: 'JUMO-SECONDARY-ERP', portalName: 'Dean of Students', category: 'Welfare', description: 'Welfare.', iconName: 'ShieldCheck', route: '/secondary/warden', authorizedRoles: ['ROLE_DEAN_STUDENTS'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_BOARDING', productId: 'JUMO-SECONDARY-ERP', portalName: 'Boarding', category: 'Welfare', description: 'Dormitories.', iconName: 'Building2', route: '/secondary/boarding', authorizedRoles: ['ROLE_WARDEN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_CLINIC', productId: 'JUMO-SECONDARY-ERP', portalName: 'Clinic', category: 'Welfare', description: 'Sickbay.', iconName: 'Heart', route: '/secondary/clinic', authorizedRoles: ['ROLE_SCHOOL_NURSE'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_TRANSPORT', productId: 'JUMO-SECONDARY-ERP', portalName: 'Transport', category: 'Welfare', description: 'Buses.', iconName: 'Zap', route: '/secondary/transport', authorizedRoles: ['ROLE_TRANSPORT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_CATERING', productId: 'JUMO-SECONDARY-ERP', portalName: 'Dining Hall', category: 'Welfare', description: 'Menus.', iconName: 'Activity', route: '/secondary/catering', authorizedRoles: ['ROLE_CATERING_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_SEC_CLUBS', productId: 'JUMO-SECONDARY-ERP', portalName: 'Clubs', category: 'Welfare', description: 'Prefects.', iconName: 'Users', route: '/secondary/clubs', authorizedRoles: ['ROLE_CLUBS_PATRON'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
 ];
 
-export const ALUMNI_PORTALS: ModulePortalManifest[] = [
-  {
-    id: 'ALUM-PORTAL-CENSUS',
-    productId: 'JUMO-ALUMNI-ERP',
-    portalName: 'Graduate Census Directory Portal',
-    category: 'Alumni Census',
-    description: 'Verified alumni census registry, graduation cohort archives, transcript clearance & digital alumnus identity cards.',
-    iconName: 'Users',
-    route: '/alumni/census',
-    authorizedRoles: ['ROLE_ALUM_REGISTRAR', 'ROLE_ALUM_DIRECTOR', 'ROLE_ALUMNI_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-ALU-CEN-01', name: 'Verified Graduate Directory & Digital ID', description: 'Graduate verification and digital alumnus pass generation.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'ALUM-PORTAL-GIVING',
-    productId: 'JUMO-ALUMNI-ERP',
-    portalName: 'Endowment & Giving Campaign Portal',
-    category: 'Advancement & Giving',
-    description: 'Capital building campaign pledges, student scholarship endowment funds, Digital Pay card/MoMo donation checkout.',
-    iconName: 'HeartHandshake',
-    route: '/alumni/giving',
-    authorizedRoles: ['ROLE_ALUM_GIVER', 'ROLE_ALUM_DIRECTOR', 'ROLE_ALUMNI_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-ALU-GIV-01', name: 'Endowment Fund & Digital Donation Checkout', description: 'Capital pledge tracking with integrated Digital Pay donation switch.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'ALUM-PORTAL-CAREERS',
-    productId: 'JUMO-ALUMNI-ERP',
-    portalName: 'Career & Mentorship Network Portal',
-    category: 'Networking & Careers',
-    description: 'Student-alumni mentorship matchmaking, job opportunity board, industry networking circles & career guidance.',
-    iconName: 'Briefcase',
-    route: '/alumni/careers',
-    authorizedRoles: ['ROLE_ALUM_MEMBER', 'ROLE_ALUM_DIRECTOR', 'ROLE_ALUMNI_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-ALU-CAR-01', name: 'Alumni Mentorship & Job Matching Engine', description: 'Match student mentees with experienced alumni mentors based on career field.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'ALUM-PORTAL-CHAPTERS',
-    productId: 'JUMO-ALUMNI-ERP',
-    portalName: 'Regional Chapters & AGM Portal',
-    category: 'Chapter Engagement',
-    description: 'Domestic & international chapter rosters, local executive leadership, alumni reunion registration & AGM voting.',
-    iconName: 'Globe',
-    route: '/alumni/chapters',
-    authorizedRoles: ['ROLE_CHAPTER_LEAD', 'ROLE_ALUM_DIRECTOR', 'ROLE_ALUMNI_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-ALU-CHP-01', name: 'Global Alumni Chapter Management', description: 'Regional chapter coordination, event tickets, and annual voting.', status: 'PRESERVED' }
-    ]
-  },
-  {
-    id: 'ALUM-DEV-HUB',
-    productId: 'JUMO-ALUMNI-ERP',
-    portalName: 'Alumni Developer Hub Portal',
-    category: 'Developer & API',
-    description: 'API keys, graduate verification API, integration logs & sandbox test console.',
-    iconName: 'Cpu',
-    route: '/alumni/developer',
-    authorizedRoles: ['ROLE_DEVELOPER', 'ROLE_ALUMNI_ADMIN'],
-    verificationStatus: 'VERIFIED',
-    capabilities: [
-      { id: 'CAP-ALU-DEV-01', name: 'Alumni Verification REST API Gateway', description: 'Employer portal endpoint for instant degree/alumnus verification.', status: 'PRESERVED' }
-    ]
-  }
+export const NURSERY_ERP_PORTALS: ModulePortalManifest[] = [
+  // ADMIN
+  { id: 'PORTAL_NUR_HEAD', productId: 'JUMO-NURSERY-ERP', portalName: 'Directorship', category: 'Admin', description: 'Center operations.', iconName: 'Building2', route: '/nursery/head', authorizedRoles: ['ROLE_NURSERY_DIRECTOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_ENROLL', productId: 'JUMO-NURSERY-ERP', portalName: 'Admissions', category: 'Admin', description: 'Toddler onboarding.', iconName: 'Users', route: '/nursery/admissions', authorizedRoles: ['ROLE_ADMISSIONS_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_HR', productId: 'JUMO-NURSERY-ERP', portalName: 'Staff HR', category: 'Admin', description: 'Caregiver shifts.', iconName: 'Users', route: '/nursery/hr', authorizedRoles: ['ROLE_HR_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // ACADEMICS
+  { id: 'PORTAL_NUR_DOS', productId: 'JUMO-NURSERY-ERP', portalName: 'Curriculum', category: 'Academics', description: 'Play-based planning.', iconName: 'BookOpen', route: '/nursery/curriculum', authorizedRoles: ['ROLE_ECD_COORDINATOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_MILESTONES', productId: 'JUMO-NURSERY-ERP', portalName: 'Milestones', category: 'Academics', description: 'Developmental.', iconName: 'Clipboard', route: '/nursery/milestones', authorizedRoles: ['ROLE_TEACHER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_REPORTS', productId: 'JUMO-NURSERY-ERP', portalName: 'Reports', category: 'Academics', description: 'Narrative evaluations.', iconName: 'Activity', route: '/nursery/reports', authorizedRoles: ['ROLE_TEACHER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // FINANCE
+  { id: 'PORTAL_NUR_BURSAR', productId: 'JUMO-NURSERY-ERP', portalName: 'Tuition', category: 'Finance', description: 'Billing.', iconName: 'DollarSign', route: '/nursery/bursar', authorizedRoles: ['ROLE_BURSAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_STORES', productId: 'JUMO-NURSERY-ERP', portalName: 'Stores', category: 'Finance', description: 'Consumables.', iconName: 'Layers', route: '/nursery/stores', authorizedRoles: ['ROLE_STORES_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // WELFARE
+  { id: 'PORTAL_NUR_CLINIC', productId: 'JUMO-NURSERY-ERP', portalName: 'Health', category: 'Welfare', description: 'Allergies.', iconName: 'Heart', route: '/nursery/health', authorizedRoles: ['ROLE_SCHOOL_NURSE'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_WELFARE', productId: 'JUMO-NURSERY-ERP', portalName: 'Safeguarding', category: 'Welfare', description: 'Pickup auth.', iconName: 'ShieldCheck', route: '/nursery/safeguard', authorizedRoles: ['ROLE_SAFEGUARDING_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_MEALS', productId: 'JUMO-NURSERY-ERP', portalName: 'Nutrition', category: 'Welfare', description: 'Dietary.', iconName: 'Activity', route: '/nursery/meals', authorizedRoles: ['ROLE_CATERING_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_COMM', productId: 'JUMO-NURSERY-ERP', portalName: 'Parent App', category: 'Welfare', description: 'Daily logs.', iconName: 'Globe', route: '/nursery/comm', authorizedRoles: ['ROLE_COMMUNICATIONS_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_NUR_TRANSPORT', productId: 'JUMO-NURSERY-ERP', portalName: 'Transport', category: 'Welfare', description: 'Van routing.', iconName: 'Zap', route: '/nursery/transport', authorizedRoles: ['ROLE_TRANSPORT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
 ];
 
-export const ALL_MODULE_PORTALS: ModulePortalManifest[] = [
-  ...FINTECH_PORTALS,
-  ...SCHOOL_PORTALS,
-  ...CHURCH_PORTALS,
-  ...ALUMNI_PORTALS
+export const CHURCH_ERP_PORTALS: ModulePortalManifest[] = [
+  // GOVERNANCE
+  { id: 'PORTAL_CH_BISHOP', productId: 'JUMO-CHURCH-ERP', portalName: 'Bishop Office', category: 'Governance', description: 'Episcopal oversight.', iconName: 'ShieldCheck', route: '/church/bishop', authorizedRoles: ['ROLE_BISHOP'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_SYNOD', productId: 'JUMO-CHURCH-ERP', portalName: 'Diocesan Synod', category: 'Governance', description: 'Policy records.', iconName: 'Users', route: '/church/synod', authorizedRoles: ['ROLE_SYNOD_SEC'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_CHANCELLOR', productId: 'JUMO-CHURCH-ERP', portalName: 'Chancellor', category: 'Governance', description: 'Canonical affairs.', iconName: 'Building2', route: '/church/chancellor', authorizedRoles: ['ROLE_CHANCELLOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_ARCH', productId: 'JUMO-CHURCH-ERP', portalName: 'Archdeaconry', category: 'Governance', description: 'Regional oversight.', iconName: 'Layers', route: '/church/archdeaconry', authorizedRoles: ['ROLE_ARCHDEACON'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // MINISTRY
+  { id: 'PORTAL_CH_PARISH', productId: 'JUMO-CHURCH-ERP', portalName: 'Parish Office', category: 'Ministry', description: 'Parish register.', iconName: 'Church', route: '/church/parish', authorizedRoles: ['ROLE_VICAR', 'ROLE_PARISH_PRIEST'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_SACRAMENTS', productId: 'JUMO-CHURCH-ERP', portalName: 'Sacraments', category: 'Ministry', description: 'Registers.', iconName: 'Heart', route: '/church/sacraments', authorizedRoles: ['ROLE_PARISH_CLERK'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_MEMBERS', productId: 'JUMO-CHURCH-ERP', portalName: 'Membership', category: 'Ministry', description: 'Census.', iconName: 'Users', route: '/church/membership', authorizedRoles: ['ROLE_MEMBERSHIP_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_PASTORAL', productId: 'JUMO-CHURCH-ERP', portalName: 'Pastoral Care', category: 'Ministry', description: 'Visitation.', iconName: 'Heart', route: '/church/pastoral', authorizedRoles: ['ROLE_PASTOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_EVENTS', productId: 'JUMO-CHURCH-ERP', portalName: 'Liturgy & Events', category: 'Ministry', description: 'Calendars.', iconName: 'Activity', route: '/church/liturgy', authorizedRoles: ['ROLE_LITURGIST'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_MINISTRIES', productId: 'JUMO-CHURCH-ERP', portalName: 'Ministries', category: 'Ministry', description: 'Youth/Women.', iconName: 'Users', route: '/church/ministries', authorizedRoles: ['ROLE_MINISTRY_LEADER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // FINANCE
+  { id: 'PORTAL_CH_TREASURY', productId: 'JUMO-CHURCH-ERP', portalName: 'Diocesan Treasury', category: 'Finance', description: 'Quota.', iconName: 'Landmark', route: '/church/treasury', authorizedRoles: ['ROLE_DIOCESAN_TREASURER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_CONTRIB', productId: 'JUMO-CHURCH-ERP', portalName: 'Contributions', category: 'Finance', description: 'Pledges.', iconName: 'DollarSign', route: '/church/contributions', authorizedRoles: ['ROLE_PARISH_TREASURER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_BUDGET', productId: 'JUMO-CHURCH-ERP', portalName: 'Budgeting', category: 'Finance', description: 'Forecasting.', iconName: 'Activity', route: '/church/budget', authorizedRoles: ['ROLE_FINANCE_COMMITTEE'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_PROJECTS', productId: 'JUMO-CHURCH-ERP', portalName: 'Projects', category: 'Finance', description: 'Building fund.', iconName: 'Layers', route: '/church/projects', authorizedRoles: ['ROLE_PROJECT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_PAYROLL', productId: 'JUMO-CHURCH-ERP', portalName: 'Clergy Payroll', category: 'Finance', description: 'Stipends.', iconName: 'Users', route: '/church/payroll', authorizedRoles: ['ROLE_PAYROLL_ADMIN'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // ADMIN
+  { id: 'PORTAL_CH_CLERGY', productId: 'JUMO-CHURCH-ERP', portalName: 'Clergy HR', category: 'Admin', description: 'Deployments.', iconName: 'Users', route: '/church/hr', authorizedRoles: ['ROLE_HR_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_ASSETS', productId: 'JUMO-CHURCH-ERP', portalName: 'Assets', category: 'Admin', description: 'Properties.', iconName: 'Building2', route: '/church/assets', authorizedRoles: ['ROLE_ESTATES_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_COMM', productId: 'JUMO-CHURCH-ERP', portalName: 'Communications', category: 'Admin', description: 'Bulletins.', iconName: 'Globe', route: '/church/comm', authorizedRoles: ['ROLE_COMM_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_CH_ARCHIVE', productId: 'JUMO-CHURCH-ERP', portalName: 'Archives', category: 'Admin', description: 'Preservation.', iconName: 'Clipboard', route: '/church/archives', authorizedRoles: ['ROLE_ARCHIVIST'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
+];
+
+export const ALUMNI_ERP_PORTALS: ModulePortalManifest[] = [
+  // GOVERNANCE
+  { id: 'PORTAL_ALUM_DIR', productId: 'JUMO-ALUMNI-ERP', portalName: 'Director Office', category: 'Governance', description: 'Advancement.', iconName: 'Building2', route: '/alumni/director', authorizedRoles: ['ROLE_ALUMNI_DIRECTOR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_BOARD', productId: 'JUMO-ALUMNI-ERP', portalName: 'Association Board', category: 'Governance', description: 'Elections.', iconName: 'ShieldCheck', route: '/alumni/board', authorizedRoles: ['ROLE_BOARD_MEMBER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  
+  // RECORDS
+  { id: 'PORTAL_ALUM_REGISTRAR', productId: 'JUMO-ALUMNI-ERP', portalName: 'Graduate Records', category: 'Records', description: 'Directory.', iconName: 'Users', route: '/alumni/records', authorizedRoles: ['ROLE_ALUMNI_REGISTRAR'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_CHAPTERS', productId: 'JUMO-ALUMNI-ERP', portalName: 'Global Chapters', category: 'Records', description: 'Hubs.', iconName: 'Globe', route: '/alumni/chapters', authorizedRoles: ['ROLE_CHAPTER_LEADER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_ENGAGE', productId: 'JUMO-ALUMNI-ERP', portalName: 'Engagement', category: 'Records', description: 'Scoring.', iconName: 'Activity', route: '/alumni/engagement', authorizedRoles: ['ROLE_ENGAGEMENT_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_COMM', productId: 'JUMO-ALUMNI-ERP', portalName: 'Communications', category: 'Records', description: 'Campaigns.', iconName: 'Zap', route: '/alumni/comm', authorizedRoles: ['ROLE_COMM_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // FINANCE
+  { id: 'PORTAL_ALUM_FUND', productId: 'JUMO-ALUMNI-ERP', portalName: 'Endowment', category: 'Finance', description: 'Campaigns.', iconName: 'DollarSign', route: '/alumni/endowment', authorizedRoles: ['ROLE_FUND_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_GIVING', productId: 'JUMO-ALUMNI-ERP', portalName: 'Annual Giving', category: 'Finance', description: 'Pledges.', iconName: 'Heart', route: '/alumni/giving', authorizedRoles: ['ROLE_GIFT_OFFICER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_RECONCILE', productId: 'JUMO-ALUMNI-ERP', portalName: 'Reconciliation', category: 'Finance', description: 'Receipts.', iconName: 'Landmark', route: '/alumni/reconciliation', authorizedRoles: ['ROLE_ACCOUNTANT'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+
+  // PROGRAMS
+  { id: 'PORTAL_ALUM_CAREER', productId: 'JUMO-ALUMNI-ERP', portalName: 'Career & Mentor', category: 'Programs', description: 'Job boards.', iconName: 'Users', route: '/alumni/career', authorizedRoles: ['ROLE_CAREER_COACH'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_EVENTS', productId: 'JUMO-ALUMNI-ERP', portalName: 'Events & Reunions', category: 'Programs', description: 'Ticketing.', iconName: 'Activity', route: '/alumni/events', authorizedRoles: ['ROLE_EVENT_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] },
+  { id: 'PORTAL_ALUM_MERCH', productId: 'JUMO-ALUMNI-ERP', portalName: 'Merchandise', category: 'Programs', description: 'E-commerce.', iconName: 'Zap', route: '/alumni/merch', authorizedRoles: ['ROLE_STORE_MANAGER'], verificationStatus: 'RECONSTRUCTED', capabilities: [] }
 ];
 
 export function getPortalsForProduct(productId: string): ModulePortalManifest[] {
-  return ALL_MODULE_PORTALS.filter(p => p.productId === productId);
+  switch (productId) {
+    case 'JUMO-FINTECH': return FINTECH_PORTALS;
+    case 'JUMO-PRIMARY-ERP': return PRIMARY_ERP_PORTALS;
+    case 'JUMO-SECONDARY-ERP': return SECONDARY_ERP_PORTALS;
+    case 'JUMO-NURSERY-ERP': return NURSERY_ERP_PORTALS;
+    case 'JUMO-CHURCH-ERP': return CHURCH_ERP_PORTALS;
+    case 'JUMO-ALUMNI-ERP': return ALUMNI_ERP_PORTALS;
+    default: return [];
+  }
 }
 
-export function getPortalByRoute(route: string): ModulePortalManifest | undefined {
-  return ALL_MODULE_PORTALS.find(p => p.route === route);
-}
-
-export function getPortalById(id: string): ModulePortalManifest | undefined {
-  return ALL_MODULE_PORTALS.find(p => p.id === id);
+export function getAllPortals(): ModulePortalManifest[] {
+  return [
+    ...FINTECH_PORTALS,
+    ...PRIMARY_ERP_PORTALS,
+    ...SECONDARY_ERP_PORTALS,
+    ...NURSERY_ERP_PORTALS,
+    ...CHURCH_ERP_PORTALS,
+    ...ALUMNI_ERP_PORTALS
+  ];
 }
