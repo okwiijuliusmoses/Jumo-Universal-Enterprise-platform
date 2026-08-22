@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-08-22T07:18:10-07:00",
+  "audit_type": "PRE_RECONSTRUCTION_CAPABILITY_BASELINE",
+  "architecture_state": "UNIVERSAL_SHELL_DOMINANT",
+  "faap_capabilities": [
+    "FAAP_BK_01: Budget Book",
+    "FAAP_BK_02: Budget Recorder",
+    "FAAP_BK_03: Vote Book",
+    "FAAP_BK_04: Cash Book",
+    "FAAP_BK_05: Single Cash Book",
+    "FAAP_BK_06: Double Cash Book",
+    "FAAP_BK_07: Triple Cash Book",
+    "FAAP_BK_08: Petty Cash Book",
+    "FAAP_BK_09: Receipt Book",
+    "FAAP_BK_10: Payment Book",
+    "FAAP_BK_11: Journal Book",
+    "FAAP_BK_12: Ledger Book",
+    "FAAP_BK_13: General Ledger",
+    "FAAP_BK_14: Subsidiary Ledgers",
+    "FAAP_BK_15: Auditor Book",
+    "FAAP_BK_16: Audit Register",
+    "FAAP_BK_17: Asset Register",
+    "FAAP_BK_18: Liability Register",
+    "FAAP_BK_19: Revenue Register",
+    "FAAP_BK_20: Expenditure Register",
+    "FAAP_BK_21: Bank Register",
+    "FAAP_BK_22: Tax Register",
+    "FAAP_BK_23: Procurement Register",
+    "FAAP_BK_24: Financial Analysis Book",
+    "FAAP_BK_25: Grant/Fund Book",
+    "FAAP_BK_26: Departmental Book",
+    "FAAP_BK_27: Treasury Clearing Book"
+  ],
+  "product_states": {
+    "JUMO-FINTECH": { "status": "PARTIAL_RECONSTRUCTION", "portal_isolation": "PENDING" },
+    "JUMO-NURSERY-ERP": { "status": "STUB_OR_PLACEHOLDER", "portal_isolation": "INCOMPLETE" },
+    "JUMO-PRIMARY-ERP": { "status": "STUB_OR_PLACEHOLDER", "portal_isolation": "INCOMPLETE" },
+    "JUMO-SECONDARY-ERP": { "status": "GENERIC_EDUCATION_ERP_FALLBACK", "portal_isolation": "INCOMPLETE" },
+    "JUMO-CHURCH-ERP": { "status": "PARTIAL_RECONSTRUCTION", "portal_isolation": "PENDING" },
+    "JUMO-ALUMNI-ERP": { "status": "PARTIAL_RECONSTRUCTION", "portal_isolation": "PENDING" }
+  },
+  "verification_required": [
+    "Sovereign icon-based desktop entry",
+    "Mandatory PortalAuthenticationGate on all 27+ portals",
+    "Hillside Naalya Primary Benchmark Reconstruction",
+    "St. Lawrence Secondary Benchmark Reconstruction",
+    "Nursery ECD Milestone & Guardian Security Reconstruction",
+    "QuickBooks-class FAAP Functional Parity"
+  ]
+}

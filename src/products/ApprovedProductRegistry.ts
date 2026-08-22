@@ -32,7 +32,8 @@ import {
   Cloud,
   ShieldCheck,
   Award,
-  Briefcase
+  Briefcase,
+  Baby
 } from 'lucide-react';
 
 export interface ApprovedProductNavigationItem {
@@ -132,18 +133,51 @@ export const ApprovedProductRegistry: ApprovedProductDefinition[] = [
     apis: ['POST /api/v1/ledger/post', 'POST /api/v1/payments/initiate', 'GET /api/v1/ledger/parity', 'POST /api/v1/wallets/create']
   },
 
-  // 2. JUMO UNIVERSAL EDUCATION ERP
+  // 2. JUMO NURSERY / PRE-PRIMARY SCHOOL ERP
   {
-    id: 'JUMO-EDU-UNIVERSAL',
-    code: 'JUMO-EDU-01',
-    name: 'JUMO UNIVERSAL EDUCATION ERP',
-    badge: 'ACADEMIC SOVEREIGN',
-    description: 'Comprehensive academic institution operating system. Manages governance, student admissions, registrar records, senate approvals, bursary finances, campus clinics, and e-library.',
+    id: 'JUMO-NURSERY-ERP',
+    code: 'JUMO-NUR-01',
+    name: 'JUMO NURSERY SCHOOL ERP',
+    badge: 'PRE-PRIMARY ECD',
+    description: 'Early Childhood Development (ECD) pre-primary school operating system. Coordinates toddler admissions, guardian pickup authorizations, milestone observations, diet logs, and nursery fee collections.',
     category: 'Authoritative JUMO Products',
-    version: 'v15.0.0',
-    owner: 'JUMO Academic & Higher Education Authority',
+    version: 'v16.2.0',
+    owner: 'JUMO Early Childhood Education Authority',
     tenantAvailability: 'Multi-Tenant Isolated',
-    route: '/products/education',
+    route: '/products/nursery',
+    icon: Baby,
+    iconName: 'Baby',
+    color: 'text-pink-600',
+    bgAccent: 'bg-pink-600',
+    borderAccent: 'border-pink-200',
+    accentColor: 'text-pink-600',
+    accentHover: 'hover:bg-pink-50 hover:text-pink-700',
+    monthlyPrice: 299,
+    navigationRegistry: [
+      { id: 'MOD_NUR_ADMIN', label: 'Toddler Enrollment & Admin', icon: Baby, category: 'Administration' },
+      { id: 'MOD_NUR_MILESTONES', label: 'ECD Milestones & Safeguarding', icon: Heart, category: 'Child Development' },
+      { id: 'MOD_NUR_BURSAR', label: 'Nursery Tuition & FAAP Fees', icon: DollarSign, category: 'Finance' },
+      { id: 'developer', label: 'Nursery Developer API', icon: Code, category: 'Developer Portal' }
+    ],
+    aiCapabilityMapping: [
+      { agentId: 'AGENT_ECD_DEVELOPMENT', name: 'ECD Development Copilot', description: 'Monitors early childhood developmental milestones and nutrition intake.', modelAlias: 'gemini-2.5-flash' }
+    ],
+    modules: ['Toddler Enrollment', 'Guardian Pickup Authorization', 'ECD Milestones Tracker', 'Nutrition & Health Logs', 'Nursery FAAP Fees'],
+    apis: ['POST /api/v1/nursery/toddlers/register', 'GET /api/v1/nursery/ecd/milestones', 'POST /api/v1/nursery/fees/invoice']
+  },
+
+  // 3. JUMO PRIMARY SCHOOL ERP (Hillside Naalya Benchmark)
+  {
+    id: 'JUMO-PRIMARY-ERP',
+    code: 'JUMO-PRI-01',
+    name: 'JUMO PRIMARY SCHOOL ERP',
+    badge: 'HILLSIDE NAALYA BENCHMARK',
+    description: 'Primary school operating system benchmarked on Hillside Naalya. Manages P.1–P.7 class streams, pupil admissions, lower-primary thematic curriculum, upper-primary subject assessments, PLE preparation, and primary bursar finance.',
+    category: 'Authoritative JUMO Products',
+    version: 'v16.2.0',
+    owner: 'JUMO Primary Academic Authority',
+    tenantAvailability: 'Multi-Tenant Isolated',
+    route: '/products/primary',
     icon: GraduationCap,
     iconName: 'GraduationCap',
     color: 'text-blue-600',
@@ -151,25 +185,53 @@ export const ApprovedProductRegistry: ApprovedProductDefinition[] = [
     borderAccent: 'border-blue-200',
     accentColor: 'text-blue-600',
     accentHover: 'hover:bg-blue-50 hover:text-blue-700',
-    monthlyPrice: 499,
+    monthlyPrice: 399,
     navigationRegistry: [
-      { id: 'MOD_EDU_DASHBOARD', label: 'Academic Overview', icon: LayoutGrid, category: 'Overview' },
-      { id: 'MOD_EDU_GOVERNANCE', label: 'Governance & Council', icon: Building2, category: 'Governance' },
-      { id: 'MOD_EDU_REGISTRAR', label: 'Registrar Office & SIS', icon: Users, category: 'Operations' },
-      { id: 'MOD_EDU_SENATE', label: 'Senate & Curricula', icon: CheckCircle2, category: 'Governance' },
-      { id: 'MOD_EDU_BURSARY', label: 'Bursary & Student Fees', icon: DollarSign, category: 'Operations' },
-      { id: 'MOD_EDU_CLINIC', label: 'Health & Clinic Services', icon: HeartPulse, category: 'Campus Services' },
-      { id: 'MOD_EDU_LIBRARY', label: 'E-Library Console', icon: BookOpen, category: 'Campus Services' },
-      { id: 'MOD_EDU_HOSTEL', label: 'Hostel Allocation', icon: Cloud, category: 'Campus Services' },
-      { id: 'developer', label: 'API Developer Portal', icon: Code, category: 'Developer Portal' },
-      { id: 'admin', label: 'Licensing & Tenancy', icon: Settings, category: 'Administration' }
+      { id: 'MOD_PRI_GOVERNANCE', label: 'Headteacher & P.1–P.7 Streams', icon: Building2, category: 'Governance' },
+      { id: 'MOD_PRI_CURRICULUM', label: 'Thematic & Four Core Subjects', icon: BookOpen, category: 'Academics' },
+      { id: 'MOD_PRI_BURSAR', label: 'Primary Bursar & Alpha Cashbook', icon: DollarSign, category: 'Finance' },
+      { id: 'developer', label: 'Primary Developer API', icon: Code, category: 'Developer Portal' }
     ],
     aiCapabilityMapping: [
-      { agentId: 'AGENT_EDU_ATTRITION', name: 'Student Attrition Predictor', description: 'Early warning indicators for academic dropouts and financial arrears.', modelAlias: 'gemini-2.5-flash' },
-      { agentId: 'AGENT_CURRICULUM_SYNC', name: 'Curriculum Alignment Agent', description: 'Aligns academic credit units to national qualification frameworks.', modelAlias: 'gemini-2.5-pro' }
+      { agentId: 'AGENT_PLE_ANALYTICS', name: 'PLE Performance Predictor', description: 'Analyzes upper-primary mock exam trends to predict UNEB PLE aggregates.', modelAlias: 'gemini-2.5-pro' }
     ],
-    modules: ['Registrar Office', 'Student Information System', 'Senate Approvals', 'Bursary & Alpha Cash Book', 'Campus Clinic', 'E-Library', 'Hostel Management'],
-    apis: ['POST /api/edu/admissions', 'GET /api/edu/students', 'POST /api/edu/fees/invoice', 'POST /api/edu/grades/submit']
+    modules: ['P.1-P.7 Class Streams', 'Pupil Admission Register', 'Thematic Curriculum Competencies', 'PLE Candidate Registration', 'Primary FAAP Cashbook & Vote Book'],
+    apis: ['POST /api/v1/primary/pupils/admit', 'GET /api/v1/primary/ple/candidates', 'POST /api/v1/primary/fees/invoice']
+  },
+
+  // 4. JUMO SECONDARY SCHOOL ERP (St. Lawrence Academy Benchmark)
+  {
+    id: 'JUMO-SECONDARY-ERP',
+    code: 'JUMO-SEC-01',
+    name: 'JUMO SECONDARY SCHOOL ERP',
+    badge: 'ST. LAWRENCE BENCHMARK',
+    description: 'Secondary and high school operating system benchmarked on St. Lawrence Academy. Manages Principal governance, O-Level & A-Level subject combinations, UNEB UCE & UACE center administration, science laboratories, boarding facilities, and secondary bursar finance.',
+    category: 'Authoritative JUMO Products',
+    version: 'v16.2.0',
+    owner: 'JUMO Secondary & High School Academic Authority',
+    tenantAvailability: 'Multi-Tenant Isolated',
+    route: '/products/secondary',
+    icon: GraduationCap,
+    iconName: 'GraduationCap',
+    color: 'text-indigo-600',
+    bgAccent: 'bg-indigo-600',
+    borderAccent: 'border-indigo-200',
+    accentColor: 'text-indigo-600',
+    accentHover: 'hover:bg-indigo-50 hover:text-indigo-700',
+    monthlyPrice: 499,
+    navigationRegistry: [
+      { id: 'MOD_SEC_GOVERNANCE', label: 'Principal & Secondary Senate', icon: Building2, category: 'Governance' },
+      { id: 'MOD_SEC_REGISTRAR', label: 'Registrar & UNEB Center (UCE/UACE)', icon: Users, category: 'Operations' },
+      { id: 'MOD_SEC_DOS', label: 'DOS Academic & Subject Combinations', icon: BookOpen, category: 'Academics' },
+      { id: 'MOD_SEC_BURSAR', label: 'Secondary Bursar & FAAP Ledger', icon: DollarSign, category: 'Finance' },
+      { id: 'MOD_SEC_GRADEBOOK', label: 'Teacher Gradebook & Transcripts', icon: Award, category: 'Academics' },
+      { id: 'developer', label: 'Secondary Developer API', icon: Code, category: 'Developer Portal' }
+    ],
+    aiCapabilityMapping: [
+      { agentId: 'AGENT_UNEB_ANALYTICS', name: 'UNEB Results & Transcripts Copilot', description: 'Generates official NCDC / UNEB grade transcripts and subject combination checks.', modelAlias: 'gemini-2.5-pro' }
+    ],
+    modules: ['Principal Office', 'Registrar SIS & UNEB Center', 'O & A Level Subject Combinations', 'Science Labs & E-Library', 'Boarding & Houses', 'Secondary Bursar FAAP Ledger'],
+    apis: ['POST /api/v1/secondary/students/register', 'GET /api/v1/secondary/uneb/candidates', 'POST /api/v1/secondary/transcripts/generate']
   },
 
   // 3. JUMO ALUMNI ASSOCIATION ERP
@@ -285,11 +347,12 @@ export const ApprovedProductRegistry: ApprovedProductDefinition[] = [
 
 export const WaffleAppsList = [
   { name: 'JUMO FINTECH', route: '/products/fintech', icon: DollarSign, color: 'text-emerald-700 bg-emerald-50', productId: 'JUMO-FINTECH' },
-  { name: 'JUMO Universal Education ERP', route: '/products/education', icon: GraduationCap, color: 'text-blue-700 bg-blue-50', productId: 'JUMO-EDU-UNIVERSAL' },
-  { name: 'JUMO Alumni Association ERP', route: '/products/alumni', icon: Award, color: 'text-rose-700 bg-rose-50', productId: 'JUMO-ALUMNI' },
-  { name: 'JUMO Church ERP', route: '/products/church', icon: Church, color: 'text-purple-700 bg-purple-50', productId: 'JUMO-CHURCH' },
-  { name: 'Sovereign Control Center', route: '/control-center', icon: Sliders, color: 'text-indigo-700 bg-indigo-50', productId: 'JUMO-CONTROL' },
-  { name: 'Platform Store', route: '/control-center/store', icon: Package, color: 'text-slate-700 bg-slate-50', productId: 'JUMO-CONTROL' }
+  { name: 'JUMO NURSERY ERP', route: '/products/nursery', icon: Baby, color: 'text-pink-700 bg-pink-50', productId: 'JUMO-NURSERY-ERP' },
+  { name: 'JUMO PRIMARY ERP', route: '/products/primary', icon: GraduationCap, color: 'text-blue-700 bg-blue-50', productId: 'JUMO-PRIMARY-ERP' },
+  { name: 'JUMO SECONDARY ERP', route: '/products/secondary', icon: GraduationCap, color: 'text-indigo-700 bg-indigo-50', productId: 'JUMO-SECONDARY-ERP' },
+  { name: 'JUMO ALUMNI ERP', route: '/products/alumni', icon: Award, color: 'text-rose-700 bg-rose-50', productId: 'JUMO-ALUMNI' },
+  { name: 'JUMO CHURCH ERP', route: '/products/church', icon: Church, color: 'text-purple-700 bg-purple-50', productId: 'JUMO-CHURCH' },
+  { name: 'Sovereign Control Center', route: '/control-center', icon: Sliders, color: 'text-indigo-700 bg-indigo-50', productId: 'JUMO-CONTROL' }
 ];
 
 export function getApprovedProduct(idOrAlias?: string): ApprovedProductDefinition {
@@ -306,8 +369,9 @@ export function getApprovedProduct(idOrAlias?: string): ApprovedProductDefinitio
     (lower.includes('pay') && p.id === 'JUMO-FINTECH') ||
     (lower.includes('faap') && p.id === 'JUMO-FINTECH') ||
     (lower.includes('alumni') && p.id === 'JUMO-ALUMNI') ||
-    (lower.includes('edu') && p.id === 'JUMO-EDU-UNIVERSAL') ||
-    (lower.includes('school') && p.id === 'JUMO-EDU-UNIVERSAL') ||
+    (lower.includes('nursery') && p.id === 'JUMO-NURSERY-ERP') ||
+    (lower.includes('primary') && p.id === 'JUMO-PRIMARY-ERP') ||
+    (lower.includes('secondary') && p.id === 'JUMO-SECONDARY-ERP') ||
     (lower.includes('church') && p.id === 'JUMO-CHURCH') ||
     (lower.includes('diocese') && p.id === 'JUMO-CHURCH') ||
     (lower.includes('parish') && p.id === 'JUMO-CHURCH') ||
@@ -318,11 +382,13 @@ export function getApprovedProduct(idOrAlias?: string): ApprovedProductDefinitio
   return found || ApprovedProductRegistry[0];
 }
 
-export function mapPlatformIdToApprovedKey(platformId?: string): 'fintech' | 'education' | 'alumni' | 'church' | 'control' {
+export function mapPlatformIdToApprovedKey(platformId?: string): 'fintech' | 'nursery' | 'primary' | 'secondary' | 'alumni' | 'church' | 'control' {
   if (!platformId) return 'fintech';
   const lower = platformId.toLowerCase();
   if (lower.includes('alumni')) return 'alumni';
-  if (lower.includes('edu') || lower.includes('school')) return 'education';
+  if (lower.includes('nursery')) return 'nursery';
+  if (lower.includes('primary')) return 'primary';
+  if (lower.includes('secondary')) return 'secondary';
   if (lower.includes('church') || lower.includes('diocese') || lower.includes('parish')) return 'church';
   if (lower.includes('control') || lower.includes('admin') || lower.includes('store') || lower.includes('owner')) return 'control';
   return 'fintech';

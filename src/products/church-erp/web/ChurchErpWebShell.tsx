@@ -17,13 +17,50 @@ import {
 } from '../offices';
 
 export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void }> = ({ onNavigate }) => {
-  const [activeModule, setActiveModule] = useState<string>('MOD_CH_PARISH');
+  const [activeModule, setActiveModule] = useState<string>('LAUNCHER');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
   const [aiContext, setAiContext] = useState<string>('Pastoral Care & Tithe Stewardship');
   const [aiPrompt, setAiPrompt] = useState<string>('');
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [aiThinking, setAiThinking] = useState<boolean>(false);
+
+  const offices = [
+    { id: 'MOD_CH_PARISH', label: 'Parish & Curate Stations', icon: Church, desc: 'Manage parish administration, curate postings, and community outreach hubs.', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'MOD_CH_SACRAMENTS', label: 'Sacramental Registers', icon: Heart, desc: 'Official registers for Holy Baptism, Matrimony, Confirmation, and ecclesiastical certificates.', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'MOD_CH_TITHES', label: 'Tithes & Diocesan Quota', icon: DollarSign, desc: 'Track parish stewardship, tithes, thanksgiving pledges, and mandatory diocesan quota settlements.', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'MOD_CH_DIOCESE', label: 'Synod & Bishop Office', icon: Building2, desc: 'Episcopal governance, synod assembly records, and high-level diocesan policy management.', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'MOD_CH_PROJECTS', label: 'Capital Projects & Works', icon: Building, desc: 'Manage church construction, infrastructure developments, and mission outreach investments.', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'PORTAL_CHURCH_CONTROL', label: 'Church Control Center', icon: Sliders, desc: 'Centralized administrative controls, user management, and system configuration.', color: 'text-purple-600', bg: 'bg-purple-50' },
+  ];
+
+  // Helper to render the product launcher
+  const renderLauncher = () => (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Church ERP Launcher</h1>
+        <p className="text-slate-500 text-sm max-w-2xl">
+          Sovereign operating system for dioceses and parishes. Select an ecclesiastical office to manage pastoral care, sacraments, or stewardship finance.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {offices.map(module => (
+          <button
+            key={module.id}
+            onClick={() => setActiveModule(module.id)}
+            className="group bg-white border border-slate-200 rounded-2xl p-6 text-left hover:shadow-xl hover:shadow-purple-100/50 hover:border-purple-100 transition-all duration-300"
+          >
+            <div className={`w-12 h-12 rounded-xl ${module.bg} ${module.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+              <module.icon className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-slate-900 group-hover:text-purple-600 transition-colors">{module.label}</h3>
+            <p className="text-xs text-slate-500 mt-2 leading-relaxed">{module.desc}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   // Church Domain Data
   const parishes = [
@@ -141,9 +178,17 @@ export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void 
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-4">
-            {/* Ecclesiastical Offices */}
             <div className="space-y-1">
-              <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">
+              <button
+                type="button"
+                onClick={() => setActiveModule('LAUNCHER')}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${activeModule === 'LAUNCHER' ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-700 hover:bg-slate-100'}`}
+              >
+                <LayoutGrid className={`w-4 h-4 ${activeModule === 'LAUNCHER' ? 'text-white' : 'text-purple-600'}`} />
+                <span>Church Home</span>
+              </button>
+
+              <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-4">
                 ECCLESIASTICAL OFFICES
               </div>
 
@@ -223,6 +268,7 @@ export const ChurchErpWebShell: React.FC<{ onNavigate?: (route: string) => void 
         {/* Main Content Workspace */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-100">
           <div className="max-w-7xl mx-auto space-y-6">
+            {activeModule === 'LAUNCHER' && renderLauncher()}
             {activeModule === 'PORTAL_CHURCH_CONTROL' && <ChurchErpControlCenter />}
             {activeModule === 'PORTAL_CHURCH_DEV' && <ChurchErpDeveloperCenter />}
 

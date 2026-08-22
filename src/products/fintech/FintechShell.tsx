@@ -37,6 +37,7 @@ import { TaxModule } from '../faap/web/modules/TaxModule';
 import { AuditModule } from '../faap/web/modules/AuditModule';
 import { FinancialReportsModule } from '../faap/web/modules/FinancialReportsModule';
 import { FaapAdminModule } from '../faap/web/modules/FaapAdminModule';
+import { FaapBookRegistry } from '../faap/web/modules/FaapBookRegistry';
 
 import { TransactionsModule } from '../digital-pay/web/modules/TransactionsModule';
 import { MerchantsModule } from '../digital-pay/web/modules/MerchantsModule';
@@ -105,8 +106,50 @@ export const FintechShell: React.FC<FintechShellProps> = ({
   currentUser = { name: 'Julius Moses Okwii', role: 'CHIEF FINANCIAL OFFICER', email: 'okwiijuliusmoses@gmail.com' },
   onLogout
 }) => {
-  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeTab, setActiveTab] = useState<string>('LAUNCHER');
   const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
+
+  // Helper to render the product launcher
+  const renderLauncher = () => (
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Fintech Operating Launcher</h1>
+        <p className="text-slate-500 text-sm max-w-2xl">
+          Sovereign financial operating network. Select a capability family to manage core ledgers, payment switching, or agent banking networks.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          { id: 'overview', title: 'Fintech Overview', desc: 'Global financial services operating workspace, KPIs, and sovereign settlement matrix.', icon: LayoutGrid, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { id: 'FAM_LEDGER', title: 'FAAP General Ledger', desc: 'Financial accounting core, double-entry controller, and zero-parity auditing.', icon: Landmark, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { id: 'FAM_PAY_SWITCH', title: 'Universal Payment Switch', desc: 'Multi-rail payment routing, MoMo rails, and Safaricom M-Pesa switching matrix.', icon: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+          { id: 'FAM_AGENT_BANKING', title: 'Agent Banking Network', desc: 'Manage nationwide agency banking, liquidity floats, and agent commission ledgers.', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { id: 'FAM_MICROFINANCE', title: 'Microfinance & Lending', desc: 'JLG lending models, micro-credit scoring, and SACCO financial operations.', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { id: 'developer', title: 'Developer API Center', desc: 'Universal financial APIs, webhook queues, and sandbox credential management.', icon: Code, color: 'text-slate-600', bg: 'bg-slate-50' },
+        ].map((mod) => (
+          <button
+            key={mod.id}
+            onClick={() => {
+              if (mod.id.startsWith('FAM_')) {
+                setSelectedFamilyId(mod.id);
+                setActiveTab('family_workspace');
+              } else {
+                setActiveTab(mod.id);
+              }
+            }}
+            className="group bg-white border border-slate-200 rounded-2xl p-6 text-left hover:shadow-xl hover:shadow-emerald-100/50 hover:border-emerald-100 transition-all duration-300"
+          >
+            <div className={`w-12 h-12 rounded-xl ${mod.bg} ${mod.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+              <mod.icon className="w-6 h-6" />
+            </div>
+            <h3 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{mod.title}</h3>
+            <p className="text-xs text-slate-500 mt-2 leading-relaxed">{mod.desc}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
   const [faapSubTab, setFaapSubTab] = useState<string>('controller');
   const [dpSubTab, setDpSubTab] = useState<string>('switch');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -222,6 +265,9 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 
   // Render workspace content
   const renderWorkspace = () => {
+    if (activeTab === 'LAUNCHER') {
+      return renderLauncher();
+    }
     if (activeTab === 'family_workspace' && selectedFamilyId) {
       const family = getFintechFamily(selectedFamilyId);
       
@@ -260,6 +306,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
               <div className="flex items-center gap-1.5 overflow-x-auto bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                 {[
                   { id: 'controller', label: 'Parity Controller' },
+                  { id: 'books', label: 'FAAP Book Registry (27)' },
                   { id: 'dashboard', label: 'Dashboard' },
                   { id: 'coa', label: 'Chart of Accounts' },
                   { id: 'journal', label: 'General Journal' },
@@ -298,6 +345,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
             {/* Sub-module View */}
             <div>
               {faapSubTab === 'controller' && <FaapControllerWorkspace />}
+              {faapSubTab === 'books' && <FaapBookRegistry />}
               {faapSubTab === 'dashboard' && <FaapDashboard />}
               {faapSubTab === 'coa' && <ChartOfAccounts />}
               {faapSubTab === 'journal' && <GeneralJournal />}
@@ -883,6 +931,24 @@ export const FintechShell: React.FC<FintechShellProps> = ({
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
         {/* Left Product Navigation */}
         <aside className={`${isSidebarOpen ? 'w-60 block' : 'hidden'} md:block bg-white border-r border-slate-200 shrink-0 p-3.5 space-y-4 overflow-y-auto max-h-[calc(100vh-3.25rem)] sticky top-13 text-xs`}>
+          {/* Product Launcher Home */}
+          <div>
+            <button
+              onClick={() => {
+                setActiveTab('LAUNCHER');
+                setSelectedFamilyId(null);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-bold transition cursor-pointer ${
+                activeTab === 'LAUNCHER'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span>Fintech Home</span>
+            </button>
+          </div>
+
           {/* Product Overview Entry */}
           <div>
             <button

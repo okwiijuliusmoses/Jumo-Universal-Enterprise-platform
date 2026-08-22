@@ -2,13 +2,11 @@
  * JUMO UEOS v14.0 LTS — Sovereign Independent Product Application Router
  * Implements Independent Product Workspace Architecture for:
  * 1. JUMO FINTECH (Financial Operating Platform)
- * 2. JUMO UNIVERSAL SCHOOL ERP (Education ERP)
- * 3. JUMO ALUMNI ERP (Alumni Network & Advancement)
- * 
- * Operating Architecture:
- * - Entry Point: JUMO Application Launcher (3 Isolated Application Cards)
- * - Isolated Runtimes: Each product runs in its own shell with no universal sidebar
- * - Underlying Micro-Kernel: JUMO UEOS operates underneath as security, identity, AI & ledger runtime
+ * 2. JUMO NURSERY ERP
+ * 3. JUMO PRIMARY ERP
+ * 4. JUMO SECONDARY ERP
+ * 5. JUMO ALUMNI ERP
+ * 6. JUMO CHURCH ERP
  */
 
 import React, { useState, useEffect } from 'react';
@@ -22,30 +20,38 @@ import { PublicLoginView } from '../experience/pages/PublicLogin';
 import { PublicPortalView } from '../experience/components/public/PublicPortal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-// 3 Approved Sovereign Standalone Products
-import { FintechShell } from './products/fintech/FintechShell';
-import { EducationErpWebShell as EducationErpPlatform, EducationErpMobileApp } from './products/education-erp';
-import { AlumniErpWebShell as AlumniPlatform, AlumniErpMobileApp } from './products/alumni-erp';
-import { FaapMobileApp } from './products/faap';
-import { ChurchErpWebShell as ChurchPlatform, ChurchErpMobileApp } from './products/church-erp';
-import { PlatformShell } from './components/runtime/PlatformShell';
+// Sovereign Standalone Products & Registry
+import { ApprovedProductRegistry, getApprovedProduct } from './products/ApprovedProductRegistry';
+import { NeutralSovereignGateway } from '../experience/pages/NeutralSovereignGateway';
+import { JumoBiometricUnlock } from './components/identity/JumoBiometricUnlock';
 
-// Authoritative Control Center & System Administration
+// Product Shells
+import { FintechShell } from './products/fintech/FintechShell';
+import { NurseryErpWebShell } from './products/nursery-erp/web/NurseryErpWebShell';
+import { PrimaryErpWebShell } from './products/primary-erp/web/PrimaryErpWebShell';
+import { SecondaryErpWebShell } from './products/secondary-erp/web/SecondaryErpWebShell';
+import { AlumniErpWebShell } from './products/alumni-erp';
+import { ChurchErpWebShell } from './products/church-erp';
+
+// Mobile Apps
+import { FaapMobileApp } from './products/faap';
+import { AlumniErpMobileApp } from './products/alumni-erp';
+import { ChurchErpMobileApp } from './products/church-erp';
+
+// Identity & Specialized Pages
+import { ProductLoginView } from '../experience/pages/ProductLoginView';
 import { OwnerControlCenterLaunchpad } from './control-center/launchpad/OwnerControlCenterLaunchpad';
 import { TelemetryMonitoringCenter } from './control-center/monitoring';
 import { SystemSettingsCenter } from './control-center/settings';
-
-// Core Clean Application Launcher
-import { JumoApplicationLauncher } from './components/JumoApplicationLauncher';
 import { JumoIdentityScannerView } from './components/identity/JumoIdentityScannerView';
 
 function AppContent() {
   logMilestone('APP_CONTENT_START', 'PASS');
   const { user, loading: authLoading } = useAuth();
+  const [showBiometric, setShowBiometric] = useState(true);
   const [currentRoute, setCurrentRoute] = useState<string>(() => {
     if (typeof window !== 'undefined' && window.location.pathname) {
-      const path = window.location.pathname + window.location.search;
-      return path;
+      return window.location.pathname + window.location.search;
     }
     return '/';
   });
@@ -53,8 +59,7 @@ function AppContent() {
   useEffect(() => {
     const handlePopState = () => {
       if (typeof window !== 'undefined') {
-        const path = window.location.pathname + window.location.search;
-        setCurrentRoute(path);
+        setCurrentRoute(window.location.pathname + window.location.search);
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -74,6 +79,11 @@ function AppContent() {
     }
   };
 
+  // 0. Biometric Layer (Startup only)
+  if (showBiometric) {
+    return <JumoBiometricUnlock onUnlock={() => setShowBiometric(false)} />;
+  }
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-300 flex items-center justify-center font-mono text-xs">
@@ -85,130 +95,113 @@ function AppContent() {
     );
   }
 
-  const routePath = (currentRoute || (typeof window !== 'undefined' ? window.location.pathname : '/')).split('?')[0];
+  const routePath = (currentRoute || '/').split('?')[0];
 
-  // 1. Unauthenticated Gateway & Public Direct Access
+  // 1. PUBLIC ROUTES (Unauthenticated)
   if (!user) {
-    if (routePath === '/login' || routePath === '/institution-login') {
-      return <LoginView onNavigate={handleNavigate} />;
+    // Standard Identity Routes
+    if (routePath === '/login') return <LoginView onNavigate={handleNavigate} />;
+    if (routePath === '/register' || routePath === '/signup') return <RegistrationView onNavigate={handleNavigate} />;
+    if (routePath === '/owner-login' || routePath === '/vault-login') return <OwnerLoginView onNavigate={handleNavigate} />;
+    if (routePath === '/public-login' || routePath === '/citizen-login') return <PublicLoginView onNavigate={handleNavigate} />;
+    if (routePath === '/public-portal') return <PublicPortalView onNavigate={handleNavigate} />;
+    if (routePath === '/gateway' || routePath === '/identity') return <IdentityGateway onNavigate={handleNavigate} />;
+    if (routePath.startsWith('/verify') || routePath.startsWith('/scanner') || routePath === '/scan-id') {
+      return <JumoIdentityScannerView onNavigate={handleNavigate} />;
     }
-    if (routePath === '/register' || routePath === '/signup') {
-      return <RegistrationView onNavigate={handleNavigate} />;
-    }
-    if (routePath === '/owner-login' || routePath === '/vault-login') {
-      return <OwnerLoginView onNavigate={handleNavigate} />;
-    }
-    if (routePath === '/public-login' || routePath === '/citizen-login') {
-      return <PublicLoginView onNavigate={handleNavigate} />;
-    }
-    if (routePath === '/public-portal') {
-      return <PublicPortalView onNavigate={handleNavigate} />;
-    }
-    if (routePath.startsWith('/verify') || routePath.startsWith('/scanner') || routePath.startsWith('/identity-scanner') || routePath === '/scan-id') {
+
+    // Dynamic Product Login Routes (Sovereign Boundaries)
+    // Format: /products/:productId/login or /:productId/login
+    const loginMatch = routePath.match(/^\/(?:products\/)?([^\/]+)\/login$/);
+    if (loginMatch) {
+      const productId = loginMatch[1];
+      const product = getApprovedProduct(productId);
       return (
-        <div className="min-h-screen bg-white">
-          <JumoIdentityScannerView onNavigate={handleNavigate} />
-        </div>
+        <ProductLoginView 
+          productId={product.id}
+          productName={product.name}
+          productIcon={React.createElement(product.icon, { className: 'w-8 h-8' })}
+          brandColor={product.color.includes('emerald') ? '#10b981' : product.color.includes('pink') ? '#db2777' : product.color.includes('blue') ? '#2563eb' : '#4f46e5'}
+          onNavigate={handleNavigate}
+          defaultEmail={`admin@${productId}.jumo.systems`}
+          redirectPath={product.route}
+        />
       );
     }
-    if (routePath === '/gateway' || routePath === '/identity') {
-      return <IdentityGateway onNavigate={handleNavigate} />;
-    }
+
+    // Unauthenticated Root Fallback: Neutral Sovereign Gateway
+    return <NeutralSovereignGateway onNavigate={handleNavigate} />;
   }
 
-  // 2. Sovereign Product 1: JUMO FINTECH (Financial Services Operating Platform)
-  if (
-    routePath.startsWith('/products/fintech') ||
-    routePath === '/fintech' ||
-    routePath.startsWith('/fintech/') ||
-    routePath === '/finance' ||
-    routePath === '/pay' ||
-    routePath === '/faap' ||
-    routePath === '/treasury' ||
-    routePath.includes('finpay')
-  ) {
-    const isMobile = routePath.includes('/mobile');
-    return isMobile ? (
-      <FaapMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/fintech')} />
-    ) : (
-      <FintechShell onNavigate={handleNavigate} currentUser={user || undefined} onLogout={handleLogout} />
-    );
-  }
+  // 2. PROTECTED ROUTES (Authenticated)
 
-  // 3. Sovereign Product 2: JUMO UNIVERSAL SCHOOL ERP (Education ERP)
-  if (
-    routePath.startsWith('/products/education') ||
-    routePath === '/education' ||
-    routePath.startsWith('/education/') ||
-    routePath === '/school' ||
-    routePath === '/school-erp' ||
-    routePath === '/education-erp' ||
-    routePath === '/edu' ||
-    routePath.includes('edu-alumni')
-  ) {
-    const isMobile = routePath.includes('/mobile');
-    return isMobile ? (
-      <EducationErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/education')} />
-    ) : (
-      <EducationErpPlatform onNavigate={handleNavigate} />
-    );
-  }
-
-  // 4. Sovereign Product 3: JUMO ALUMNI ERP (Alumni Network & Advancement)
-  if (
-    routePath.startsWith('/products/alumni') ||
-    routePath === '/alumni' ||
-    routePath.startsWith('/alumni/') ||
-    routePath === '/alumni-erp'
-  ) {
-    const isMobile = routePath.includes('/mobile');
-    return isMobile ? (
-      <AlumniErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/alumni')} />
-    ) : (
-      <AlumniPlatform onNavigate={handleNavigate} />
-    );
-  }
-
-  // 5. Sovereign Product 4: JUMO CHURCH ERP (Ecclesiastical & Diocesan Platform)
-  if (
-    routePath.startsWith('/products/church') ||
-    routePath === '/church' ||
-    routePath.startsWith('/church/') ||
-    routePath === '/church-erp' ||
-    routePath.includes('church') || 
-    routePath.includes('diocese')
-  ) {
-    const isMobile = routePath.includes('/mobile');
-    return isMobile ? (
-      <ChurchErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/church')} />
-    ) : (
-      <ChurchPlatform onNavigate={handleNavigate} />
-    );
-  }
-
-  // 6. Privileged JUMO UEOS Owner & System Administration
-  if (
-    routePath === '/owner' ||
-    routePath === '/admin' ||
-    routePath.startsWith('/control') ||
-    routePath.startsWith('/owner/')
-  ) {
+  // System Administration & Owner Contexts
+  if (routePath.startsWith('/owner') || routePath.startsWith('/admin') || routePath.startsWith('/control')) {
     return <OwnerControlCenterLaunchpad onNavigate={handleNavigate} currentUser={user} onLogout={handleLogout} />;
   }
-
-  if (routePath.startsWith('/control-center/monitoring') || routePath === '/operations' || routePath === '/developer-center') {
+  if (routePath === '/operations' || routePath === '/developer-center' || routePath === '/monitoring') {
     return <TelemetryMonitoringCenter onNavigate={handleNavigate} />;
   }
-
-  if (routePath.startsWith('/control-center/settings') || routePath === '/settings') {
+  if (routePath === '/settings') {
     return <SystemSettingsCenter onNavigate={handleNavigate} />;
   }
 
-  // 7. Authoritative Entry Point: JUMO Application Launcher
-  // (Served at '/', '/apps', '/launcher', '/public', '/portal', or any unmatched route)
-  return (
-    <JumoApplicationLauncher onNavigate={handleNavigate} currentUser={user || undefined} />
-  );
+  // Dynamic Product Routing (The Registry is the Source of Truth)
+  // Format: /products/:productId/... or /:productId/...
+  const productMatch = routePath.match(/^\/(?:products\/)?([^\/]+)/);
+  if (productMatch) {
+    const productIdRaw = productMatch[1];
+    const product = getApprovedProduct(productIdRaw);
+    const isMobile = routePath.includes('/mobile');
+
+    // Sovereign Shell Resolution Factory
+    switch (product.id) {
+      case 'JUMO-FINTECH':
+        return isMobile ? (
+          <FaapMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/fintech')} />
+        ) : (
+          <FintechShell onNavigate={handleNavigate} currentUser={user} onLogout={handleLogout} />
+        );
+      case 'JUMO-NURSERY-ERP':
+        return <NurseryErpWebShell onNavigate={handleNavigate} />;
+      case 'JUMO-PRIMARY-ERP':
+        return <PrimaryErpWebShell onNavigate={handleNavigate} />;
+      case 'JUMO-SECONDARY-ERP':
+        return <SecondaryErpWebShell onNavigate={handleNavigate} />;
+      case 'JUMO-ALUMNI':
+        return isMobile ? (
+          <AlumniErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/alumni')} />
+        ) : (
+          <AlumniErpWebShell onNavigate={handleNavigate} />
+        );
+      case 'JUMO-CHURCH':
+        return isMobile ? (
+          <ChurchErpMobileApp onNavigate={handleNavigate} onSwitchToWeb={() => handleNavigate('/church')} />
+        ) : (
+          <ChurchErpWebShell onNavigate={handleNavigate} />
+        );
+      case 'JUMO-CONTROL':
+        return <OwnerControlCenterLaunchpad onNavigate={handleNavigate} currentUser={user} onLogout={handleLogout} />;
+      default:
+        // If product found in registry but shell is missing, redirect to gateway
+        break;
+    }
+  }
+
+  // Legacy Redirects
+  if (routePath === '/school' || routePath.startsWith('/education')) {
+    handleNavigate('/secondary');
+    return null;
+  }
+
+  // Final Catch-all: Neutral Sovereign Gateway (Authenticated version)
+  if (routePath === '/') {
+    return <NeutralSovereignGateway onNavigate={handleNavigate} />;
+  }
+
+  // Fallback to Fintech if absolutely lost
+  handleNavigate('/fintech');
+  return null;
 }
 
 export default function App() {

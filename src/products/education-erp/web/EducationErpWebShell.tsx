@@ -157,7 +157,7 @@ export const EducationErpWebShell: React.FC<EducationErpWebShellProps> = ({
 
       // 2. Control Center & Developer Center
       case 'PORTAL_CONTROL_CENTER':
-        return <SchoolErpControlCenter onTierChange={handleTierSwitch} />;
+        return <SchoolErpControlCenter onTierChange={() => {}} />;
 
       case 'PORTAL_DEVELOPER_CENTER':
         return <SchoolErpDeveloperCenter />;
@@ -228,31 +228,7 @@ export const EducationErpWebShell: React.FC<EducationErpWebShellProps> = ({
           </div>
         </div>
 
-        {/* Center: Institutional Tier Selector */}
-        <div className="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase px-2 flex items-center gap-1">
-            <SlidersHorizontal className="w-3 h-3 text-blue-600" /> Tier:
-          </span>
-          {(['PRE_PRIMARY', 'PRIMARY', 'SECONDARY', 'TERTIARY', 'VOCATIONAL'] as EducationTemplateId[]).map((tId) => {
-            const isSelected = activeTemplateId === tId;
-            return (
-              <button
-                key={tId}
-                type="button"
-                onClick={() => handleTierSwitch(tId)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-white text-blue-700 shadow-2xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-                }`}
-              >
-                {tId === 'PRE_PRIMARY' ? 'Nursery / Pre-Primary' : tId === 'PRIMARY' ? 'Primary' : tId === 'SECONDARY' ? 'Secondary' : tId === 'TERTIARY' ? 'Tertiary' : 'Vocational'}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right Header Actions */}
+        {/* Header Actions */}
         <div className="flex items-center gap-2">
           {/* Quick Exit / Switcher Button */}
           {onNavigate && (
