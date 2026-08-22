@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  FileText, Plus, Search, ShieldCheck, AlertCircle, Trash2, Printer, 
-  X, CheckCircle, ListFilter, RefreshCw, Layers, Sparkles 
-} from 'lucide-react';
+import { Plus, ShieldCheck, RefreshCw, Layers, X, Sparkles, CheckCircle, AlertCircle, FileText, Trash2, ListFilter, Search } from 'lucide-react';
 import { FaapService } from '../../domain/FaapService';
 import { LedgerPostingService, ConsistencyCheckReport } from '../../services/LedgerPostingService';
-import { FaapJournalLine } from '../../domain/types';
+import { FaapJournalLine, FaapJournalEntry } from '../../domain/types';
+import { JumoDataTable, Column } from '../../../../core/enterprise/components/JumoDataTable';
+import { JumoTransactionForm } from '../../../../core/enterprise/components/JumoTransactionForm';
+import { JumoWorkflowStatus } from '../../../../core/enterprise/components/JumoWorkflowStatus';
 
 export const GeneralJournal: React.FC = () => {
   const service = FaapService.getInstance();
@@ -24,8 +24,8 @@ export const GeneralJournal: React.FC = () => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [sourceProduct, setSourceProduct] = useState<'EDUCATION' | 'DIGITAL_PAY' | 'INTERNAL' | 'JUMO-EDU-ALUMNI' | 'JUMO-FINPAY' | 'JUMO-CHURCH'>('INTERNAL');
   const [formLines, setFormLines] = useState<FaapJournalLine[]>([
-    { accountCode: '1010', debit: 0, credit: 0, description: '' },
-    { accountCode: '4010', debit: 0, credit: 0, description: '' }
+    { accountCode: accounts[0]?.code || '', debit: 0, credit: 0, description: '' },
+    { accountCode: accounts[1]?.code || '', debit: 0, credit: 0, description: '' }
   ]);
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [formLogs, setFormLogs] = useState<string[]>([]);
@@ -42,27 +42,16 @@ export const GeneralJournal: React.FC = () => {
     setShowAuditPanel(true);
   };
 
-  const handleAddLine = () => {
-    setFormLines([...formLines, { accountCode: accounts[0]?.code || '', debit: 0, credit: 0, description: '' }]);
-  };
-
-  const handleRemoveLine = (index: number) => {
-    if (formLines.length <= 2) return;
-    const newLines = [...formLines];
-    newLines.splice(index, 1);
-    setFormLines(newLines);
-  };
-
-  const handleLineChange = (index: number, field: keyof FaapJournalLine, value: any) => {
+  const handleLineChange = (index: number, field: string, value: any) => {
     const newLines = [...formLines];
     if (field === 'debit') {
       newLines[index].debit = Math.max(0, Number(value) || 0);
-      if (newLines[index].debit > 0) newLines[index].credit = 0; // split DR/CR constraint
+      if (newLines[index].debit > 0) newLines[index].credit = 0;
     } else if (field === 'credit') {
       newLines[index].credit = Math.max(0, Number(value) || 0);
-      if (newLines[index].credit > 0) newLines[index].debit = 0; // split DR/CR constraint
+      if (newLines[index].credit > 0) newLines[index].debit = 0;
     } else {
-      newLines[index][field] = value;
+      (newLines[index] as any)[field] = value;
     }
     setFormLines(newLines);
   };
@@ -82,20 +71,19 @@ export const GeneralJournal: React.FC = () => {
         credit: Number(line.credit) || 0
       }))
     });
-
-    setFormLogs(result.auditLog);
+    
+    setFormLogs(result.auditLog || []);
 
     if (result.success) {
       setPostSuccess(true);
-      setJournals(service.getJournalEntries());
-      // Reset Form after slight delay
+      setJournals([...service.getJournalEntries()]);
       setTimeout(() => {
         setShowNewModal(false);
         setPostSuccess(false);
         setMemo('');
         setFormLines([
-          { accountCode: '1010', debit: 0, credit: 0, description: '' },
-          { accountCode: '4010', debit: 0, credit: 0, description: '' }
+          { accountCode: accounts[0]?.code || '', debit: 0, credit: 0, description: '' },
+          { accountCode: accounts[1]?.code || '', debit: 0, credit: 0, description: '' }
         ]);
         setFormLogs([]);
       }, 1500);
@@ -104,9 +92,7 @@ export const GeneralJournal: React.FC = () => {
     }
   };
 
-  // Straight-line asset depreciation run
   const triggerDepreciationPost = () => {
-    // Generate dummy assets for subledger simulation
     const dummyAssets = [
       { id: 'as_1', assetCode: 'AST-CMP-001', name: 'High-Performance Cloud Compute Nodes', acquisitionCost: 15000000, accumulatedDepreciation: 1250000, netBookValue: 13750000 },
       { id: 'as_2', assetCode: 'AST-OFC-002', name: 'Ergonomic Standing Workstations Hub 01', acquisitionCost: 6000000, accumulatedDepreciation: 500000, netBookValue: 5500000 }
@@ -114,49 +100,63 @@ export const GeneralJournal: React.FC = () => {
 
     const result = postingService.runFixedAssetDepreciation(dummyAssets);
     if (result.success) {
-      setJournals(service.getJournalEntries());
-      alert(`Asset Subledger Depreciation Complete! Posted Journal: ${result.journalEntry?.entryNumber}. Accumulated Expense Charge: ${result.journalEntry?.totalDebit.toLocaleString()} UGX.`);
+      setJournals([...service.getJournalEntries()]);
+      alert(`Asset Subledger Depreciation Complete! Posted Journal: ${result.journalEntry?.entryNumber}.`);
     } else {
       alert(`Depreciation Run Failed: ${result.errors.join(', ')}`);
     }
   };
 
+  const columns: Column<FaapJournalEntry>[] = [
+    { header: 'DATE', accessor: 'date', className: 'whitespace-nowrap font-medium text-slate-700', sortable: true },
+    { header: 'JOURNAL NO.', accessor: 'entryNumber', className: 'font-mono text-xs font-bold text-indigo-600', sortable: true },
+    { header: 'MEMO / DESCRIPTION', accessor: 'memo', className: 'max-w-md truncate' },
+    { header: 'SOURCE', accessor: 'sourceProduct', className: 'text-xs text-slate-500 font-medium' },
+    { 
+      header: 'AMOUNT (UGX)', 
+      accessor: (j) => <span className="font-mono font-black text-slate-900">{j.totalDebit.toLocaleString()}</span>,
+      className: 'text-right'
+    },
+    { 
+      header: 'STATUS', 
+      accessor: () => <JumoWorkflowStatus status="POSTED" />,
+      className: 'text-center'
+    }
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-16">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">General Journal Entries</h1>
-          <p className="text-slate-500 text-sm">Authoritative double-entry transaction log with real-time balance propagation.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Journal Entries</h1>
+          <p className="text-slate-500 text-sm mt-1">Authoritative double-entry transaction log with real-time balance propagation.</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={triggerDepreciationPost}
-            className="flex items-center gap-2 bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-200 transition-all"
+            className="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm"
           >
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            Run Asset Depreciation
+            <Sparkles className="w-4 h-4 text-indigo-600" /> Depreciation
           </button>
           <button 
             onClick={runIntegrityAudit}
-            className="flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-100 transition-all"
+            className="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm"
           >
-            <RefreshCw className="w-4 h-4" />
-            Consistency Audit
+            <RefreshCw className="w-4 h-4 text-indigo-600" /> Consistency Audit
           </button>
           <button 
             onClick={() => setShowNewModal(true)}
-            className="flex items-center gap-2 bg-[#2ca01c] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition shadow-sm"
           >
-            <Plus className="w-4 h-4" />
-            New Journal Entry
+            <Plus className="w-4 h-4" /> New Journal Entry
           </button>
         </div>
       </div>
 
       {/* Ledger Parity Card */}
-      <div className="bg-emerald-900 text-white p-4 rounded-2xl flex items-center justify-between shadow-xl shadow-emerald-900/10">
+      <div className="bg-emerald-900 text-white p-4 rounded-xl flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-emerald-800 rounded-xl flex items-center justify-center border border-emerald-700">
+          <div className="w-10 h-10 bg-emerald-800 rounded-lg flex items-center justify-center border border-emerald-700">
             <ShieldCheck className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
@@ -170,7 +170,125 @@ export const GeneralJournal: React.FC = () => {
         </div>
       </div>
 
-      {/* Consistency Audit Report Panel */}
+      <JumoDataTable
+        title="Recent Journals"
+        data={journals}
+        columns={columns}
+        searchPlaceholder="Find by entry no, memo, or amount..."
+        selectable={true}
+        actions={() => (
+          <button className="text-indigo-600 hover:text-indigo-800 text-xs font-bold">View</button>
+        )}
+      />
+
+      {showNewModal && (
+        <JumoTransactionForm
+          title="Journal Entry"
+          width="2xl"
+          error={formErrors.length > 0 ? formErrors.join(' | ') : null}
+          headerFields={
+            <div className="grid grid-cols-3 gap-6">
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Journal Date</label>
+                <input 
+                  type="date" 
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Journal No.</label>
+                <input 
+                  type="text" 
+                  placeholder="Auto-generated" 
+                  disabled
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Source Subsystem</label>
+                <select
+                  value={sourceProduct}
+                  onChange={(e) => setSourceProduct(e.target.value as any)}
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                  <option value="INTERNAL">Internal Manual Adjustment</option>
+                  <option value="EDUCATION">SchoolPay Education ERP</option>
+                  <option value="DIGITAL_PAY">JUMO FinPay Switch</option>
+                </select>
+              </div>
+            </div>
+          }
+          columns={[
+            { 
+              id: 'accountCode', 
+              header: 'ACCOUNT', 
+              type: 'select', 
+              options: accounts.map(a => ({ value: a.code, label: `${a.code} - ${a.name}` })),
+              width: 'w-1/3'
+            },
+            { id: 'description', header: 'DESCRIPTION', type: 'text', placeholder: 'Line description' },
+            { id: 'debit', header: 'DEBIT', type: 'amount' },
+            { id: 'credit', header: 'CREDIT', type: 'amount' }
+          ]}
+          lines={formLines}
+          onLineChange={handleLineChange}
+          onAddLine={() => setFormLines([...formLines, { accountCode: accounts[0]?.code || '', debit: 0, credit: 0, description: '' }])}
+          onRemoveLine={(idx) => {
+            const newLines = [...formLines];
+            newLines.splice(idx, 1);
+            setFormLines(newLines);
+          }}
+          footerContent={
+            postSuccess ? (
+              <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4">
+                <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center animate-bounce">
+                  <CheckCircle className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-slate-900">Journal Posted!</h3>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 space-y-1.5">
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Memo</label>
+                  <textarea 
+                    value={memo}
+                    onChange={e => setMemo(e.target.value)}
+                    placeholder="Enter a description for this journal entry..."
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm min-h-[80px] focus:ring-2 focus:ring-indigo-500 outline-none"
+                  />
+                  {formLogs.length > 0 && (
+                    <div className="bg-slate-900 text-green-400 p-2 rounded-lg font-mono text-[10px] space-y-1 overflow-y-auto max-h-32 mt-2">
+                      {formLogs.map((log, idx) => <p key={idx}>{log}</p>)}
+                    </div>
+                  )}
+                </div>
+                <div className="w-64 bg-white border border-slate-200 rounded-xl overflow-hidden self-start">
+                  <div className="px-4 py-2 border-b border-slate-100 flex justify-between text-sm">
+                    <span className="text-slate-500 font-bold">Total Debits</span>
+                    <span className="font-mono font-bold text-slate-900">{totalDebits.toLocaleString()}</span>
+                  </div>
+                  <div className="px-4 py-2 border-b border-slate-100 flex justify-between text-sm">
+                    <span className="text-slate-500 font-bold">Total Credits</span>
+                    <span className="font-mono font-bold text-slate-900">{totalCredits.toLocaleString()}</span>
+                  </div>
+                  <div className={`px-4 py-2 flex justify-between text-sm font-bold ${difference === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                    <span>Difference</span>
+                    <span className="font-mono">{difference.toLocaleString()}</span>
+                  </div>
+                </div>
+              </>
+            )
+          }
+          onSubmit={handlePostJournal}
+          onCancel={() => setShowNewModal(false)}
+          submitLabel="Save and Post"
+          isSubmitting={postSuccess || difference !== 0 || totalDebits === 0}
+        />
+      )}
+
+      {/* Consistency Audit Report Panel (Unchanged for now) */}
       {showAuditPanel && auditReport && (
         <div className="bg-white border-2 border-blue-200 rounded-2xl shadow-xl overflow-hidden animate-in slide-in-from-top duration-300">
           <div className="bg-blue-900 text-white px-6 py-4 flex items-center justify-between">
@@ -238,7 +356,7 @@ export const GeneralJournal: React.FC = () => {
               </div>
             </div>
 
-            {auditReport.reconciliationIssues.length > 0 ? (
+            {auditReport.reconciliationIssues.length > 0 && (
               <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl text-xs space-y-1">
                 <p className="font-bold">Consistency Audit flagged issues:</p>
                 <ul className="list-disc pl-4 space-y-1">
@@ -247,285 +365,10 @@ export const GeneralJournal: React.FC = () => {
                   ))}
                 </ul>
               </div>
-            ) : (
-              <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-xl text-xs flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
-                <p className="font-bold">All accounting books are 100% consistent. Historical transaction lines perfectly recalculate to the current Chart of Accounts balances.</p>
-              </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Main Ledger Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">Entry #</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Memo / Narration</th>
-                <th className="px-6 py-4">Accounting Lines</th>
-                <th className="px-6 py-4 text-right">Debit (UGX)</th>
-                <th className="px-6 py-4 text-right">Credit (UGX)</th>
-                <th className="px-6 py-4 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {journals.map((j) => (
-                <tr key={j.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs font-bold text-emerald-600">{j.entryNumber}</td>
-                  <td className="px-6 py-4 text-slate-500 text-xs">{j.date}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900">{j.memo}</td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      {j.lines.map((l, idx) => (
-                        <div key={idx} className="text-[10px] font-medium text-slate-500 flex items-center justify-between gap-4">
-                          <span>{l.accountCode}</span>
-                          <span className={l.debit > 0 ? 'text-blue-600' : 'text-rose-600'}>
-                            {l.debit > 0 ? `DR: ${l.debit.toLocaleString()}` : `CR: ${l.credit.toLocaleString()}`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right font-mono font-black text-slate-900">{j.totalDebit.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right font-mono font-black text-slate-900">{j.totalCredit.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold">
-                      {j.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Dynamic Maker-Checker Journal Form Modal */}
-      {showNewModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-400" />
-                <h3 className="font-bold text-base">New General Journal Entry Voucher</h3>
-              </div>
-              <button 
-                onClick={() => setShowNewModal(false)}
-                className="text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handlePostJournal} className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                
-                {/* Master Details */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Date of Entry</label>
-                    <input 
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      required
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Narration / Memo</label>
-                    <input 
-                      type="text"
-                      placeholder="e.g. Relocating office supplies to departmental hub"
-                      value={memo}
-                      onChange={(e) => setMemo(e.target.value)}
-                      required
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Source Product Area</label>
-                    <select 
-                      value={sourceProduct}
-                      onChange={(e: any) => setSourceProduct(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="INTERNAL">INTERNAL (Ledger Adj)</option>
-                      <option value="JUMO-EDU-ALUMNI">JUMO EDUCATION & ALUMNI ERP</option>
-                      <option value="JUMO-FINPAY">JUMO FINANCIAL & PAY PLATFORM</option>
-                      <option value="JUMO-CHURCH">JUMO CHURCH & DIOCESE ERP</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Line Items Table */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Ledger Entry Allocations</h4>
-                    <button 
-                      type="button" 
-                      onClick={handleAddLine}
-                      className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Add Allocation Line
-                    </button>
-                  </div>
-
-                  <div className="border border-slate-100 rounded-xl overflow-hidden">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 text-slate-500 font-bold uppercase">
-                        <tr>
-                          <th className="px-4 py-2 w-1/3">Account Code</th>
-                          <th className="px-4 py-2">Debit (UGX)</th>
-                          <th className="px-4 py-2">Credit (UGX)</th>
-                          <th className="px-4 py-2 w-1/3">Memo / Description</th>
-                          <th className="px-4 py-2 text-center w-10"></th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 bg-white">
-                        {formLines.map((line, index) => (
-                          <tr key={index}>
-                            <td className="p-2">
-                              <select 
-                                value={line.accountCode}
-                                onChange={(e) => handleLineChange(index, 'accountCode', e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                              >
-                                {accounts.map(acc => (
-                                  <option key={acc.code} value={acc.code}>
-                                    {acc.code} - {acc.name} ({acc.type})
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                            <td className="p-2">
-                              <input 
-                                type="number"
-                                placeholder="0"
-                                value={line.debit || ''}
-                                onChange={(e) => handleLineChange(index, 'debit', e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 font-mono text-right focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                              />
-                            </td>
-                            <td className="p-2">
-                              <input 
-                                type="number"
-                                placeholder="0"
-                                value={line.credit || ''}
-                                onChange={(e) => handleLineChange(index, 'credit', e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 font-mono text-right focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                              />
-                            </td>
-                            <td className="p-2">
-                              <input 
-                                type="text"
-                                placeholder="Optional description"
-                                value={line.description || ''}
-                                onChange={(e) => handleLineChange(index, 'description', e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                              />
-                            </td>
-                            <td className="p-2 text-center">
-                              {formLines.length > 2 && (
-                                <button 
-                                  type="button"
-                                  onClick={() => handleRemoveLine(index)}
-                                  className="text-rose-500 hover:text-rose-700"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Math Calculations Summary */}
-                <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between text-xs border border-slate-100">
-                  <div className="flex items-center gap-6">
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">Total Debits</p>
-                      <p className="font-mono font-black text-slate-950 text-sm">{totalDebits.toLocaleString()} UGX</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">Total Credits</p>
-                      <p className="font-mono font-black text-slate-950 text-sm">{totalCredits.toLocaleString()} UGX</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Parity Out-of-Balance</p>
-                    <p className={`font-mono font-black text-sm ${difference === 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                      {difference === 0 ? 'Balanced ($0.00 offset)' : `${difference.toLocaleString()} UGX`}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Errors and Audit Logs */}
-                {formErrors.length > 0 && (
-                  <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl text-xs space-y-1">
-                    <p className="font-bold">Posting Denied — Validation Errors:</p>
-                    <ul className="list-disc pl-4 space-y-1">
-                      {formErrors.map((err, idx) => (
-                        <li key={idx}>{err}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {postSuccess && (
-                  <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-xl text-xs flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <p className="font-bold">Journal voucher successfully balanced, authorized, and posted to General Ledger!</p>
-                  </div>
-                )}
-
-                {formLogs.length > 0 && (
-                  <div className="space-y-1.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">Internal Audit Trace Logs</p>
-                    <div className="bg-slate-950 text-slate-300 font-mono text-[9px] p-3 rounded-xl max-h-32 overflow-y-auto space-y-0.5">
-                      {formLogs.map((log, idx) => (
-                        <p key={idx}>{log}</p>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              </div>
-
-              {/* Form Actions Footer */}
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
-                <button 
-                  type="button" 
-                  onClick={() => setShowNewModal(false)}
-                  className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all"
-                >
-                  Cancel Voucher
-                </button>
-                <button 
-                  type="submit"
-                  disabled={difference !== 0 || totalDebits === 0 || postSuccess}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    difference !== 0 || totalDebits === 0 || postSuccess
-                      ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                      : 'bg-[#2ca01c] text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/10'
-                  }`}
-                >
-                  Authorize & Post
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
     </div>
   );
 };
-

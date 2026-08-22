@@ -7,11 +7,14 @@
 
 import { FaapService } from '../../faap/domain/FaapService';
 
+export type WorkflowStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_REVIEW';
+
 export interface Wallet {
   id: string;
   ownerName: string;
   balance: number;
   type: 'MERCHANT' | 'CONSUMER';
+  kycStatus: WorkflowStatus;
 }
 
 export interface PaymentTransaction {
@@ -23,6 +26,16 @@ export interface PaymentTransaction {
   netAmount: number;
   date: string;
   status: 'COMPLETED' | 'PENDING' | 'FAILED';
+  clearingStatus: WorkflowStatus;
+}
+
+export interface MerchantOnboarding {
+  id: string;
+  businessName: string;
+  tin: string;
+  ownerName: string;
+  status: WorkflowStatus;
+  date: string;
 }
 
 export class DigitalPayService {
@@ -30,12 +43,13 @@ export class DigitalPayService {
   private faapService = FaapService.getInstance();
 
   private wallets: Wallet[] = [
-    { id: 'WAL-001', ownerName: 'Sovereign High School', balance: 12500000, type: 'MERCHANT' },
-    { id: 'WAL-002', ownerName: 'Kampala Junior Academy', balance: 8400000, type: 'MERCHANT' },
-    { id: 'WAL-003', ownerName: 'Alice Namutebi', balance: 500000, type: 'CONSUMER' }
+    { id: 'WAL-001', ownerName: 'Sovereign High School', balance: 12500000, type: 'MERCHANT', kycStatus: 'APPROVED' },
+    { id: 'WAL-002', ownerName: 'Kampala Junior Academy', balance: 8400000, type: 'MERCHANT', kycStatus: 'APPROVED' },
+    { id: 'WAL-003', ownerName: 'Alice Namutebi', balance: 500000, type: 'CONSUMER', kycStatus: 'APPROVED' }
   ];
 
   private transactions: PaymentTransaction[] = [];
+  private onboardings: MerchantOnboarding[] = [];
 
   private constructor() {}
 
@@ -48,11 +62,29 @@ export class DigitalPayService {
 
   getWallets() { return this.wallets; }
 
+  registerWallet(ownerName: string, type: 'MERCHANT' | 'CONSUMER') {
+    const wallet: Wallet = {
+      id: `WAL-${(this.wallets.length + 1).toString().padStart(3, '0')}`,
+      ownerName,
+      balance: 0,
+      type,
+      kycStatus: 'PENDING'
+    };
+    this.wallets.push(wallet);
+    return wallet;
+  }
+
+  approveKYC(id: string) {
+    const wallet = this.wallets.find(w => w.id === id);
+    if (wallet) wallet.kycStatus = 'APPROVED';
+  }
+
   processPayment(fromId: string, toId: string, amount: number) {
     const from = this.wallets.find(w => w.id === fromId);
     const to = this.wallets.find(w => w.id === toId);
 
     if (!from || !to) throw new Error('Wallet not found');
+    if (from.kycStatus !== 'APPROVED') throw new Error('Payer KYC not verified');
     if (from.balance < amount) throw new Error('Insufficient funds');
 
     const fee = amount * 0.015; // 1.5% JUMO Fee
@@ -69,32 +101,61 @@ export class DigitalPayService {
       feeAmount: fee,
       netAmount: net,
       date: new Date().toISOString(),
-      status: 'COMPLETED'
+      status: 'COMPLETED',
+      clearingStatus: 'PENDING'
     };
     this.transactions.push(tx);
-
-    // Post to FAAP
-    // 1. Debit Payer Account, Credit Merchant Account (Net)
-    // 2. Credit JUMO Revenue Account (Fee)
-    this.faapService.postUniversalTransaction({
-      sourceProduct: 'DIGITAL_PAY',
-      memo: `P2B Payment: ${from.ownerName} -> ${to.ownerName}`,
-      debitAccount: '1010', // Simplified: using same cash pool for simulation
-      creditAccount: '4010',
-      amount: net
-    });
-
-    // Post Fee to JUMO Master Treasury
-    this.faapService.postUniversalTransaction({
-      sourceProduct: 'DIGITAL_PAY',
-      memo: `JUMO 1.5% Settlement Fee: ${tx.id}`,
-      debitAccount: '1010',
-      creditAccount: '4010', // Fee Revenue
-      amount: fee
-    });
-
     return tx;
   }
 
+  clearSettlement(txId: string) {
+    const tx = this.transactions.find(t => t.id === txId);
+    if (tx && tx.clearingStatus === 'PENDING') {
+      tx.clearingStatus = 'APPROVED';
+
+      const from = this.wallets.find(w => w.id === tx.fromWalletId);
+      const to = this.wallets.find(w => w.id === tx.toWalletId);
+
+      // FAAP Posting
+      this.faapService.postUniversalTransaction({
+        sourceProduct: 'DIGITAL_PAY',
+        memo: `Settlement: ${from?.ownerName} -> ${to?.ownerName}`,
+        debitAccount: '1010',
+        creditAccount: '4010',
+        amount: tx.netAmount
+      });
+
+      // Master Treasury Fee
+      this.faapService.postUniversalTransaction({
+        sourceProduct: 'DIGITAL_PAY',
+        memo: `JUMO Fee: ${tx.id}`,
+        debitAccount: '1010',
+        creditAccount: '4011', // Fee Revenue
+        amount: tx.feeAmount
+      });
+    }
+  }
+
   getTransactions() { return this.transactions; }
+
+  requestOnboarding(data: Omit<MerchantOnboarding, 'id' | 'status' | 'date'>) {
+    const entry: MerchantOnboarding = {
+      ...data,
+      id: `ONB-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      status: 'PENDING',
+      date: new Date().toISOString()
+    };
+    this.onboardings.push(entry);
+    return entry;
+  }
+
+  getOnboardings() { return this.onboardings; }
+
+  approveOnboarding(id: string) {
+    const onb = this.onboardings.find(o => o.id === id);
+    if (onb) {
+      onb.status = 'APPROVED';
+      this.registerWallet(onb.businessName, 'MERCHANT');
+    }
+  }
 }

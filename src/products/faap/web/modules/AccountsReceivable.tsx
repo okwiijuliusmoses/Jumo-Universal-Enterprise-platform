@@ -1,344 +1,264 @@
 import React, { useState } from 'react';
-import { 
-  Plus, Search, CheckCircle, ArrowUpRight, ShieldAlert, 
-  Sparkles, Users, Calendar, DollarSign, X, Receipt, LineChart 
-} from 'lucide-react';
+import { Plus, Download } from 'lucide-react';
 import { FaapService } from '../../domain/FaapService';
+import { LedgerPostingService } from '../../services/LedgerPostingService';
 import { FaapCustomerInvoice } from '../../domain/types';
+import { JumoDataTable, Column } from '../../../../core/enterprise/components/JumoDataTable';
+import { JumoTransactionForm } from '../../../../core/enterprise/components/JumoTransactionForm';
+import { JumoWorkflowStatus } from '../../../../core/enterprise/components/JumoWorkflowStatus';
 
 export const AccountsReceivable: React.FC = () => {
   const service = FaapService.getInstance();
+  const postingService = LedgerPostingService.getInstance();
+
   const [invoices, setInvoices] = useState<FaapCustomerInvoice[]>(service.getCustomerInvoices());
   const [accounts] = useState(service.getChartOfAccounts());
-
-  // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCollectModal, setShowCollectModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<FaapCustomerInvoice | null>(null);
 
-  // Form states - Create Invoice
+  // New Invoice State
   const [customerName, setCustomerName] = useState('');
-  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [dueDate, setDueDate] = useState('');
-  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [formLines, setFormLines] = useState<any[]>([
+    { product: '', description: '', qty: 1, rate: 0, amount: 0 }
+  ]);
   const [formErrors, setFormErrors] = useState<string[]>([]);
-  const [successMsg, setSuccessMsg] = useState('');
 
-  // Form states - Collect Payment
+  // Collect Payment State
   const [collectAmount, setCollectAmount] = useState<number>(0);
-  const [collectAccount, setCollectAccount] = useState('1010'); // Default cash bank
+  const [collectAccount, setCollectAccount] = useState('1010');
+
+  const totalAmount = formLines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+
+  const handleLineChange = (index: number, field: string, value: any) => {
+    const newLines = [...formLines];
+    newLines[index][field] = value;
+    if (field === 'qty' || field === 'rate') {
+      newLines[index].amount = (Number(newLines[index].qty) || 0) * (Number(newLines[index].rate) || 0);
+    }
+    setFormLines(newLines);
+  };
 
   const handleCreateInvoice = (e: React.FormEvent) => {
     e.preventDefault();
     setFormErrors([]);
-    setSuccessMsg('');
 
     if (!customerName.trim()) return setFormErrors(['Customer Name is required.']);
-    if (!invoiceNumber.trim()) return setFormErrors(['Invoice Number is required.']);
     if (!dueDate) return setFormErrors(['Due date is required.']);
     if (totalAmount <= 0) return setFormErrors(['Invoice total must be greater than 0 UGX.']);
 
-    try {
-      const newInvoice = service.createCustomerInvoice({
-        invoiceNumber,
-        customerName,
-        dueDate,
-        totalAmount
-      });
+    const newInvoice = service.createCustomerInvoice({
+      invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
+      customerName,
+      dueDate,
+      totalAmount
+    });
 
-      setInvoices(service.getCustomerInvoices());
-      setSuccessMsg(`Customer Invoice ${newInvoice.invoiceNumber} registered successfully & posted to Accounts Receivable ledger!`);
-      
-      setTimeout(() => {
-        setShowAddModal(false);
-        setCustomerName('');
-        setInvoiceNumber('');
-        setDueDate('');
-        setTotalAmount(0);
-        setSuccessMsg('');
-      }, 1500);
-    } catch (err: any) {
-      setFormErrors([err.message || 'Error occurred while saving customer invoice.']);
-    }
+    setInvoices(service.getCustomerInvoices());
+    setShowAddModal(false);
+    setCustomerName('');
+    setDueDate('');
+    setFormLines([{ product: '', description: '', qty: 1, rate: 0, amount: 0 }]);
   };
 
   const handleCollectPayment = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedInvoice) return;
-
-    if (collectAmount <= 0) {
-      alert('Collection amount must be greater than 0.');
-      return;
-    }
-
-    try {
-      service.collectCustomerInvoice(selectedInvoice.id, collectAmount);
-      setInvoices(service.getCustomerInvoices());
-      setShowCollectModal(false);
-      setSelectedInvoice(null);
-      setCollectAmount(0);
-      alert('Invoice payment collected successfully! Debit Cash (1010), Credit AR (1210).');
-    } catch (err: any) {
-      alert(`Collection failed: ${err.message}`);
-    }
+    if (!selectedInvoice || collectAmount <= 0) return;
+    
+    // Process payment in ledger logic would go here
+    service.collectInvoicePayment(selectedInvoice.id, collectAmount);
+    setInvoices(service.getCustomerInvoices());
+    setShowCollectModal(false);
+    setSelectedInvoice(null);
   };
 
-  const openCollectPayment = (invoice: FaapCustomerInvoice) => {
-    setSelectedInvoice(invoice);
-    setCollectAmount(invoice.balanceDue);
-    setShowCollectModal(true);
-  };
+  const columns: Column<FaapCustomerInvoice>[] = [
+    { header: 'INVOICE #', accessor: 'invoiceNumber', className: 'font-mono text-xs font-bold text-indigo-600', sortable: true },
+    { header: 'CUSTOMER', accessor: 'customerName', className: 'font-medium text-slate-800', sortable: true },
+    { header: 'DATE', accessor: 'createdAt', className: 'text-slate-600 text-xs' },
+    { header: 'DUE DATE', accessor: 'dueDate', className: 'text-slate-600 text-xs', sortable: true },
+    { 
+      header: 'AMOUNT', 
+      accessor: (i) => <span className="font-mono font-medium text-slate-900">{i.totalAmount.toLocaleString()}</span>,
+      className: 'text-right'
+    },
+    { 
+      header: 'BALANCE DUE', 
+      accessor: (i) => <span className="font-mono font-black text-slate-900">{i.balanceDue.toLocaleString()}</span>,
+      className: 'text-right'
+    },
+    { 
+      header: 'STATUS', 
+      accessor: (i) => <JumoWorkflowStatus status={i.status} />,
+      className: 'text-center'
+    }
+  ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-16">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Accounts Receivable (AR) Hub</h1>
-          <p className="text-slate-500 text-sm">Monitor customer billing lines, issue institutional invoices, and trace collection streams.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Invoices & AR</h1>
+          <p className="text-slate-500 text-sm mt-1">Manage customer invoices, track receivables, and record payments.</p>
         </div>
-        <button 
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-[#2ca01c] hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-600/10"
-        >
-          <Plus className="w-4 h-4" />
-          Generate Invoice
-        </button>
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm">
+            <Download className="w-4 h-4" /> Export
+          </button>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-5 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> Create Invoice
+          </button>
+        </div>
       </div>
 
-      {/* AR Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Total Outstanding AR</p>
-          <p className="text-3xl font-black text-[#2ca01c] font-mono mt-1">
+          <p className="text-2xl font-black text-slate-900 font-mono mt-1">
             {invoices.reduce((sum, i) => sum + i.balanceDue, 0).toLocaleString()} UGX
           </p>
-          <p className="text-xs text-slate-400 mt-2">Active outstanding cash due from debtors</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Active Billing Accounts</p>
-          <p className="text-3xl font-black text-slate-900 mt-1">
-            {Array.from(new Set(invoices.map(i => i.customerName))).length}
-          </p>
-          <p className="text-xs text-emerald-600 font-bold mt-2">Dynamic links matching SchoolPay references</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Aging Collections Health</p>
-          <p className="text-3xl font-black text-emerald-600 font-mono mt-1">100% SECURE</p>
-          <p className="text-xs text-slate-400 mt-2">Zero collection disputes or writing losses</p>
         </div>
       </div>
 
-      {/* Customer Invoices Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-          <h3 className="font-bold text-slate-900 text-sm">Customer Invoices Register</h3>
-          <span className="text-xs font-semibold text-slate-500">{invoices.length} Records found</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">Invoice #</th>
-                <th className="px-6 py-4">Customer/Debtor</th>
-                <th className="px-6 py-4">Due Date</th>
-                <th className="px-6 py-4 text-right">Invoice Value (UGX)</th>
-                <th className="px-6 py-4 text-right">Balance Due (UGX)</th>
-                <th className="px-6 py-4 text-center">Status</th>
-                <th className="px-6 py-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
-              {invoices.map((inv) => (
-                <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs font-bold text-slate-600">{inv.invoiceNumber}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900">{inv.customerName}</td>
-                  <td className="px-6 py-4 text-xs text-slate-500">{inv.dueDate}</td>
-                  <td className="px-6 py-4 text-right font-mono font-medium text-slate-950">{inv.totalAmount.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right font-mono font-bold text-emerald-600">
-                    {inv.balanceDue === 0 ? '-' : inv.balanceDue.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                      inv.status === 'PAID' 
-                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
-                        : 'bg-blue-100 text-blue-700 border border-blue-200 animate-pulse'
-                    }`}>
-                      {inv.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {inv.status !== 'PAID' ? (
-                      <button 
-                        onClick={() => openCollectPayment(inv)}
-                        className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-all"
-                      >
-                        Collect Payment
-                      </button>
-                    ) : (
-                      <span className="text-xs text-slate-400 italic">Settled</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Generate Invoice Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <Receipt className="w-5 h-5 text-emerald-400" />
-                <h3 className="font-bold text-base">Generate Customer Invoice</h3>
-              </div>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
+      <JumoDataTable
+        title="Recent Invoices"
+        data={invoices}
+        columns={columns}
+        searchPlaceholder="Find by customer, invoice #..."
+        selectable={true}
+        emptyStateMessage="No invoices found."
+        actions={(inv) => (
+          <div className="flex items-center justify-end gap-2">
+            {inv.status !== 'PAID' && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedInvoice(inv);
+                  setCollectAmount(inv.balanceDue);
+                  setShowCollectModal(true);
+                }}
+                className="text-emerald-600 hover:text-emerald-800 text-xs font-bold bg-emerald-50 px-2 py-1 rounded"
+              >
+                Receive Payment
               </button>
-            </div>
+            )}
+            <button className="text-indigo-600 hover:text-indigo-800 text-xs font-bold">View</button>
+          </div>
+        )}
+      />
 
-            <form onSubmit={handleCreateInvoice} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Customer Name</label>
+      {showAddModal && (
+        <JumoTransactionForm
+          title="Invoice"
+          width="2xl"
+          error={formErrors.length > 0 ? formErrors.join(' | ') : null}
+          headerFields={
+            <div className="grid grid-cols-3 gap-6">
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Customer</label>
                 <input 
-                  type="text"
-                  placeholder="e.g. Universal Education Council"
+                  type="text" 
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Choose a customer"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Invoice Number</label>
-                  <input 
-                    type="text"
-                    placeholder="e.g. INV-1002-X"
-                    value={invoiceNumber}
-                    onChange={(e) => setInvoiceNumber(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Due Date</label>
-                  <input 
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Invoice Date</label>
+                <input 
+                  type="date" 
+                  value={invoiceDate}
+                  onChange={(e) => setInvoiceDate(e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                />
               </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Total Bill Cost (UGX)</label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-                  <input 
-                    type="number"
-                    placeholder="0"
-                    value={totalAmount || ''}
-                    onChange={(e) => setTotalAmount(Math.max(0, Number(e.target.value) || 0))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wide">Due Date</label>
+                <input 
+                  type="date" 
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                />
               </div>
-
-              {formErrors.length > 0 && (
-                <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs space-y-1">
-                  {formErrors.map((err, i) => <p key={i} className="font-bold">{err}</p>)}
-                </div>
-              )}
-
-              {successMsg && (
-                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4" />
-                  <p className="font-bold">{successMsg}</p>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddModal(false)}
-                  className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-[#2ca01c] hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold"
-                >
-                  Post Invoice to AR
-                </button>
+            </div>
+          }
+          columns={[
+            { id: 'product', header: 'PRODUCT/SERVICE', type: 'text', width: 'w-1/4', placeholder: 'Select product...' },
+            { id: 'description', header: 'DESCRIPTION', type: 'text', placeholder: 'Line description' },
+            { id: 'qty', header: 'QTY', type: 'amount' },
+            { id: 'rate', header: 'RATE', type: 'amount' },
+            { id: 'amount', header: 'AMOUNT', type: 'amount', readOnly: true }
+          ]}
+          lines={formLines}
+          onLineChange={handleLineChange}
+          onAddLine={() => setFormLines([...formLines, { product: '', description: '', qty: 1, rate: 0, amount: 0 }])}
+          onRemoveLine={(idx) => {
+            const newLines = [...formLines];
+            newLines.splice(idx, 1);
+            setFormLines(newLines);
+          }}
+          footerContent={
+            <div className="ml-auto w-64 bg-white border border-slate-200 rounded-xl overflow-hidden self-start">
+              <div className="px-4 py-2 border-b border-slate-100 flex justify-between text-sm">
+                <span className="text-slate-500 font-bold">Subtotal</span>
+                <span className="font-mono font-medium text-slate-900">{totalAmount.toLocaleString()}</span>
               </div>
-            </form>
-          </div>
-        </div>
+              <div className="px-4 py-3 bg-slate-50 flex justify-between text-base font-black text-slate-900">
+                <span>Total</span>
+                <span className="font-mono">{totalAmount.toLocaleString()} UGX</span>
+              </div>
+            </div>
+          }
+          onSubmit={handleCreateInvoice}
+          onCancel={() => setShowAddModal(false)}
+          submitLabel="Save and Send"
+          isSubmitting={false}
+        />
       )}
 
-      {/* Collect Payment Modal */}
       {showCollectModal && selectedInvoice && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <h3 className="font-bold text-base">Record Payment Receipt</h3>
-              <button onClick={() => setShowCollectModal(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900">Receive Payment</h3>
             </div>
-
-            <form onSubmit={handleCollectPayment} className="p-6 space-y-4">
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Customer / Debtor</p>
-                <p className="text-base font-bold text-slate-900">{selectedInvoice.customerName}</p>
-                <p className="text-xs text-slate-500">Invoice Code: {selectedInvoice.invoiceNumber}</p>
-                <div className="flex justify-between pt-2 border-t border-slate-200">
-                  <span className="text-xs text-slate-500">Invoice Balance Due</span>
-                  <span className="text-xs font-bold font-mono text-emerald-600">{selectedInvoice.balanceDue.toLocaleString()} UGX</span>
-                </div>
+            <form onSubmit={handleCollectPayment} className="p-5 space-y-4">
+              <div className="bg-emerald-50 text-emerald-900 p-3 rounded-lg border border-emerald-100 space-y-1">
+                <p className="text-xs font-bold uppercase">{selectedInvoice.customerName}</p>
+                <p className="text-sm">Invoice {selectedInvoice.invoiceNumber}</p>
+                <p className="text-lg font-black font-mono">Bal: {selectedInvoice.balanceDue.toLocaleString()} UGX</p>
               </div>
-
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Collection Target Account</label>
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Deposit To</label>
                 <select 
                   value={collectAccount} 
                   onChange={(e) => setCollectAccount(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                 >
                   {accounts.filter(a => a.type === 'ASSET' && a.subType === 'CASH').map(acc => (
-                    <option key={acc.code} value={acc.code}>{acc.code} - {acc.name} ({acc.balance.toLocaleString()} UGX)</option>
+                    <option key={acc.code} value={acc.code}>{acc.code} - {acc.name}</option>
                   ))}
                 </select>
               </div>
-
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Collection Value (UGX)</label>
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Amount Received</label>
                 <input 
                   type="number"
                   value={collectAmount || ''}
                   onChange={(e) => setCollectAmount(Math.min(selectedInvoice.balanceDue, Math.max(0, Number(e.target.value) || 0)))}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
               </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button 
-                  type="button" 
-                  onClick={() => setShowCollectModal(false)}
-                  className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-[#2ca01c] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-700"
-                >
-                  Collect Payment
-                </button>
+              <div className="flex justify-end gap-2 pt-2">
+                <button type="button" onClick={() => setShowCollectModal(false)} className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200">Cancel</button>
+                <button type="submit" className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700">Save and Close</button>
               </div>
             </form>
           </div>

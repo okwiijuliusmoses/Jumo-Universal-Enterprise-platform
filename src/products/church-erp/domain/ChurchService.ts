@@ -6,6 +6,8 @@
 
 import { FaapService } from '../../faap/domain/FaapService';
 
+export type WorkflowStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_REVIEW';
+
 export interface ChurchMember {
   id: string;
   name: string;
@@ -23,6 +25,27 @@ export interface ChurchTransaction {
   date: string;
 }
 
+export interface CounselingRequest {
+  id: string;
+  memberId: string;
+  memberName: string;
+  topic: string;
+  preferredDate: string;
+  status: WorkflowStatus;
+  notes?: string;
+}
+
+export interface WelfareAssistance {
+  id: string;
+  memberId: string;
+  memberName: string;
+  needCategory: 'MEDICAL' | 'EDUCATION' | 'BEREAVEMENT' | 'FOOD';
+  requestedAmount: number;
+  description: string;
+  status: WorkflowStatus;
+  date: string;
+}
+
 export class ChurchService {
   private static instance: ChurchService;
   private faapService = FaapService.getInstance();
@@ -33,6 +56,8 @@ export class ChurchService {
   ];
 
   private transactions: ChurchTransaction[] = [];
+  private counselingRequests: CounselingRequest[] = [];
+  private welfareRequests: WelfareAssistance[] = [];
 
   private constructor() {}
 
@@ -44,6 +69,15 @@ export class ChurchService {
   }
 
   getMembers() { return this.members; }
+
+  registerMember(member: Omit<ChurchMember, 'id'>) {
+    const newMember: ChurchMember = {
+      ...member,
+      id: `CHR-${(this.members.length + 1).toString().padStart(3, '0')}`
+    };
+    this.members.push(newMember);
+    return newMember;
+  }
 
   recordContribution(memberId: string, amount: number, type: ChurchTransaction['type']) {
     const member = this.members.find(m => m.id === memberId);
@@ -59,8 +93,6 @@ export class ChurchService {
     };
     this.transactions.push(tx);
 
-    // Post to FAAP
-    // Tithes/Offerings are Revenue
     this.faapService.postUniversalTransaction({
       sourceProduct: 'INTERNAL',
       memo: `Church ${type}: ${member.name}`,
@@ -69,7 +101,6 @@ export class ChurchService {
       amount: amount
     });
 
-    // Record in Cash Book
     this.faapService.recordCashEntry({
       date: new Date().toISOString().split('T')[0],
       description: `${type}: ${member.name}`,
@@ -84,4 +115,53 @@ export class ChurchService {
   }
 
   getTransactions() { return this.transactions; }
+
+  requestCounseling(req: Omit<CounselingRequest, 'id' | 'status' | 'memberName'>) {
+    const member = this.members.find(m => m.id === req.memberId);
+    const newReq: CounselingRequest = {
+      ...req,
+      id: `CNS-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      memberName: member?.name || 'Unknown',
+      status: 'PENDING'
+    };
+    this.counselingRequests.push(newReq);
+    return newReq;
+  }
+
+  getCounselingRequests() { return this.counselingRequests; }
+
+  approveCounseling(id: string) {
+    const req = this.counselingRequests.find(r => r.id === id);
+    if (req) req.status = 'APPROVED';
+  }
+
+  requestWelfare(req: Omit<WelfareAssistance, 'id' | 'status' | 'date' | 'memberName'>) {
+    const member = this.members.find(m => m.id === req.memberId);
+    const newReq: WelfareAssistance = {
+      ...req,
+      id: `WLF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      memberName: member?.name || 'Unknown',
+      status: 'PENDING',
+      date: new Date().toISOString()
+    };
+    this.welfareRequests.push(newReq);
+    return newReq;
+  }
+
+  getWelfareRequests() { return this.welfareRequests; }
+
+  approveWelfare(id: string) {
+    const req = this.welfareRequests.find(r => r.id === id);
+    if (req && req.status === 'PENDING') {
+      req.status = 'APPROVED';
+      // Post to FAAP - Welfare Disbursement (Expense)
+      this.faapService.postUniversalTransaction({
+        sourceProduct: 'INTERNAL',
+        memo: `Church Welfare Disbursement: ${req.memberName} (${req.needCategory})`,
+        debitAccount: '5010', // Expense
+        creditAccount: '1010', // Bank
+        amount: req.requestedAmount
+      });
+    }
+  }
 }

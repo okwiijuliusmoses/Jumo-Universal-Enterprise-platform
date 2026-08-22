@@ -1,301 +1,218 @@
 import React, { useState } from 'react';
-import { 
-  CheckCircle, Plus, Search, ShieldCheck, AlertCircle, RefreshCw, 
-  Trash2, Landmark, CheckCircle2, ArrowDownCircle, ArrowUpCircle, X 
-} from 'lucide-react';
+import { Plus, Download, RefreshCw, Upload } from 'lucide-react';
 import { FaapService } from '../../domain/FaapService';
-import { FaapBankFeedTransaction } from '../../domain/types';
+import { LedgerPostingService } from '../../services/LedgerPostingService';
+import { JumoDataTable, Column } from '../../../../core/enterprise/components/JumoDataTable';
+import { JumoTransactionForm } from '../../../../core/enterprise/components/JumoTransactionForm';
+import { JumoWorkflowStatus } from '../../../../core/enterprise/components/JumoWorkflowStatus';
 
 export const BankingModule: React.FC = () => {
   const service = FaapService.getInstance();
-  const [feeds, setFeeds] = useState<FaapBankFeedTransaction[]>(service.getBankFeedTransactions());
-  const [accounts] = useState(service.getChartOfAccounts());
+  const postingService = LedgerPostingService.getInstance();
 
-  // Modal State
-  const [showImportModal, setShowImportModal] = useState(false);
+  const [accounts] = useState(service.getChartOfAccounts().filter(a => a.type === 'ASSET' && a.subType === 'CASH'));
+  const [activeAccount, setActiveAccount] = useState(accounts[0]?.code || '');
+  
+  // Create dummy bank feeds for the active account
+  const [bankFeeds, setBankFeeds] = useState<any[]>([
+    { id: '1', date: '2026-08-20', description: 'WIRE TRANSFER IN', amount: 5000000, type: 'DEPOSIT', status: 'UNRECONCILED' },
+    { id: '2', date: '2026-08-21', description: 'VENDOR PAYMENT - MTN', amount: -250000, type: 'WITHDRAWAL', status: 'UNRECONCILED' },
+    { id: '3', date: '2026-08-22', description: 'POS DEPOSIT REF 990', amount: 1250000, type: 'DEPOSIT', status: 'RECONCILED' },
+  ]);
+
+  const [showTransferModal, setShowTransferModal] = useState(false);
   const [showReconcileModal, setShowReconcileModal] = useState(false);
-  const [selectedFeed, setSelectedFeed] = useState<FaapBankFeedTransaction | null>(null);
+  
+  // Transfer state
+  const [transferFrom, setTransferFrom] = useState('');
+  const [transferTo, setTransferTo] = useState('');
+  const [transferAmount, setTransferAmount] = useState<number>(0);
+  const [transferMemo, setTransferMemo] = useState('');
+  const [formErrors, setFormErrors] = useState<string[]>([]);
 
-  // Form State - Import
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState<number>(0);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-
-  // Form State - Reconcile
-  const [offsetAccount, setOffsetAccount] = useState('4010'); // Default sales revenue
-
-  const handleImportTransaction = (e: React.FormEvent) => {
+  const handleTransfer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description.trim()) {
-      alert('Description is required.');
-      return;
-    }
+    setFormErrors([]);
 
-    try {
-      service.importBankFeed({
-        date,
-        description,
-        amount
-      });
-      setFeeds(service.getBankFeedTransactions());
-      setShowImportModal(false);
-      setDescription('');
-      setAmount(0);
-      alert('External transaction imported into Bank Feeds subledger successfully!');
-    } catch (err: any) {
-      alert(`Import failed: ${err.message}`);
-    }
-  };
+    if (!transferFrom) return setFormErrors(['Source account is required.']);
+    if (!transferTo) return setFormErrors(['Destination account is required.']);
+    if (transferFrom === transferTo) return setFormErrors(['Accounts must be different.']);
+    if (transferAmount <= 0) return setFormErrors(['Amount must be greater than 0.']);
 
-  const handleReconcile = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedFeed) return;
+    const result = postingService.postJournalWithValidation({
+      memo: transferMemo || 'Internal Bank Transfer',
+      date: new Date().toISOString().split('T')[0],
+      sourceProduct: 'INTERNAL',
+      lines: [
+        { accountCode: transferFrom, credit: transferAmount, debit: 0, description: 'Transfer Out' },
+        { accountCode: transferTo, debit: transferAmount, credit: 0, description: 'Transfer In' }
+      ]
+    });
 
-    try {
-      service.reconcileBankFeed(selectedFeed.id, offsetAccount);
-      setFeeds(service.getBankFeedTransactions());
-      setShowReconcileModal(false);
-      setSelectedFeed(null);
-      alert('Transaction reconciled and cleared successfully! General Ledger double-entry lines posted.');
-    } catch (err: any) {
-      alert(`Reconciliation failed: ${err.message}`);
+    if (result.success) {
+      setShowTransferModal(false);
+      setTransferAmount(0);
+      setTransferMemo('');
+    } else {
+      setFormErrors(result.errors);
     }
   };
 
-  const openReconcile = (feed: FaapBankFeedTransaction) => {
-    setSelectedFeed(feed);
-    // Suggest expense account for negative feeds, revenue for positive feeds
-    setOffsetAccount(feed.amount > 0 ? '4010' : '6010');
-    setShowReconcileModal(true);
-  };
+  const columns: Column<any>[] = [
+    { header: 'DATE', accessor: 'date', className: 'text-xs text-slate-600', sortable: true },
+    { header: 'DESCRIPTION', accessor: 'description', className: 'font-medium text-slate-900', sortable: true },
+    { 
+      header: 'AMOUNT', 
+      accessor: (f) => <span className={`font-mono font-bold ${f.amount > 0 ? 'text-emerald-600' : 'text-slate-900'}`}>{Math.abs(f.amount).toLocaleString()}</span>,
+      className: 'text-right'
+    },
+    { 
+      header: 'STATUS', 
+      accessor: (f) => <JumoWorkflowStatus status={f.status} />,
+      className: 'text-center'
+    }
+  ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-16">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Bank Feeds & Reconciliation</h1>
-          <p className="text-slate-500 text-sm">Synchronize external statements, verify physical cash flows, and clear general ledger mismatches.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Banking & Reconciliations</h1>
+          <p className="text-slate-500 text-sm mt-1">Manage bank accounts, feeds, deposits, transfers, and reconcile statements.</p>
         </div>
-        <button 
-          onClick={() => setShowImportModal(true)}
-          className="flex items-center gap-2 bg-[#1e293b] hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg"
-        >
-          <Plus className="w-4 h-4" />
-          Import Bank Entry
-        </button>
-      </div>
-
-      {/* Bank Status card */}
-      <div className="bg-[#0f172a] text-white p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700">
-            <Landmark className="w-6 h-6 text-slate-300" />
-          </div>
-          <div>
-            <h3 className="font-bold text-base">JUMO Sovereign Clearing Bank</h3>
-            <p className="text-xs text-slate-400 font-mono">Routing Account: 442-9901-X (UGX)</p>
-          </div>
-        </div>
-        <div className="text-left md:text-right">
-          <p className="text-sm text-slate-400">Total Book Balance</p>
-          <p className="text-2xl font-black font-mono text-emerald-400">
-            {accounts.find(a => a.code === '1010')?.balance.toLocaleString()} UGX
-          </p>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setShowTransferModal(true)}
+            className="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm"
+          >
+            <RefreshCw className="w-4 h-4 text-indigo-600" /> Transfer Funds
+          </button>
+          <button 
+            onClick={() => setShowReconcileModal(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition shadow-sm"
+          >
+            <Upload className="w-4 h-4" /> Reconcile
+          </button>
         </div>
       </div>
 
-      {/* Bank Feed Grid */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-          <h3 className="font-bold text-slate-900 text-sm">Statement Feed Inbox</h3>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">
-              {feeds.filter(f => f.status === 'UNRECONCILED').length} Unreconciled
-            </span>
-            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold">
-              {feeds.filter(f => f.status === 'MATCHED').length} Reconciled
-            </span>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">Transaction Date</th>
-                <th className="px-6 py-4">Bank Statement Description</th>
-                <th className="px-6 py-4 text-right">Amount (UGX)</th>
-                <th className="px-6 py-4 text-center">Status</th>
-                <th className="px-6 py-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
-              {feeds.map((feed) => (
-                <tr key={feed.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4 text-xs text-slate-500 font-mono">{feed.date}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900 flex items-center gap-2">
-                    {feed.amount > 0 ? (
-                      <ArrowDownCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                    ) : (
-                      <ArrowUpCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                    )}
-                    {feed.description}
-                  </td>
-                  <td className={`px-6 py-4 text-right font-mono font-bold ${feed.amount > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                    {feed.amount > 0 ? `+${feed.amount.toLocaleString()}` : feed.amount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${
-                      feed.status === 'MATCHED'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
-                    }`}>
-                      {feed.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {feed.status === 'UNRECONCILED' ? (
-                      <button 
-                        onClick={() => openReconcile(feed)}
-                        className="bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
-                      >
-                        Reconcile Match
-                      </button>
-                    ) : (
-                      <div className="flex items-center justify-center gap-1 text-xs text-emerald-600 font-bold">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Matched
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div className="flex gap-4 mb-6 overflow-x-auto pb-2">
+        {accounts.map(acc => (
+          <button
+            key={acc.code}
+            onClick={() => setActiveAccount(acc.code)}
+            className={`flex-none p-4 rounded-xl border ${activeAccount === acc.code ? 'border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white shadow-sm'} text-left min-w-[240px] transition`}
+          >
+            <p className="text-xs font-bold text-slate-500">{acc.code}</p>
+            <p className="text-sm font-bold text-slate-900 truncate">{acc.name}</p>
+            <p className="text-xl font-black font-mono text-indigo-600 mt-2">{acc.balance.toLocaleString()} UGX</p>
+          </button>
+        ))}
       </div>
 
-      {/* Import Transaction Modal */}
-      {showImportModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <h3 className="font-bold text-base">Import External Bank Transaction</h3>
-              <button onClick={() => setShowImportModal(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
+      <JumoDataTable
+        title="Bank Feeds & Transactions"
+        data={bankFeeds}
+        columns={columns}
+        searchPlaceholder="Find transactions..."
+        selectable={true}
+        emptyStateMessage="No bank transactions found."
+        actions={(feed) => (
+          <div className="flex items-center justify-end gap-2">
+            {feed.status === 'UNRECONCILED' && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setBankFeeds(feeds => feeds.map(f => f.id === feed.id ? {...f, status: 'RECONCILED'} : f));
+                }}
+                className="text-indigo-600 hover:text-indigo-800 text-xs font-bold bg-indigo-50 px-2 py-1 rounded"
+              >
+                Match / Add
               </button>
+            )}
+          </div>
+        )}
+      />
+
+      {showTransferModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900">Transfer Funds</h3>
             </div>
-
-            <form onSubmit={handleImportTransaction} className="p-6 space-y-4">
+            <form onSubmit={handleTransfer} className="p-5 space-y-4">
+              {formErrors.length > 0 && (
+                <div className="bg-rose-50 text-rose-700 p-2 rounded text-xs font-bold">
+                  {formErrors[0]}
+                </div>
+              )}
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Date of statement transaction</label>
-                <input 
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Transfer From</label>
+                <select 
+                  value={transferFrom} 
+                  onChange={(e) => setTransferFrom(e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                  <option value="">Select Account...</option>
+                  {accounts.map(acc => (
+                    <option key={acc.code} value={acc.code}>{acc.code} - {acc.name} ({acc.balance.toLocaleString()} UGX)</option>
+                  ))}
+                </select>
               </div>
-
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Transaction description / narrative</label>
-                <input 
-                  type="text"
-                  placeholder="e.g. CHEQUE DEP #90823"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Transfer To</label>
+                <select 
+                  value={transferTo} 
+                  onChange={(e) => setTransferTo(e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                  <option value="">Select Account...</option>
+                  {accounts.map(acc => (
+                    <option key={acc.code} value={acc.code}>{acc.code} - {acc.name}</option>
+                  ))}
+                </select>
               </div>
-
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Amount (Use negative for outflows) (UGX)</label>
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Amount</label>
                 <input 
                   type="number"
-                  placeholder="e.g. -25000"
-                  value={amount || ''}
-                  onChange={(e) => setAmount(Number(e.target.value) || 0)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  value={transferAmount || ''}
+                  onChange={(e) => setTransferAmount(Math.max(0, Number(e.target.value) || 0))}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
               </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button 
-                  type="button" 
-                  onClick={() => setShowImportModal(false)}
-                  className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-800"
-                >
-                  Import Entry
-                </button>
+              <div>
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Memo</label>
+                <input 
+                  type="text"
+                  value={transferMemo}
+                  onChange={(e) => setTransferMemo(e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                  placeholder="Optional description"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button type="button" onClick={() => setShowTransferModal(false)} className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200">Cancel</button>
+                <button type="submit" className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Record Transfer</button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* Reconcile Modal */}
-      {showReconcileModal && selectedFeed && (
+      
+      {showReconcileModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <h3 className="font-bold text-base">Select Offsetting Ledger Account</h3>
-              <button onClick={() => setShowReconcileModal(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <h3 className="font-bold text-slate-900">Reconcile Account</h3>
             </div>
-
-            <form onSubmit={handleReconcile} className="p-6 space-y-4">
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Statement Line</p>
-                <p className="text-sm font-bold text-slate-900">{selectedFeed.description}</p>
-                <div className="flex justify-between pt-2 border-t border-slate-200">
-                  <span className="text-xs text-slate-500">Value to Reconcile</span>
-                  <span className={`text-xs font-bold font-mono ${selectedFeed.amount > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                    {selectedFeed.amount.toLocaleString()} UGX
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Offsetting General Ledger Account</label>
-                <select 
-                  value={offsetAccount} 
-                  onChange={(e) => setOffsetAccount(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  {accounts.filter(a => a.code !== '1010').map(acc => (
-                    <option key={acc.code} value={acc.code}>
-                      {acc.code} - {acc.name} ({acc.type} • Balance: {acc.balance.toLocaleString()} UGX)
-                    </option>
-                  ))}
-                </select>
-                <p className="text-[10px] text-slate-400 mt-1.5">
-                  Reconciliation automatically debits/credits Cash at Bank (1010) and posts the balancing entry to this selected ledger.
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button 
-                  type="button" 
-                  onClick={() => setShowReconcileModal(false)}
-                  className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold"
-                >
-                  Post Reconciliation
-                </button>
-              </div>
-            </form>
+            <div className="p-8 flex flex-col items-center text-center space-y-4">
+               <Upload className="w-12 h-12 text-indigo-200" />
+               <p className="text-slate-600 font-medium">Upload your bank statement (CSV, OFX) to automatically reconcile transactions.</p>
+               <button onClick={() => setShowReconcileModal(false)} className="px-5 py-2 bg-indigo-600 text-white font-bold text-xs rounded-lg hover:bg-indigo-700 mt-4">
+                 Select File
+               </button>
+            </div>
           </div>
         </div>
       )}

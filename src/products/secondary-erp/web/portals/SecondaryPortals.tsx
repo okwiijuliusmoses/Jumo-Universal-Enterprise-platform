@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   School, Users, BookOpen, Calculator, Microscope, Laptop, 
   Library, ShieldAlert, Award, Calendar, CheckCircle2, Plus, 
   Search, Filter, Download, DollarSign, TrendingUp, Landmark,
-  FileText, ClipboardList, X
+  FileText, ClipboardList, X, ArrowRight, Wallet, History
 } from 'lucide-react';
 import { PortalAuthenticationGate } from '../../../PortalAuthenticationGate';
-import { SecondaryService, SecondaryStudent } from '../../domain/SecondaryService';
+import { 
+  SecondaryService, 
+  SecondaryStudent, 
+  AcademicAssessment, 
+  FeeWaiverRequest 
+} from '../../domain/SecondaryService';
+import { JumoDataTable } from '../../../../core/enterprise/components/JumoDataTable';
+import { JumoForm } from '../../../../core/enterprise/components/JumoForm';
+import { JumoWorkflowStatus } from '../../../../core/enterprise/components/JumoWorkflowStatus';
 
 export const SecondarySenatePortal: React.FC = () => {
+  const service = SecondaryService.getInstance();
+  const students = service.getStudents();
+  const assessments = service.getAssessments();
+  
   return (
     <PortalAuthenticationGate
       portalId="secondary-senate"
@@ -17,53 +29,65 @@ export const SecondarySenatePortal: React.FC = () => {
       requiredRoles={['ROLE_SECONDARY_HEADTEACHER', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
       onAuthenticated={() => {}}
     >
-      {/* ... rest of existing Senate content remains similar but could be made dynamic ... */}
       <div className="space-y-6 animate-in fade-in duration-300 pb-12">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Principal's Office & Academic Senate</h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 border border-indigo-300 uppercase">
-                St. Lawrence Sovereign
-              </span>
-            </div>
-            <p className="text-slate-500 text-xs mt-1">
-              High-level institutional governance, O & A Level academic policy, UNEB center administration & secondary staffing.
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Principal's Office & Senate</h1>
+            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">
+              Institutional Governance • Academic Policy • Financial Oversight
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Award className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-tight">Academic Excellence</h3>
-              <p className="text-2xl font-black text-slate-900 mt-1 font-mono">92% DIV 1</p>
-              <p className="text-[11px] text-slate-500 mt-1">UCE 2025 Benchmarked Performance</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enrollment Status</span>
+            <div className="flex items-end justify-between mt-2">
+              <p className="text-3xl font-black text-slate-900 font-mono leading-none">{students.length}</p>
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Active</span>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-tight">Total Student Roll</h3>
-              <p className="text-2xl font-black text-slate-900 mt-1 font-mono">1,840 Students</p>
-              <p className="text-[11px] text-slate-500 mt-1">O-Level: 1,200 | A-Level: 640</p>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Landmark className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-tight">FAAP Finance Status</h3>
-              <p className="text-2xl font-black text-slate-900 mt-1 font-mono">96.5% Paid</p>
-              <p className="text-[11px] text-emerald-600 font-bold mt-1">All Secondary Ledger Reconciled</p>
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Financial Health</span>
+            <div className="flex items-end justify-between mt-2">
+              <p className="text-xl font-black text-slate-900 font-mono leading-none">
+                {((1 - (students.reduce((acc, s) => acc + s.feeBalance, 0) / (students.length * 1500000))) * 100).toFixed(1)}%
+              </p>
+              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Collections</span>
             </div>
           </div>
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Academic Pulse</span>
+            <div className="flex items-end justify-between mt-2">
+              <p className="text-3xl font-black text-slate-900 font-mono leading-none">{assessments.length}</p>
+              <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Assessments</span>
+            </div>
+          </div>
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Integrity</span>
+            <div className="flex items-end justify-between mt-2 text-emerald-600">
+              <ShieldAlert className="w-6 h-6" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Sovereign Active</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-900 p-8 rounded-3xl text-white overflow-hidden relative">
+          <div className="relative z-10 space-y-4">
+            <h2 className="text-2xl font-black uppercase tracking-tighter max-w-md">Governance Control Center</h2>
+            <p className="text-slate-400 text-sm max-w-sm font-medium">
+              Oversee cross-departmental workflows, authorize high-value expenditures, and monitor real-time institutional performance metrics.
+            </p>
+            <div className="flex gap-3 pt-2">
+              <button className="bg-white text-slate-900 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-colors">
+                Senate Reports
+              </button>
+              <button className="bg-slate-800 text-white border border-slate-700 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition-colors">
+                Audit Logs
+              </button>
+            </div>
+          </div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl -mr-20 -mt-20" />
         </div>
       </div>
     </PortalAuthenticationGate>
@@ -73,19 +97,18 @@ export const SecondarySenatePortal: React.FC = () => {
 export const SecondaryRegistrarPortal: React.FC = () => {
   const service = SecondaryService.getInstance();
   const [students, setStudents] = useState<SecondaryStudent[]>(service.getStudents());
-  const [showModal, setShowModal] = useState(false);
-  
-  // Form State
-  const [name, setName] = useState('');
-  const [studentClass, setStudentClass] = useState('Senior One');
-  const [guardian, setGuardian] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<SecondaryStudent | null>(null);
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    service.registerStudent({ name, class: studentClass, guardian });
+  const handleRegister = (data: any) => {
+    if (editingStudent) {
+      service.updateStudent(editingStudent.id, data);
+    } else {
+      service.registerStudent(data);
+    }
     setStudents([...service.getStudents()]);
-    setShowModal(false);
-    setName('');
+    setShowForm(false);
+    setEditingStudent(null);
   };
 
   return (
@@ -98,136 +121,63 @@ export const SecondaryRegistrarPortal: React.FC = () => {
     >
       <div className="space-y-6 animate-in fade-in duration-300 pb-12">
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-          <div className="flex items-center gap-3">
-            <Users className="w-8 h-8 text-blue-600" />
-            <div>
-              <h2 className="text-xl font-bold text-slate-900">Registrar Office & Student Information (SIS)</h2>
-              <p className="text-xs text-slate-500">Student enrollment, LIN verification, UCE/UACE registration & index numbers.</p>
-            </div>
+          <div>
+            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Student Information System (SIS)</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Enrollment • Academic Tracks • LIN Verification</p>
           </div>
           <button 
-            onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition"
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg shadow-blue-100"
           >
-            Register Student
+            <Plus className="w-3.5 h-3.5" /> Register Student
           </button>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">ID</th>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Class</th>
-                <th className="px-6 py-4">Guardian</th>
-                <th className="px-6 py-4 text-right">Fee Balance</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {students.map(s => (
-                <tr key={s.id} className="hover:bg-slate-50">
-                  <td className="px-6 py-4 font-mono text-xs font-bold">{s.id}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900">{s.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{s.class}</td>
-                  <td className="px-6 py-4 text-slate-600">{s.guardian}</td>
-                  <td className="px-6 py-4 text-right font-mono font-bold text-rose-600">{s.feeBalance.toLocaleString()} UGX</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <JumoDataTable
+          data={students}
+          columns={[
+            { header: 'Student ID', accessor: 'id', className: 'font-mono text-xs font-bold text-slate-400' },
+            { header: 'Full Name', accessor: 'name', className: 'font-bold text-slate-900' },
+            { header: 'Class', accessor: 'class' },
+            { header: 'Combination', accessor: (s) => s.combination || 'N/A', className: 'text-slate-500 italic' },
+            { header: 'Status', accessor: (s) => (
+              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${s.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
+                {s.status}
+              </span>
+            )}
+          ]}
+          actions={(s) => (
+            <button 
+              onClick={() => { setEditingStudent(s); setShowForm(true); }}
+              className="text-[10px] font-black text-blue-600 uppercase tracking-widest"
+            >
+              Update
+            </button>
+          )}
+        />
 
-        {showModal && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-slate-900">New Secondary Student Admission</h3>
-                <button onClick={() => setShowModal(false)}><X className="w-5 h-5" /></button>
-              </div>
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Full Name</label>
-                  <input value={name} onChange={e => setName(e.target.value)} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">Class</label>
-                    <select value={studentClass} onChange={e => setStudentClass(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm">
-                      <option>Senior One</option>
-                      <option>Senior Two</option>
-                      <option>Senior Three</option>
-                      <option>Senior Four</option>
-                      <option>Senior Five</option>
-                      <option>Senior Six</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">Guardian</label>
-                    <input value={guardian} onChange={e => setGuardian(e.target.value)} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm" />
-                  </div>
-                </div>
-                <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm">Admit Student</button>
-              </form>
-            </div>
-          </div>
+        {showForm && (
+          <JumoForm
+            title={editingStudent ? "Update Student Profile" : "Admit New Student"}
+            initialData={editingStudent || { class: 'Senior One' }}
+            fields={[
+              { id: 'name', label: 'Full Legal Name', type: 'text', required: true, placeholder: 'e.g. John Doe' },
+              { id: 'class', label: 'Current Class', type: 'select', required: true, options: [
+                { value: 'Senior One', label: 'Senior One' },
+                { value: 'Senior Two', label: 'Senior Two' },
+                { value: 'Senior Three', label: 'Senior Three' },
+                { value: 'Senior Four', label: 'Senior Four' },
+                { value: 'Senior Five', label: 'Senior Five' },
+                { value: 'Senior Six', label: 'Senior Six' }
+              ]},
+              { id: 'guardian', label: 'Primary Guardian', type: 'text', required: true },
+              { id: 'combination', label: 'A-Level Combination', type: 'text', placeholder: 'e.g. PCM/Sub-Math (For S5/S6)' },
+              { id: 'indexNumber', label: 'UNEB Index Number', type: 'text', placeholder: 'e.g. U0001/001' }
+            ]}
+            onSubmit={handleRegister}
+            onCancel={() => { setShowForm(false); setEditingStudent(null); }}
+          />
         )}
-      </div>
-    </PortalAuthenticationGate>
-  );
-};
-
-export const SecondaryDosPortal: React.FC = () => {
-  return (
-    <PortalAuthenticationGate
-      portalId="secondary-dos"
-      portalName="DOS Academic & Subject Combination Office"
-      domainContext="JUMO-SCHOOL-ERP"
-      requiredRoles={['ROLE_SECONDARY_DOS', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
-      onAuthenticated={() => {}}
-    >
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-          <BookOpen className="w-8 h-8 text-emerald-600" />
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">Academic Director (DOS) & Gradebook</h2>
-            <p className="text-xs text-slate-500">O/A Level subject combinations, NCDC curriculum tracking & teacher workloads.</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <Microscope className="w-4 h-4 text-rose-600" />
-              A-Level Subject Combinations
-            </h3>
-            <p className="text-[10px] text-slate-500">Benchmark monitoring for PCM, BCM, HEG, and Arts/Science clusters.</p>
-            <div className="grid grid-cols-2 gap-2">
-              {['PCM/Sub-Math', 'BCM/Sub-ICT', 'PEM/Sub-Math', 'HEG/Sub-ICT'].map(c => (
-                <div key={c} className="p-2 border border-slate-100 rounded-lg text-center font-mono text-[10px] font-bold text-slate-700 bg-slate-50">
-                  {c}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <ClipboardList className="w-4 h-4 text-emerald-600" />
-              Teacher Performance & Gradebook
-            </h3>
-            <p className="text-[10px] text-slate-500">Automated marksheet generation and NCDC competency tracking.</p>
-            <div className="pt-2">
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div className="bg-emerald-600 h-full w-[85%]" />
-              </div>
-              <div className="flex justify-between mt-1.5">
-                <span className="text-[10px] text-slate-500 font-bold uppercase">Marks Entry Progress</span>
-                <span className="text-[10px] text-emerald-600 font-black">85% Complete</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </PortalAuthenticationGate>
   );
@@ -235,20 +185,34 @@ export const SecondaryDosPortal: React.FC = () => {
 
 export const SecondaryBursarPortal: React.FC = () => {
   const service = SecondaryService.getInstance();
-  const [students, setStudents] = useState<SecondaryStudent[]>(service.getStudents());
-  const [showModal, setShowModal] = useState(false);
+  const [students] = useState<SecondaryStudent[]>(service.getStudents());
+  const [waivers, setWaivers] = useState<FeeWaiverRequest[]>(service.getWaivers());
+  const [activeTab, setActiveTab] = useState<'FEES' | 'WAIVERS'>('FEES');
+  const [showPayForm, setShowPayForm] = useState(false);
+  const [showWaiverForm, setShowWaiverForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<SecondaryStudent | null>(null);
-  const [payAmount, setPayAmount] = useState<number>(0);
 
-  const handlePayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedStudent && payAmount > 0) {
-      service.collectFee(selectedStudent.id, payAmount, 'Tuition');
-      setStudents([...service.getStudents()]);
-      setShowModal(false);
+  const handlePayment = (data: any) => {
+    if (selectedStudent) {
+      service.collectFee(selectedStudent.id, Number(data.amount), data.category);
+      setShowPayForm(false);
       setSelectedStudent(null);
-      setPayAmount(0);
     }
+  };
+
+  const handleWaiver = (data: any) => {
+    service.requestWaiver({
+      studentId: data.studentId,
+      amount: Number(data.amount),
+      reason: data.reason
+    });
+    setWaivers([...service.getWaivers()]);
+    setShowWaiverForm(false);
+  };
+
+  const handleApproveWaiver = (id: string) => {
+    service.approveWaiver(id, 'Headteacher (Authorized)');
+    setWaivers([...service.getWaivers()]);
   };
 
   return (
@@ -259,77 +223,216 @@ export const SecondaryBursarPortal: React.FC = () => {
       requiredRoles={['ROLE_SECONDARY_BURSAR', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
       onAuthenticated={() => {}}
     >
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-          <Calculator className="w-8 h-8 text-amber-600" />
+      <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Secondary Bursar Office (FAAP Integrated)</h2>
-            <p className="text-xs text-slate-500">Boarding fees, science lab fees, UCE/UACE registration fees & staff payroll ledger.</p>
+            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Finance & Bursar Office</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Fee Collections • Sub-Ledgers • FAAP Integration</p>
+          </div>
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            <button 
+              onClick={() => setActiveTab('FEES')}
+              className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'FEES' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Fee Accounts
+            </button>
+            <button 
+              onClick={() => setActiveTab('WAIVERS')}
+              className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'WAIVERS' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              Waiver Workflows
+            </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Outstanding Secondary Fees</span>
-              <TrendingUp className="w-4 h-4 text-rose-500" />
-            </div>
-            <p className="text-3xl font-black text-rose-600 font-mono tracking-tight">
-              {students.reduce((acc, s) => acc + s.feeBalance, 0).toLocaleString()} UGX
-            </p>
-            <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-[11px]">
-              <span className="text-slate-500">Synced with FAAP General Ledger</span>
-              <span className="text-emerald-600 font-black">REAL-TIME</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">Student</th>
-                <th className="px-6 py-4">Class</th>
-                <th className="px-6 py-4 text-right">Balance</th>
-                <th className="px-6 py-4 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {students.map(s => (
-                <tr key={s.id} className="hover:bg-slate-50">
-                  <td className="px-6 py-4 font-bold text-slate-900">{s.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{s.class}</td>
-                  <td className="px-6 py-4 text-right font-mono font-bold text-rose-600">{s.feeBalance.toLocaleString()} UGX</td>
-                  <td className="px-6 py-4 text-center">
-                    <button 
-                      onClick={() => { setSelectedStudent(s); setShowModal(true); }}
-                      className="text-xs font-bold text-amber-600 hover:text-amber-700"
-                    >
-                      Process Payment
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {showModal && selectedStudent && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-slate-900">Process Fee — {selectedStudent.name}</h3>
-                <button onClick={() => setShowModal(false)}><X className="w-5 h-5" /></button>
+        {activeTab === 'FEES' ? (
+          <JumoDataTable
+            data={students}
+            title="Student Financial Ledgers"
+            columns={[
+              { header: 'Student', accessor: 'name', className: 'font-bold text-slate-900' },
+              { header: 'Class', accessor: 'class' },
+              { header: 'Outstanding Balance', accessor: (s) => (
+                <span className="font-mono font-bold text-rose-600">{s.feeBalance.toLocaleString()} UGX</span>
+              ), className: 'text-right' },
+              { header: 'Payment Status', accessor: (s) => (
+                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${s.feeBalance <= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                  {s.feeBalance <= 0 ? 'Fully Paid' : 'Balance Due'}
+                </span>
+              )}
+            ]}
+            actions={(s) => (
+              <div className="flex items-center justify-end gap-3">
+                <button 
+                  onClick={() => { setSelectedStudent(s); setShowPayForm(true); }}
+                  className="text-[10px] font-black text-amber-600 uppercase tracking-widest"
+                >
+                  Post Payment
+                </button>
               </div>
-              <form onSubmit={handlePayment} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Amount (UGX)</label>
-                  <input type="number" value={payAmount || ''} onChange={e => setPayAmount(Number(e.target.value))} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-mono font-bold" />
-                </div>
-                <button type="submit" className="w-full py-3 bg-amber-600 text-white rounded-xl font-bold text-sm">Post to FAAP Ledger</button>
-              </form>
+            )}
+          />
+        ) : (
+          <div className="space-y-4">
+            <div className="flex justify-end">
+              <button 
+                onClick={() => setShowWaiverForm(true)}
+                className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition"
+              >
+                Request Waiver
+              </button>
             </div>
+            <JumoDataTable
+              data={waivers}
+              title="Waiver Approval Queue"
+              columns={[
+                { header: 'Waiver ID', accessor: 'id', className: 'font-mono text-xs font-bold text-slate-400' },
+                { header: 'Student ID', accessor: 'studentId' },
+                { header: 'Requested Amount', accessor: (w) => `${w.amount.toLocaleString()} UGX`, className: 'font-mono font-bold text-slate-900' },
+                { header: 'Reason', accessor: 'reason', className: 'max-w-xs truncate' },
+                { header: 'Workflow Status', accessor: (w) => <JumoWorkflowStatus status={w.status} /> }
+              ]}
+              actions={(w) => (
+                w.status === 'PENDING' && (
+                  <button 
+                    onClick={() => handleApproveWaiver(w.id)}
+                    className="text-[10px] font-black text-emerald-600 uppercase tracking-widest"
+                  >
+                    Authorize
+                  </button>
+                )
+              )}
+            />
           </div>
+        )}
+
+        {showPayForm && selectedStudent && (
+          <JumoForm
+            title={`Post Payment — ${selectedStudent.name}`}
+            fields={[
+              { id: 'amount', label: 'Amount (UGX)', type: 'number', required: true },
+              { id: 'category', label: 'Payment Category', type: 'select', required: true, options: [
+                { value: 'Tuition', label: 'Tuition Fees' },
+                { value: 'Boarding', label: 'Boarding Fees' },
+                { value: 'Uniform', label: 'Uniform & Essentials' },
+                { value: 'Functional', label: 'Functional Fees' }
+              ]},
+              { id: 'ref', label: 'Receipt Reference', type: 'text', placeholder: 'e.g. BNK-123456' }
+            ]}
+            onSubmit={handlePayment}
+            onCancel={() => { setShowPayForm(false); setSelectedStudent(null); }}
+          />
+        )}
+
+        {showWaiverForm && (
+          <JumoForm
+            title="Fee Waiver Request"
+            fields={[
+              { id: 'studentId', label: 'Student ID', type: 'select', required: true, options: students.map(s => ({ value: s.id, label: `${s.name} (${s.id})` })) },
+              { id: 'amount', label: 'Waiver Amount (UGX)', type: 'number', required: true },
+              { id: 'reason', label: 'Reason for Waiver', type: 'textarea', required: true }
+            ]}
+            onSubmit={handleWaiver}
+            onCancel={() => setShowWaiverForm(false)}
+          />
+        )}
+      </div>
+    </PortalAuthenticationGate>
+  );
+};
+
+export const SecondaryHodPortal: React.FC = () => {
+  const service = SecondaryService.getInstance();
+  const students = service.getStudents();
+  const [assessments, setAssessments] = useState<AcademicAssessment[]>(service.getAssessments());
+  const [showForm, setShowForm] = useState(false);
+
+  const handleRecord = (data: any) => {
+    service.recordScore({
+      studentId: data.studentId,
+      subject: data.subject,
+      score: Number(data.score),
+      type: data.type,
+      term: 'Term 1',
+      year: 2026
+    });
+    setAssessments([...service.getAssessments()]);
+    setShowForm(false);
+  };
+
+  const handleApprove = (id: string) => {
+    service.approveAssessment(id, 'Academic Director (Authorized)');
+    setAssessments([...service.getAssessments()]);
+  };
+
+  return (
+    <PortalAuthenticationGate
+      portalId="secondary-dos"
+      portalName="DOS Academic & Subject Combination Office"
+      domainContext="JUMO-SCHOOL-ERP"
+      requiredRoles={['ROLE_SECONDARY_DOS', 'ROLE_HEADTEACHER', 'ROLE_SCHOOL_ADMIN']}
+      onAuthenticated={() => {}}
+    >
+      <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+          <div>
+            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Academic Department (HOD/DOS)</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Gradebook • Assessments • Results Validation</p>
+          </div>
+          <button 
+            onClick={() => setShowForm(true)}
+            className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition"
+          >
+            Record Score
+          </button>
+        </div>
+
+        <JumoDataTable
+          data={assessments}
+          title="Gradebook & Assessment Registry"
+          columns={[
+            { header: 'Student ID', accessor: 'studentId', className: 'font-mono text-xs font-bold text-slate-400' },
+            { header: 'Subject', accessor: 'subject', className: 'font-bold' },
+            { header: 'Score', accessor: (a) => <span className="font-mono font-black">{a.score}%</span> },
+            { header: 'Type', accessor: 'type' },
+            { header: 'Workflow', accessor: (a) => <JumoWorkflowStatus status={a.status} /> }
+          ]}
+          actions={(a) => (
+            a.status === 'PENDING' && (
+              <button 
+                onClick={() => handleApprove(a.id)}
+                className="text-[10px] font-black text-emerald-600 uppercase tracking-widest"
+              >
+                Validate
+              </button>
+            )
+          )}
+        />
+
+        {showForm && (
+          <JumoForm
+            title="Record Student Assessment"
+            fields={[
+              { id: 'studentId', label: 'Student', type: 'select', required: true, options: students.map(s => ({ value: s.id, label: s.name })) },
+              { id: 'subject', label: 'Subject', type: 'select', required: true, options: [
+                { value: 'Mathematics', label: 'Mathematics' },
+                { value: 'English', label: 'English' },
+                { value: 'Physics', label: 'Physics' },
+                { value: 'Chemistry', label: 'Chemistry' },
+                { value: 'Biology', label: 'Biology' },
+                { value: 'Geography', label: 'Geography' },
+                { value: 'History', label: 'History' }
+              ]},
+              { id: 'score', label: 'Score Percentage', type: 'number', required: true },
+              { id: 'type', label: 'Assessment Type', type: 'select', required: true, options: [
+                { value: 'MID-TERM', label: 'Mid-Term Exam' },
+                { value: 'END-OF-TERM', label: 'End of Term Exam' },
+                { value: 'MOCK', label: 'Mock Exam' }
+              ]}
+            ]}
+            onSubmit={handleRecord}
+            onCancel={() => setShowForm(false)}
+          />
         )}
       </div>
     </PortalAuthenticationGate>

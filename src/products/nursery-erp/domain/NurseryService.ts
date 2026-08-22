@@ -1,10 +1,6 @@
-/**
- * JUMO Nursery ERP — Sovereign Service
- * Manages infants, guardians, health logs, and ECD milestones.
- * Integrates with FAAP for fee collections.
- */
-
 import { FaapService } from '../../faap/domain/FaapService';
+
+export type WorkflowStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_REVIEW';
 
 export interface NurseryLearner {
   id: string;
@@ -18,12 +14,25 @@ export interface NurseryLearner {
 }
 
 export interface ECDMilestone {
+  id: string;
   learnerId: string;
   milestone: string;
   category: 'MOTOR' | 'LANGUAGE' | 'SOCIAL' | 'COGNITIVE';
   status: 'DEVELOPING' | 'ACHIEVED' | 'EXCEEDED';
+  workflowStatus: WorkflowStatus;
   observer: string;
   date: string;
+}
+
+export interface PickupAuthorization {
+  id: string;
+  learnerId: string;
+  authorizedPerson: string;
+  relation: string;
+  idNumber: string;
+  photoUrl?: string;
+  status: WorkflowStatus;
+  requestedBy: string;
 }
 
 export class NurseryService {
@@ -37,6 +46,7 @@ export class NurseryService {
   ];
 
   private milestones: ECDMilestone[] = [];
+  private pickupAuthorizations: PickupAuthorization[] = [];
 
   private constructor() {}
 
@@ -54,7 +64,7 @@ export class NurseryService {
       ...learner,
       id: `NUR-2026-${(this.learners.length + 1).toString().padStart(3, '0')}`,
       status: 'PRESENT',
-      feeBalance: 1200000 // Standard tuition fee for new learners
+      feeBalance: 1200000 
     };
     this.learners.push(newLearner);
     return newLearner;
@@ -66,8 +76,6 @@ export class NurseryService {
     
     learner.feeBalance -= amount;
 
-    // Post to FAAP
-    // Debit Bank (1010), Credit Revenue (4010)
     this.faapService.postUniversalTransaction({
       sourceProduct: 'EDUCATION',
       memo: `Nursery Fee Collection: ${learner.name} (${category})`,
@@ -76,7 +84,6 @@ export class NurseryService {
       amount: amount
     });
 
-    // Also record in Cash Book
     this.faapService.recordCashEntry({
       date: new Date().toISOString().split('T')[0],
       description: `Fee: ${learner.name} - ${category}`,
@@ -90,16 +97,38 @@ export class NurseryService {
     return learner;
   }
 
-  recordMilestone(milestone: Omit<ECDMilestone, 'date'>) {
+  recordMilestone(milestone: Omit<ECDMilestone, 'id' | 'date' | 'workflowStatus'>) {
     const entry: ECDMilestone = {
       ...milestone,
+      id: `MLS-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      workflowStatus: 'PENDING',
       date: new Date().toISOString()
     };
     this.milestones.push(entry);
     return entry;
   }
 
-  getMilestones(learnerId: string) {
-    return this.milestones.filter(m => m.learnerId === learnerId);
+  approveMilestone(id: string) {
+    const m = this.milestones.find(ms => ms.id === id);
+    if (m) m.workflowStatus = 'APPROVED';
+  }
+
+  getAllMilestones() { return this.milestones; }
+
+  requestPickupAuthorization(auth: Omit<PickupAuthorization, 'id' | 'status'>) {
+    const newAuth: PickupAuthorization = {
+      ...auth,
+      id: `PKP-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      status: 'PENDING'
+    };
+    this.pickupAuthorizations.push(newAuth);
+    return newAuth;
+  }
+
+  getPickupAuthorizations() { return this.pickupAuthorizations; }
+
+  approvePickup(id: string) {
+    const auth = this.pickupAuthorizations.find(a => a.id === id);
+    if (auth) auth.status = 'APPROVED';
   }
 }
