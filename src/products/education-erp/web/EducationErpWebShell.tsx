@@ -39,7 +39,7 @@ export const EducationErpWebShell: React.FC<{ onNavigate?: (route: string) => vo
   const stats = calculateRegistryStats().education;
 
   // App Level State
-  const [appState, setAppState] = useState<AppState>('LANDING');
+  const [appState, setAppState] = useState<AppState>('APP');
 
   // Configuration & Active Template
   const [config, setConfig] = useState(service.getConfig());

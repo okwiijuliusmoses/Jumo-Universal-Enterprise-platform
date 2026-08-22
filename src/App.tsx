@@ -115,9 +115,7 @@ function AppContent() {
 
   const getLoggedInDefaultView = () => {
     return (
-      <UniversalPlatformShell platformId="workspace" platformName="Active Sovereign Workspace" onNavigate={handleNavigate} currentUser={user || undefined} onLogout={handleLogout}>
-        <Workspace onNavigate={handleNavigate} />
-      </UniversalPlatformShell>
+      <FintechShell onNavigate={handleNavigate} currentUser={user || undefined} onLogout={handleLogout} />
     );
   };
 
@@ -436,9 +434,12 @@ function AppContent() {
   const isBaseRoute = routePath === '/' || routePath === '/public' || routePath === '' || routePath === '/index.html';
   const isStandaloneProduct = 
     isBaseRoute ||
-    routePath === '/education' || routePath === '/edu' ||
+    routePath.startsWith('/products/') ||
+    routePath.includes('education') || routePath === '/edu' ||
+    routePath.includes('alumni') ||
     routePath === '/finance' || routePath === '/pay' || routePath === '/faap' || routePath === '/treasury' || routePath.includes('fintech') ||
-    routePath.includes('church') || routePath.includes('diocese');
+    routePath.includes('church') || routePath.includes('diocese') ||
+    routePath.includes('control') || routePath === '/owner' || routePath === '/admin';
 
   if (isStandaloneProduct) {
     return (

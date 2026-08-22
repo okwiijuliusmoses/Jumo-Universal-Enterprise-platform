@@ -5,7 +5,8 @@ import {
   Search, Bell, HelpCircle, User, Shield, ShieldCheck, Code, ArrowLeft,
   ChevronDown, ChevronRight, Activity, Terminal, AlertCircle, RefreshCw,
   Package, Check, Filter, Cpu, Play, Download, Sliders, Smartphone,
-  BarChart2, Receipt, ShoppingCart, Upload, FileText, Wallet, Users, PieChart
+  BarChart2, Receipt, ShoppingCart, Upload, FileText, Wallet, Users, PieChart,
+  BookOpen, Eye, Plus, ArrowUpRight, ArrowDownRight, Award, ChevronLeft, Menu, X
 } from 'lucide-react';
 import { FintechFamilyRegistry, FintechFamilyManifest, getFintechFamily, calculateFamilyCapabilityCoverage } from './registries/FintechFamilyRegistry';
 import { FintechFamilyStore } from './FintechFamilyStore';
@@ -16,9 +17,24 @@ import { MicrofinanceWorkspace } from './microfinance/web/MicrofinanceWorkspace'
 import { DigitalWalletWorkspace } from './digital-wallets/web/DigitalWalletWorkspace';
 import { FxWorkspace } from './fx/web/FxWorkspace';
 import { MerchantServicesWorkspace } from './merchant-services/web/MerchantServicesWorkspace';
+
+// Integrated FAAP and Digital Pay Submodules
+import { FaapDashboard } from '../faap/web/modules/FaapDashboard';
+import { ChartOfAccounts } from '../faap/web/modules/ChartOfAccounts';
+import { GeneralJournal } from '../faap/web/modules/GeneralJournal';
+import { AccountsPayable } from '../faap/web/modules/AccountsPayable';
+import { AccountsReceivable } from '../faap/web/modules/AccountsReceivable';
+import { BankingModule } from '../faap/web/modules/BankingModule';
+import { InstitutionalFinanceSuite } from '../faap/web/modules/InstitutionalFinanceSuite';
+
+import { TransactionsModule } from '../digital-pay/web/modules/TransactionsModule';
+import { MerchantsModule } from '../digital-pay/web/modules/MerchantsModule';
+import { GatewayModule } from '../digital-pay/web/modules/GatewayModule';
+import { RiskModule } from '../digital-pay/web/modules/RiskModule';
+
 import { PlatformSwitcher } from '../../components/PlatformSwitcher';
 
-// Safe Icon Resolver Map
+// Safe Icon Resolver
 const ICON_MAP: Record<string, React.ElementType> = {
   Scale: Landmark,
   Receipt: Receipt,
@@ -58,7 +74,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Sparkles: Sparkles,
 };
 
-function getSafeFamilyIcon(iconName?: string): React.ElementType {
+function getSafeIcon(iconName?: string): React.ElementType {
   if (!iconName) return DollarSign;
   return ICON_MAP[iconName] || DollarSign;
 }
@@ -80,11 +96,15 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
+  const [faapSubTab, setFaapSubTab] = useState<string>('controller');
+  const [dpSubTab, setDpSubTab] = useState<string>('switch');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
   const [aiPrompt, setAiPrompt] = useState<string>('');
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [aiThinking, setAiThinking] = useState<boolean>(false);
+
   const [installedFamilyIds, setInstalledFamilyIds] = useState<string[]>([
     'FAM_LEDGER',
     'FAM_TAX_REVENUE',
@@ -117,18 +137,52 @@ export const FintechShell: React.FC<FintechShellProps> = ({
     setAiThinking(true);
     setTimeout(() => {
       setAiThinking(false);
-      setAiResponse(`JUMO AI Swarm Audit Report:
-- Analyzed 18 installed financial family modules.
-- Double-entry ledger parity verified at $0.00 offset (Debits: $54,210,000 | Credits: $54,210,000).
-- Payment Switching latency averaging 240ms across M-Pesa, MTN MoMo, and Visa rails.
-- Sanctions compliance screening: 0 PEP violations flagged. All systems operational.`);
-    }, 1200);
+      setAiResponse(`JUMO AI Cognitive Swarm Audit Report:
+- Analyzed ${installedFamilyIds.length} installed financial family modules across JUMO FINTECH.
+- Double-Entry Ledger Parity: Zero-offset balance certified (Debits: $54,210,000.00 | Credits: $54,210,000.00 | Offset: $0.00).
+- Payment Switching: 240ms avg latency on MTN MoMo, M-Pesa, Airtel & Visa rails.
+- Real-time AML/PEP Sanctions clearance: 100% compliant. 0 high-risk anomalies detected.`);
+    }, 1000);
   };
 
   const handleSelectFamily = (familyId: string) => {
     setSelectedFamilyId(familyId);
     setActiveTab('family_workspace');
   };
+
+  // Grouped Navigation Categories from Registry
+  const groupedFamilies = useMemo(() => {
+    const groups: Record<string, FintechFamilyManifest[]> = {
+      'ACCOUNTING & LEDGER': [],
+      'PAYMENTS & SWITCHING': [],
+      'BANKING & WALLETS': [],
+      'CREDIT & MICROFINANCE': [],
+      'TREASURY & MARKETS': [],
+      'MERCHANT & ISSUING': [],
+      'SECURITY & INTELLIGENCE': []
+    };
+
+    FintechFamilyRegistry.forEach(fam => {
+      const cat = fam.category.toUpperCase();
+      if (cat.includes('ACCOUNTING') || fam.id === 'FAM_LEDGER' || fam.id === 'FAM_TAX_REVENUE' || fam.id === 'FAM_PAYROLL') {
+        groups['ACCOUNTING & LEDGER'].push(fam);
+      } else if (cat.includes('PAYMENT') || cat.includes('REMITTANCE') || fam.id === 'FAM_PAY_SWITCH' || fam.id === 'FAM_MOBILE_MONEY' || fam.id === 'FAM_COLLECTIONS' || fam.id === 'FAM_PAYOUTS' || fam.id === 'FAM_BANK_PAYMENTS' || fam.id === 'FAM_CROSS_BORDER' || fam.id === 'FAM_BILLS' || fam.id === 'FAM_STABLECOIN') {
+        groups['PAYMENTS & SWITCHING'].push(fam);
+      } else if (cat.includes('BANKING') || fam.id === 'FAM_DIGITAL_WALLETS' || fam.id === 'FAM_AGENT_BANKING' || fam.id === 'FAM_DIGITAL_BANKING' || fam.id === 'FAM_MULTI_CURRENCY' || fam.id === 'FAM_GLOBAL_ACCOUNTS' || fam.id === 'FAM_SAVINGS') {
+        groups['BANKING & WALLETS'].push(fam);
+      } else if (cat.includes('LENDING') || fam.id === 'FAM_MICROFINANCE' || fam.id === 'FAM_LENDING' || fam.id === 'FAM_SACCO' || fam.id === 'FAM_EMBEDDED_FINANCE' || fam.id === 'FAM_AGRICULTURAL_FINANCE') {
+        groups['CREDIT & MICROFINANCE'].push(fam);
+      } else if (cat.includes('TREASURY') || fam.id === 'FAM_TREASURY' || fam.id === 'FAM_FX' || fam.id === 'FAM_INVESTMENT' || fam.id === 'FAM_SECURITIES_CUSTODY' || fam.id === 'FAM_TRADE_FINANCE' || fam.id === 'FAM_INSURANCE' || fam.id === 'FAM_CAPITAL_MARKETS') {
+        groups['TREASURY & MARKETS'].push(fam);
+      } else if (cat.includes('MERCHANT') || fam.id === 'FAM_MERCHANT_SERVICES' || fam.id === 'FAM_MERCHANT_ACQUIRING' || fam.id === 'FAM_CARDS' || fam.id === 'FAM_ATM_SELF_SERVICE') {
+        groups['MERCHANT & ISSUING'].push(fam);
+      } else {
+        groups['SECURITY & INTELLIGENCE'].push(fam);
+      }
+    });
+
+    return groups;
+  }, []);
 
   // Filtered families by search
   const filteredFamilies = useMemo(() => {
@@ -148,27 +202,162 @@ export const FintechShell: React.FC<FintechShellProps> = ({
     if (activeTab === 'family_workspace' && selectedFamilyId) {
       const family = getFintechFamily(selectedFamilyId);
       
-      // Specialized operational workspaces for key families
+      // 1. FAAP General Ledger Suite
       if (selectedFamilyId === 'FAM_LEDGER') {
-        return <FaapControllerWorkspace />;
+        return (
+          <div className="p-6 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                  <Landmark className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold text-slate-400">FT-ACC-01</span>
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      FAAP CORE LEDGER
+                    </span>
+                  </div>
+                  <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                    Financial Accounting & Administration (FAAP)
+                  </h1>
+                </div>
+              </div>
+
+              {/* Sub-tab Navigation */}
+              <div className="flex items-center gap-1.5 overflow-x-auto bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                {[
+                  { id: 'controller', label: 'Parity Controller' },
+                  { id: 'dashboard', label: 'Dashboard' },
+                  { id: 'coa', label: 'Chart of Accounts' },
+                  { id: 'journal', label: 'General Journal' },
+                  { id: 'ap', label: 'Accounts Payable' },
+                  { id: 'ar', label: 'Accounts Receivable' },
+                  { id: 'banking', label: 'Banking' },
+                  { id: 'suite', label: 'Institutional Suite' }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setFaapSubTab(tab.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer ${
+                      faapSubTab === tab.id
+                        ? 'bg-white text-emerald-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sub-module View */}
+            <div>
+              {faapSubTab === 'controller' && <FaapControllerWorkspace />}
+              {faapSubTab === 'dashboard' && <FaapDashboard />}
+              {faapSubTab === 'coa' && <ChartOfAccounts />}
+              {faapSubTab === 'journal' && <GeneralJournal />}
+              {faapSubTab === 'ap' && <AccountsPayable />}
+              {faapSubTab === 'ar' && <AccountsReceivable />}
+              {faapSubTab === 'banking' && <BankingModule />}
+              {faapSubTab === 'suite' && <InstitutionalFinanceSuite />}
+            </div>
+          </div>
+        );
       }
+
+      // 2. Universal Payment Switching & Digital Pay Suite
+      if (selectedFamilyId === 'FAM_PAY_SWITCH' || selectedFamilyId === 'FAM_PAYMENT_GATEWAY' || selectedFamilyId === 'FAM_COLLECTIONS') {
+        return (
+          <div className="p-6 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold text-slate-400">{family.code}</span>
+                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                      UNIVERSAL PAYMENT SWITCH
+                    </span>
+                  </div>
+                  <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                    {family.name}
+                  </h1>
+                </div>
+              </div>
+
+              {/* Sub-tab Navigation */}
+              <div className="flex items-center gap-1.5 overflow-x-auto bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                {[
+                  { id: 'switch', label: 'Switch Matrix' },
+                  { id: 'txns', label: 'Transactions' },
+                  { id: 'merchants', label: 'Merchants' },
+                  { id: 'gateway', label: 'Gateway Config' },
+                  { id: 'risk', label: 'Risk Shield' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setDpSubTab(tab.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer ${
+                      dpSubTab === tab.id
+                        ? 'bg-white text-indigo-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sub-module View */}
+            <div>
+              {dpSubTab === 'switch' && (
+                <UniversalFintechFamilyWorkspace 
+                  family={family} 
+                  onBack={() => {
+                    setSelectedFamilyId(null);
+                    setActiveTab('overview');
+                  }} 
+                />
+              )}
+              {dpSubTab === 'txns' && <TransactionsModule transactions={[]} />}
+              {dpSubTab === 'merchants' && <MerchantsModule merchants={[]} />}
+              {dpSubTab === 'gateway' && <GatewayModule />}
+              {dpSubTab === 'risk' && <RiskModule />}
+            </div>
+          </div>
+        );
+      }
+
+      // 3. Agent Banking Network
       if (selectedFamilyId === 'FAM_AGENT_BANKING') {
         return <AgentNetworkWorkspace />;
       }
+
+      // 4. Microfinance & JLG Lending
       if (selectedFamilyId === 'FAM_MICROFINANCE') {
         return <MicrofinanceWorkspace />;
       }
+
+      // 5. Digital Wallets
       if (selectedFamilyId === 'FAM_DIGITAL_WALLETS') {
         return <DigitalWalletWorkspace />;
       }
+
+      // 6. FX & Dealing Desk
       if (selectedFamilyId === 'FAM_FX') {
         return <FxWorkspace />;
       }
+
+      // 7. Merchant Services & Dynamic QR
       if (selectedFamilyId === 'FAM_MERCHANT_SERVICES') {
         return <MerchantServicesWorkspace />;
       }
 
-      // Universal interactive sandbox for all other families
+      // Universal interactive sandbox for all other registered families (SACCO, Lending, Mobile Money, Treasury, etc.)
       return (
         <UniversalFintechFamilyWorkspace 
           family={family} 
@@ -180,6 +369,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
       );
     }
 
+    // Marketplace / Family Manager
     if (activeTab === 'modules_store') {
       return (
         <FintechFamilyStore 
@@ -192,6 +382,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
       );
     }
 
+    // Developer Portal
     if (activeTab === 'developer') {
       return (
         <div className="p-8 max-w-7xl mx-auto space-y-6">
@@ -232,7 +423,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
               <div className="space-y-2">
                 {[
                   { method: 'POST', path: '/api/v1/ledger/post', desc: 'Post cryptographically verified double-entry journal batch' },
-                  { method: 'GET', path: '/api/v1/ledger/parity', desc: 'Real-time ledger audit verifying total debit = total credit' },
+                  { method: 'GET', path: '/api/v1/ledger/parity', desc: 'Real-time ledger audit verifying total debit = total credit ($0.00 offset)' },
                   { method: 'POST', path: '/api/v1/payments/initiate', desc: 'Initiate multi-rail payment routing via Universal Switch' },
                   { method: 'POST', path: '/api/v1/wallets/create', desc: 'Provision closed-loop or open-loop stored value customer wallet' },
                   { method: 'POST', path: '/api/v1/compliance/screen', desc: 'Execute real-time UN/OFAC PEP and sanctions list screening' },
@@ -256,7 +447,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 
     // Default Overview Dashboard
     return (
-      <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-200">
         {/* Header Title Area */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <div>
@@ -266,24 +457,24 @@ export const FintechShell: React.FC<FintechShellProps> = ({
               <span>SOVEREIGN FINANCIAL PLATFORM</span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-              Enterprise Financial Operations & Family Modules
+              Enterprise Financial Operations & Capability Hub
             </h1>
             <p className="text-sm text-slate-500 mt-1">
-              Consolidated financial product architecture powering FAAP Accounting, Universal Payment Switching, and 30+ independent capability families.
+              Consolidated financial product architecture powering FAAP Double-Entry Accounting, Universal Payment Switching, and 37 independent capability families.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setActiveTab('modules_store')}
-              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
             >
               <Package className="w-4 h-4" />
               <span>Financial Family Marketplace</span>
             </button>
             <button 
               onClick={() => setIsAiModalOpen(true)}
-              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-emerald-400" />
               <span>AI Swarm Auditor</span>
@@ -319,7 +510,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-lg font-black text-slate-900">Financial Family Capability Modules</h2>
-              <p className="text-xs text-slate-500">Each family operates as an independent, installable, and upgradeable capability module.</p>
+              <p className="text-xs text-slate-500">Every financial family operates as an independent, installable, upgradeable module with its own permissions, APIs, and workflows.</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -337,7 +528,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredFamilies.map((family) => {
-              const Icon = getSafeFamilyIcon(family.iconName);
+              const Icon = getSafeIcon(family.iconName);
               const isInstalled = installedFamilyIds.includes(family.id);
               const coverage = calculateFamilyCapabilityCoverage(family);
 
@@ -378,7 +569,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 
                     <div className="space-y-1.5 mb-4">
                       <div className="flex items-center justify-between text-[11px] font-mono">
-                        <span className="text-slate-400">Benchmark Coverage</span>
+                        <span className="text-slate-400">Benchmark Grounding</span>
                         <span className="font-bold text-emerald-600">{coverage}%</span>
                       </div>
                       <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
@@ -420,7 +611,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans">
       {/* Sovereign Top Header Bar */}
       <header className="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
@@ -451,11 +642,18 @@ export const FintechShell: React.FC<FintechShellProps> = ({
 
           <div className="flex items-center gap-3">
             <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="md:hidden p-2 text-slate-300 hover:text-white"
+            >
+              {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            <button 
               onClick={() => setIsAiModalOpen(true)}
               className="hidden sm:inline-flex px-3 py-1 text-xs font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-800/60 rounded-lg transition-colors items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>AI Auditor</span>
+              <span>AI Swarm Auditor</span>
             </button>
 
             <button 
@@ -481,10 +679,98 @@ export const FintechShell: React.FC<FintechShellProps> = ({
         </div>
       </header>
 
-      {/* Main Workspace Area */}
-      <main className="flex-1">
-        {renderWorkspace()}
-      </main>
+      {/* Main Container with Left Navigation & Workspace */}
+      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+        {/* Left Navigation Sidebar */}
+        <aside className={`${isSidebarOpen ? 'w-64 block' : 'hidden'} md:block bg-white border-r border-slate-200 shrink-0 p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-3.5rem)] sticky top-14`}>
+          {/* Quick Actions */}
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                setActiveTab('overview');
+                setSelectedFamilyId(null);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                activeTab === 'overview'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <BarChart2 className="w-4 h-4" />
+              <span>Fintech Overview</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('modules_store');
+                setSelectedFamilyId(null);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                activeTab === 'modules_store'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              <span>Family Marketplace</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('developer');
+                setSelectedFamilyId(null);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                activeTab === 'developer'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <Code className="w-4 h-4" />
+              <span>Developer & API Portal</span>
+            </button>
+          </div>
+
+          {/* Dynamic Family Groups from Registry */}
+          {(Object.entries(groupedFamilies) as [string, FintechFamilyManifest[]][]).map(([groupTitle, families]) => (
+            <div key={groupTitle} className="space-y-1">
+              <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 px-3 mb-1.5">
+                {groupTitle}
+              </h4>
+              <div className="space-y-0.5">
+                {families.map(family => {
+                  const Icon = getSafeIcon(family.iconName);
+                  const isSelected = activeTab === 'family_workspace' && selectedFamilyId === family.id;
+                  const isInstalled = installedFamilyIds.includes(family.id);
+
+                  return (
+                    <button
+                      key={family.id}
+                      onClick={() => handleSelectFamily(family.id)}
+                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-semibold transition text-left cursor-pointer group ${
+                        isSelected
+                          ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200'
+                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                        <span className="truncate">{family.shortName || family.name}</span>
+                      </div>
+                      {isInstalled && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Installed & Active" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </aside>
+
+        {/* Main Workspace Area */}
+        <main className="flex-1 min-w-0 bg-slate-50">
+          {renderWorkspace()}
+        </main>
+      </div>
 
       {/* AI Swarm Auditor Modal */}
       {isAiModalOpen && (
@@ -515,7 +801,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
               <button 
                 onClick={handleRunAiAudit}
                 disabled={aiThinking}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {aiThinking ? (
                   <>
@@ -546,7 +832,7 @@ export const FintechShell: React.FC<FintechShellProps> = ({
           <span className="font-bold text-slate-800">JUMO FINTECH v16.2.0</span>
           <span>•</span>
           <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Double-Entry Parity Certified
+            <CheckCircle2 className="w-3.5 h-3.5" /> Double-Entry Parity Certified ($0.00 offset)
           </span>
         </div>
         <div>
