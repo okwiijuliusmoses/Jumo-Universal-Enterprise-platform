@@ -1,0 +1,35 @@
+{
+  "productId": "JUMO-CHURCH",
+  "productName": "JUMO CHURCH ERP",
+  "verticalParity": {
+    "status": "PASS",
+    "hierarchyLayersPresent": [
+      "Platform Kernel",
+      "Product",
+      "Directorate",
+      "Department",
+      "Office",
+      "Portal",
+      "Module",
+      "Capability",
+      "UI Metadata",
+      "Runtime Component"
+    ],
+    "capabilitiesCount": 5,
+    "uiMetadataCount": 5,
+    "runtimeComponentsCount": 5
+  },
+  "horizontalParity": {
+    "status": "PASS",
+    "forms": 5,
+    "tables": 5,
+    "dashboards": 5,
+    "reports": 5,
+    "workflows": 3,
+    "aiAgents": 3,
+    "actions": 5,
+    "permissions": 5
+  },
+  "overallStatus": "PASS",
+  "completenessScore": 100
+}

@@ -1,0 +1,248 @@
+{
+  "inventory_meta": {
+    "system_version": "v16.2.0-LTS",
+    "timestamp": "2026-08-25T00:00:00Z",
+    "hash_integrity": "SHA256-JUMO-UEOS-PRE-RECONSTRUCTION-INTEGRITY-CONFIRMED",
+    "platform": "JUMO Universal Enterprise Operating System (UEOS)"
+  },
+  "sovereign_products": [
+    {
+      "id": "JUMO-FINTECH",
+      "code": "FINTECH",
+      "name": "JUMO FINTECH",
+      "offices_count": 38,
+      "portals_count": 8,
+      "modules_count": 66,
+      "ai_agents_count": 3,
+      "compliance_status": "COMPLIANT",
+      "directorates": [
+        "DIR_FAAP_TREASURY",
+        "DIR_FAAP_ACCOUNTING",
+        "DIR_FAAP_AUDIT",
+        "DIR_FAAP_BUDGET",
+        "DIR_DP_SWITCH",
+        "DIR_DP_MERCHANT",
+        "DIR_DP_RISK"
+      ],
+      "active_offices": [
+        "OFF_FIN_CFO",
+        "OFF_FIN_LEDGER",
+        "OFF_FIN_TAX",
+        "OFF_FIN_COMPLIANCE",
+        "OFF_FIN_DATA_INT",
+        "OFF_FIN_PAYROLL",
+        "OFF_FIN_SWITCH",
+        "OFF_FIN_MOMO",
+        "OFF_FIN_GATEWAY",
+        "OFF_FIN_COLLECTIONS",
+        "OFF_FIN_PAYOUTS",
+        "OFF_FIN_BANK_PAY",
+        "OFF_FIN_BILLS",
+        "OFF_FIN_STABLECOIN",
+        "OFF_FIN_MERCH_SRV",
+        "OFF_FIN_MERCH_ACQ",
+        "OFF_FIN_CARDS",
+        "OFF_FIN_ATM",
+        "OFF_FIN_DIGI_WALLET",
+        "OFF_FIN_MULTI_CURR",
+        "OFF_FIN_GLOBAL_ACC",
+        "OFF_FIN_CROSS_BORDER",
+        "OFF_FIN_REMITTANCE",
+        "OFF_FIN_FX",
+        "OFF_FIN_TREASURY",
+        "OFF_FIN_AGENT",
+        "OFF_FIN_DIGI_BANK",
+        "OFF_FIN_SAVINGS",
+        "OFF_FIN_MICRO",
+        "OFF_FIN_LENDING",
+        "OFF_FIN_SACCO",
+        "OFF_FIN_EMBEDDED",
+        "OFF_FIN_AGRI",
+        "OFF_FIN_INVEST",
+        "OFF_FIN_CUSTODY",
+        "OFF_FIN_INSURANCE",
+        "OFF_FIN_TRADE",
+        "OFF_FIN_API"
+      ],
+      "gaps_identified": [
+        "Empty capabilities array in ModulePortalRegistry.ts",
+        "Hardcoded string modules mapping in ApprovedProductRegistry.ts instead of unique module IDs"
+      ]
+    },
+    {
+      "id": "JUMO-CHURCH",
+      "code": "CHURCH",
+      "name": "JUMO CHURCH ERP",
+      "offices_count": 19,
+      "portals_count": 6,
+      "modules_count": 50,
+      "ai_agents_count": 3,
+      "compliance_status": "COMPLIANT",
+      "directorates": [
+        "DIR_CH_EPISCOPAL",
+        "DIR_CH_MISSION",
+        "DIR_CH_FINANCE"
+      ],
+      "active_offices": [
+        "OFF_CH_BISHOP",
+        "OFF_CH_SYNOD",
+        "OFF_CH_CHANCELLOR",
+        "OFF_CH_ARCH",
+        "OFF_CH_PARISH",
+        "OFF_CH_SACRAMENTS",
+        "OFF_CH_MEMBERS",
+        "OFF_CH_PASTORAL",
+        "OFF_CH_EVENTS",
+        "OFF_CH_MINISTRIES",
+        "OFF_CH_TREASURY",
+        "OFF_CH_CONTRIB",
+        "OFF_CH_BUDGET",
+        "OFF_CH_PROJECTS",
+        "OFF_CH_PAYROLL",
+        "OFF_CH_CLERGY",
+        "OFF_CH_ASSETS",
+        "OFF_CH_COMM",
+        "OFF_CH_ARCHIVE"
+      ],
+      "gaps_identified": [
+        "Empty capabilities in portals like CH-PORTAL-PARISH-0001",
+        "Sermons and Wedding Registry modules lack customized forms in FormSchemaRegistry.ts"
+      ]
+    },
+    {
+      "id": "JUMO-NURSERY-PRIMARY-ERP",
+      "code": "PRI_EDU",
+      "name": "JUMO NURSERY & PRIMARY ERP",
+      "offices_count": 21,
+      "portals_count": 12,
+      "modules_count": 66,
+      "ai_agents_count": 3,
+      "compliance_status": "COMPLIANT",
+      "directorates": [
+        "DIR_EDU_ACADEMIC",
+        "DIR_EDU_FINANCE",
+        "DIR_EDU_STUDENT",
+        "DIR_EDU_ESTATES"
+      ],
+      "active_offices": [
+        "OFF_PRI_HEAD",
+        "OFF_PRI_SMC",
+        "OFF_PRI_QUALITY",
+        "OFF_PRI_DOS",
+        "OFF_PRI_EXAMS",
+        "OFF_PRI_LIBRARY",
+        "OFF_PRI_TIMETABLE",
+        "OFF_PRI_E_LEARNING",
+        "OFF_PRI_BURSAR",
+        "OFF_PRI_PROCUREMENT",
+        "OFF_PRI_INVENTORY",
+        "OFF_PRI_ADMISSION",
+        "OFF_PRI_RECORDS",
+        "OFF_PRI_HR",
+        "OFF_PRI_COMM",
+        "OFF_PRI_CLINIC",
+        "OFF_PRI_HOSTEL",
+        "OFF_PRI_DISCIPLINE",
+        "OFF_PRI_TRANSPORT",
+        "OFF_PRI_CATERING",
+        "OFF_PRI_SPORTS"
+      ],
+      "gaps_identified": [
+        "Incomplete form schema mapping for Pupil Milestones and ECD learning corners"
+      ]
+    },
+    {
+      "id": "JUMO-SECONDARY-ERP",
+      "code": "SEC_EDU",
+      "name": "JUMO SECONDARY SCHOOL ERP",
+      "offices_count": 22,
+      "portals_count": 8,
+      "modules_count": 66,
+      "ai_agents_count": 3,
+      "compliance_status": "COMPLIANT",
+      "directorates": [
+        "DIR_EDU_ACADEMIC",
+        "DIR_EDU_FINANCE",
+        "DIR_EDU_STUDENT",
+        "DIR_EDU_ESTATES"
+      ],
+      "active_offices": [
+        "OFF_SEC_PRINCIPAL",
+        "OFF_SEC_SENATE",
+        "OFF_SEC_BOG",
+        "OFF_SEC_REGISTRAR",
+        "OFF_SEC_DOS",
+        "OFF_SEC_EXAMS",
+        "OFF_SEC_LABS",
+        "OFF_SEC_LIBRARY",
+        "OFF_SEC_ELEARNING",
+        "OFF_SEC_BURSAR",
+        "OFF_SEC_PROC",
+        "OFF_SEC_STORES",
+        "OFF_SEC_ADMISSIONS",
+        "OFF_SEC_HR",
+        "OFF_SEC_ESTATES",
+        "OFF_SEC_IT",
+        "OFF_SEC_WARDEN",
+        "OFF_SEC_BOARDING",
+        "OFF_SEC_CLINIC",
+        "OFF_SEC_TRANSPORT",
+        "OFF_SEC_CATERING",
+        "OFF_SEC_CLUBS"
+      ],
+      "gaps_identified": [
+        "UNEB indexes and candidate records tables are currently using dynamic mock templates"
+      ]
+    },
+    {
+      "id": "JUMO-ALUMNI",
+      "code": "ALUMNI",
+      "name": "JUMO ALUMNI ASSOCIATION ERP",
+      "offices_count": 12,
+      "portals_count": 12,
+      "modules_count": 50,
+      "ai_agents_count": 5,
+      "compliance_status": "COMPLIANT",
+      "directorates": [
+        "DIR_ALUM_ADVANCEMENT",
+        "DIR_ALUM_GIVING"
+      ],
+      "active_offices": [
+        "OFF_ALUM_DIR",
+        "OFF_ALUM_BOARD",
+        "OFF_ALUM_REGISTRAR",
+        "OFF_ALUM_CHAPTERS",
+        "OFF_ALUM_ENGAGE",
+        "OFF_ALUM_COMM",
+        "OFF_ALUM_FUND",
+        "OFF_ALUM_GIVING",
+        "OFF_ALUM_RECONCILE",
+        "OFF_ALUM_CAREER",
+        "OFF_ALUM_EVENTS",
+        "OFF_ALUM_MERCH"
+      ],
+      "gaps_identified": [
+        "Shared status with JUMO-EDU-ALUMNI creates potential naming collisons in global module registries"
+      ]
+    },
+    {
+      "id": "JUMO-CONTROL",
+      "code": "CTRL",
+      "name": "Sovereign Control Center",
+      "offices_count": 5,
+      "portals_count": 1,
+      "modules_count": 7,
+      "ai_agents_count": 3,
+      "compliance_status": "COMPLIANT",
+      "directorates": [],
+      "active_offices": [
+        "OFF_CTRL_SECURITY",
+        "OFF_CTRL_TENANTS",
+        "OFF_CTRL_AI",
+        "OFF_CTRL_PLATFORMS",
+        "OFF_CTRL_CLOUD"
+      ],
+      "gaps_identified": []
+    }
+  ]
+}

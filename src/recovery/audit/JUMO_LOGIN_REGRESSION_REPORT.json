@@ -1,0 +1,55 @@
+{
+  "reportType": "LOGIN_REGRESSION_REPORT",
+  "generatedAt": "2026-08-25T16:57:37.726Z",
+  "routesTested": [
+    {
+      "route": "/products/fintech/login",
+      "username": "fintech.admin",
+      "product": "JUMO-FINTECH",
+      "status": "PASS",
+      "portalId": "FAAP-PORTAL-CFO-0001",
+      "error": null
+    },
+    {
+      "route": "/products/nursery-primary/login",
+      "username": "np.headteacher",
+      "product": "JUMO-NURSERY-PRIMARY-ERP",
+      "status": "PASS",
+      "portalId": "EDU-PORTAL-ADMIN-0001",
+      "error": null
+    },
+    {
+      "route": "/products/secondary/login",
+      "username": "sec.headteacher",
+      "product": "JUMO-SECONDARY-ERP",
+      "status": "PASS",
+      "portalId": "EDU-PORTAL-ADMIN-0001",
+      "error": null
+    },
+    {
+      "route": "/products/alumni/login",
+      "username": "alumni.president",
+      "product": "JUMO-ALUMNI",
+      "status": "PASS",
+      "portalId": "EDU-PORTAL-ADMIN-0001",
+      "error": null
+    },
+    {
+      "route": "/products/church/login",
+      "username": "bishop.admin",
+      "product": "JUMO-CHURCH",
+      "status": "PASS",
+      "portalId": "CH-PORTAL-BISHOP-0001",
+      "error": null
+    },
+    {
+      "route": "/products/owners-control-center/login",
+      "username": "sovereign.owner",
+      "product": "JUMO-CONTROL",
+      "status": "PASS",
+      "portalId": "FAAP-PORTAL-CONTROLLER-0001",
+      "error": null
+    }
+  ],
+  "allRoutesPassing": true
+}

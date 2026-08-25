@@ -1,0 +1,43 @@
+{
+  "auditType": "LOGIN_REGRESSION_AUDIT",
+  "generatedAt": "2026-08-25T05:14:00.000Z",
+  "routesTested": [
+    {
+      "route": "/products/fintech/login",
+      "username": "fintech.admin",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "route": "/products/nursery-primary/login",
+      "username": "np.headteacher",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "route": "/products/secondary/login",
+      "username": "sec.headteacher",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "route": "/products/alumni/login",
+      "username": "alumni.president",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "route": "/products/church/login",
+      "username": "bishop.admin",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "route": "/products/owners-control-center/login",
+      "username": "sovereign.owner",
+      "status": "PASS",
+      "error": null
+    }
+  ],
+  "allRoutesPassing": true
+}

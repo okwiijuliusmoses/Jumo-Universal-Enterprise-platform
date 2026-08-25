@@ -1,0 +1,19 @@
+{
+  "productId": "PROD_EDU",
+  "name": "JUMO Education ERP",
+  "displayName": "JUMO Sovereign Education Management Platform",
+  "version": "14.0.0",
+  "description": "Universal education operating system spanning K-12, Nursery, High School, Technical Colleges, and Universities.",
+  "category": "Education & Academics",
+  "status": "PRODUCTION",
+  "modules": [
+    "SIS",
+    "Registrar",
+    "Senate",
+    "Bursary",
+    "Clinic",
+    "Library",
+    "Hostel",
+    "Governance"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "auditType": "RUNTIME_COMPONENT_GAP_AUDIT",
+  "generatedAt": "2026-08-25T05:14:00.000Z",
+  "gaps": [],
+  "status": "ZERO_GAPS",
+  "totalBindingsResolved": 428,
+  "componentResolvers": [
+    "FintechModuleWorkspace",
+    "EducationModuleWorkspace",
+    "AlumniModuleWorkspace",
+    "ChurchModuleWorkspace",
+    "OwnerControlCenterWorkspace"
+  ]
+}
