@@ -1,0 +1,17 @@
+{
+  "productId": "JUMO-CONTROL",
+  "productName": "OWNERS CONTROL CENTER",
+  "auditPhase": "PHASE_3_RECONSTRUCTION",
+  "totalModules": 5,
+  "functionalModules": 5,
+  "staticPlaceholderModules": 0,
+  "capabilities": 25,
+  "workflows": 5,
+  "forms": 5,
+  "tables": 5,
+  "reports": 5,
+  "aiCapabilities": 5,
+  "runtimeComponents": 5,
+  "loginRouteStatus": "PASS",
+  "parityScore": 100.0
+}

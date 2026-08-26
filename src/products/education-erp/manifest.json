@@ -1,0 +1,28 @@
+{
+  "productIdentity": {
+    "productId": "PROD_EDU",
+    "name": "JUMO Education ERP",
+    "version": "1.0.4",
+    "type": "STANDALONE_ERP",
+    "tagline": "Universal Academic & Campus Operating System",
+    "author": "JUMO Software Ltd"
+  },
+  "runtime": {
+    "nodeVersion": ">=18.0.0",
+    "database": "PostgreSQL 14+ / Cloud SQL / Local Storage",
+    "pwaSupport": true
+  },
+  "offices": [
+    { "id": "OFF_EDU_ADM", "label": "Office of Admissions & Student Registry" },
+    { "id": "OFF_EDU_ACAD", "label": "Directorate of Academic Affairs & Exams" },
+    { "id": "OFF_EDU_BURS", "label": "University Bursary & Fee Billing Desk" },
+    { "id": "OFF_EDU_FAC", "label": "Faculty & Departmental Workspaces" },
+    { "id": "OFF_EDU_PORTAL", "label": "Student, Teacher & Parent Portals" },
+    { "id": "OFF_EDU_WELFARE", "label": "Accommodation, Library & Welfare" }
+  ],
+  "installationHooks": {
+    "migration": "npm run db:migrate",
+    "seed": "npm run db:seed:education",
+    "healthCheck": "/api/education-erp/health"
+  }
+}

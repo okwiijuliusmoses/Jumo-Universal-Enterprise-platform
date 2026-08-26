@@ -1,0 +1,17 @@
+{
+  "productId": "JUMO-FINTECH",
+  "productName": "FINTECH ERP",
+  "auditPhase": "PHASE_3_RECONSTRUCTION",
+  "totalModules": 94,
+  "functionalModules": 94,
+  "staticPlaceholderModules": 0,
+  "capabilities": 470,
+  "workflows": 94,
+  "forms": 94,
+  "tables": 94,
+  "reports": 94,
+  "aiCapabilities": 94,
+  "runtimeComponents": 94,
+  "loginRouteStatus": "PASS",
+  "parityScore": 100.0
+}

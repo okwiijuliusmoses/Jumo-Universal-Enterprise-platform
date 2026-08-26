@@ -1,0 +1,610 @@
+[
+  {
+    "product": "JUMO-FINTECH",
+    "office": "Treasury & Finance Office",
+    "portal": "FAAP General Ledger & Accounting",
+    "module": "General Ledger (FAAP)",
+    "submodules": [
+      "Chart of Accounts",
+      "Universal Journal Posting",
+      "Ledger Parity Engine",
+      "Vote Book Encumbrance",
+      "Cash & Bank Books",
+      "Trial Balance & Financial Statements"
+    ],
+    "capabilities": [
+      "Real-time double-entry debit/credit balance recalculation",
+      "1.5% Global Settlement Clearing Fee automated debit/credit routing",
+      "Zero-offset ($0.00) ledger balance parity audit enforcement",
+      "Multi-currency account support with automated FX gain/loss adjustments",
+      "Encumbrance-based vote book budget availability checking"
+    ],
+    "components": [
+      "FaapControllerWorkspace",
+      "UniversalFintechFamilyWorkspace",
+      "FaapService"
+    ],
+    "domainService": "src/products/faap/domain/FaapService.ts",
+    "repository": "LedgerRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "MTN MoMo API",
+      "Airtel Money",
+      "Bank Payment Switch",
+      "Universal Clearing Fee Engine"
+    ],
+    "benchmarkSources": [
+      "QuickBooks Enterprise Accounting",
+      "SchoolPay Ledger Framework",
+      "FAAP Universal Accounting Standard"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/faap/domain/FaapService.ts",
+      "src/repositories/repositories.ts",
+      "src/database/db.ts",
+      "src/products/fintech/financial-accounting/web/FaapControllerWorkspace.tsx"
+    ]
+  },
+  {
+    "product": "JUMO-FINTECH",
+    "office": "Payments & Clearing House Office",
+    "portal": "Universal Payment Switching",
+    "module": "Universal Payment Switch",
+    "submodules": [
+      "Transaction Routing",
+      "1.5% Settlement Clearing Fee Engine",
+      "Mobile Money Gateway",
+      "PRN Payment Collections",
+      "Bulk Disbursements & Payouts"
+    ],
+    "capabilities": [
+      "Unified multi-channel payment authorization (Mobile Money, Card, EFT)",
+      "Automated 1.5% platform settlement fee calculation and treasury debiting",
+      "PRN payment reference generation and instant webhooks",
+      "Batch disbursement pipeline with multi-signatory approval"
+    ],
+    "components": [
+      "UniversalFintechFamilyWorkspace",
+      "FintechOffices",
+      "PaymentSwitchingWorkspace"
+    ],
+    "domainService": "src/products/fintech/domain/FintechService.ts",
+    "repository": "AuditLogRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "MTN MoMo API",
+      "Airtel Money",
+      "Visa/Mastercard Gateway",
+      "EFT Clearing House"
+    ],
+    "benchmarkSources": [
+      "Interswitch Switch Architecture",
+      "SchoolPay Payment Engine",
+      "ISO 20022 Financial Messaging"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/fintech/UniversalFintechFamilyWorkspace.tsx",
+      "src/products/fintech/web/portals/FintechOffices.tsx",
+      "src/database/enterprise_extensions.ts"
+    ]
+  },
+  {
+    "product": "JUMO-FINTECH",
+    "office": "Dealing Desk & International Banking Office",
+    "portal": "Foreign Exchange & Treasury",
+    "module": "FX & Dealing Desk",
+    "submodules": [
+      "Currency Rate Feeds",
+      "Foreign Currency Position Engine",
+      "Cross-Border Remittances",
+      "Settlement Hedging"
+    ],
+    "capabilities": [
+      "Real-time exchange rate quotes (UGX, USD, EUR, GBP, KES, TZS)",
+      "Automated currency spread and commission calculations",
+      "Foreign currency balance revaluation and gain/loss ledger postings"
+    ],
+    "components": [
+      "FxWorkspace",
+      "FintechOffices"
+    ],
+    "domainService": "src/products/fintech/domain/FintechService.ts",
+    "repository": "LedgerRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "Central Bank FX Feeds",
+      "SWIFT Network Adapter",
+      "FAAP Currency Ledger"
+    ],
+    "benchmarkSources": [
+      "Reuters Dealing Desk",
+      "SWIFT FX Standards"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/fintech/fx/web/FxWorkspace.tsx",
+      "src/products/faap/domain/FaapService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-FINTECH",
+    "office": "Lending & Microfinance Office",
+    "portal": "SACCO & Microfinance Core",
+    "module": "SACCO & Credit Underwriting",
+    "submodules": [
+      "Joint Liability Group (JLG) Management",
+      "Loan Application & Credit Scoring",
+      "Repayment Schedule Generator",
+      "Savings & Share Capital Registry"
+    ],
+    "capabilities": [
+      "Predictive credit scoring based on historic transaction flows",
+      "Automated loan repayment schedule calculation (flat vs. reducing balance)",
+      "Share capital contribution tracking and dividend distribution calculations"
+    ],
+    "components": [
+      "SaccoWorkspace",
+      "LendingWorkspace"
+    ],
+    "domainService": "src/products/fintech/domain/FintechService.ts",
+    "repository": "UserRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "Credit Reference Bureau (CRB)",
+      "FAAP Loan Portfolio Ledger"
+    ],
+    "benchmarkSources": [
+      "Mambu Core Banking",
+      "Uganda Microfinance Regulatory Authority (UMRA)"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/fintech/sacco/web/SaccoWorkspace.tsx",
+      "src/products/fintech/lending/web/LendingWorkspace.tsx"
+    ]
+  },
+  {
+    "product": "JUMO-NURSERY-PRIMARY-ERP",
+    "office": "Head Teacher & Executive Directorate",
+    "portal": "Primary Executive Governance & Directives",
+    "module": "Primary Executive Governance",
+    "submodules": [
+      "Executive Directives Engine",
+      "SMC Policy Approval",
+      "Staff Oversight",
+      "School Operational Metrics"
+    ],
+    "capabilities": [
+      "Issue binding executive directives with workflow state enforcement",
+      "School Management Committee (SMC) meeting resolution tracking",
+      "Multi-role administrative signature verification"
+    ],
+    "components": [
+      "NurseryPrimaryExecutiveWorkspace",
+      "NurseryPrimaryService"
+    ],
+    "domainService": "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts",
+    "repository": "WorkflowRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "AuditLogRepository",
+      "FAAP Executive Ledger"
+    ],
+    "benchmarkSources": [
+      "Hillside Naalya Primary Governance Standard",
+      "Ministry of Education & Sports (MoES) Primary Guidelines"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts",
+      "src/repositories/repositories.ts"
+    ]
+  },
+  {
+    "product": "JUMO-NURSERY-PRIMARY-ERP",
+    "office": "Director of Studies (DOS) & Timetabling Office",
+    "portal": "Timetabling & PLE Academic Center",
+    "module": "Primary Timetabling & PLE Marksheet Engine",
+    "submodules": [
+      "40-Cell Weekly Timetable Matrix",
+      "Conflict & Double-Booking Collision Detector",
+      "Teacher Substitution Engine",
+      "PLE Continuous Assessment & Aggregate Calculator"
+    ],
+    "capabilities": [
+      "40-period weekly master timetable generation across P.1 to P.7 streams",
+      "Real-time collision detection for teacher double-booking, room overlap, and stream constraints",
+      "Teacher absence handling and temporary substitute assignment",
+      "PLE aggregate calculation (4 to 36) and UNEB Division 1-4 classification"
+    ],
+    "components": [
+      "NurseryPrimaryDosWorkspace",
+      "NurseryPrimaryService"
+    ],
+    "domainService": "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts",
+    "repository": "WorkflowRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "UNEB PLE Examination Portal",
+      "SchoolPay Academic Transcripts"
+    ],
+    "benchmarkSources": [
+      "UNEB PLE Grading Scale",
+      "Hillside Naalya Master Timetable Standard"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-NURSERY-PRIMARY-ERP",
+    "office": "Bursar & Revenue Office",
+    "portal": "SchoolPay Fees & Bursar Finance",
+    "module": "Primary Bursar & SchoolPay Integration",
+    "submodules": [
+      "Student Fee Billing & Invoicing",
+      "SchoolPay Payment Collection & Verification",
+      "Tuition Receipt Generation",
+      "FAAP Ledger Auto-Posting"
+    ],
+    "capabilities": [
+      "SchoolPay code generation and payment matching (MTN/Airtel/Bank)",
+      "Automated FAAP revenue posting upon fee collection",
+      "Arrears and partial payment balance tracking"
+    ],
+    "components": [
+      "NurseryPrimaryBursarWorkspace",
+      "FaapService"
+    ],
+    "domainService": "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts",
+    "repository": "LedgerRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "SchoolPay Payment Switch",
+      "FAAP General Ledger"
+    ],
+    "benchmarkSources": [
+      "SchoolPay Uganda Platform",
+      "Hillside Naalya Fees Structure"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/nursery-primary-erp/domain/NurseryPrimaryService.ts",
+      "src/products/faap/domain/FaapService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-SECONDARY-ERP",
+    "office": "Principal Office & Secondary Senate",
+    "portal": "Secondary School Senate & Academic Governance",
+    "module": "Secondary Principal Governance",
+    "submodules": [
+      "Academic Senate Resolutions",
+      "Staff Appointments & Performance",
+      "School Policy Enforcement",
+      "Institutional Budget Approval"
+    ],
+    "capabilities": [
+      "Senate resolution tracking with multi-signatory workflow approvals",
+      "Departmental budget approval and vote book allocation",
+      "Institutional performance dashboard and enrollment analytics"
+    ],
+    "components": [
+      "SecondaryGovernanceWorkspace",
+      "SecondaryService"
+    ],
+    "domainService": "src/products/secondary-erp/domain/SecondaryService.ts",
+    "repository": "WorkflowRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "FAAP Ledger",
+      "AuditLogRepository"
+    ],
+    "benchmarkSources": [
+      "St. Lawrence Academy Governance Framework",
+      "Ministry of Education Secondary Standards"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/secondary-erp/domain/SecondaryService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-SECONDARY-ERP",
+    "office": "Registrar & UNEB Center Office",
+    "portal": "Registrar & UNEB Center Administration",
+    "module": "Registrar SIS & UNEB Candidate Center",
+    "submodules": [
+      "UCE Candidate Registration",
+      "UACE Candidate Registration",
+      "UNEB Index Number Assignment",
+      "Transcripts & Result Slip Generator"
+    ],
+    "capabilities": [
+      "Registration of UCE and UACE candidates with official UNEB index numbers",
+      "UACE 20-point tally calculation (A-Level principal points + GP/Sub-Math)",
+      "Official NCDC / UNEB format transcript generation"
+    ],
+    "components": [
+      "SecondaryRegistrarWorkspace",
+      "SecondaryService"
+    ],
+    "domainService": "src/products/secondary-erp/domain/SecondaryService.ts",
+    "repository": "UserRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "UNEB e-Registration Portal",
+      "NCDC Curriculum Engine"
+    ],
+    "benchmarkSources": [
+      "UNEB UCE & UACE Grading Guidelines",
+      "St. Lawrence Academy UNEB Center Standard"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/secondary-erp/domain/SecondaryService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-SECONDARY-ERP",
+    "office": "DOS & Science Department",
+    "portal": "A-Level Subject Combinations & Science Labs",
+    "module": "A-Level Subject Combinations & Science Labs Engine",
+    "submodules": [
+      "Subject Combination Rule Validator",
+      "Science Laboratory Inventory & Reagents",
+      "E15 UNEB Practical Lab Reagent Stocking",
+      "Laboratory Safety Audit"
+    ],
+    "capabilities": [
+      "Automated validation of A-Level combinations (e.g. PCM/M, PCB/Sub-M) against O-Level prerequisites",
+      "Science lab chemical and reagent stock depletion tracking (Chemistry, Physics, Biology)",
+      "UNEB E15 practical examination reagent preparation lists"
+    ],
+    "components": [
+      "SecondaryDosWorkspace",
+      "SecondaryService"
+    ],
+    "domainService": "src/products/secondary-erp/domain/SecondaryService.ts",
+    "repository": "WorkflowRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "UNEB Science Practical Center",
+      "FAAP Store Inventory Ledger"
+    ],
+    "benchmarkSources": [
+      "UNEB Science Practical Requirements E15",
+      "NCDC A-Level Combination Matrix"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/secondary-erp/domain/SecondaryService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-CHURCH",
+    "office": "Diocesan Secretariat & Bishop Office",
+    "portal": "Diocese & Synod Command Center",
+    "module": "Diocesan Secretariat & Synod Engine",
+    "submodules": [
+      "Diocesan Synod Resolutions",
+      "Bishop Pastoral Directives",
+      "Clergy Deployment & Transfer Registry",
+      "Parish Quota Assessment & Remittances"
+    ],
+    "capabilities": [
+      "Diocesan synod resolution registration and status tracking",
+      "Bishop pastoral directives distribution to all constituent parishes",
+      "Clergy appointment, transfer, and canonical status management"
+    ],
+    "components": [
+      "ChurchDioceseWorkspace",
+      "ArchbishopCommandDashboard",
+      "ChurchService"
+    ],
+    "domainService": "src/products/church-erp/domain/ChurchService.ts",
+    "repository": "UserRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "FAAP Diocesan Treasury Ledger",
+      "AuditLogRepository"
+    ],
+    "benchmarkSources": [
+      "Church of Uganda Provincial Constitution",
+      "Diocesan Administration Manual"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/church-erp/domain/ChurchService.ts",
+      "src/components/domain-runtime/ArchbishopCommandDashboard.tsx"
+    ]
+  },
+  {
+    "product": "JUMO-CHURCH",
+    "office": "Parish Office & Ministry",
+    "portal": "Parish & Sacramental Registers",
+    "module": "Sacramental Registers & Parish Stewardship",
+    "submodules": [
+      "Baptismal Register & Certificate Generator",
+      "Confirmation & Holy Matrimony Registry",
+      "Burial & Memorial Register",
+      "Tithe & Envelope Stewardship Posting to FAAP",
+      "Pastoral Care & Counseling Requests"
+    ],
+    "capabilities": [
+      "Digital sacramental registration (Baptism, Confirmation, Matrimony, Burial) with unique certificate numbers",
+      "Automated posting of Tithe and Offering envelopes directly to FAAP ledger",
+      "Pastoral care and counseling request workflow processing",
+      "Welfare assistance request review and FAAP disbursement posting"
+    ],
+    "components": [
+      "ChurchParishWorkspace",
+      "ChurchDepartments",
+      "ChurchService"
+    ],
+    "domainService": "src/products/church-erp/domain/ChurchService.ts",
+    "repository": "LedgerRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "FAAP Cashbook & Bank Ledger",
+      "Church Pay Mobile Money"
+    ],
+    "benchmarkSources": [
+      "Anglican / Catholic Canonical Registry Standards",
+      "Church of Uganda Parish Accounting System"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/church-erp/domain/ChurchService.ts",
+      "src/components/domain-runtime/ChurchDepartments.tsx"
+    ]
+  },
+  {
+    "product": "JUMO-ALUMNI",
+    "office": "Institutional Advancement & Alumni Office",
+    "portal": "Alumni Census & Global Chapters Network",
+    "module": "Graduate Registry & Regional Chapters",
+    "submodules": [
+      "Graduate Census & Life Membership Registry",
+      "Global Regional Chapters Network (Kampala, UK, US)",
+      "Career Mentorship & Job Matching Engine",
+      "Reunion & Homecoming Events Hub"
+    ],
+    "capabilities": [
+      "Global graduate directory search and life membership status tracking",
+      "Regional chapter leader assignment and member aggregation",
+      "Mentorship matching request workflow between alumni and current students"
+    ],
+    "components": [
+      "AlumniRegistryWorkspace",
+      "AlumniChaptersWorkspace",
+      "AlumniService"
+    ],
+    "domainService": "src/products/alumni-erp/domain/AlumniService.ts",
+    "repository": "UserRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "Alumni Community Portal",
+      "FAAP Endowment Ledger"
+    ],
+    "benchmarkSources": [
+      "CASE Advancement Standards",
+      "Makerere University / Budo Alumni Association Framework"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/alumni-erp/domain/AlumniService.ts"
+    ]
+  },
+  {
+    "product": "JUMO-ALUMNI",
+    "office": "Endowment & Capital Campaigns Office",
+    "portal": "Endowments & Annual Giving Platform",
+    "module": "Endowment Campaigns & Capital Giving",
+    "submodules": [
+      "Capital Campaign Fund Registry",
+      "Alumni Donation Recording",
+      "FAAP Endowment Capital Ledger Integration",
+      "Donor Stewardship & Tax Receipt Generator"
+    ],
+    "capabilities": [
+      "Capital campaign contribution recording with instant receipt generation",
+      "Automated FAAP journal posting to Endowment Capital Ledger (Credit 3010 / Debit 1010)",
+      "Pledge fulfillment tracking and donor recognition tiers"
+    ],
+    "components": [
+      "AlumniGivingWorkspace",
+      "AlumniService",
+      "FaapService"
+    ],
+    "domainService": "src/products/alumni-erp/domain/AlumniService.ts",
+    "repository": "LedgerRepository",
+    "persistence": true,
+    "workflow": true,
+    "rbac": true,
+    "audit": true,
+    "reports": true,
+    "documents": true,
+    "integrations": [
+      "FAAP General Ledger",
+      "Credit Card / Mobile Money Gateway"
+    ],
+    "benchmarkSources": [
+      "CASE Endowment Management Framework",
+      "FAAP Capital Accounting Standard"
+    ],
+    "implementationStatus": "Production Operational",
+    "evidence": [
+      "src/products/alumni-erp/domain/AlumniService.ts",
+      "src/products/faap/domain/FaapService.ts"
+    ]
+  }
+]

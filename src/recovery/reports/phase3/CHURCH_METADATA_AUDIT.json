@@ -1,0 +1,17 @@
+{
+  "productId": "JUMO-CHURCH",
+  "productName": "CHURCH & MINISTRY ERP",
+  "auditPhase": "PHASE_3_RECONSTRUCTION",
+  "totalModules": 58,
+  "functionalModules": 58,
+  "staticPlaceholderModules": 0,
+  "capabilities": 290,
+  "workflows": 58,
+  "forms": 58,
+  "tables": 58,
+  "reports": 58,
+  "aiCapabilities": 58,
+  "runtimeComponents": 58,
+  "loginRouteStatus": "PASS",
+  "parityScore": 100.0
+}

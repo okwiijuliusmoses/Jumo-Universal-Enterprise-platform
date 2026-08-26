@@ -1,0 +1,2 @@
+export const OWNER_VERIFICATION_MODE = true;
+export const MANUFACTURING_VERIFICATION_ENABLED = true;

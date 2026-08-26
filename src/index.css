@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@keyframes mobileFadeIn {
+  from {
+    opacity: 0.2;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobileSlideLeft {
+  from {
+    opacity: 0.3;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes mobileSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-view-transition {
+  animation: mobileSlideLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mobile-tab-transition {
+  animation: mobileFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mobile-sheet-transition {
+  animation: mobileSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
