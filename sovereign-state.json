@@ -109,46 +109,60 @@
   ],
   "auditEvents": [
     {
+      "id": "AUD-00008",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T15:03:46.438Z"
+    },
+    {
+      "id": "AUD-00007",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T15:00:22.443Z"
+    },
+    {
       "id": "AUD-00006",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:58:46.452Z"
+      "timestamp": "2026-08-26T14:59:39.187Z"
     },
     {
       "id": "AUD-00005",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:30:54.890Z"
+      "timestamp": "2026-08-26T14:52:47.918Z"
     },
     {
       "id": "AUD-00004",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:28:19.265Z"
+      "timestamp": "2026-08-26T14:50:54.133Z"
     },
     {
       "id": "AUD-00003",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:22:37.294Z"
+      "timestamp": "2026-08-26T14:47:04.575Z"
     },
     {
       "id": "AUD-00002",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:16:13.870Z"
+      "timestamp": "2026-08-26T14:41:29.767Z"
     },
     {
       "id": "AUD-00001",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
       "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
-      "timestamp": "2026-08-26T12:15:58.750Z"
+      "timestamp": "2026-08-26T14:39:10.514Z"
     }
   ],
   "verificationGates": [],
@@ -164,7 +178,7 @@
   "migrations": [],
   "assets": [],
   "counters": {
-    "audit": 7,
+    "audit": 9,
     "archReq": 1,
     "archContract": 1,
     "job": 1,

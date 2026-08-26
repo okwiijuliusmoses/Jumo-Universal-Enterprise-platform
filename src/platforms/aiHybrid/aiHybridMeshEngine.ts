@@ -42,7 +42,7 @@ export class AIHybridMeshEngine {
         id: "rag-pay-03",
         domain: "SECURITY_ANOMALY_DETECTOR",
         title: "Universal Switch 1.5% Fee Split & Anti-Structuring Policy",
-        content: "All high-velocity transactions exceeding UGX 10,000,000 within 5 minutes trigger automated compliance hold and four-eyes review.",
+        content: "All high-velocity transactions exceeding statutory thresholds trigger automated compliance hold and four-eyes review.",
         vectorEmbeddingId: "VEC-AML-0092",
         statutoryCategory: "AML_COMPLIANCE",
       },
@@ -69,10 +69,10 @@ export class AIHybridMeshEngine {
     let generatedContent = "";
     switch (request.domain) {
       case "FAAP_FINANCIAL_FORENSICS":
-        generatedContent = `[FAAP FORENSICS COGNITIVE ASSISTANT] Analysis of transaction payload: Chart of accounts validated. Debits and credits balance to zero parity (0.00 UGX discrepancy). Vote Book commitment threshold is within statutory limits.`;
+        generatedContent = `[FAAP FORENSICS COGNITIVE ASSISTANT] Analysis of transaction payload: Chart of accounts validated. Debits and credits balance to zero parity. Vote Book commitment threshold is within statutory limits.`;
         break;
       case "SACCO_CREDIT_SCORING":
-        generatedContent = `[SACCO CREDIT AI] Loan appraisal completed: Member savings balance UGX 15,000,000 supports maximum credit exposure of UGX 45,000,000. Risk grade: LOW (Default probability 1.4%).`;
+        generatedContent = `[SACCO CREDIT AI] Loan appraisal completed: Member savings balance supports maximum credit exposure according to statutory guidelines. Risk grade: LOW (Default probability calculated).`;
         break;
       case "SECURITY_ANOMALY_DETECTOR":
         generatedContent = `[AEGIS ANOMALY AI] Zero-trust transaction telemetry analyzed. No behavioral anomalies or rapid succession bursts detected. Clearance verified.`;

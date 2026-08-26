@@ -8,6 +8,8 @@ import { ChurchFaithApplicationShell } from "./experience/renderer/shells/Church
 import { AlumniCommunityApplicationShell } from "./experience/renderer/shells/AlumniCommunityApplicationShell";
 import { UEOSShell } from "./experience/shell/UEOSShell";
 
+import { SovereignPlatformShell } from "./experience/renderer/shells/SovereignPlatformShell";
+
 export default function App() {
   const [currentUser, setCurrentUser] = useState<any>(() => {
     if (typeof window !== "undefined") {
@@ -52,7 +54,11 @@ export default function App() {
     return <PublicGateway onLoginSuccess={handleLogin} />;
   }
 
-  // Direct Routing for Product Independence
+  // ---------------------------------------------------------
+  // DIRECT SOVEREIGN ROUTING (Bypasses Hub/Launcher)
+  // ---------------------------------------------------------
+
+  // 1. Sovereign Commercial Products
   if (path === "/fintech") {
     return <FintechApplicationShell onBack={() => navigate("/")} />;
   }
@@ -70,6 +76,22 @@ export default function App() {
   }
   if (path === "/alumni") {
     return <AlumniCommunityApplicationShell onBack={() => navigate("/")} />;
+  }
+
+  // 2. Sovereign Shared Platforms
+  const platforms = [
+    "/faap", 
+    "/digital-pay", 
+    "/aegis", 
+    "/treasury", 
+    "/digital-auditor", 
+    "/ai-hybrid", 
+    "/workflow", 
+    "/cloud"
+  ];
+  
+  if (platforms.includes(path)) {
+    return <SovereignPlatformShell platformId={path.slice(1)} onBack={() => navigate("/")} />;
   }
 
   // Fallback to the Hub/Shell (Launcher)

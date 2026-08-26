@@ -1,6 +1,6 @@
 {
-  "name": "JUMO UEOS Sovereign Command",
-  "description": "National-scale sovereign enterprise operating platform for JUMO Universal Enterprise Operating System (UEOS), executing 6 sovereign commercial ERP products and 8 independent shared infrastructure platforms.",
+  "name": "JUMO Sovereign Enterprise Platform",
+  "description": "Sovereign enterprise operating platform for JUMO Universal Enterprise Operating System (UEOS), executing 6 independent commercial products and 8 shared infrastructure platforms.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

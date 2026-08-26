@@ -114,11 +114,11 @@ export class FAAPEnterpriseEngine {
    */
   private seedVoteBookRegistry() {
     const votes: Array<{ code: string; dept: string; desc: string; budget: number }> = [
-      { code: "VOTE-101", dept: "Academic Affairs", desc: "Instructional & Exam Materials", budget: 150000000 },
-      { code: "VOTE-102", dept: "Science & ICT", desc: "Laboratory Reagents & Computing", budget: 85000000 },
-      { code: "VOTE-103", dept: "Estates & Logistics", desc: "Campus Maintenance & Fleet Fuel", budget: 60000000 },
-      { code: "VOTE-104", dept: "Health & Clinic", desc: "Infirmary Pharmaceuticals & First Aid", budget: 35000000 },
-      { code: "VOTE-105", dept: "Human Capital", desc: "Staff Training & Development", budget: 45000000 },
+      { code: "VOTE-101", dept: "Directorate Alpha", desc: "Operational Expenditure", budget: 0 },
+      { code: "VOTE-102", dept: "Directorate Beta", desc: "Strategic Development", budget: 0 },
+      { code: "VOTE-103", dept: "Directorate Gamma", desc: "Sovereign Infrastructure", budget: 0 },
+      { code: "VOTE-104", dept: "Directorate Delta", desc: "Cognitive Operations", budget: 0 },
+      { code: "VOTE-105", dept: "Directorate Epsilon", desc: "Governance & Compliance", budget: 0 },
     ];
 
     votes.forEach(v => {

@@ -140,23 +140,27 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
             {[
-              { name: "FAAP", icon: DollarSign, color: "bg-emerald-100 text-emerald-700" },
-              { name: "Pay", icon: CreditCard, color: "bg-blue-100 text-blue-700" },
-              { name: "Aegis", icon: Lock, color: "bg-rose-100 text-rose-700" },
-              { name: "Treasury", icon: Landmark, color: "bg-amber-100 text-amber-700" },
-              { name: "Audit", icon: ShieldCheck, color: "bg-teal-100 text-teal-700" },
-              { name: "AI Mesh", icon: BrainCircuit, color: "bg-purple-100 text-purple-700" },
-              { name: "Workflow", icon: Workflow, color: "bg-sky-100 text-sky-700" },
-              { name: "Cloud", icon: Cloud, color: "bg-slate-200 text-slate-600" }
+              { name: "FAAP", id: "faap", icon: DollarSign, color: "bg-emerald-100 text-emerald-700" },
+              { name: "Pay", id: "digital-pay", icon: CreditCard, color: "bg-blue-100 text-blue-700" },
+              { name: "Aegis", id: "aegis", icon: Lock, color: "bg-rose-100 text-rose-700" },
+              { name: "Treasury", id: "treasury", icon: Landmark, color: "bg-amber-100 text-amber-700" },
+              { name: "Audit", id: "digital-auditor", icon: ShieldCheck, color: "bg-teal-100 text-teal-700" },
+              { name: "AI Mesh", id: "ai-hybrid", icon: BrainCircuit, color: "bg-purple-100 text-purple-700" },
+              { name: "Workflow", id: "workflow", icon: Workflow, color: "bg-sky-100 text-sky-700" },
+              { name: "Cloud", id: "cloud", icon: Cloud, color: "bg-slate-200 text-slate-600" }
             ].map(plat => {
               const PlatIcon = plat.icon;
               return (
-                <div key={plat.name} className="flex flex-col items-center gap-2 group">
-                  <div className={`w-12 h-12 ${plat.color} rounded-2xl flex items-center justify-center transition-transform group-hover:-translate-y-1`}>
+                <button 
+                  key={plat.name} 
+                  onClick={() => navigateTo(`/${plat.id}`)}
+                  className="flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                >
+                  <div className={`w-12 h-12 ${plat.color} rounded-2xl flex items-center justify-center transition-transform group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-current/20`}>
                     <PlatIcon className="w-5 h-5" />
                   </div>
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{plat.name}</span>
-                </div>
+                </button>
               );
             })}
           </div>
