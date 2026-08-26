@@ -1,12 +1,12 @@
 import { 
   ArchitectureContract, 
-  ManufacturingJob, 
-  ManufacturingJobStatus, 
+  ProvisioningJob, 
+  ProvisioningJobStatus, 
   BuildArtifact,
   DeploymentRecord,
   VerificationFailureRecord,
   CertificationRecord,
-  ManufacturingCategory
+  ProvisioningCategory
 } from "../../core/runtime/sovereignState.types";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 
@@ -34,7 +34,7 @@ export class SovereignGovernanceRegistry {
   private static instance: SovereignGovernanceRegistry;
   
   private blueprints: Map<string, ArchitectureContract> = new Map();
-  private manufacturingJobs: Map<string, ManufacturingJob> = new Map();
+  private provisioningJobs: Map<string, ProvisioningJob> = new Map();
   private products: Map<string, any> = new Map();
   private verifications: Map<string, any> = new Map();
   private certifications: Map<string, CertificationRecord> = new Map();
@@ -119,16 +119,16 @@ export class SovereignGovernanceRegistry {
   }
 
   // --- Provisioning Jobs ---
-  public registerJob(job: ManufacturingJob) {
-    this.manufacturingJobs.set(job.id, job);
+  public registerJob(job: ProvisioningJob) {
+    this.provisioningJobs.set(job.id, job);
     this.addLedgerEntry("Job Registered", "PROVISIONING", `Job ${job.id} registered.`);
   }
 
-  public createManufacturingJob(blueprintId: string, ecosystem: ManufacturingCategory): ManufacturingJob {
+  public createProvisioningJob(blueprintId: string, ecosystem: ProvisioningCategory): ProvisioningJob {
     const blueprint = this.blueprints.get(blueprintId);
     if (!blueprint) throw new Error("Blueprint not found");
 
-    const job: ManufacturingJob = {
+    const job: ProvisioningJob = {
       id: `JOB-${Date.now()}`,
       architectureId: blueprintId,
       productId: blueprint.specificationId,
@@ -146,25 +146,25 @@ export class SovereignGovernanceRegistry {
       updatedAt: new Date().toISOString(),
     };
 
-    this.manufacturingJobs.set(job.id, job);
+    this.provisioningJobs.set(job.id, job);
     this.addLedgerEntry("Provisioning Job Created", "PROVISIONING", `Job ${job.id} for architecture ${blueprintId} initialized.`);
     return job;
   }
 
   public getJob(id: string) {
-    return this.manufacturingJobs.get(id);
+    return this.provisioningJobs.get(id);
   }
 
   public getAllJobs() {
-    return Array.from(this.manufacturingJobs.values());
+    return Array.from(this.provisioningJobs.values());
   }
 
   public getJobs() {
     return this.getAllJobs();
   }
 
-  public updateJobStatus(id: string, status: ManufacturingJobStatus) {
-    const job = this.manufacturingJobs.get(id);
+  public updateJobStatus(id: string, status: ProvisioningJobStatus) {
+    const job = this.provisioningJobs.get(id);
     if (job) {
       job.status = status;
       job.updatedAt = new Date().toISOString();
@@ -173,7 +173,7 @@ export class SovereignGovernanceRegistry {
   }
 
   public updateJobProgress(id: string, progress: number) {
-    const job = this.manufacturingJobs.get(id);
+    const job = this.provisioningJobs.get(id);
     if (job) {
       job.progress = progress;
       job.updatedAt = new Date().toISOString();
@@ -181,7 +181,7 @@ export class SovereignGovernanceRegistry {
   }
 
   public updateJobArchitecture(id: string, architectureId: string) {
-    const job = this.manufacturingJobs.get(id);
+    const job = this.provisioningJobs.get(id);
     if (job) {
       job.architectureId = architectureId;
       job.updatedAt = new Date().toISOString();
@@ -189,7 +189,7 @@ export class SovereignGovernanceRegistry {
   }
 
   public addJobLog(id: string, log: string) {
-    const job = this.manufacturingJobs.get(id);
+    const job = this.provisioningJobs.get(id);
     if (job) {
       job.logs.push(`[${new Date().toISOString()}] ${log}`);
       job.updatedAt = new Date().toISOString();
@@ -209,7 +209,7 @@ export class SovereignGovernanceRegistry {
   public getGlobalStats() {
     return {
       activeBlueprints: this.blueprints.size,
-      activeProvisioningJobs: Array.from(this.manufacturingJobs.values()).filter(j => j.status !== 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT' && j.status !== 'FAILED').length,
+      activeProvisioningJobs: Array.from(this.provisioningJobs.values()).filter(j => j.status !== 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT' && j.status !== 'FAILED').length,
       certifiedProducts: this.certifications.size,
       activeDeploymentNodes: 1240, 
       nationalStandardCompliance: 100 

@@ -18,8 +18,8 @@ import { JUMO_HYBRID_ARCHITECTURE_REGISTRY, JumoArchitectureLayer } from "../hub
 
 import { 
   ArchitectureContract, 
-  ManufacturingJob, 
-  ManufacturingJobStatus, 
+  ProvisioningJob, 
+  ProvisioningJobStatus, 
   EngineeringAssignment, 
   EngineeringTask, 
   EngineeringAgent,
@@ -27,7 +27,7 @@ import {
   DeploymentRecord,
   VerificationFailureRecord,
   CertificationRecord,
-  ManufacturingCategory
+  ProvisioningCategory
 } from "./sovereignState.types";
 
 import * as Types from "./sovereignState.types";
@@ -442,7 +442,7 @@ export class SovereignOperatingStateService {
           ecosystemType: (template.ecosystemId || template.ecosystem || "ERP_ECOSYSTEM") as any,
           sector: template.institutionTypes?.[0] || "Sovereign Enterprise",
           organization: template.name,
-          problem: template.description || "Sovereign platform manufacturing request",
+          problem: template.description || "Sovereign platform provisioning request",
           targetUsers: template.roles ? template.roles.join(", ") : "Enterprise Staff",
           capabilities: template.modules || [],
           infrastructure: "Sovereign Container Cloud",
@@ -491,7 +491,7 @@ export class SovereignOperatingStateService {
         teams: ["A", "B"],
         committees: ["Architecture Review Board"],
         roles: ["Operator", "Auditor", "Engineer"],
-        responsibilities: ["Manufacturing", "Verification"]
+        responsibilities: ["Provisioning", "Verification"]
       },
       functionalArchitecture: {
         modules: ["Identity", "Finance", "Workflow"],
@@ -591,10 +591,10 @@ export class SovereignOperatingStateService {
     return contract;
   }
 
-  public static createManufacturingJob(contractId: string, actor: string) {
+  public static createProvisioningJob(contractId: string, actor: string) {
     const contract = this.state.architectureContracts.find(c => c.id === contractId);
     if (!contract) throw new Error(`Architecture Contract ${contractId} not found.`);
-    if (contract.status !== 'APPROVED') throw new Error(`Architecture Contract ${contractId} must be APPROVED before initiating manufacturing.`);
+    if (contract.status !== 'APPROVED') throw new Error(`Architecture Contract ${contractId} must be APPROVED before initiating provisioning.`);
 
     const idNum = this.state.counters.job++;
     const id = `JOB-2026-${idNum.toString().padStart(6, '0')}`;
@@ -603,13 +603,13 @@ export class SovereignOperatingStateService {
     const assignedWorkforce: EngineeringAssignment[] = (contract.aiArchitecture?.assignedAgents ?? []).map((agentId: string, idx: number) => ({
       engineerId: agentId,
       role: (contract.aiArchitecture?.agentResponsibilities ?? [])[idx] || "System Operator",
-      responsibility: "Baseline Manufacturing",
+      responsibility: "Baseline Provisioning",
       status: 'ASSIGNED',
       progress: 0,
       tasks: []
     }));
 
-    const newJob: ManufacturingJob = {
+    const newJob: ProvisioningJob = {
       id,
       architectureId: contractId,
       productId: contract.productIdentity.name.toLowerCase().replace(/\s+/g, '-'),
@@ -619,16 +619,16 @@ export class SovereignOperatingStateService {
       progress: 0,
       assignedWorkforce,
       repository: "Jumo-Universal-Enterprise-platform",
-      branch: "manufacturing-hub-architecture",
+      branch: "provisioning-hub-architecture",
       commitSha: "0d39c3a2aeebe5035e8985df1932a7a6c96fce30",
       evidence: [],
-      logs: [`[INTAKE] Initiating manufacturing job ${id} from approved architecture BLUEPRINT: ${contractId}`],
+      logs: [`[INTAKE] Initiating provisioning job ${id} from approved architecture BLUEPRINT: ${contractId}`],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
     this.state.jobs.unshift(newJob);
-    this.logAudit(actor, "MANUFACTURING_JOB_CREATED", `Initiated Manufacturing Job ${id} for product ${newJob.productId} with ${assignedWorkforce.length} agents`);
+    this.logAudit(actor, "MANUFACTURING_JOB_CREATED", `Initiated Provisioning Job ${id} for product ${newJob.productId} with ${assignedWorkforce.length} agents`);
     this.saveState();
     return newJob;
   }
@@ -744,7 +744,7 @@ export class SovereignOperatingStateService {
       assignedIds.push("jumo-ai-sovereign-architect-001");
     }
 
-    const newJob: ManufacturingJob = {
+    const newJob: ProvisioningJob = {
       id: jobId,
       architectureId: bp.blueprintId,
       productId: bp.name.replace(/\s+/g, '-').toLowerCase(),
@@ -761,7 +761,7 @@ export class SovereignOperatingStateService {
         tasks: []
       })),
       repository: "Jumo-Universal-Enterprise-platform",
-      branch: "manufacturing-hub-architecture",
+      branch: "provisioning-hub-architecture",
       commitSha: "0d39c3a2aeebe5035e8985df1932a7a6c96fce30",
       logs: ["[INTAKE] Initiating job pipeline sequence with dynamic agent swarm assignment..."],
       evidence: [],
@@ -789,9 +789,9 @@ export class SovereignOperatingStateService {
     return job;
   }
 
-  public static promoteManufacturingJob(jobId: string, actor: string) {
+  public static promoteProvisioningJob(jobId: string, actor: string) {
     const job = this.state.jobs.find(j => j.id === jobId);
-    if (!job) throw new Error(`Manufacturing Job ${jobId} not found in authoritative registry.`);    const stageSequence: ManufacturingJobStatus[] = [
+    if (!job) throw new Error(`Provisioning Job ${jobId} not found in authoritative registry.`);    const stageSequence: ProvisioningJobStatus[] = [
       'DIGITAL_INTAKE',                             // STAGE 01 — DIGITAL INTAKE
       'SPECIFICATION_NORMALIZATION',              // STAGE 02 — SPECIFICATION NORMALIZATION
       'PLATFORM_INSTANCE_DEFINITION',            // STAGE 03 — PLATFORM INSTANCE DEFINITION
@@ -826,7 +826,7 @@ export class SovereignOperatingStateService {
       'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT'  // STAGE 32 — RUNTIME ACTIVATION & CONTINUOUS AUDIT
     ];
 
-    const legacyMap: Record<string, ManufacturingJobStatus> = {
+    const legacyMap: Record<string, ProvisioningJobStatus> = {
       'INTAKE': 'DIGITAL_INTAKE',
       'NORMALIZING': 'SPECIFICATION_NORMALIZATION',
       'REQUIREMENTS_NORMALIZATION': 'SPECIFICATION_NORMALIZATION',
@@ -969,7 +969,7 @@ export class SovereignOperatingStateService {
     return newFailure;
   }
 
-  public static certifyManufacturingJob(jobId: string, authority: string, actor: string) {
+  public static certifyProvisioningJob(jobId: string, authority: string, actor: string) {
     const job = this.state.jobs.find(j => j.id === jobId);
     if (!job) throw new Error("Job not found");
 
@@ -992,7 +992,7 @@ export class SovereignOperatingStateService {
 
     job.status = 'CERTIFYING';
     this.state.certificationRecords.unshift(newCert);
-    this.logAudit(actor, "JOB_CERTIFIED", `Certified manufacturing job ${jobId} as ${certId}`);
+    this.logAudit(actor, "JOB_CERTIFIED", `Certified provisioning job ${jobId} as ${certId}`);
     this.saveState();
     return newCert;
   }

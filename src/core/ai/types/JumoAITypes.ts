@@ -94,7 +94,7 @@ export interface AIAgentRecord {
   escalationRules?: string[];
 }
 
-export interface ManufacturingTaskRequest {
+export interface ProvisioningTaskRequest {
   taskId: string;
   requestorRole: string;
   institutionType?: string;
@@ -115,9 +115,9 @@ export interface PipelineGateResult {
   timestamp: string;
 }
 
-export interface ManufacturingExecutionPlan {
+export interface ProvisioningExecutionPlan {
   planId: string;
-  request: ManufacturingTaskRequest;
+  request: ProvisioningTaskRequest;
   assignedOrchestratorId: string;
   assignedSwarmAgentIds: string[];
   pipelineGates: PipelineGateResult[];

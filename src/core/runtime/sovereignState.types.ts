@@ -3,7 +3,7 @@
  * Houses the core state definitions for the JUMO UEOS Sovereign Platform.
  */
 
-export type ManufacturingCategory = 
+export type ProvisioningCategory = 
   | 'GOVERNMENT'
   | 'EDUCATION'
   | 'FINANCIAL'
@@ -13,7 +13,7 @@ export type ManufacturingCategory =
   | 'ERP_ECOSYSTEM'
   | 'SOFTWARE_ECOSYSTEM';
 
-export type ManufacturingJobStatus = 
+export type ProvisioningJobStatus = 
   | 'DIGITAL_INTAKE'
   | 'ARCHITECTURE_SPECIFICATION'
   | 'GOVERNANCE_REVIEW'
@@ -147,13 +147,13 @@ export interface ArchitectureContract {
   updatedAt?: string;
 }
 
-export interface ManufacturingJob {
+export interface ProvisioningJob {
   id: string;
   architectureId: string;
   productId: string;
-  ecosystem: ManufacturingCategory;
+  ecosystem: ProvisioningCategory;
   version: string;
-  status: ManufacturingJobStatus;
+  status: ProvisioningJobStatus;
   progress: number;
   assignedWorkforce: any[];
   repository: string;
@@ -291,7 +291,7 @@ export interface ArchitectureRequest {
   infrastructure: string;
   integrations: string[];
   aiRequirements: string;
-  ecosystemType: ManufacturingCategory;
+  ecosystemType: ProvisioningCategory;
   sector: string;
   governmentScale?: string;
   applicationType?: string;
@@ -488,7 +488,7 @@ export interface SovereignState {
   blueprints: JumoBlueprint[];
   engineeringAgents: EngineeringAgent[];
   agentWorkLogs: AgentWorkLog[];
-  jobs: ManufacturingJob[];
+  jobs: ProvisioningJob[];
   buildArtifacts: BuildArtifact[];
   deploymentRecords: DeploymentRecord[];
   verificationFailures: VerificationFailureRecord[];

@@ -354,7 +354,7 @@ export class JumoRuntimeCertificationSuite {
       timestamp: now()
     });
 
-    // 14. Automated Manufacturing Progression
+    // 14. Automated Provisioning Progression
     results.push({
       id: "CERT-014",
       name: "Automated Provisioning Progression Loop",
