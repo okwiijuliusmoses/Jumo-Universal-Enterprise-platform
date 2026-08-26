@@ -13,7 +13,7 @@ export class UniversalERPFactory {
   static manufacture(templateId: string, config: any, signature: string): EnterpriseInstance {
     const template = ERPTemplateRegistry.getById(templateId);
     if (!template) {
-      throw new Error(`Manufacturing failure: Template blueprint '${templateId}' not found in registry.`);
+      throw new Error(`Provisioning failure: Template blueprint '${templateId}' not found in registry.`);
     }
 
     // Use the sophisticated ERPFactoryEngine to manufacture the platform

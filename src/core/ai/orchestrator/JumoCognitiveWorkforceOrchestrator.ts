@@ -217,7 +217,7 @@ export class JumoCognitiveWorkforceOrchestrator {
       recommendations.push("Settle security posture attributes or clear access tokens before proceeding.");
     } else {
       risks.push("No blocking conflicts detected. Baseline specifications verified.");
-      recommendations.push("Approve architecture expansion and release blueprints into the manufacturing pipeline.");
+      recommendations.push("Approve architecture expansion and release blueprints into the provisioning pipeline.");
     }
 
     if (warnings.length > 0) {

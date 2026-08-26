@@ -1,22 +1,51 @@
 // JUMO UEOS — Sovereign Command Operating Shell & Navigation Fabric
-// Phase 6 Authoritative Implementation
+// Authoritative Sovereign Enterprise Platform Implementation
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
-  Command, Cpu, FileText, Users, Server, Layers, CheckSquare, Globe, 
-  RefreshCw, Shield, History, Settings, LogOut, ChevronLeft, ChevronRight, 
-  User, Key, Menu, Search, X, Sliders, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard,
-  Edit3, Hexagon, Code, Award, Copy, Box, Cloud, Terminal, Briefcase, FlaskConical, Zap, Database, BookOpen,
-  ShieldCheck, Activity, RefreshCcw, CreditCard
+  Command, Users, Layers, Shield, Settings, LogOut, ChevronLeft, ChevronRight, 
+  Menu, Search, X, ArrowLeft, ArrowRight, ArrowUp, Home, HelpCircle, Keyboard,
+  Cloud, Zap, Database, BookOpen, ShieldCheck, Activity, CreditCard, School,
+  GraduationCap, Church, DollarSign, Lock, BrainCircuit, Workflow, Landmark
 } from "lucide-react";
-import { NationalManufacturingHub, HubWorkspace } from "../renderer/NationalManufacturingHub";
-import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
-import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
+
+import { KernelDashboard } from "../renderer/KernelDashboard";
+import { SovereignProductDetailRenderer } from "../renderer/SovereignProductDetailRenderer";
+import { FAAPRenderer } from "../renderer/FAAPRenderer";
+import { DigitalPayRenderer } from "../renderer/DigitalPayRenderer";
+import { SecurityRegistryRenderer } from "../renderer/SecurityRegistryRenderer";
+import { AuditRenderer } from "../renderer/AuditRenderer";
+import { AIGatewayRenderer } from "../renderer/AIGatewayRenderer";
+import { WorkflowRegistryRenderer } from "../renderer/WorkflowRegistryRenderer";
+import { InfrastructureRenderer } from "../renderer/InfrastructureRenderer";
+import { LegalComplianceRenderer } from "../renderer/LegalComplianceRenderer";
+import { SettingsRenderer } from "../renderer/SettingsRenderer";
+
 import { initializeSovereignCommandRegistry, UEOSCommandRegistry, UEOSCommand } from "./UEOSCommandRegistry";
 import { UEOSSettingsCenter, UEOSSettings } from "./UEOSSettingsCenter";
 import { UEOSRightInspector } from "./UEOSRightInspector";
 import { JumoFloatingAssistant } from "./JumoFloatingAssistant";
+
+export type SovereignWorkspace =
+  | "overview"
+  | "products"
+  | "fintech"
+  | "nursery-primary"
+  | "secondary-school"
+  | "university"
+  | "church"
+  | "alumni"
+  | "faap"
+  | "digital-pay"
+  | "aegis"
+  | "treasury"
+  | "digital-auditor"
+  | "ai-hybrid"
+  | "workflow"
+  | "cloud"
+  | "compliance"
+  | "settings";
 
 interface UEOSShellProps {
   user: {
@@ -30,9 +59,18 @@ interface UEOSShellProps {
 
 export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 1. BASIC SHELL STATES ===
-  const [activeTab, setActiveTab] = useState<HubWorkspace>(() => {
+  const [activeTab, setActiveTab] = useState<SovereignWorkspace>(() => {
     const saved = localStorage.getItem("jumo_ueos_active_workspace");
-    return (saved as HubWorkspace) || "overview";
+    const validWorkspaces: SovereignWorkspace[] = [
+      "overview", "products", "fintech", "nursery-primary", "secondary-school",
+      "university", "church", "alumni", "faap", "digital-pay", "aegis",
+      "treasury", "digital-auditor", "ai-hybrid", "workflow", "cloud",
+      "compliance", "settings"
+    ];
+    if (saved && validWorkspaces.includes(saved as SovereignWorkspace)) {
+      return saved as SovereignWorkspace;
+    }
+    return "overview";
   });
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
@@ -42,8 +80,8 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // === 2. NAVIGATION STACK STATES ===
-  const [backStack, setBackStack] = useState<HubWorkspace[]>([]);
-  const [forwardStack, setForwardStack] = useState<HubWorkspace[]>([]);
+  const [backStack, setBackStack] = useState<SovereignWorkspace[]>([]);
+  const [forwardStack, setForwardStack] = useState<SovereignWorkspace[]>([]);
 
   // === 3. MODAL & DIALOG STATES ===
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -102,7 +140,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 7. INITIALIZE COMMAND REGISTRY ===
   useEffect(() => {
     initializeSovereignCommandRegistry({
-      navigate: (workspace: HubWorkspace) => navigateTo(workspace),
+      navigate: (workspace: SovereignWorkspace) => navigateTo(workspace),
       toggleSidebar: () => setSidebarCollapsed(prev => {
         const next = !prev;
         localStorage.setItem("ueos_sidebar_collapsed", String(next));
@@ -110,18 +148,13 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       }),
       openSettings: () => setSettingsOpen(true),
       runTriggerAction: (actionId: string, params?: any) => {
-        // Bubble up custom administrative commands to the Inspector
         console.log(`[ACTION_TRIGGER] Command execution: ${actionId}`, params);
-        if (actionId === "verify-hashes") {
-          // Deep link into verification
-          setInspectedEntity(null);
-        }
       }
     });
   }, []);
 
   // === 8. NAVIGATION TRANSITION ENGINE ===
-  const navigateTo = (workspace: HubWorkspace, isBackOrForward = false) => {
+  const navigateTo = (workspace: SovereignWorkspace, isBackOrForward = false) => {
     if (workspace === activeTab) return;
 
     if (!isBackOrForward) {
@@ -154,97 +187,88 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   };
 
   const handleParent = () => {
-    navigateTo("specification");
+    navigateTo("overview");
   };
 
   // === 9. UNIFIED KEYBOARD CONTROLLER ===
   useEffect(() => {
+    if (!preferences.keyboardNavActive) return;
+
     const handleGlobalKeys = (e: KeyboardEvent) => {
-      if (!preferences.keyboardNavActive) return;
-
-      const activeEl = document.activeElement;
-      const isInputActive = activeEl && (
-        activeEl.tagName.toLowerCase() === "input" || 
-        activeEl.tagName.toLowerCase() === "textarea" ||
-        activeEl.getAttribute("contenteditable") === "true"
-      );
-
-      // ESC key works globally to clear focus and dismiss modals
-      if (e.key === "Escape") {
+      // 1. Command Palette Toggle (Ctrl + K or Cmd + K)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setCommandPaletteOpen(false);
-        setSettingsOpen(false);
-        setInspectedEntity(null);
-        setKeyboardGuideOpen(false);
-        if (isInputActive) (activeEl as HTMLElement).blur();
+        setCommandPaletteOpen(prev => !prev);
         return;
       }
 
-      // Block shortcuts while typing in forms
-      if (isInputActive) {
-        // Inside the search palette input, capture ArrowDown, ArrowUp, and Enter keys
-        if (commandPaletteOpen && activeEl === searchInputRef.current) {
-          const itemsCount = getFilteredPaletteItems().length;
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setPaletteSelectedIndex(prev => (prev + 1) % itemsCount);
-          } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setPaletteSelectedIndex(prev => (prev - 1 + itemsCount) % itemsCount);
-          } else if (e.key === "Enter") {
-            e.preventDefault();
-            const items = getFilteredPaletteItems();
-            if (items[paletteSelectedIndex]) {
-              handleSelectPaletteItem(items[paletteSelectedIndex]);
-            }
-          }
+      // 2. Settings Toggle (Ctrl + ,)
+      if ((e.ctrlKey || e.metaKey) && e.key === ",") {
+        e.preventDefault();
+        setSettingsOpen(prev => !prev);
+        return;
+      }
+
+      // 3. Sidebar Toggle (Ctrl + B)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        setSidebarCollapsed(prev => {
+          const next = !prev;
+          localStorage.setItem("ueos_sidebar_collapsed", String(next));
+          return next;
+        });
+        return;
+      }
+
+      // 4. Keyboard Shortcuts Guide (? or Shift + /)
+      if (e.key === "?" && !commandPaletteOpen && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        setKeyboardGuideOpen(prev => !prev);
+        return;
+      }
+
+      // 5. Back Navigation (Alt + Left Arrow)
+      if (e.altKey && e.key === "ArrowLeft") {
+        e.preventDefault();
+        handleBack();
+        return;
+      }
+
+      // 6. Forward Navigation (Alt + Right Arrow)
+      if (e.altKey && e.key === "ArrowRight") {
+        e.preventDefault();
+        handleForward();
+        return;
+      }
+
+      // 7. Parent Workspace (Alt + Up Arrow)
+      if (e.altKey && e.key === "ArrowUp") {
+        e.preventDefault();
+        handleParent();
+        return;
+      }
+
+      // 8. Command Palette Search Keyboard Navigation
+      if (commandPaletteOpen) {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setCommandPaletteOpen(false);
+          return;
         }
-        return;
-      }
 
-      // Alt combinations for navigation
-      if (e.altKey) {
-        if (e.key === "ArrowLeft") {
+        const filtered = getFilteredPaletteItems();
+        if (e.key === "ArrowDown") {
           e.preventDefault();
-          handleBack();
-        } else if (e.key === "ArrowRight") {
-          e.preventDefault();
-          handleForward();
+          setPaletteSelectedIndex(prev => (prev + 1) % (filtered.length || 1));
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          handleParent();
+          setPaletteSelectedIndex(prev => (prev - 1 + (filtered.length || 1)) % (filtered.length || 1));
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (filtered[paletteSelectedIndex]) {
+            handleSelectPaletteItem(filtered[paletteSelectedIndex]);
+          }
         }
-      }
-
-      // Ctrl / Cmd combinations
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key.toLowerCase() === "b") {
-          e.preventDefault();
-          setSidebarCollapsed(prev => {
-            const next = !prev;
-            localStorage.setItem("ueos_sidebar_collapsed", String(next));
-            return next;
-          });
-        } else if (e.key.toLowerCase() === "k") {
-          e.preventDefault();
-          setCommandPaletteOpen(prev => !prev);
-        } else if (e.key === ",") {
-          e.preventDefault();
-          setSettingsOpen(prev => !prev);
-        } else if (e.key === "/") {
-          e.preventDefault();
-          setKeyboardGuideOpen(prev => !prev);
-        } else if (e.key.toLowerCase() === "f") {
-          e.preventDefault();
-          setCommandPaletteOpen(true);
-        }
-      }
-
-      // General utility keys
-      if (e.key === "Home") {
-        window.scrollTo({ top: 0, behavior: preferences.reducedMotion ? "auto" : "smooth" });
-      } else if (e.key === "End") {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: preferences.reducedMotion ? "auto" : "smooth" });
       }
     };
 
@@ -265,39 +289,25 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
 
   // === 10. SEARCH INDEX & INTEGRATIONS ===
   const getFilteredPaletteItems = () => {
-    const q = paletteSearchQuery.toLowerCase().trim();
-    const results: any[] = [];
-
-    // Index Commands
     const commands = UEOSCommandRegistry.search(paletteSearchQuery);
-    commands.forEach((cmd: UEOSCommand) => {
-      results.push({
-        id: cmd.id,
-        name: cmd.label,
-        type: `Command • ${cmd.category}`,
-        status: "SYSTEM",
-        workspace: cmd.category.toLowerCase(),
-        icon: cmd.icon,
-        isCommand: true,
-        action: cmd.action
-      });
-    });
-
-    return results;
+    return commands.map((cmd: UEOSCommand) => ({
+      id: cmd.id,
+      name: cmd.label,
+      type: `Command • ${cmd.category}`,
+      status: "SYSTEM",
+      workspace: cmd.category.toLowerCase(),
+      icon: cmd.icon,
+      isCommand: true,
+      action: cmd.action
+    }));
   };
 
   const handleSelectPaletteItem = (item: any) => {
     setCommandPaletteOpen(false);
-    if (item.isCommand) {
+    if (item.isCommand && item.action) {
       item.action();
-    } else {
-      // It's a registry resource item — navigate to workspace and open in Right Inspector!
+    } else if (item.workspace) {
       navigateTo(item.workspace);
-      setInspectedEntity({
-        type: item.entityType,
-        id: item.id,
-        data: item.data
-      });
     }
   };
 
@@ -305,59 +315,99 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     setPreferences(nextSettings);
   };
 
-  // === 11. SIDEBAR NAVIGATION GROUPS (5 CANONICAL STUDIOS) ===
+  // === 11. AUTHORITATIVE SOVEREIGN SIDEBAR GROUPS ===
   const sidebarGroups = [
     {
-      id: "01 — PRODUCT ARCHITECTURE STUDIO",
+      id: "01 — PLATFORM KERNEL & COMMAND",
       items: [
-        { id: "specification" as HubWorkspace, label: "Specification & Intake", icon: FileText, color: "text-blue-500" },
-        { id: "architecture" as HubWorkspace, label: "Architecture & Engineering", icon: Layers, color: "text-indigo-500" }
+        { id: "overview" as SovereignWorkspace, label: "Kernel Telemetry", icon: Command, color: "text-blue-500" },
+        { id: "products" as SovereignWorkspace, label: "Products & Platforms", icon: Layers, color: "text-indigo-500" }
       ]
     },
     {
-      id: "02 — DIGITAL PRODUCT FACTORY",
+      id: "02 — SOVEREIGN COMMERCIAL PRODUCTS",
       items: [
-        { id: "manufacturing" as HubWorkspace, label: "Manufacturing & Assembly", icon: Zap, color: "text-amber-500" },
-        { id: "config" as HubWorkspace, label: "Configuration & Branding", icon: Sliders, color: "text-pink-500" }
+        { id: "fintech" as SovereignWorkspace, label: "JUMO FINTECH SACCO", icon: Zap, color: "text-amber-500" },
+        { id: "nursery-primary" as SovereignWorkspace, label: "Nursery & Primary ERP", icon: School, color: "text-emerald-500" },
+        { id: "secondary-school" as SovereignWorkspace, label: "Secondary School ERP", icon: BookOpen, color: "text-blue-500" },
+        { id: "university" as SovereignWorkspace, label: "University & Tertiary ERP", icon: GraduationCap, color: "text-purple-500" },
+        { id: "church" as SovereignWorkspace, label: "Church & Faith ERP", icon: Church, color: "text-rose-500" },
+        { id: "alumni" as SovereignWorkspace, label: "Alumni & Community ERP", icon: Users, color: "text-cyan-500" }
       ]
     },
     {
-      id: "03 — PRODUCT ASSURANCE STUDIO",
+      id: "03 — INDEPENDENT SHARED PLATFORMS",
       items: [
-        { id: "verification" as HubWorkspace, label: "Verification & Testing", icon: Shield, color: "text-emerald-500" },
-        { id: "certification" as HubWorkspace, label: "Certification & Release", icon: Award, color: "text-purple-500" }
+        { id: "faap" as SovereignWorkspace, label: "FAAP Double-Entry Ledger", icon: DollarSign, color: "text-emerald-600" },
+        { id: "digital-pay" as SovereignWorkspace, label: "Digital Pay Switch", icon: CreditCard, color: "text-blue-600" },
+        { id: "aegis" as SovereignWorkspace, label: "Aegis Zero-Trust Security", icon: Lock, color: "text-rose-600" },
+        { id: "treasury" as SovereignWorkspace, label: "Treasury & Liquidity", icon: Landmark, color: "text-amber-600" },
+        { id: "digital-auditor" as SovereignWorkspace, label: "Digital Forensic Auditor", icon: Shield, color: "text-teal-600" },
+        { id: "ai-hybrid" as SovereignWorkspace, label: "AI Digital Hybrid Mesh", icon: BrainCircuit, color: "text-purple-600" },
+        { id: "workflow" as SovereignWorkspace, label: "Workflow Engine", icon: Workflow, color: "text-sky-600" },
+        { id: "cloud" as SovereignWorkspace, label: "Cloud & Compute Fabric", icon: Cloud, color: "text-slate-600" }
       ]
     },
     {
-      id: "04 — RUNTIME OPERATIONS STUDIO",
+      id: "04 — GOVERNANCE & SETTINGS",
       items: [
-        { id: "deployment" as HubWorkspace, label: "Provision & Deploy", icon: Cloud, color: "text-cyan-500" },
-        { id: "overview" as HubWorkspace, label: "Runtime & Operations", icon: Home, color: "text-sky-500" }
-      ]
-    },
-    {
-      id: "05 — SOVEREIGN GOVERNANCE & TRUST STUDIO",
-      items: [
-        { id: "control" as HubWorkspace, label: "Sovereign Control & Governance", icon: ShieldCheck, color: "text-amber-600" },
-        { id: "templates" as HubWorkspace, label: "Registries & Standards", icon: BookOpen, color: "text-teal-500" },
-        { id: "faap" as HubWorkspace, label: "Sovereign Ledger", icon: CreditCard, color: "text-emerald-600" }
+        { id: "compliance" as SovereignWorkspace, label: "Legal & Compliance", icon: ShieldCheck, color: "text-emerald-700" },
+        { id: "settings" as SovereignWorkspace, label: "Settings & Preferences", icon: Settings, color: "text-slate-500" }
       ]
     }
   ];
 
-  const handleInspectorTriggerAction = (actionId: string, payload: any) => {
-    console.log(`[INSPECTOR_ACTION] Intercepted in shell: ${actionId}`, payload);
-  };
-
-  // Apply compact scale classes
   const compactStylesClass = preferences.uiDensity === "compact" ? "ueos-compact text-[11px]" : "";
+
+  // === 12. WORKSPACE COMPONENT DISPATCHER ===
+  const renderActiveWorkspace = () => {
+    switch (activeTab) {
+      case "overview":
+      case "products":
+        return <KernelDashboard onNavigate={(ws: string) => navigateTo(ws as SovereignWorkspace)} />;
+      // 6 Sovereign Products
+      case "fintech":
+        return <SovereignProductDetailRenderer productId="prod-fintech" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      case "nursery-primary":
+        return <SovereignProductDetailRenderer productId="prod-nursery-primary" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      case "secondary-school":
+        return <SovereignProductDetailRenderer productId="prod-secondary-school" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      case "university":
+        return <SovereignProductDetailRenderer productId="prod-university-tertiary" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      case "church":
+        return <SovereignProductDetailRenderer productId="prod-church-faith" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      case "alumni":
+        return <SovereignProductDetailRenderer productId="prod-alumni-community" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+      // 8 Independent Shared Platforms
+      case "faap":
+      case "treasury":
+        return <FAAPRenderer />;
+      case "digital-pay":
+        return <DigitalPayRenderer />;
+      case "aegis":
+        return <SecurityRegistryRenderer />;
+      case "digital-auditor":
+        return <AuditRenderer incidents={[]} institutions={[]} />;
+      case "ai-hybrid":
+        return <AIGatewayRenderer />;
+      case "workflow":
+        return <WorkflowRegistryRenderer />;
+      case "cloud":
+        return <InfrastructureRenderer slots={[]} volumes={[]} />;
+      case "compliance":
+        return <LegalComplianceRenderer />;
+      case "settings":
+        return <SettingsRenderer />;
+      default:
+        return <KernelDashboard onNavigate={(ws) => navigateTo(ws as SovereignWorkspace)} />;
+    }
+  };
 
   return (
     <div 
       className={`min-h-screen bg-slate-50 flex flex-col font-sans transition-all duration-150 ${compactStylesClass}`} 
       id="ueos-shell-root"
     >
-      
       {/* 1. TOP OPERATING NAV BAR */}
       <header className="bg-blue-950 text-white border-b border-blue-900 h-14 px-4 flex items-center justify-between sticky top-0 z-40 select-none shadow-md" id="ueos-shell-header">
         
@@ -402,8 +452,8 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
               <ArrowUp className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => navigateTo("specification")}
-              className={`p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer ${activeTab === "specification" ? "bg-blue-600 text-white shadow-xs" : ""}`}
+              onClick={() => navigateTo("overview")}
+              className={`p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-blue-800 transition-all cursor-pointer ${activeTab === "overview" ? "bg-blue-600 text-white shadow-xs" : ""}`}
               title="Sovereign Command Center"
               aria-label="Command Center Home"
             >
@@ -414,13 +464,13 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           <div className="h-4 w-px bg-blue-800 hidden md:block"></div>
 
           {/* Host brand identity */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigateTo("overview")}>
             <div className="w-7 h-7 bg-blue-600 text-white rounded-lg flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/20">
               J
             </div>
             <div className="min-w-0">
               <span className="font-extrabold tracking-tight text-slate-100 text-xs block">JUMO UEOS</span>
-              <span className="text-[8px] font-bold text-blue-400 uppercase tracking-widest block leading-none">Sovereign Command</span>
+              <span className="text-[8px] font-bold text-blue-400 uppercase tracking-widest block leading-none">Sovereign Enterprise Platform</span>
             </div>
           </div>
         </div>
@@ -430,11 +480,11 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           <button
             onClick={() => setCommandPaletteOpen(true)}
             className="w-full h-9 bg-blue-900/40 hover:bg-blue-900/60 border border-blue-850/60 rounded-xl px-3 flex items-center justify-between text-blue-100 text-xs font-bold transition-all text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
-            title="Search registries and commands (Ctrl + K)"
+            title="Search products and platforms (Ctrl + K)"
           >
             <div className="flex items-center gap-2">
               <Search className="w-3.5 h-3.5 text-blue-300" />
-              <span className="text-blue-200">Search ecosystems, products, commands...</span>
+              <span className="text-blue-200">Search products, platforms, commands...</span>
             </div>
             <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-blue-950 border border-blue-800 text-blue-300 font-bold rounded-lg text-[9px] shadow-2xs font-mono uppercase">
               Ctrl K
@@ -448,61 +498,65 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Keyboard Help Guide */}
           <button
             onClick={() => setKeyboardGuideOpen(true)}
-            className="p-2 rounded-xl text-blue-200 hover:text-white hover:bg-blue-900/50 cursor-pointer transition-colors"
-            title="Keyboard Shortcuts Guide (Ctrl + /)"
-            aria-label="Shortcuts Help"
+            className="p-2 rounded-xl text-blue-300 hover:text-white hover:bg-blue-900/60 transition-all cursor-pointer"
+            title="Keyboard Shortcuts (?)"
+            aria-label="Keyboard Shortcuts"
           >
             <Keyboard className="w-4 h-4" />
           </button>
 
-          {/* Unified Settings Gear */}
+          {/* Settings Trigger */}
           <button
             onClick={() => setSettingsOpen(true)}
-            className={`p-2 rounded-xl text-blue-200 hover:text-white hover:bg-blue-900/50 cursor-pointer transition-colors ${settingsOpen ? "bg-blue-900 text-white" : ""}`}
+            className="p-2 rounded-xl text-blue-300 hover:text-white hover:bg-blue-900/60 transition-all cursor-pointer"
             title="Settings Center (Ctrl + ,)"
-            aria-label="Platform Settings"
+            aria-label="Settings Center"
           >
             <Settings className="w-4 h-4" />
           </button>
 
           <div className="h-4 w-px bg-blue-800"></div>
 
-          {/* Authorized Identity Label */}
-          <div className="flex items-center gap-2">
-            <div className="hidden lg:block text-right">
-              <span className="font-extrabold text-[10px] text-blue-50 block truncate max-w-[150px]">
+          {/* User profile dropdown pill */}
+          <div className="flex items-center gap-2 pl-1">
+            <div className="w-7 h-7 rounded-full bg-blue-800 flex items-center justify-center font-bold text-xs text-blue-100 border border-blue-600">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="hidden lg:block text-left">
+              <span className="font-extrabold text-xs text-slate-100 block leading-tight truncate max-w-[120px]">
                 {preferences.operatorIdentityName || user.name}
               </span>
-              <span className="text-[8px] text-blue-400 font-black block uppercase tracking-wider leading-none">
-                {user.clearance} clearance
+              <span className="text-[8px] font-bold text-blue-300 uppercase block tracking-wider leading-none">
+                {user.clearance} CLEARANCE
               </span>
             </div>
             <button
               onClick={onLogout}
-              className="p-2 rounded-xl text-blue-200 hover:text-rose-400 hover:bg-blue-900/50 cursor-pointer transition-all"
-              title="Secure Logout"
-              aria-label="Secure Logout"
+              className="p-1.5 rounded-lg text-blue-300 hover:text-rose-300 hover:bg-blue-900/60 transition-all cursor-pointer ml-1"
+              title="Logout session"
+              aria-label="Logout"
             >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
 
         </div>
+
       </header>
 
-      {/* 2. MAIN CORE LAYOUT FRAME */}
-      <div className="flex-1 flex overflow-hidden relative">
-
-        {/* LEFT COMMAND SIDEBAR — COLLAPSIBLE & RESPONSIVE */}
+      {/* 2. BODY CONTAINER: SIDEBAR + MAIN CANVAS */}
+      <div className="flex-1 flex overflow-hidden">
+        
+        {/* DESKTOP COLLAPSIBLE SIDEBAR */}
         <aside 
-          className={`bg-white border-r border-slate-200/80 flex flex-col justify-between transition-all duration-200 shrink-0 hidden md:flex ${
+          className={`hidden md:flex flex-col bg-white border-r border-slate-200 transition-all duration-200 z-30 select-none ${
             sidebarCollapsed ? "w-16" : "w-64"
           }`}
           id="shell-desktop-sidebar"
         >
           <div className="flex-1 overflow-y-auto py-4 px-2 space-y-5">
             
-            {/* Sidebar toggle button (Mandatory) */}
+            {/* Sidebar toggle button */}
             <div className={`flex justify-end pb-2 px-1 border-b border-slate-100 ${sidebarCollapsed ? "justify-center" : ""}`}>
               <button
                 ref={sidebarToggleRef}
@@ -563,7 +617,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           {/* Mini system footprint at sidebar bottom */}
           <div className="p-3 border-t border-slate-100 bg-slate-50/50 text-center">
             <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block">
-              {!sidebarCollapsed ? "JUMO CORE v6" : "V6"}
+              {!sidebarCollapsed ? "JUMO UEOS v6.0" : "V6"}
             </span>
           </div>
         </aside>
@@ -653,7 +707,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
           )}
         </AnimatePresence>
 
-        {/* WORKSPACE CANVAS WRAPPER — INTEGRATED RIGHT INSPECTOR splitscreen */}
+        {/* WORKSPACE CANVAS WRAPPER */}
         <div className="flex-1 flex overflow-hidden">
           
           {/* Main workspace scrollable area */}
@@ -665,20 +719,14 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                <NationalManufacturingHub 
-                  activeWorkspace={activeTab} 
-                  onNavigate={(ws) => navigateTo(ws)}
-                />
+                {renderActiveWorkspace()}
               </motion.div>
             ) : (
-              <NationalManufacturingHub 
-                activeWorkspace={activeTab} 
-                onNavigate={(ws) => navigateTo(ws)}
-              />
+              renderActiveWorkspace()
             )}
           </main>
 
-          {/* RIGHT SIDE INSPECTOR PANEL — SLIDES IN OR SPLITS DYNAMICALLY */}
+          {/* RIGHT SIDE INSPECTOR PANEL */}
           <AnimatePresence>
             {inspectedEntity && (
               <div 
@@ -692,7 +740,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
                 <UEOSRightInspector 
                   entity={inspectedEntity} 
                   onClose={() => setInspectedEntity(null)}
-                  onTriggerAction={handleInspectorTriggerAction}
+                  onTriggerAction={(actionId, payload) => console.log(`[ACTION] ${actionId}`, payload)}
                 />
               </div>
             )}
@@ -712,14 +760,13 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
               exit={{ opacity: 0, y: -20, scale: 0.98 }}
               className="bg-white rounded-2xl border border-slate-200/80 shadow-2xl max-w-xl w-full flex flex-col overflow-hidden max-h-[480px]"
             >
-              
               {/* Search inputs */}
               <div className="px-4 py-3.5 border-b border-slate-100 flex items-center gap-2">
                 <Search className="w-5 h-5 text-slate-400 shrink-0" />
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Type a sovereign command or registry query..."
+                  placeholder="Type a sovereign command, product name, or platform query..."
                   value={paletteSearchQuery}
                   onChange={(e) => {
                     setPaletteSearchQuery(e.target.value);
@@ -748,136 +795,114 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
                           onClick={() => handleSelectPaletteItem(item)}
                           className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs transition-all cursor-pointer ${
                             isSelected 
-                              ? "bg-slate-100 text-slate-900" 
-                              : "hover:bg-slate-50/60 text-slate-600"
+                              ? "bg-blue-600 text-white font-black shadow-xs" 
+                              : "hover:bg-slate-50 text-slate-700 font-bold"
                           }`}
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className={`p-1.5 rounded-lg ${isSelected ? "bg-white text-slate-900 shadow-2xs" : "bg-slate-50 text-slate-400"}`}>
-                              <ItemIcon className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="font-extrabold text-slate-800 block truncate">{item.name}</span>
-                              <span className="text-[9px] text-slate-400 font-bold block uppercase">{item.type}</span>
-                            </div>
+                            <ItemIcon className={`w-4 h-4 shrink-0 ${isSelected ? "text-white" : "text-slate-400"}`} />
+                            <span className="truncate">{item.name}</span>
                           </div>
-                          
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-md border ${
-                              item.status === "OPERATIONAL" || item.status === "OK" || item.status === "SYSTEM"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                                : item.status === "EXEC"
-                                ? "bg-blue-50 text-blue-700 border-blue-100"
-                                : "bg-slate-100 text-slate-500 border-slate-200"
-                            }`}>
-                              {item.status}
-                            </span>
-                            {isSelected && (
-                              <span className="text-[10px] text-slate-400 font-bold font-mono">↵ Enter</span>
-                            )}
-                          </div>
+                          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2 ${
+                            isSelected ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-500"
+                          }`}>
+                            {item.type}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
                 ) : (
-                  <div className="p-12 text-center text-slate-400">
-                    <HelpCircle className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-                    <span className="text-xs font-bold block">No commands or registry results found</span>
-                    <span className="text-[10px] text-slate-400 block mt-1">Try searching for "deploy", "sacco", "verify", or "identity"</span>
+                  <div className="p-8 text-center text-slate-400 text-xs font-bold">
+                    No matching commands or resources found.
                   </div>
                 )}
               </div>
 
-              {/* Palette footer */}
-              <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                <span>Use ↑↓ arrows to navigate</span>
-                <span>ESC to close</span>
+              {/* Footer guide */}
+              <div className="p-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[9px] font-bold text-slate-400 px-4">
+                <span>Use <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-slate-200">↑</kbd> <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-slate-200">↓</kbd> to navigate</span>
+                <span>Press <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-slate-200">Enter</kbd> to execute</span>
               </div>
-
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* === 4. CONSOLIDATED SETTINGS CENTER DIALOG (Ctrl + ,) === */}
-      <UEOSSettingsCenter 
-        isOpen={settingsOpen} 
-        onClose={() => setSettingsOpen(false)}
-        onSave={handleSaveSettings}
-      />
-
-      {/* === 5. KEYBOARD SHORTCUTS GUIDE OVERLAY (Ctrl + /) === */}
+      {/* === 4. KEYBOARD SHORTCUTS GUIDE MODAL (?) === */}
       <AnimatePresence>
         {keyboardGuideOpen && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4" id="keyboard-guide-overlay">
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4" id="keyboard-guide-backdrop">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl border border-slate-200/80 shadow-2xl max-w-md w-full p-6 space-y-5"
+              className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-6"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-2">
-                  <Keyboard className="w-5 h-5 text-slate-800" />
-                  <div>
-                    <h3 className="text-xs font-black uppercase text-slate-800 tracking-wider">UEOS Shortcut Registry</h3>
-                    <p className="text-[10px] text-slate-400 font-bold leading-none mt-0.5">Sovereign keyboard commander</p>
-                  </div>
+                  <Keyboard className="w-5 h-5 text-blue-600" />
+                  <h3 className="font-black text-slate-900 text-base">Sovereign Keyboard Shortcuts</h3>
                 </div>
                 <button 
                   onClick={() => setKeyboardGuideOpen(false)}
-                  className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="space-y-3.5 text-xs text-slate-600">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Navigate Back</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Alt + ←</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Navigate Forward</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Alt + →</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Parent Workspace (Command Center)</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Alt + ↑</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Search / Open Command Palette</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Ctrl + K</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Open Settings Center</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Ctrl + ,</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Toggle Sidebar Rail</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Ctrl + B</kbd>
-                </div>
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1.5">
-                  <span className="font-semibold">Toggle This Shortcuts Guide</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Ctrl + /</kbd>
-                </div>
-                <div className="flex justify-between items-center pb-1">
-                  <span className="font-semibold">Dismiss overlay / modal / inspector</span>
-                  <kbd className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-700 font-extrabold text-[10px] rounded-md font-mono uppercase">Esc</kbd>
-                </div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                {[
+                  { key: "Ctrl + K", desc: "Open Command Palette" },
+                  { key: "Ctrl + ,", desc: "Open Settings Center" },
+                  { key: "Ctrl + B", desc: "Toggle Sidebar Expansion" },
+                  { key: "?", desc: "Open Shortcuts Reference" },
+                  { key: "Alt + ←", desc: "Navigate Back in History" },
+                  { key: "Alt + →", desc: "Navigate Forward in History" },
+                  { key: "Alt + ↑", desc: "Jump to Kernel Overview" },
+                  { key: "Escape", desc: "Dismiss Open Modal/Drawer" }
+                ].map((sc, i) => (
+                  <div key={i} className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                    <kbd className="font-mono text-[10px] font-black text-blue-700 bg-white px-2 py-0.5 rounded border border-slate-200 inline-block shadow-2xs">
+                      {sc.key}
+                    </kbd>
+                    <p className="text-[11px] font-bold text-slate-600">{sc.desc}</p>
+                  </div>
+                ))}
               </div>
 
-              <div className="p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-[10px] text-blue-700 font-semibold leading-relaxed">
-                Note: Keyboard shortcut captures are bypassed automatically when entering text fields, inputs, or content editable consoles.
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => setKeyboardGuideOpen(false)}
+                  className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+                >
+                  Close Guide
+                </button>
               </div>
-
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      <JumoFloatingAssistant activeStudio={activeTab} />
+      {/* === 5. SETTINGS CENTER DIALOG (Ctrl + ,) === */}
+      <UEOSSettingsCenter
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={preferences}
+        onSave={handleSaveSettings}
+      />
+
+      {/* === 6. FLOATING COGNITIVE ASSISTANT === */}
+      <JumoFloatingAssistant 
+        currentWorkspace={activeTab}
+        onCommandAction={(actionId) => {
+          if (actionId.startsWith("nav:")) {
+            const target = actionId.replace("nav:", "") as SovereignWorkspace;
+            navigateTo(target);
+          }
+        }}
+      />
 
     </div>
   );

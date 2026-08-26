@@ -570,7 +570,7 @@ async function startServer() {
         { path: "package.json", description: "Node Configuration & Dependencies Manifest" },
         { path: "src/App.tsx", description: "UEOS Primary Shell Ingress" },
         { path: "src/experience/shell/UEOSShell.tsx", description: "Sovereign Ingress Shell Router" },
-        { path: "src/experience/renderer/NationalManufacturingHub.tsx", description: "Manufacturing Workspace GUI" }
+        { path: "src/experience/renderer/KernelDashboard.tsx", description: "Kernel Operations Dashboard GUI" }
       ];
 
       const auditedFiles = criticalFiles.map(f => {
@@ -737,7 +737,7 @@ async function startServer() {
     });
   });
 
-  app.get("/api/v1/ueos/kernel/factory-migration-plan", (req, res) => {
+  app.get("/api/v1/ueos/kernel/provisioning-migration-plan", (req, res) => {
     res.json({
       success: true,
       plan: {
@@ -851,8 +851,8 @@ async function startServer() {
     });
   });
 
-  // Specialized Digital Product Factories Registry Endpoint
-  app.get("/api/v1/ueos/factories", (req, res) => {
+  // Specialized Digital Product Registries Endpoint
+  app.get("/api/v1/ueos/product-registries", (req, res) => {
     try {
       const factories = DigitalProductFactoryRegistry.getAllFactories();
       res.json({ success: true, count: factories.length, factories });

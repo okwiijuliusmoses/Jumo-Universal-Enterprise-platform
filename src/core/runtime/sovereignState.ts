@@ -763,7 +763,7 @@ export class SovereignOperatingStateService {
       assignedIds.push(softEng.agentId);
     }
 
-    const orchAgent = allAgents.find(a => a.division === 'MANUFACTURING_ORCHESTRATION' && a.health === 'HEALTHY') || allAgents.find(a => a.division === 'MANUFACTURING_ORCHESTRATION');
+    const orchAgent = allAgents.find(a => a.division === 'SYSTEM_PROVISIONING' && a.health === 'HEALTHY') || allAgents.find(a => a.division === 'SYSTEM_PROVISIONING');
     if (orchAgent) {
       JumoAIAgentRegistry.assignAgentToJob(orchAgent.agentId, jobId);
       assignedIds.push(orchAgent.agentId);

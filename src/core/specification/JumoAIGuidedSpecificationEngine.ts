@@ -3,7 +3,7 @@
  *
  * Purpose:
  *   Convert guided client answers into a verified specification blueprint
- *   before architecture generation, ERP manufacturing or provisioning.
+ *   before architecture generation, ERP provisioning or deployment.
  *
  * Architectural rule:
  *   AI recommends; it does not silently invent or approve requirements.

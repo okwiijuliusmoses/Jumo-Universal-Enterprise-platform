@@ -23,6 +23,8 @@ export type ManufacturingCategory =
   | 'COMMERCIAL_PRODUCTS_ECOSYSTEM'
   | 'RESEARCH_INNOVATION_ECOSYSTEM';
 
+export type ProvisioningCategory = ManufacturingCategory;
+
 export type VerificationGate = 
   | 'GATE_01' | 'GATE_02' | 'GATE_03' | 'GATE_04' | 'GATE_05'
   | 'GATE_06' | 'GATE_07' | 'GATE_08' | 'GATE_09' | 'GATE_10'

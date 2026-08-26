@@ -1,4 +1,4 @@
-import { ArchitectureContract, ManufacturingCategory } from "../../core/factory/registry/HubRegistryTypes";
+import { ArchitectureContract, ProvisioningCategory } from "../../core/factory/registry/HubRegistryTypes";
 import { SovereignGovernanceRegistry } from "../gov/SovereignGovernanceRegistry";
 import { AgentExecutionService } from "../../core/ai/execution/AgentExecutionService";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
@@ -10,7 +10,7 @@ export interface SpecificationIntake {
   targetUsers: string;
   organization: string;
   sector: string;
-  ecosystemType: ManufacturingCategory;
+  ecosystemType: ProvisioningCategory;
   capabilities: string[];
 }
 
@@ -41,7 +41,7 @@ export class ArchitectureEngine {
         ecosystem: "ERP_ECOSYSTEM",
         sector: "Sovereign Enterprise",
         organization: "JUMO National Authority",
-        purpose: "Sovereign Manufacturing Task",
+        purpose: "Sovereign Provisioning Task",
         targetUsers: "National Civil Workforce",
         operatingJurisdiction: "Sovereign Jurisdiction",
         deploymentModel: "HYBRID_CLOUD",
@@ -262,7 +262,7 @@ export class ArchitectureEngine {
     if (contract) {
       contract.status = 'APPROVED';
       registry.saveBlueprint(contract);
-      registry.addLedgerEntry("Architecture Approved", "ARCHITECTURE", `Blueprint ${id} approved and locked for manufacturing.`);
+      registry.addLedgerEntry("Architecture Approved", "ARCHITECTURE", `Blueprint ${id} approved and locked for provisioning.`);
     }
   }
 }

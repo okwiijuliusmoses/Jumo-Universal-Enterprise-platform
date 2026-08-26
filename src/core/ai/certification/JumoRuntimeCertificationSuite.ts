@@ -1,4 +1,4 @@
-// JUMO UEOS — JUMO AI & Manufacturing Runtime Certification Suite
+// JUMO UEOS — JUMO AI & Provisioning Runtime Certification Suite
 // Authoritative automated suite verifying all 17 integration, provider, and orchestration gates.
 
 import { JumoAIProviderRegistry } from "../providers/JumoAIProviderRegistry";
@@ -208,7 +208,7 @@ export class JumoRuntimeCertificationSuite {
     results.push({
       id: "CERT-003",
       name: "Empty Runtime Sandbox Audit",
-      description: "Asserts safe state when there are 0 active manufacturing jobs.",
+      description: "Asserts safe state when there are 0 active provisioning jobs.",
       status: "RUNTIME_VERIFIED",
       details: "Operating registers are successfully mounted. 0 baseline anomalies or memory leaks detected.",
       timestamp: now()
@@ -357,7 +357,7 @@ export class JumoRuntimeCertificationSuite {
     // 14. Automated Manufacturing Progression
     results.push({
       id: "CERT-014",
-      name: "Automated Manufacturing Progression Loop",
+      name: "Automated Provisioning Progression Loop",
       description: "Ensures the state machine automatically transitions through all stages (specification -> architecture -> verification -> implementation -> compiling -> deployment -> runtime).",
       status: "RUNTIME_VERIFIED",
       details: "Automated stage transition engine successfully validated. No human intervention needed except at configured approval gates.",

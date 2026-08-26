@@ -217,21 +217,20 @@ export const JUMO_ENTERPRISE_ECOSYSTEM_CATALOGUE: JumoEnterpriseEcosystem[] = [
     recommendedWorkflows: ['Treasury Transfer Approval', 'AML Alert Escalation', 'Regulatory Report Certification']
   },
   {
-    id: 'eco-08-manufacturing',
-    name: 'JUMO Manufacturing ERP Ecosystem',
-    category: 'Industrial & Infrastructure',
-    description: 'Industrial production planning, Bill of Materials (BOM), shop floor execution, quality control, equipment maintenance and inventory.',
-    organizationTypes: ['Manufacturing Factory', 'Industrial Plant', 'Assembly Facility', 'Processing Enterprise'],
-    recommendedPortals: ['Operator Portal', 'Floor Supervisor Portal', 'Management Portal', 'Quality Inspector Portal'],
+    id: 'eco-08-enterprise',
+    name: 'JUMO Enterprise Operations Ecosystem',
+    category: 'Enterprise & Commercial',
+    description: 'Enterprise operations, resource planning, asset management, and cross-departmental coordination.',
+    organizationTypes: ['Enterprise Corporation', 'Regional Hub', 'Service Provider'],
+    recommendedPortals: ['Executive Portal', 'Operations Portal', 'Staff Portal'],
     recommendedCapabilities: [
-      'Bill of Materials (BOM) & Work Orders',
-      'Shop Floor Execution & Robotics Integration',
-      'Quality Control & Inspection Gatekeeping',
-      'Equipment Preventive Maintenance (EAM)',
-      'Raw Materials Inventory Logistics'
+      'Resource Planning & Operations',
+      'Asset Management & Allocation',
+      'Quality Control & Compliance',
+      'Inventory Logistics'
     ],
-    recommendedModules: ['BOM Engine', 'Shop Floor Control', 'Quality Gate', 'EAM Maintenance', 'Inventory Logistics'],
-    recommendedWorkflows: ['Work Order Release', 'Quality Inspection Approval', 'Equipment Maintenance Alert']
+    recommendedModules: ['Operations Control', 'Asset Management', 'Quality Gate', 'Inventory Logistics'],
+    recommendedWorkflows: ['Work Order Release', 'Quality Inspection Approval', 'Asset Maintenance Alert']
   },
   {
     id: 'eco-09-commerce',
@@ -707,7 +706,7 @@ export const PRODUCT_FAMILIES: ProductFamilyDefinition[] = [
       'Telecom Platform',
       'Healthcare Product',
       'Education Product',
-      'Manufacturing Product',
+      'Enterprise Product',
       'Hospitality Product',
       'Property Platform',
       'Mobility Platform',

@@ -10,7 +10,7 @@ export type AIWorkforceDivision =
   | 'SECURITY_AEGIS'
   | 'TESTING_VERIFICATION'
   | 'GUARDIAN_GOVERNANCE'
-  | 'MANUFACTURING_ORCHESTRATION';
+  | 'SYSTEM_PROVISIONING';
 
 export type AgentLifecycleStatus = 
   | 'REGISTERED'

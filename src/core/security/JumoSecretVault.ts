@@ -161,14 +161,14 @@ export class JumoSecretVault {
     return val === "true";
   }
 
-  public getManufacturingAutoTransition(): boolean {
-    const val = process.env.JUMO_MANUFACTURING_AUTO_TRANSITION;
+  public getExecutionAutoTransition(): boolean {
+    const val = process.env.JUMO_EXECUTION_AUTO_TRANSITION;
     if (val === undefined) return true;
     return val === "true";
   }
 
-  public getManufacturingHumanGatesEnforced(): boolean {
-    const val = process.env.JUMO_MANUFACTURING_HUMAN_GATES_ENFORCED;
+  public getExecutionHumanGatesEnforced(): boolean {
+    const val = process.env.JUMO_EXECUTION_HUMAN_GATES_ENFORCED;
     if (val === undefined) return true;
     return val === "true";
   }
@@ -242,8 +242,8 @@ export class JumoSecretVault {
       JUMO_AI_FALLBACK_ENABLED: this.getAIFallbackEnabled(),
       JUMO_AI_EXTERNAL_PROVIDER_REQUIRED: this.getAIExternalProviderRequired(),
       JUMO_AI_PROVIDER_HEALTH_CHECK_ENABLED: this.getAIProviderHealthCheckEnabled(),
-      JUMO_MANUFACTURING_AUTO_TRANSITION: this.getManufacturingAutoTransition(),
-      JUMO_MANUFACTURING_HUMAN_GATES_ENFORCED: this.getManufacturingHumanGatesEnforced(),
+      JUMO_EXECUTION_AUTO_TRANSITION: this.getExecutionAutoTransition(),
+      JUMO_EXECUTION_HUMAN_GATES_ENFORCED: this.getExecutionHumanGatesEnforced(),
       JUMO_SOVEREIGN_LEDGER_ENABLED: this.getSovereignLedgerEnabled(),
       JUMO_ARCHITECTURE_EXPANSION_LEVEL: this.getArchitectureExpansionLevel(),
     };

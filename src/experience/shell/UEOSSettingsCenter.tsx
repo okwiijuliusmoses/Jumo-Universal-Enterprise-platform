@@ -71,10 +71,11 @@ interface UEOSSettingsCenterProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (settings: UEOSSettings) => void;
+  settings?: UEOSSettings;
 }
 
-export function UEOSSettingsCenter({ isOpen, onClose, onSave }: UEOSSettingsCenterProps) {
-  const [settings, setSettings] = useState<UEOSSettings>(DEFAULT_SETTINGS);
+export function UEOSSettingsCenter({ isOpen, onClose, onSave, settings: initialSettings }: UEOSSettingsCenterProps) {
+  const [settings, setSettings] = useState<UEOSSettings>(initialSettings || DEFAULT_SETTINGS);
   const [activeTab, setActiveTab] = useState<"appearance" | "navigation" | "workspace" | "notifications" | "security" | "runtime" | "accessibility">("appearance");
   const [saveConfirmation, setSaveConfirmation] = useState(false);
 
@@ -258,12 +259,11 @@ export function UEOSSettingsCenter({ isOpen, onClose, onSave }: UEOSSettingsCent
                       onChange={(e) => handleUpdate("defaultLandingWorkspace", e.target.value)}
                       className="bg-white border border-slate-200 rounded-lg text-xs font-bold py-1.5 px-2.5 text-slate-800"
                     >
-                      <option value="command">Command Center</option>
-                      <option value="manufacturing">Intake & Workbench</option>
-                      <option value="blueprints">Blueprint Factory</option>
-                      <option value="workforce">AI Workforce Registry</option>
-                      <option value="verification">20-Gate Verification</option>
-                      <option value="deployment">Deployment Center</option>
+                      <option value="overview">Kernel Telemetry</option>
+                      <option value="products">Products & Platforms</option>
+                      <option value="fintech">JUMO FINTECH SACCO</option>
+                      <option value="faap">FAAP Double-Entry Ledger</option>
+                      <option value="aegis">Aegis Zero-Trust Security</option>
                     </select>
                   </div>
 

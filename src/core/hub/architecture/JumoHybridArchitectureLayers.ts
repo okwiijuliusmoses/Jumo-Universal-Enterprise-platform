@@ -3,7 +3,7 @@
  * Digital Hybrid Architecture Layer Registry
  *
  * This registry defines the authoritative architectural capabilities
- * exposed to the JUMO Engineering / Manufacturing Hub.
+ * exposed to the JUMO Engineering & Operations Hub.
  *
  * These are architectural responsibilities, NOT simulated features.
  */
@@ -157,7 +157,7 @@ const INITIAL_JUMO_HYBRID_ARCHITECTURE_LAYERS: JumoArchitectureLayer[] = [
   L("L090", "AI & Workforce", "Google Gemini Reasoning Provider Interface", "Server-side integration proxy for Gemini 3.6 Flash and Gemini 3.1 Pro models.", "engineering", ["L089"], "ACTIVE", false, true),
   L("L091", "AI & Workforce", "OpenAI / ChatGPT Reasoning Adapter", "Server-side integration bridge for GPT-4o reasoning models.", "engineering", ["L089"], "ACTIVE", false, true),
   L("L092", "AI & Workforce", "Microsoft Copilot Intelligence Adapter", "Enterprise Productivity AI adapter for Microsoft Workspace integration.", "engineering", ["L089"], "INTEGRATION", false, true),
-  L("L093", "AI & Workforce", "400+ Cognitive Engineering Swarm Router", "Allocates specialized AI engineering agents to active manufacturing and testing tasks.", "engineering", ["L089"], "ACTIVE", false, true),
+  L("L093", "AI & Workforce", "400+ Cognitive Engineering Swarm Router", "Allocates specialized AI engineering agents to active provisioning and testing tasks.", "engineering", ["L089"], "ACTIVE", false, true),
   L("L094", "AI & Workforce", "Autonomous Code Generation Engine", "Compiles domain specifications directly into clean, type-safe TypeScript and React code.", "engineering", ["L093"], "ACTIVE", false, true),
   L("L095", "AI & Workforce", "RAG & Vector Knowledge Graph Search", "Retrieves relevant system documentation, regulatory rules, and schema blueprints.", "engineering", ["L038"], "ACTIVE", false, true),
   L("L096", "AI & Workforce", "AI Quality & Hallucination Guardrail", "Validates AI outputs against hard syntax checkers and security schema rules.", "engineering", ["L089"], "ACTIVE", false, true),

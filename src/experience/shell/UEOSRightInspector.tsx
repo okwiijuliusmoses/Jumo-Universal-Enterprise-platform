@@ -303,7 +303,7 @@ export function UEOSRightInspector({ entity, onClose, onTriggerAction }: UEOSRig
         {type === "job" && (
           <div className="space-y-5 animate-in fade-in-50 duration-150">
             <div>
-              <span className="text-[10px] font-black uppercase text-slate-400">Active Pipeline Job</span>
+              <span className="text-[10px] font-black uppercase text-slate-400">Active Execution Job</span>
               <h4 className="text-xs font-extrabold text-slate-900 mt-0.5">{data.name}</h4>
               <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
                 Continuous compilation stream running on {data.branch}.

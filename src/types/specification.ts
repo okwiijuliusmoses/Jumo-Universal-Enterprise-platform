@@ -377,10 +377,10 @@ export interface ImplementationGradeSpecificationContract {
     criticality: 'MANDATORY' | 'REQUIRED' | 'CONTRACTUAL' | 'RECOMMENDED' | 'OPTIONAL';
   }>;
 
-  // 17. Manufacturing Requirements
-  manufacturingRequirements: {
-    manufacturingId: string;
-    manufacturingVersion: string;
+  // 17. Provisioning Requirements
+  provisioningRequirements: {
+    provisioningId: string;
+    provisioningVersion: string;
     architectureVersion: string;
     specificationVersion: string;
     requiredStudios: string[];

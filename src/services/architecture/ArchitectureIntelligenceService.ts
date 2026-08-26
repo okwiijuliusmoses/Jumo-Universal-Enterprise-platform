@@ -131,7 +131,7 @@ export class ArchitectureIntelligenceService {
         requiredDivisions.add('SECURITY_AEGIS');
       }
       if (l.family === 'Workflows & Process Automation' || l.family === 'Sovereign Governance') {
-        requiredDivisions.add('MANUFACTURING_ORCHESTRATION');
+        requiredDivisions.add('SYSTEM_PROVISIONING');
         requiredDivisions.add('GUARDIAN_GOVERNANCE');
       }
       if (l.family === 'Financial Ledger & Compliance' || l.family === 'Ecosystem Connectors') {

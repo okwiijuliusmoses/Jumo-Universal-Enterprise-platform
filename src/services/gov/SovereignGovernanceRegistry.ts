@@ -118,10 +118,10 @@ export class SovereignGovernanceRegistry {
     return this.getAllBlueprints();
   }
 
-  // --- Manufacturing Jobs ---
+  // --- Provisioning Jobs ---
   public registerJob(job: ManufacturingJob) {
     this.manufacturingJobs.set(job.id, job);
-    this.addLedgerEntry("Job Registered", "FACTORY", `Job ${job.id} registered.`);
+    this.addLedgerEntry("Job Registered", "PROVISIONING", `Job ${job.id} registered.`);
   }
 
   public createManufacturingJob(blueprintId: string, ecosystem: ManufacturingCategory): ManufacturingJob {
@@ -137,17 +137,17 @@ export class SovereignGovernanceRegistry {
       status: 'DIGITAL_INTAKE',
       progress: 0,
       assignedWorkforce: [],
-      repository: "https://git.jumo.internal/national-factory/" + blueprint.specificationId,
+      repository: "https://git.jumo.internal/national-platform/" + blueprint.specificationId,
       branch: "main",
       commitSha: "sha-" + Math.random().toString(36).substr(2, 8),
       evidence: [],
-      logs: [`[SYSTEM] Manufacturing Job initialized for ${blueprint.productIdentity.name}`],
+      logs: [`[SYSTEM] Provisioning Job initialized for ${blueprint.productIdentity.name}`],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
     this.manufacturingJobs.set(job.id, job);
-    this.addLedgerEntry("Manufacturing Job Created", "FACTORY", `Job ${job.id} for architecture ${blueprintId} initialized.`);
+    this.addLedgerEntry("Provisioning Job Created", "PROVISIONING", `Job ${job.id} for architecture ${blueprintId} initialized.`);
     return job;
   }
 
@@ -209,7 +209,7 @@ export class SovereignGovernanceRegistry {
   public getGlobalStats() {
     return {
       activeBlueprints: this.blueprints.size,
-      activeManufacturingJobs: Array.from(this.manufacturingJobs.values()).filter(j => j.status !== 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT' && j.status !== 'FAILED').length,
+      activeProvisioningJobs: Array.from(this.manufacturingJobs.values()).filter(j => j.status !== 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT' && j.status !== 'FAILED').length,
       certifiedProducts: this.certifications.size,
       activeDeploymentNodes: 1240, 
       nationalStandardCompliance: 100 

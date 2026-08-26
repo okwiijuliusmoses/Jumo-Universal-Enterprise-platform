@@ -1,6 +1,6 @@
 {
   "name": "JUMO UEOS Sovereign Command",
-  "description": "National-scale digital manufacturing control-plane and sovereign operating layer for JUMO Universal Enterprise Operating System (UEOS), integrating specification validation, 420+ cognitive workforce architecture expansion, verification command center, and 32-stage manufacturing pipeline.",
+  "description": "National-scale sovereign enterprise operating platform for JUMO Universal Enterprise Operating System (UEOS), executing 6 sovereign commercial ERP products and 8 independent shared infrastructure platforms.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -291,7 +291,7 @@ export class JumoAIAgentRegistry {
       },
       {
         name: "Release Engineer",
-        division: "MANUFACTURING_ORCHESTRATION",
+        division: "SYSTEM_PROVISIONING",
         role: "Sovereign Deployments Director",
         desc: "Orchestrates build promotes, validating production status and signing releases cryptographically.",
         tools: ["promoteProductionSlot", "signReleaseArtifact"],

@@ -52,4 +52,4 @@ export default function App() {
 
   return <UEOSShell user={currentUser} onLogout={handleLogout} />;
 }
-// JUMO UEOS 20-Stage Pipeline Operationalized
+// JUMO UEOS Operating Environment Operationalized

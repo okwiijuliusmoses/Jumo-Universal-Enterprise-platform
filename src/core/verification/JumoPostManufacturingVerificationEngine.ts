@@ -347,8 +347,8 @@ export class JumoPostManufacturingVerificationEngine {
           loopIteration: 1,
           timestamp,
           actionTaken: criticalDefects === 0 
-            ? "Post-Manufacturing Verification completed. Baseline conformance verified successfully."
-            : `Post-Manufacturing Verification completed. Intercepted ${criticalDefects} critical defects. Initiating Aegis Quarantine.`,
+            ? "Post-Provisioning Verification completed. Baseline conformance verified successfully."
+            : `Post-Provisioning Verification completed. Intercepted ${criticalDefects} critical defects. Initiating Aegis Quarantine.`,
           engineerAgentId: "jumo-ai-verifier-001",
           resolvedFindingsCount: passedCount
         }
@@ -414,7 +414,7 @@ export class JumoPostManufacturingVerificationEngine {
     }
 
     if (!report.canCertify) {
-      throw new Error("Cannot issue certification: Product failed Post-Manufacturing Verification.");
+      throw new Error("Cannot issue certification: Product failed Post-Provisioning Verification.");
     }
 
     const timestamp = new Date().toISOString();

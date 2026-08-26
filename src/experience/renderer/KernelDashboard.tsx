@@ -54,7 +54,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
 
         const [lockRes, planRes, smRes, certRes] = await Promise.all([
           fetchJson("/api/v1/ueos/kernel/architecture-lock"),
-          fetchJson("/api/v1/ueos/kernel/factory-migration-plan"),
+          fetchJson("/api/v1/ueos/kernel/provisioning-migration-plan"),
           fetchJson("/api/v1/ueos/kernel/provisioning-state-machine"),
           fetchJson("/api/v1/ueos/kernel/shared-platform-certification")
         ]);
@@ -310,8 +310,8 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
                       { id: "identity-gateway", name: "AEGIS Zero-Trust Identity Gateway", integrityHash: "sha256-aegis-zt-identity-lock-v13-secure", status: "VERIFIED" },
                       { id: "registry-engine", name: "Canonical Ecosystem & Template Registry Engine", integrityHash: "sha256-registry-canon-lock-v13-secure", status: "VERIFIED" },
                       { id: "blueprint-engine", name: "Blueprint Intelligence Synthesis Engine", integrityHash: "sha256-blueprint-intel-lock-v13-secure", status: "VERIFIED" },
-                      { id: "factory-engine", name: "Universal ERP Manufacturing Factory Engine", integrityHash: "sha256-factory-mfg-lock-v13-secure", status: "VERIFIED" },
-                      { id: "provisioning-engine", name: "Cryptographic Provisioning & Instance Lifecycle Engine", integrityHash: "sha256-provisioning-lifecycle-lock-v13-secure", status: "VERIFIED" }
+                      { id: "provisioning-engine", name: "Universal ERP Provisioning & Lifecycle Engine", integrityHash: "sha256-provisioning-lifecycle-lock-v13-secure", status: "VERIFIED" },
+                      { id: "security-engine", name: "Cryptographic Security & Identity Lifecycle Engine", integrityHash: "sha256-security-lifecycle-lock-v13-secure", status: "VERIFIED" }
                     ]).map((sub: any) => (
                       <div key={sub.id} className="p-4 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
                         <div>
@@ -333,7 +333,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
                       { endpoint: "/api/ueos/ecosystems", methods: ["GET"] },
                       { endpoint: "/api/ueos/templates", methods: ["GET"] },
                       { endpoint: "/api/ueos/instances", methods: ["GET", "POST", "DELETE"] },
-                      { endpoint: "/api/ueos/registry/factory/provision", methods: ["POST"] },
+                      { endpoint: "/api/ueos/registry/provision", methods: ["POST"] },
                       { endpoint: "/api/ueos/runtime/telemetry", methods: ["GET"] },
                       { endpoint: "/api/ueos/faap/transaction/orchestrate", methods: ["POST"] }
                     ]).map((route: any, i: number) => (
@@ -372,7 +372,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
           {activeLockSubTab === "machine" && (
             <div className="space-y-8 animate-in fade-in duration-300">
               <div className="p-8 bg-slate-50 border border-slate-100 rounded-3xl space-y-6">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Cryptographic 12-Stage Manufacturing Machine</span>
+                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Cryptographic 12-Stage Provisioning Pipeline</span>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {[
                     { s: "1", label: "INITIATED", desc: "Request received & validated" },
@@ -417,7 +417,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
                   </div>
                   <div>
                     <h4 className="text-lg font-black text-emerald-950 uppercase tracking-tight">Shared Platform Certification Status: CERTIFIED</h4>
-                    <p className="text-xs font-bold text-emerald-800 mt-0.5">All foundational sovereign services have cleared the 95%+ enterprise maturity threshold. ERP Factory Manufacturing is fully activated.</p>
+                    <p className="text-xs font-bold text-emerald-800 mt-0.5">All foundational sovereign services have cleared the 95%+ enterprise maturity threshold. Universal ERP Provisioning Engine is fully activated.</p>
                   </div>
                 </div>
                 <span className="px-4 py-2 bg-emerald-600 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-md">
@@ -428,7 +428,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   { name: "FAAP Enterprise Financial Platform", score: 96.5, status: "CERTIFIED", modules: ["Multi-Entity GL", "AP/AR", "Fixed Assets", "Payroll", "Tax", "Budget"] },
-                  { name: "JUMO Digital Pay Payment Platform", score: 95.8, status: "CERTIFIED", modules: ["Universal Gateway", "Payment Code Factory", "Settlement Engine", "Multi-Currency"] },
+                  { name: "JUMO Digital Pay Payment Platform", score: 95.8, status: "CERTIFIED", modules: ["Universal Gateway", "Payment Switch Engine", "Settlement Engine", "Multi-Currency"] },
                   { name: "AEGIS National Security Operations", score: 97.2, status: "CERTIFIED", modules: ["SOC Real-Time", "MFA/Identity", "Privileged Access", "Compliance Engine"] },
                   { name: "JUMO Digital Auditor & Ledger", score: 96.0, status: "CERTIFIED", modules: ["Double-Entry Parity", "Continuous Audit Logs"] },
                   { name: "Master National Treasury", score: 96.2, status: "CERTIFIED", modules: ["Liquidity Command", "Settlement Clearing", "Reserve Pools"] }
@@ -632,11 +632,11 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
           </div>
         </div>
 
-        {/* Manufacturing Engine Monitor */}
+        {/* Platform Telemetry Engine Monitor */}
         <div className="bg-slate-950 rounded-[3rem] border border-slate-800 p-10 shadow-3xl text-white space-y-8">
           <div className="flex items-center justify-between border-b border-white/5 pb-6">
             <h3 className="text-xl font-black tracking-tight flex items-center gap-4 text-white">
-              <Cpu className="w-6 h-6 text-blue-500" /> Manufacturing Hub
+              <Cpu className="w-6 h-6 text-blue-500" /> Sovereign Platform Telemetry
             </h3>
             <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Live Engine Status</span>
           </div>
@@ -661,7 +661,7 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
           </div>
 
           <div className="space-y-6">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Manufacturing Threads</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Provisioning Threads</h4>
             {[
               { label: "Blueprint AI Engineer", progress: 85, color: "blue" },
               { label: "Security AEGIS Generator", progress: 62, color: "indigo" },
@@ -684,10 +684,10 @@ export function KernelDashboard({ onNavigate }: KernelDashboardProps) {
           </div>
           
           <button 
-            onClick={() => onNavigate?.("factory")}
+            onClick={() => onNavigate?.("instances")}
             className="w-full py-5 bg-blue-600 text-white font-black text-xs uppercase tracking-widest rounded-[2rem] hover:bg-white hover:text-slate-900 transition-all shadow-2xl shadow-blue-900/40"
           >
-            Launch Manufacturing Engine
+            Inspect Active Enterprise Instances
           </button>
         </div>
       </div>
