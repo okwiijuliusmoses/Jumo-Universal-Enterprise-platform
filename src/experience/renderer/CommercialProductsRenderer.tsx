@@ -6,7 +6,6 @@ import {
   Shield,
   BrainCircuit,
   Database,
-  Cpu,
   Lock,
   Workflow,
   BarChart3,
@@ -21,12 +20,21 @@ import {
   Activity,
   RefreshCw,
   X,
+  GraduationCap,
+  School,
+  BookOpen,
+  Church,
+  Users,
+  Landmark,
+  Building2,
+  Wallet
 } from "lucide-react";
 
-type Product = {
+export type Product = {
   id: string;
   name: string;
-  category: string;
+  category: "SOVEREIGN_PRODUCT" | "SHARED_PLATFORM";
+  categoryLabel: string;
   icon: React.ElementType;
   color: string;
   iconClass: string;
@@ -37,261 +45,362 @@ type Product = {
   status: string;
   version: string;
   priceModel: string;
+  directoratesCount?: number;
+  departmentsCount?: number;
+  portalsCount?: number;
+  modulesCount?: number;
 };
 
 const products: Product[] = [
-  {
-    id: "prod-factory",
-    name: "JUMO National Manufacturing Hub",
-    category: "Platform Creation",
-    icon: Cpu,
-    color: "indigo",
-    iconClass: "text-indigo-600",
-    bgClass: "bg-indigo-50",
-    tagline: "Autonomous enterprise platform manufacturing and blueprint compilation",
-    description:
-      "Commercial platform manufacturing environment for creating, configuring, upgrading, and operating enterprise applications and institutional platforms.",
-    capabilities: [
-      "Platform Architecture Scaffolding",
-      "Governance & Department Matrix Generator",
-      "Digital Form & Workflow Compiler",
-      "Live Upgrade & Migration Engine",
-    ],
-    status: "Installed & Operational",
-    version: "v13.4.0",
-    priceModel: "Commercial Platform License",
-  },
-  {
-    id: "prod-cloud",
-    name: "JUMO Cloud",
-    category: "Infrastructure & Compute",
-    icon: Cloud,
-    color: "blue",
-    iconClass: "text-blue-600",
-    bgClass: "bg-blue-50",
-    tagline: "Sovereign hybrid cloud compute, storage, and container hosting",
-    description:
-      "Hybrid infrastructure product providing compute, storage, networking, deployment, replication, and infrastructure services to every participating JUMO product.",
-    capabilities: [
-      "Distributed Container Runtime",
-      "Zero-Trust Network Mesh",
-      "Auto-scaling Compute Infrastructure",
-      "Isolated Tenant Data Encryption at Rest",
-    ],
-    status: "Operational",
-    version: "v4.2.1",
-    priceModel: "Pay-as-you-Scale",
-  },
-  {
-    id: "prod-auditor",
-    name: "JUMO Digital Auditor",
-    category: "Compliance & Audit",
-    icon: Shield,
-    color: "purple",
-    iconClass: "text-purple-600",
-    bgClass: "bg-purple-50",
-    tagline: "Continuous AI-powered financial, security, and operational audit",
-    description:
-      "Independent audit and assurance product that can inspect transactions, access, workflows, configurations, security events, and operational activity across participating products.",
-    capabilities: [
-      "Double-Entry Ledger Parity Audit",
-      "RBAC & ABAC Access Audit",
-      "Automated Compliance Sweeps",
-      "Real-time Fraud Anomaly Detection",
-    ],
-    status: "Active & Monitoring",
-    version: "v2.8.0",
-    priceModel: "Enterprise Subscription",
-  },
-  {
-    id: "prod-faap",
-    name: "JUMO FAAP",
-    category: "Financial Accounting",
-    icon: DollarSign,
-    color: "emerald",
-    iconClass: "text-emerald-600",
-    bgClass: "bg-emerald-50",
-    tagline: "Financial accounting, allocation, treasury, and settlement services",
-    description:
-      "Independent financial product providing accounting, treasury, allocation, budgeting, settlement, payroll, and financial control services that can be consumed by any commercial product.",
-    capabilities: [
-      "Immutable Double-Entry Ledger",
-      "Settlement & Clearing Fee Router",
-      "Multi-Currency & Treasury Management",
-      "Automated Tax & Budget Control",
-    ],
-    status: "Operational",
-    version: "v12.0.0",
-    priceModel: "Transaction & Enterprise Plans",
-  },
-  {
-    id: "prod-pay",
-    name: "JUMO DIGITAL PAY",
-    category: "Payments & Gateway",
-    icon: CreditCard,
-    color: "amber",
-    iconClass: "text-amber-600",
-    bgClass: "bg-amber-50",
-    tagline: "Universal payment orchestration across mobile, cards, and banking rails",
-    description:
-      "Independent payment product that provides payment initiation, routing, settlement, reconciliation, and payment-status services to every participating JUMO product.",
-    capabilities: [
-      "Multi-Rail Payment Routing",
-      "Mobile Money Settlements",
-      "Webhook & Reconciliation",
-      "Cryptographically Signed Payment Tokens",
-    ],
-    status: "Operational",
-    version: "v5.1.0",
-    priceModel: "Transaction Fee / Enterprise Plan",
-  },
+  // === 6 SOVEREIGN PRODUCTS ===
   {
     id: "prod-fintech",
     name: "JUMO FINTECH",
-    category: "Banking & Credit",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Financial Services",
     icon: Zap,
     color: "cyan",
     iconClass: "text-cyan-600",
     bgClass: "bg-cyan-50",
-    tagline: "Banking, SACCO, credit, savings, and financial-services ecosystem",
+    tagline: "SACCO, Microfinance, Credit Unions & Banking Ecosystem",
     description:
-      "Independent financial-services product managing savings, credit, deposits, lending, shares, dividends, risk evaluation, and financial-service workflows.",
+      "Full-scale sovereign financial product managing member savings, credit scoring, loan origination, share capital, dividend distribution, mobile money lending, and central bank prudential returns.",
     capabilities: [
-      "Automated Credit Risk Engine",
-      "SACCO Dividend & Share Capital",
-      "Mobile & USSD Integration",
-      "Regulatory Returns Reporting",
+      "SACCO Member & Share Capital Management",
+      "Automated Credit Scoring & Risk Underwriting",
+      "Loan Origination, Repayment & Arrears Recovery",
+      "USSD / Mobile Money Self-Service Banking",
+      "Regulatory Returns & Prudential Compliance"
     ],
-    status: "Operational",
-    version: "v8.3.0",
+    status: "Active & Certified",
+    version: "v8.4.0",
     priceModel: "Sovereign Commercial License",
+    directoratesCount: 4,
+    departmentsCount: 8,
+    portalsCount: 4,
+    modulesCount: 32
   },
   {
-    id: "prod-aegis",
+    id: "prod-nursery-primary",
+    name: "JUMO NURSERY & PRIMARY ERP",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Early Education",
+    icon: School,
+    color: "amber",
+    iconClass: "text-amber-600",
+    bgClass: "bg-amber-50",
+    tagline: "Early childhood, nursery, and primary school institutional operating system",
+    description:
+      "Comprehensive school management system covering pupil admissions, continuous assessment tracking, CBC & standard grading, automated fee billing, parent communications, transport, and nutrition.",
+    capabilities: [
+      "Pupil Enrollment & Bio-Demographic Records",
+      "Early Years Continuous Assessment & Competency Matrix",
+      "Fee Billing, Invoicing & Direct Bank Reconciliation",
+      "School Transport, Meal & Daily Attendance Tracking",
+      "Parent Portal & SMS Progress Reporting"
+    ],
+    status: "Active & Certified",
+    version: "v6.2.0",
+    priceModel: "Institutional License",
+    directoratesCount: 4,
+    departmentsCount: 8,
+    portalsCount: 4,
+    modulesCount: 28
+  },
+  {
+    id: "prod-secondary-school",
+    name: "JUMO SECONDARY SCHOOL ERP",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Secondary Education",
+    icon: BookOpen,
+    color: "blue",
+    iconClass: "text-blue-600",
+    bgClass: "bg-blue-50",
+    tagline: "Secondary education, boarding, academic departments, and national examinations",
+    description:
+      "End-to-end secondary school ERP managing academic departments, national exam registration, boarding house allocation, teacher workload, laboratory asset control, disciplinary records, and student billing.",
+    capabilities: [
+      "Curriculum & Subject Combination Timetabling",
+      "National Examination Registration & Transcript Engine",
+      "Boarding House & Hostels Management",
+      "Science Lab & Library Inventory Control",
+      "Teacher Workload & Academic Performance Analytics"
+    ],
+    status: "Active & Certified",
+    version: "v7.1.0",
+    priceModel: "Institutional License",
+    directoratesCount: 5,
+    departmentsCount: 10,
+    portalsCount: 5,
+    modulesCount: 36
+  },
+  {
+    id: "prod-university-tertiary",
+    name: "JUMO UNIVERSITY & TERTIARY ERP",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Higher Education",
+    icon: GraduationCap,
+    color: "indigo",
+    iconClass: "text-indigo-600",
+    bgClass: "bg-indigo-50",
+    tagline: "Collegiate faculties, research grants, senate grading, and student lifecycle",
+    description:
+      "Enterprise collegiate operating system supporting faculty governance, credit hours, research grant allocation, senate graduation clearance, campus hostel accommodation, bursary clearing, and online course registration.",
+    capabilities: [
+      "Faculty & Academic Department Curriculum Engine",
+      "Course Registration, Add/Drop & Credit Hour Matrix",
+      "Senate Grade Approval & Graduation Clearance",
+      "Research Grants & Sponsored Projects Accounting",
+      "Campus Housing & Student Guild Government"
+    ],
+    status: "Active & Certified",
+    version: "v9.3.0",
+    priceModel: "University Enterprise License",
+    directoratesCount: 6,
+    departmentsCount: 12,
+    portalsCount: 6,
+    modulesCount: 44
+  },
+  {
+    id: "prod-church-faith",
+    name: "JUMO CHURCH & FAITH ERP",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Faith Institutions",
+    icon: Church,
+    color: "emerald",
+    iconClass: "text-emerald-600",
+    bgClass: "bg-emerald-50",
+    tagline: "Diocese, parish, tithes, ministry workflows, and pastoral care operating system",
+    description:
+      "Specialized faith-based enterprise management system managing diocesan governance, parish memberships, electronic tithe and pledge collection, pastoral counseling schedules, sacramental registries, and community outreach.",
+    capabilities: [
+      "Parish & Fellowship Membership Directory",
+      "Digital Tithes, Offerings & Building Pledges Ledger",
+      "Sacramental Registries (Baptism, Confirmation, Marriage)",
+      "Pastoral Visitation & Counseling Scheduling",
+      "Diocesan Financial Consolidations & Missionary Projects"
+    ],
+    status: "Active & Certified",
+    version: "v5.4.0",
+    priceModel: "Diocesan & Community License",
+    directoratesCount: 4,
+    departmentsCount: 8,
+    portalsCount: 4,
+    modulesCount: 30
+  },
+  {
+    id: "prod-alumni-community",
+    name: "JUMO ALUMNI & COMMUNITY ERP",
+    category: "SOVEREIGN_PRODUCT",
+    categoryLabel: "Sovereign Product • Alumni & Association",
+    icon: Users,
+    color: "purple",
+    iconClass: "text-purple-600",
+    bgClass: "bg-purple-50",
+    tagline: "Alumni network, endowment funds, career mentorship, and association governance",
+    description:
+      "Community engagement platform managing alumni chapters, endowment fund campaigns, professional mentorship matchmaking, reunion ticket allocations, career postings, and democratic executive elections.",
+    capabilities: [
+      "Alumni Chapters & Global Member Directory",
+      "Endowment Fund Capital Drives & Transparent Ledger",
+      "Career Mentorship & Job Board Integration",
+      "Reunion Conventions & Event Ticketing",
+      "Executive Council Elections & Voting Portal"
+    ],
+    status: "Active & Certified",
+    version: "v4.8.0",
+    priceModel: "Association License",
+    directoratesCount: 4,
+    departmentsCount: 8,
+    portalsCount: 4,
+    modulesCount: 26
+  },
+
+  // === 8 INDEPENDENT SHARED PLATFORMS ===
+  {
+    id: "plat-faap",
+    name: "JUMO FAAP",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Financial Ledger",
+    icon: DollarSign,
+    color: "emerald",
+    iconClass: "text-emerald-600",
+    bgClass: "bg-emerald-50",
+    tagline: "Financial Accounting, Allocation, Treasury, and Double-Entry Settlement Platform",
+    description:
+      "Autonomous zero-parity multi-currency double-entry ledger platform. Provides chart of accounts, budget control, accounts payable/receivable, payroll clearing, and cryptographic audit proofs across all sovereign products.",
+    capabilities: [
+      "Zero-Discrepancy Double-Entry Journal Engine",
+      "Multi-Currency Automated Clearing & FX Revaluation",
+      "Automated Tax (VAT, WHT, PAYE) Calculation",
+      "Real-time Budgetary Control & Spend Authorization",
+      "Cross-Product Allocation & Revenue Sharing"
+    ],
+    status: "Installed & Operational",
+    version: "v12.4.0",
+    priceModel: "Shared Platform Infrastructure"
+  },
+  {
+    id: "plat-digital-pay",
+    name: "JUMO DIGITAL PAY",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Payment Switch",
+    icon: CreditCard,
+    color: "amber",
+    iconClass: "text-amber-600",
+    bgClass: "bg-amber-50",
+    tagline: "Universal payment orchestration across mobile money, cards, and banking rails",
+    description:
+      "High-throughput transaction routing switch with sub-200ms settlement. Integrates MTN Mobile Money, Airtel Money, Visa/Mastercard grids, SWIFT interbank rails, and QR merchant wallets.",
+    capabilities: [
+      "Sub-200ms Multi-Rail Transaction Routing",
+      "Mobile Money Webhooks & Auto-Reconciliation",
+      "Interbank SWIFT Settlement Integration",
+      "Cryptographic Payment Tokens & Replay Defense",
+      "Merchant Aggregator Fee Splits"
+    ],
+    status: "Installed & Operational",
+    version: "v5.3.0",
+    priceModel: "Shared Platform Infrastructure"
+  },
+  {
+    id: "plat-aegis",
     name: "JUMO AEGIS",
-    category: "Security & Intelligence",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Zero-Trust Security",
     icon: Lock,
     color: "red",
     iconClass: "text-red-600",
     bgClass: "bg-red-50",
-    tagline: "Autonomous zero-trust security intelligence and threat defense",
+    tagline: "Autonomous zero-trust security intelligence, token signing, and HSM policy enforcement",
     description:
-      "Independent cybersecurity product providing identity protection, threat detection, security analytics, cryptographic services, and security enforcement across participating products.",
+      "Enterprise security platform providing role-based and attribute-based access control (RBAC/ABAC), HSM-backed session signing, behavioral intrusion defense, API rate throttling, and cryptographic key rotation.",
     capabilities: [
-      "Real-Time Intrusion Defense",
-      "Security Intelligence Engine",
-      "Cryptographic Key & HSM Integration",
-      "MFA & Session Protection",
+      "Zero-Trust Policy Enforcement Matrix",
+      "HSM Key Management & Token Signing",
+      "Behavioral Anomaly & DDoS Mitigation",
+      "Granular Multi-Factor Authorization Gates",
+      "Real-Time Security Event Correlation (SIEM)"
     ],
-    status: "Protection Active",
-    version: "v6.0.0",
-    priceModel: "Enterprise Security License",
+    status: "Installed & Operational",
+    version: "v6.1.0",
+    priceModel: "Shared Platform Infrastructure"
   },
   {
-    id: "prod-aicore",
-    name: "JUMO AI",
-    category: "Artificial Intelligence",
+    id: "plat-treasury",
+    name: "JUMO TREASURY",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Liquidity & Treasury",
+    icon: Landmark,
+    color: "teal",
+    iconClass: "text-teal-600",
+    bgClass: "bg-teal-50",
+    tagline: "Enterprise liquidity forecasting, cash pool sweeping, and bank account reconciliation",
+    description:
+      "Platform for real-time corporate treasury operations, cash concentration, sweeping rules, multi-bank statement ingestion (MT940/CAMT), yield optimization, and counterparty credit limit monitoring.",
+    capabilities: [
+      "Multi-Bank Account Balance Aggregation",
+      "Automated Cash Sweeping & Pooling Rules",
+      "MT940 / ISO 20022 Bank Statement Parsing",
+      "90-Day Cash Flow Liquidity Forecasting",
+      "Foreign Exchange Exposure Hedging"
+    ],
+    status: "Installed & Operational",
+    version: "v3.2.0",
+    priceModel: "Shared Platform Infrastructure"
+  },
+  {
+    id: "plat-digital-auditor",
+    name: "JUMO DIGITAL AUDITOR",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Compliance & Audit",
+    icon: Shield,
+    color: "purple",
+    iconClass: "text-purple-600",
+    bgClass: "bg-purple-50",
+    tagline: "Continuous automated forensic financial, security, and statutory compliance audit",
+    description:
+      "Autonomous audit engine inspecting all ledger mutations, permission escalations, procurement approvals, and configuration changes against statutory accounting standards (IFRS/GAAP) and national regulations.",
+    capabilities: [
+      "Continuous Double-Entry Ledger Parity Audit",
+      "Automated Fraud & Suspicious Pattern Detection",
+      "Statutory Tax & Regulatory Return Verification",
+      "Immutable Cryptographic Evidence Chains",
+      "Executive Compliance Heatmaps & Reports"
+    ],
+    status: "Installed & Operational",
+    version: "v2.9.0",
+    priceModel: "Shared Platform Infrastructure"
+  },
+  {
+    id: "plat-ai-hybrid",
+    name: "JUMO AI DIGITAL HYBRID",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Cognitive Routing",
     icon: BrainCircuit,
     color: "rose",
     iconClass: "text-rose-600",
     bgClass: "bg-rose-50",
-    tagline: "Multi-model cognitive routing, knowledge, and AI-agent services",
+    tagline: "Multi-model cognitive mesh, domain specialized agents, and semantic RAG intelligence",
     description:
-      "Independent AI product providing model routing, domain agents, knowledge retrieval, reasoning assistance, automation intelligence, and AI services to participating products.",
+      "Enterprise AI platform providing intelligent query routing between Gemini models, local fallback vectors, domain-specific assistants, institutional policy search, and workflow automation helpers.",
     capabilities: [
-      "Multi-Model Cognitive Routing",
-      "Domain Specialized Agents",
-      "Semantic Knowledge & RAG",
-      "Autonomous Task Assistance",
+      "Dynamic Multi-Model Cognitive Router",
+      "Domain Agents (Finance, Academic, Legal, HR)",
+      "Hybrid Vector Knowledge & Semantic RAG",
+      "Context-Aware Form Filling & Data Extraction",
+      "Zero-Data-Exfiltration Enterprise Privacy Boundary"
     ],
-    status: "Operational",
-    version: "v3.6.0",
-    priceModel: "Usage / Enterprise Tier",
+    status: "Installed & Operational",
+    version: "v3.8.0",
+    priceModel: "Shared Platform Infrastructure"
   },
   {
-    id: "prod-datamesh",
-    name: "JUMO Data Mesh",
-    category: "Data & Analytics",
-    icon: Database,
-    color: "teal",
-    iconClass: "text-teal-600",
-    bgClass: "bg-teal-50",
-    tagline: "Federated enterprise data exchange and analytical services",
-    description:
-      "Independent data product providing governed data exchange, federated queries, synchronization, analytical datasets, and cross-product data services.",
-    capabilities: [
-      "Federated Query Services",
-      "Governed Data Sharing",
-      "Real-time Data Synchronization",
-      "Enterprise KPI Data Services",
-    ],
-    status: "Operational",
-    version: "v2.1.0",
-    priceModel: "Sovereign Commercial License",
-  },
-  {
-    id: "prod-identity",
-    name: "JUMO Identity",
-    category: "Identity & Access",
-    icon: Server,
-    color: "orange",
-    iconClass: "text-orange-600",
-    bgClass: "bg-orange-50",
-    tagline: "Digital identity, authentication, SSO, and access services",
-    description:
-      "Independent identity product providing authentication, identity verification, SSO, authorization, device trust, and identity services to participating products.",
-    capabilities: [
-      "Unified Identity & SSO",
-      "Role & Attribute Access Control",
-      "Identity Verification Bridge",
-      "Device & Session Risk Scoring",
-    ],
-    status: "Operational",
-    version: "v4.0.0",
-    priceModel: "Identity Service Plans",
-  },
-  {
-    id: "prod-workflow",
-    name: "JUMO Workflow",
-    category: "Automation",
+    id: "plat-workflow",
+    name: "JUMO WORKFLOW ENGINE",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Process Automation",
     icon: Workflow,
     color: "violet",
     iconClass: "text-violet-600",
     bgClass: "bg-violet-50",
-    tagline: "Business process automation and approval orchestration",
+    tagline: "State-machine business process automation, conditional approval routing, and SLA tracking",
     description:
-      "Independent workflow product providing process orchestration, approvals, conditional routing, SLA management, notifications, and workflow intelligence.",
+      "Enterprise workflow engine coordinating multi-stage human and automated approvals across departments, escalation timers, digital signatures, and cross-platform notification dispatch.",
     capabilities: [
-      "Visual Process Designer",
-      "SLA Tracking & Escalation",
-      "Multi-Party Digital Approvals",
-      "AI Process Optimization",
+      "Declarative BPMN State Machine Engine",
+      "Multi-Tier Hierarchical Approval Hierarchies",
+      "Automated SLA Timers & Escalation Alerts",
+      "Cryptographically Verified Digital Signatures",
+      "Event-Driven Cross-Platform Hooks"
     ],
-    status: "Operational",
-    version: "v5.2.0",
-    priceModel: "Workflow Service Plans",
+    status: "Installed & Operational",
+    version: "v5.4.0",
+    priceModel: "Shared Platform Infrastructure"
   },
   {
-    id: "prod-analytics",
-    name: "JUMO Analytics",
-    category: "Business Intelligence",
-    icon: BarChart3,
-    color: "sky",
-    iconClass: "text-sky-600",
-    bgClass: "bg-sky-50",
-    tagline: "Real-time reporting, intelligence, forecasting, and enterprise analytics",
+    id: "plat-cloud-infra",
+    name: "JUMO CLOUD / INFRASTRUCTURE",
+    category: "SHARED_PLATFORM",
+    categoryLabel: "Shared Platform • Sovereign Compute Fabric",
+    icon: Cloud,
+    color: "blue",
+    iconClass: "text-blue-600",
+    bgClass: "bg-blue-50",
+    tagline: "Sovereign hybrid cloud compute, multi-tenant isolation, and container orchestration",
     description:
-      "Independent analytics product providing reporting, visualization, forecasting, KPI management, alerts, and decision-support services across participating products.",
+      "Underlying sovereign infrastructure fabric providing resilient container orchestration, tenant data isolation, encrypted backups, edge replication, and zero-downtime rolling updates.",
     capabilities: [
-      "Interactive Executive Cockpits",
-      "Scheduled Reports & Exports",
-      "Predictive Forecasting",
-      "KPI & Alerting Studio",
+      "Distributed Sovereign Container Mesh",
+      "Multi-Tenant Database & Storage Encryption",
+      "Zero-Downtime Hot Upgrades & Rollbacks",
+      "Disaster Recovery & Continuous Replication",
+      "Real-Time Node Telemetry & Autoscaling"
     ],
-    status: "Operational",
-    version: "v3.0.0",
-    priceModel: "Analytics Service Plans",
-  },
+    status: "Installed & Operational",
+    version: "v4.5.0",
+    priceModel: "Shared Platform Infrastructure"
+  }
 ];
 
 const productMap = new Map(products.map((product) => [product.id, product]));
@@ -300,9 +409,15 @@ function getPeerProducts(productId: string) {
   return products.filter((product) => product.id !== productId);
 }
 
-export function CommercialProductsRenderer() {
+export function CommercialProductsRenderer({ onNavigateToProduct }: { onNavigateToProduct?: (productId: string) => void }) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showNetwork, setShowNetwork] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<"ALL" | "SOVEREIGN_PRODUCT" | "SHARED_PLATFORM">("ALL");
+
+  const filteredProducts = useMemo(() => {
+    if (filterCategory === "ALL") return products;
+    return products.filter((p) => p.category === filterCategory);
+  }, [filterCategory]);
 
   const networkStats = useMemo(() => {
     const count = products.length;
@@ -464,9 +579,48 @@ export function CommercialProductsRenderer() {
         )}
       </AnimatePresence>
 
+      {/* Filter Category Tabs */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+          <button
+            onClick={() => setFilterCategory("ALL")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              filterCategory === "ALL"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            All Ecosystem ({products.length})
+          </button>
+          <button
+            onClick={() => setFilterCategory("SOVEREIGN_PRODUCT")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              filterCategory === "SOVEREIGN_PRODUCT"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            6 Sovereign Products (ERPs)
+          </button>
+          <button
+            onClick={() => setFilterCategory("SHARED_PLATFORM")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              filterCategory === "SHARED_PLATFORM"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            8 Independent Platforms
+          </button>
+        </div>
+        <span className="text-xs font-bold text-slate-400">
+          Showing {filteredProducts.length} certified entities
+        </span>
+      </div>
+
       {/* Products */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <motion.div
             key={product.id}
             whileHover={{ y: -4 }}
@@ -486,7 +640,7 @@ export function CommercialProductsRenderer() {
 
             <div className="p-6 flex-1 space-y-3">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                {product.category}
+                {product.categoryLabel}
               </span>
 
               <h3 className="text-xl font-black text-slate-900 leading-snug">
@@ -496,6 +650,23 @@ export function CommercialProductsRenderer() {
               <p className="text-xs font-semibold text-slate-600 line-clamp-2">
                 {product.tagline}
               </p>
+
+              {product.directoratesCount && (
+                <div className="grid grid-cols-3 gap-1.5 py-2 px-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                  <div>
+                    <span className="block text-[8px] font-black text-slate-400 uppercase">Directorates</span>
+                    <span className="block text-xs font-black text-slate-800">{product.directoratesCount}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[8px] font-black text-slate-400 uppercase">Portals</span>
+                    <span className="block text-xs font-black text-slate-800">{product.portalsCount}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[8px] font-black text-slate-400 uppercase">Modules</span>
+                    <span className="block text-xs font-black text-slate-800">{product.modulesCount}</span>
+                  </div>
+                </div>
+              )}
 
               <div className="pt-3 border-t border-slate-100 space-y-1.5">
                 {(Array.isArray(product?.capabilities) ? product.capabilities : []).slice(0, 3).map((capability) => (
@@ -530,18 +701,47 @@ export function CommercialProductsRenderer() {
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-500">
                 {product.version}
               </span>
 
-              <button
-                onClick={() => setSelectedProduct(product)}
-                className="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-blue-600 transition-colors flex items-center gap-1"
-              >
-                Inspect & Integrate
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                {onNavigateToProduct && (
+                  <button
+                    onClick={() => {
+                      const targetMap: Record<string, string> = {
+                        "prod-fintech": "fintech",
+                        "prod-nursery-primary": "nursery-primary",
+                        "prod-secondary-school": "secondary-school",
+                        "prod-university-tertiary": "university",
+                        "prod-church-faith": "church",
+                        "prod-alumni-community": "alumni",
+                        "plat-faap": "faap",
+                        "plat-digital-pay": "digital-pay",
+                        "plat-aegis": "aegis",
+                        "plat-treasury": "treasury",
+                        "plat-digital-auditor": "digital-auditor",
+                        "plat-ai-hybrid": "ai-hybrid",
+                        "plat-workflow": "workflow",
+                        "plat-cloud-infra": "cloud"
+                      };
+                      const targetWs = targetMap[product.id] || "overview";
+                      onNavigateToProduct(targetWs);
+                    }}
+                    className="px-3 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
+                  >
+                    Launch
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                )}
+                <button
+                  onClick={() => setSelectedProduct(product)}
+                  className="px-3 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  Inspect
+                </button>
+              </div>
             </div>
           </motion.div>
         ))}
