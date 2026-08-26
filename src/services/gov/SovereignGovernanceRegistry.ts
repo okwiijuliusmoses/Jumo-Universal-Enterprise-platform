@@ -1,14 +1,4 @@
-import { 
-  ArchitectureContract, 
-  ProvisioningJob, 
-  ProvisioningJobStatus, 
-  BuildArtifact,
-  DeploymentRecord,
-  VerificationFailureRecord,
-  CertificationRecord,
-  ProvisioningCategory
-} from "../../core/runtime/sovereignState.types";
-import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
+import { AuditEvent, ProvisioningCategory } from "../../core/runtime/sovereignState.types";
 
 export interface SovereignLedgerEntry {
   id: string;
@@ -18,33 +8,15 @@ export interface SovereignLedgerEntry {
   details: string;
   operator: string;
   hash: string;
-  signature: string;
-}
-
-export interface AuditEvent {
-  id: string;
-  jobId: string;
-  type: string;
-  severity: 'INFO' | 'WARNING' | 'CRITICAL';
-  message: string;
-  timestamp: string;
 }
 
 export class SovereignGovernanceRegistry {
   private static instance: SovereignGovernanceRegistry;
-  
-  private blueprints: Map<string, ArchitectureContract> = new Map();
-  private provisioningJobs: Map<string, ProvisioningJob> = new Map();
-  private products: Map<string, any> = new Map();
-  private verifications: Map<string, any> = new Map();
-  private certifications: Map<string, CertificationRecord> = new Map();
-  private deployments: Map<string, DeploymentRecord> = new Map();
   private ledger: SovereignLedgerEntry[] = [];
+  private productSpecifications: Map<string, any> = new Map();
   private auditEvents: AuditEvent[] = [];
-  
-  private constructor() {
-    this.seedInitialState();
-  }
+
+  private constructor() {}
 
   public static getInstance(): SovereignGovernanceRegistry {
     if (!SovereignGovernanceRegistry.instance) {
@@ -53,180 +25,47 @@ export class SovereignGovernanceRegistry {
     return SovereignGovernanceRegistry.instance;
   }
 
-  private seedInitialState() {
-    this.addLedgerEntry("Registry Initialized", "SYSTEM", "Authoritative Sovereign Governance Registry online.");
+  private generateHash(data: string): string {
+    return 'sha256-' + Buffer.from(data).toString('base64').substring(0, 32);
   }
 
   public addLedgerEntry(event: string, domain: string, details: string, operator: string = "SYSTEM") {
     const entry: SovereignLedgerEntry = {
-      id: `LEDGER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `ledg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       timestamp: new Date().toISOString(),
       event,
       domain,
       details,
       operator,
-      hash: "SHA256:...", // Simulated hash
-      signature: "SIG:..." // Simulated signature
+      hash: this.generateHash(`${event}:${domain}:${details}:${Date.now()}`)
     };
-    this.ledger.unshift(entry);
-    console.log(`[SOVEREIGN_LEDGER] ${event} (${domain}): ${details}`);
+    this.ledger.push(entry);
+    return entry;
   }
 
   public async logAuditEvent(event: AuditEvent) {
-    this.auditEvents.unshift(event);
-    this.addLedgerEntry("Audit Event", "GOVERNANCE", event.message);
+    this.auditEvents.push(event);
+    this.addLedgerEntry(event.operation, "AUDIT", event.details, event.actor);
   }
 
   public getAuditEvents() {
-    return this.auditEvents;
+    return [...this.auditEvents];
   }
 
-  // --- Blueprints ---
-  public registerBlueprint(blueprint: ArchitectureContract) {
-    this.blueprints.set(blueprint.id, blueprint);
-    this.addLedgerEntry("Blueprint Registered", "ARCHITECTURE", `Blueprint ${blueprint.id} v${blueprint.version} registered.`);
-  }
-
-  // --- Products and Specifications ---
   public registerProductSpecification(productId: string, spec: any) {
-    this.products.set(productId, spec);
-    this.addLedgerEntry("Specification Contract Registered", "SPECIFICATION", `Implementation-grade contract for ${productId} compiled into ledger.`);
+    this.productSpecifications.set(productId, spec);
+    this.addLedgerEntry("Product Specification Registered", "REGISTRY", `Product metadata for ${productId} compiled into ledger.`);
   }
 
   public getProductSpecification(productId: string): any {
-    return this.products.get(productId);
+    return this.productSpecifications.get(productId);
   }
 
   public getAllProductSpecifications(): any[] {
-    return Array.from(this.products.values());
-  }
-
-  public saveBlueprint(blueprint: ArchitectureContract) {
-    this.blueprints.set(blueprint.id, blueprint);
-    this.addLedgerEntry("Blueprint Saved", "ARCHITECTURE", `Blueprint ${blueprint.id} version ${blueprint.version} persisted.`);
-  }
-
-  public getBlueprint(id: string) {
-    return this.blueprints.get(id);
-  }
-
-  public getAllBlueprints() {
-    return Array.from(this.blueprints.values());
-  }
-
-  public getBlueprints() {
-    return this.getAllBlueprints();
-  }
-
-  // --- Provisioning Jobs ---
-  public registerJob(job: ProvisioningJob) {
-    this.provisioningJobs.set(job.id, job);
-    this.addLedgerEntry("Job Registered", "PROVISIONING", `Job ${job.id} registered.`);
-  }
-
-  public createProvisioningJob(blueprintId: string, ecosystem: ProvisioningCategory): ProvisioningJob {
-    const blueprint = this.blueprints.get(blueprintId);
-    if (!blueprint) throw new Error("Blueprint not found");
-
-    const job: ProvisioningJob = {
-      id: `JOB-${Date.now()}`,
-      architectureId: blueprintId,
-      productId: blueprint.specificationId,
-      ecosystem,
-      version: blueprint.version,
-      status: 'DIGITAL_INTAKE',
-      progress: 0,
-      assignedWorkforce: [],
-      repository: "https://git.jumo.internal/national-platform/" + blueprint.specificationId,
-      branch: "main",
-      commitSha: "sha-" + Math.random().toString(36).substr(2, 8),
-      evidence: [],
-      logs: [`[SYSTEM] Provisioning Job initialized for ${blueprint.productIdentity.name}`],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    this.provisioningJobs.set(job.id, job);
-    this.addLedgerEntry("Provisioning Job Created", "PROVISIONING", `Job ${job.id} for architecture ${blueprintId} initialized.`);
-    return job;
-  }
-
-  public getJob(id: string) {
-    return this.provisioningJobs.get(id);
-  }
-
-  public getAllJobs() {
-    return Array.from(this.provisioningJobs.values());
-  }
-
-  public getJobs() {
-    return this.getAllJobs();
-  }
-
-  public updateJobStatus(id: string, status: ProvisioningJobStatus) {
-    const job = this.provisioningJobs.get(id);
-    if (job) {
-      job.status = status;
-      job.updatedAt = new Date().toISOString();
-      this.addLedgerEntry("Job Status Updated", "FACTORY", `Job ${id} status: ${status}`);
-    }
-  }
-
-  public updateJobProgress(id: string, progress: number) {
-    const job = this.provisioningJobs.get(id);
-    if (job) {
-      job.progress = progress;
-      job.updatedAt = new Date().toISOString();
-    }
-  }
-
-  public updateJobArchitecture(id: string, architectureId: string) {
-    const job = this.provisioningJobs.get(id);
-    if (job) {
-      job.architectureId = architectureId;
-      job.updatedAt = new Date().toISOString();
-    }
-  }
-
-  public addJobLog(id: string, log: string) {
-    const job = this.provisioningJobs.get(id);
-    if (job) {
-      job.logs.push(`[${new Date().toISOString()}] ${log}`);
-      job.updatedAt = new Date().toISOString();
-    }
-  }
-
-  // --- Workforce ---
-  public getWorkforceStats() {
-    const agents = JumoAIAgentRegistry.getAllAgents();
-    return {
-      totalAgents: agents.length,
-      activeAssignments: 0 
-    };
-  }
-
-  // --- Stats for Dashboards ---
-  public getGlobalStats() {
-    return {
-      activeBlueprints: this.blueprints.size,
-      activeProvisioningJobs: Array.from(this.provisioningJobs.values()).filter(j => j.status !== 'RUNTIME_ACTIVATION_AND_CONTINUOUS_AUDIT' && j.status !== 'FAILED').length,
-      certifiedProducts: this.certifications.size,
-      activeDeploymentNodes: 1240, 
-      nationalStandardCompliance: 100 
-    };
+    return Array.from(this.productSpecifications.values());
   }
 
   public getLedger() {
-    return this.ledger;
-  }
-
-  public getCertificationRecords() {
-    return Array.from(this.certifications.values());
-  }
-
-  public getDeploymentRecords() {
-    return Array.from(this.deployments.values());
+    return [...this.ledger];
   }
 }
-
-export const sovereignGovernanceRegistry = SovereignGovernanceRegistry.getInstance();

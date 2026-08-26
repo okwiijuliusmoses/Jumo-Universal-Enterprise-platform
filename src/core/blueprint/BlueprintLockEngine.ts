@@ -221,7 +221,7 @@ export class BlueprintLockEngine {
         {
           version: "v1.0.0",
           status: "AWAITING_HUMAN_APPROVAL",
-          actionBy: "JUMO Architecture Studio Orchestrator",
+          actionBy: "JUMO Sovereign Control Plane Orchestrator",
           timestamp,
           notes: "Consolidated blueprint compiled and submitted for mandatory human authorization."
         }

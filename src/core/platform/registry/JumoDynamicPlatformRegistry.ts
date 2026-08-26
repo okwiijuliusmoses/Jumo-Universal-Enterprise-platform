@@ -43,14 +43,7 @@ export interface JumoArchitectureLayer {
   metadata?: Record<string, unknown>;
 }
 
-export interface JumoStudioDefinition {
-  id: string;
-  name: string;
-  description?: string;
-  status: JumoRegistryStatus;
-  layerIds: string[];
-  capabilities: string[];
-}
+
 
 export interface JumoSharedService {
   id: string;
@@ -74,7 +67,7 @@ export interface JumoCommercialProduct {
   defaultTier: JumoCommercialTier;
   sharedServiceIds: string[];
   architectureLayerIds: string[];
-  studioIds: string[];
+  
   metadata?: Record<string, unknown>;
 }
 
@@ -159,8 +152,7 @@ export class JumoDynamicPlatformRegistry {
   readonly layers =
     new DynamicRegistry<JumoArchitectureLayer>();
 
-  readonly studios =
-    new DynamicRegistry<JumoStudioDefinition>();
+  
 
   readonly sharedServices =
     new DynamicRegistry<JumoSharedService>();
@@ -182,9 +174,7 @@ export class JumoDynamicPlatformRegistry {
     return this.layers.upsert(layer);
   }
 
-  registerStudio(studio: JumoStudioDefinition) {
-    return this.studios.upsert(studio);
-  }
+  
 
   registerSharedService(service: JumoSharedService) {
     return this.sharedServices.upsert(service);
@@ -266,7 +256,7 @@ export class JumoDynamicPlatformRegistry {
     return {
       families: this.families.size,
       layers: this.layers.size,
-      studios: this.studios.size,
+      
       sharedServices: this.sharedServices.size,
       products: this.products.size,
       packages: this.packages.size,
@@ -281,7 +271,7 @@ export class JumoDynamicPlatformRegistry {
       extensible: true,
       fixedLayerLimit: false,
       fixedProductLimit: false,
-      fixedStudioLimit: false,
+      
       fixedFamilyLimit: false,
       fixedPackageLimit: false,
       dynamicRegistration: true,

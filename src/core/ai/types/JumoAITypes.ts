@@ -99,7 +99,7 @@ export interface ProvisioningTaskRequest {
   requestorRole: string;
   institutionType?: string;
   institutionName?: string;
-  targetCategory: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
+  targetCategory: string;
   requestedCapabilities: string[];
   architectureConstraints: string[];
   requestedBy: string;

@@ -109,6 +109,13 @@
   ],
   "auditEvents": [
     {
+      "id": "AUD-00009",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T16:21:00.952Z"
+    },
+    {
       "id": "AUD-00008",
       "actor": "JUMO_SECRET_VAULT",
       "operation": "STARTUP_VALIDATION",
@@ -178,7 +185,7 @@
   "migrations": [],
   "assets": [],
   "counters": {
-    "audit": 9,
+    "audit": 10,
     "archReq": 1,
     "archContract": 1,
     "job": 1,
