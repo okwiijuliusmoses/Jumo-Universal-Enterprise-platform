@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PublicGateway } from "./experience/gateway/PublicGateway";
+import { FintechApplicationShell } from "./experience/renderer/shells/FintechApplicationShell";
+import { NurseryPrimaryApplicationShell } from "./experience/renderer/shells/NurseryPrimaryApplicationShell";
+import { SecondarySchoolApplicationShell } from "./experience/renderer/shells/SecondarySchoolApplicationShell";
+import { UniversityTertiaryApplicationShell } from "./experience/renderer/shells/UniversityTertiaryApplicationShell";
+import { ChurchFaithApplicationShell } from "./experience/renderer/shells/ChurchFaithApplicationShell";
+import { AlumniCommunityApplicationShell } from "./experience/renderer/shells/AlumniCommunityApplicationShell";
 import { UEOSShell } from "./experience/shell/UEOSShell";
 
 export default function App() {
-  useEffect(() => {
-    console.log('[JUMO BOOT 06] UEOS App render requested');
-  }, []);
-
   const [currentUser, setCurrentUser] = useState<any>(() => {
     if (typeof window !== "undefined") {
       let stored = null;
@@ -19,37 +21,58 @@ export default function App() {
     }
     return null;
   });
-  const [isInitializing, setIsInitializing] = useState(false);
+
+  const [path, setPath] = useState(typeof window !== "undefined" ? window.location.pathname : "/");
 
   useEffect(() => {
-    // Initialized from state initializer
+    const handleLocationChange = () => {
+      setPath(window.location.pathname);
+    };
+    window.addEventListener("popstate", handleLocationChange);
+    return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
   const handleLogin = (user: any) => {
-    try { try { localStorage.setItem("ueos_user", JSON.stringify(user)); } catch (e) {} } catch (e) {}
+    try { localStorage.setItem("ueos_user", JSON.stringify(user)); } catch (e) {}
     setCurrentUser(user);
   };
 
   const handleLogout = () => {
     try { localStorage.removeItem("ueos_user"); } catch (e) {}
     setCurrentUser(null);
+    window.location.href = "/";
   };
 
-  if (isInitializing) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white font-black">
-        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl animate-pulse shadow-2xl shadow-blue-500/50">
-          J
-        </div>
-        <div className="mt-8 tracking-[0.3em] uppercase text-xs text-slate-400">Booting Kernel...</div>
-      </div>
-    );
-  }
+  const navigate = (to: string) => {
+    window.history.pushState({}, "", to);
+    setPath(to);
+  };
 
   if (!currentUser) {
     return <PublicGateway onLoginSuccess={handleLogin} />;
   }
 
+  // Direct Routing for Product Independence
+  if (path === "/fintech") {
+    return <FintechApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/nursery-primary") {
+    return <NurseryPrimaryApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/secondary-school") {
+    return <SecondarySchoolApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/university") {
+    return <UniversityTertiaryApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/church") {
+    return <ChurchFaithApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/alumni") {
+    return <AlumniCommunityApplicationShell onBack={() => navigate("/")} />;
+  }
+
+  // Fallback to the Hub/Shell (Launcher)
   return <UEOSShell user={currentUser} onLogout={handleLogout} />;
 }
 // JUMO UEOS Operating Environment Operationalized

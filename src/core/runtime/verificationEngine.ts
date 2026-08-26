@@ -1,4 +1,4 @@
-import { VerificationLayer } from '../factory/registry/HubRegistryTypes';
+import { VerificationLayer } from './sovereignState.types';
 
 export interface VerificationResult {
   layerId: string;

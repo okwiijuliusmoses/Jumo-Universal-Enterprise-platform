@@ -3,19 +3,15 @@
 
 
 
+import fs from "fs";
+import path from "path";
+
 const isBrowser = typeof window !== "undefined";
-let nodeFs: any = null;
-let nodePath: any = null;
-if (!isBrowser) {
-  try {
-    nodeFs = eval('require("fs")');
-    nodePath = eval('require("path")');
-  } catch(e) {}
-}
+const nodeFs = isBrowser ? null : fs;
+const nodePath = isBrowser ? null : path;
 
 import { faapEnterpriseRuntime } from "../faap/faapService";
 import { JumoAIAgentRegistry } from "../ai/registry/JumoAIAgentRegistry";
-import { UniversalHubRegistry } from "../factory/registry/UniversalHubRegistry";
 import { UniversalVerificationEngine } from "./verificationEngine";
 import { ERPTemplateRegistry } from "./erpTemplateRegistry";
 import { JUMO_HYBRID_ARCHITECTURE_REGISTRY, JumoArchitectureLayer } from "../hub/architecture/JumoHybridArchitectureLayers";
@@ -32,7 +28,7 @@ import {
   VerificationFailureRecord,
   CertificationRecord,
   ManufacturingCategory
-} from "../factory/registry/HubRegistryTypes";
+} from "./sovereignState.types";
 
 import * as Types from "./sovereignState.types";
 
@@ -51,7 +47,8 @@ import {
   InstallationConfig,
   AgentWorkLog,
   CoordinationEvent,
-  SovereignState
+  SovereignState,
+  VerificationLayer
 } from "./sovereignState.types";
 
 export type { 
@@ -139,20 +136,19 @@ export class SovereignOperatingStateService {
           tenant: "Primary",
           environment: "Production"
         },
-        enabledModules: ["Identity", "Core Architecture", "Manufacturing Hub", "FAAP"],
-        enabledPortals: ["Sovereign Control", "Architecture Studio", "Manufacturing Factory"],
+        enabledModules: ["Identity", "Core Architecture", "FAAP"],
+        enabledPortals: ["Sovereign Control", "Architecture Studio"],
         enabledServices: ["JUMO GPT", "Verification Engine", "Audit System"],
         navigation: {
           hierarchy: [],
           roleBasedAccess: {
             "SUPREME_OPERATOR": ["*"],
             "AUDITOR": ["Audit", "Sovereign Control"],
-            "ENGINEER": ["Architecture Studio", "Engineering Studio"]
+            "ENGINEER": ["Architecture Studio"]
           },
           featureFlags: {
             "AI_WORKFORCE": true,
-            "ZERO_TRUST": true,
-            "REAL_TIME_MANUFACTURING": true
+            "ZERO_TRUST": true
           }
         },
         systemDefaults: {
@@ -245,13 +241,13 @@ export class SovereignOperatingStateService {
       counters: {
         audit: 1,
         event: 1,
-        archReq: 1,
-        archContract: 1,
-        job: 1,
-        artifact: 1,
-        deployment: 1,
-        failure: 1,
-        certification: 1
+        archReq: 0,
+        archContract: 0,
+        job: 0,
+        artifact: 0,
+        deployment: 0,
+        failure: 0,
+        certification: 0
       },
       cryptographicKeys: {
         primaryKey: "SHA256:06dfbc2a8e8b919feae99a0d39c3a2aeebe5035e8985df1932a7a6c96fce30f2",
@@ -464,6 +460,7 @@ export class SovereignOperatingStateService {
       version: "v1.0.0",
       specificationId: reqId,
       status: 'DRAFT',
+      timestamp: new Date().toISOString(),
       productIdentity: {
         name: req.title,
         ecosystem: req.ecosystemType,
@@ -603,7 +600,7 @@ export class SovereignOperatingStateService {
     const id = `JOB-2026-${idNum.toString().padStart(6, '0')}`;
     
     // Assign workforce based on contract architecture requirements
-    const assignedWorkforce: EngineeringAssignment[] = (contract.aiArchitecture?.assignedAgents ?? []).map((agentId, idx) => ({
+    const assignedWorkforce: EngineeringAssignment[] = (contract.aiArchitecture?.assignedAgents ?? []).map((agentId: string, idx: number) => ({
       engineerId: agentId,
       role: (contract.aiArchitecture?.agentResponsibilities ?? [])[idx] || "System Operator",
       responsibility: "Baseline Manufacturing",
@@ -668,16 +665,6 @@ export class SovereignOperatingStateService {
     } else {
       this.state.blueprints.push(newBlueprint);
     }
-
-    // Also register in universal registry!
-    UniversalHubRegistry.registerBlueprint({
-      blueprintId: bpId,
-      name: newBlueprint.name,
-      type: newBlueprint.type,
-      version: newBlueprint.version,
-      lastBuildTime: newBlueprint.lastBuildTime,
-      compilerStatus: newBlueprint.compilerStatus === 'DRAFT' ? 'COMPILING' : newBlueprint.compilerStatus
-    });
 
     this.logAudit(actor, "BLUEPRINT_GENERATED", `Generated compiled compiler blueprint ${bpId} from architecture: ${id}`);
     this.saveState();
@@ -1016,27 +1003,6 @@ export class SovereignOperatingStateService {
 
     job.status = 'RUNTIME_ACTIVE';
     
-    const record: any = {
-      registryId: `reg-${job.id}`,
-      name: job.productId.toUpperCase(),
-      category: job.ecosystem,
-      lifecycleState: 'OPERATIONAL',
-      version: job.version,
-      implementationVersion: job.version,
-      architectureBaseline: job.architectureId,
-      dependencies: [],
-      capabilities: [],
-      services: [],
-      apis: [],
-      testStatus: 'PASSED',
-      deploymentStatus: 'DEPLOYED',
-      upgradeStatus: 'UP_TO_DATE',
-      maintenanceStatus: 'HEALTHY',
-      verificationStatus: 'VERIFIED',
-      lastAuditTimestamp: new Date().toISOString()
-    };
-
-    UniversalHubRegistry.registerRecord(record);
     this.logAudit(actor, "REGISTRY_ACTIVATION_COMPLETED", `Activated product ${job.productId} in ${job.ecosystem} registry`);
     this.saveState();
     return job;
@@ -1146,31 +1112,38 @@ export class SovereignOperatingStateService {
     console.log(`[VERIFICATION_CENTER] Launching the architecture-aware Verification Engine by ${actor}`);
     const nowStr = new Date().toLocaleTimeString();
     
-    // In the new architecture, we get the profile from registry
-    const profile = UniversalHubRegistry.getProfile("default-profile");
+    // In the new architecture, we use local authoritative layers
+    const layers: VerificationLayer[] = [
+      { 
+        layerId: "v-sec-01", 
+        name: "Zero-Trust Enforcement Check", 
+        category: "SEC", 
+        gate: "PRE_DEPLOYMENT", 
+        enabled: true, 
+        blocking: true, 
+        standards: ["JUMO-SEC-001"] 
+      },
+      { 
+        layerId: "v-data-01", 
+        name: "Schema Compliance Audit", 
+        category: "DATA", 
+        gate: "PRE_DEPLOYMENT", 
+        enabled: true, 
+        blocking: true, 
+        standards: ["JUMO-DATA-001"] 
+      }
+    ];
     
-    if (profile) {
-        const layers = UniversalHubRegistry.getVerificationLayers(profile.layerIds);
-        const results = UniversalVerificationEngine.executeProfile(layers, { architectureContract });
-        
-        this.state.verificationGates = results.map(res => ({
-            id: res.layerId,
-            name: layers.find(l => l.layerId === res.layerId)?.name || 'Unknown',
-            status: res.status,
-            evidence: res.evidence,
-            timestamp: res.timestamp,
-            logs: []
-        }));
-    } else {
-        this.state.verificationGates = [
-          {
-            id: "v1", name: "Architecture-Aware Engine",
-            status: "FAIL",
-            evidence: "No verification profile found.",
-            timestamp: nowStr, logs: ["Error: default-profile missing."]
-          }
-        ];
-    }
+    const results = UniversalVerificationEngine.executeProfile(layers, { architectureContract });
+    
+    this.state.verificationGates = results.map(res => ({
+        id: res.layerId,
+        name: layers.find((l: VerificationLayer) => l.layerId === res.layerId)?.name || 'Unknown',
+        status: res.status,
+        evidence: res.evidence,
+        timestamp: res.timestamp,
+        logs: []
+    }));
 
     this.logAudit(actor, "VERIFICATION_SUITE_RUN", `Executed Architecture-Aware Verification Engine.`);
     this.saveState();

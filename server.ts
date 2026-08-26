@@ -4,7 +4,6 @@ import fs from "fs";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 import { SovereignOperatingStateService } from "./src/core/runtime/sovereignState";
-import { UniversalHubRegistry } from "./src/core/factory/registry/UniversalHubRegistry";
 import { JumoAIAgentRegistry } from "./src/core/ai/registry/JumoAIAgentRegistry";
 import { JUMO_HYBRID_ARCHITECTURE_REGISTRY } from "./src/core/hub/architecture/JumoHybridArchitectureLayers";
 import { JumoAIProviderGateway } from "./src/core/ai/gateway/JumoAIProviderGateway";
@@ -67,13 +66,13 @@ async function startServer() {
         tenant: tenant || "Global",
         policyMode: "VERIFICATION",
         clearance: clearance,
-        permissions: ["ALL_MODULES", "MANUFACTURING_HUB", "AI_WORKFORCE", "REGISTRIES", "PROVISIONING"],
+        permissions: ["ALL_MODULES", "AI_WORKFORCE", "REGISTRIES", "PROVISIONING"],
         sessionToken: "jwt-sovereign-verified-token-01"
       }
     });
   });
 
-  // === SOVEREIGN MANUFACTURING FABRIC API ROUTER ===
+  // === SOVEREIGN INFRASTRUCTURE & KERNEL API ROUTER ===
 
   // 1. Fetch full sovereign operating state
   app.get("/api/v1/ueos/state", (req, res) => {
@@ -84,7 +83,7 @@ async function startServer() {
     }
   });
 
-  // 2. Create architecture request
+  // 2. AI & Cognitive Services
   /**
    * JUMO UEOS General-Purpose Conversational Reasoning AI
    *
@@ -144,192 +143,11 @@ async function startServer() {
     }
   });
 
-  app.post("/api/v1/ueos/architecture-requests", (req, res) => {
-    try {
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const newRequest = SovereignOperatingStateService.createArchitectureRequest(req.body, actor);
-      res.json(newRequest);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 2a. Generate architecture contract from request
-  app.post("/api/v1/ueos/architecture-contracts", (req, res) => {
-    try {
-      const { requestId } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const contract = SovereignOperatingStateService.createArchitectureContract(requestId, actor);
-      res.json(contract);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 2b. Approve architecture contract
-  app.put("/api/v1/ueos/architecture-contracts/:id/approve", (req, res) => {
-    try {
-      const id = req.params.id;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updated = SovereignOperatingStateService.approveArchitectureContract(id, actor);
-      res.json(updated);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 2c. Propose architecture expansion
-  app.post("/api/v1/ueos/architecture/expansion/propose", (req, res) => {
-    try {
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const trace = SovereignOperatingStateService.proposeArchitectureExpansion(req.body, actor);
-      res.json(trace);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 2d. Approve architecture expansion
-  app.post("/api/v1/ueos/architecture/expansion/:id/approve", (req, res) => {
-    try {
-      const id = req.params.id;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const trace = SovereignOperatingStateService.approveArchitectureExpansion(id, actor);
-      res.json(trace);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 2e. Run full 6-stage Intelligence Pipeline
-  app.post("/api/v1/ueos/architecture/pipeline/run", async (req, res) => {
-    try {
-      const { specificationId } = req.body;
-      const traces = [{ stage: 'COMPLETED', status: 'COMPLETED', log: [`Specification ${specificationId} verified against standards.`] }];
-      res.json({ success: true, traces });
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
   // 2f. Emit coordination event
   app.post("/api/v1/ueos/events/emit", (req, res) => {
     try {
       const event = SovereignOperatingStateService.emitEvent(req.body);
       res.json(event);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 3. Create manufacturing job from contract
-  app.post("/api/v1/ueos/jobs", (req, res) => {
-    try {
-      const { contractId } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const newJob = SovereignOperatingStateService.createManufacturingJob(contractId, actor);
-      res.json(newJob);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 4. Assign workforce to job
-  app.post("/api/v1/ueos/jobs/:id/assign", (req, res) => {
-    try {
-      const id = req.params.id;
-      const { assignments } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updated = SovereignOperatingStateService.assignWorkforceToJob(id, assignments, actor);
-      res.json(updated);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 5. Promote manufacturing job stage
-  app.post("/api/v1/ueos/jobs/:id/promote", (req, res) => {
-    try {
-      const id = req.params.id;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updatedJob = SovereignOperatingStateService.promoteManufacturingJob(id, actor);
-      res.json(updatedJob);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 6. Record build artifact
-  app.post("/api/v1/ueos/jobs/:id/build", (req, res) => {
-    try {
-      const id = req.params.id;
-      const { hash, size } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const artifact = SovereignOperatingStateService.recordBuildArtifact(id, hash, size, actor);
-      res.json(artifact);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 7. Record deployment
-  app.post("/api/v1/ueos/jobs/:id/deploy", (req, res) => {
-    try {
-      const id = req.params.id;
-      const { environment, target } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const record = SovereignOperatingStateService.recordDeployment(id, environment, target, actor);
-      res.json(record);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 8. Record verification failure
-  app.post("/api/v1/ueos/jobs/:id/verify-failure", (req, res) => {
-    try {
-      const id = req.params.id;
-      const { layerId, diagnostic } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const failure = SovereignOperatingStateService.recordVerificationFailure(id, layerId, diagnostic, actor);
-      res.json(failure);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 9. Certify manufacturing job
-  app.post("/api/v1/ueos/jobs/:id/certify", (req, res) => {
-    try {
-      const id = req.params.id;
-      const { authority } = req.body;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const cert = SovereignOperatingStateService.certifyManufacturingJob(id, authority, actor);
-      res.json(cert);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 10. Activate product registry
-  app.post("/api/v1/ueos/jobs/:id/activate-registry", (req, res) => {
-    try {
-      const id = req.params.id;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const job = SovereignOperatingStateService.activateProductRegistry(id, actor);
-      res.json(job);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 8. Toggle pause on pipeline job
-  app.post("/api/v1/ueos/jobs/:id/pause", (req, res) => {
-    try {
-      const id = req.params.id;
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const updatedJob = SovereignOperatingStateService.toggleJobPause(id, actor);
-      res.json(updatedJob);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
@@ -402,18 +220,6 @@ async function startServer() {
     try {
       const layers = JUMO_HYBRID_ARCHITECTURE_REGISTRY.all();
       res.json(layers);
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-
-  // 13. Run full 20-Gate verification checks
-  app.post("/api/v1/ueos/verification/run-suite", (req, res) => {
-    try {
-      const actor = req.headers["x-operator-name"] as string || "Hon. Minister Julius Moses";
-      const architectureContract = SovereignOperatingStateService.getState().architectureRequests[SovereignOperatingStateService.getState().architectureRequests.length - 1];
-      const results = SovereignOperatingStateService.runVerificationSuite(actor, architectureContract ? architectureContract.detailedSpecification : null);
-      res.json({ success: true, results });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
@@ -674,31 +480,31 @@ async function startServer() {
 
   // === REGISTRY & REPOSITORY API ROUTER ===
   app.get("/api/v1/ueos/registry/ecosystems", (req, res) => {
-    res.json(UniversalHubRegistry.getERPEcosystems());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/templates", (req, res) => {
-    res.json(UniversalHubRegistry.getERPTemplates());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/instances", (req, res) => {
-    res.json(UniversalHubRegistry.getERPInstances());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/workflows", (req, res) => {
-    res.json(UniversalHubRegistry.getWorkflows());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/modules", (req, res) => {
-    res.json(UniversalHubRegistry.getModules());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/forms", (req, res) => {
-    res.json(UniversalHubRegistry.getForms());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/components", (req, res) => {
-    res.json(UniversalHubRegistry.getComponents());
+    res.json([]);
   });
 
   app.get("/api/v1/ueos/registry/workforce", (req, res) => {
@@ -708,7 +514,7 @@ async function startServer() {
   app.get("/api/v1/ueos/runtime/telemetry", (req, res) => {
     const state = SovereignOperatingStateService.getState();
     const stats = JumoAIAgentRegistry.getWorkforceStats();
-    const ecosystemCount = UniversalHubRegistry.getERPEcosystems().length;
+    const ecosystemCount = 0;
     
     res.json({
       activeAgents: stats.activeAgentsCount,
@@ -963,7 +769,7 @@ async function startServer() {
   // Vite middleware for development, static file serving for production
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, hmr: false },
       appType: "spa",
     });
     app.use(vite.middlewares);

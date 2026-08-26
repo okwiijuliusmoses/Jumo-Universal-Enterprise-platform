@@ -43,70 +43,68 @@ export function SecondarySchoolApplicationShell({ onBack, onNavigateToPlatform }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans" id="jumo-secondary-app">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans" id="jumo-secondary-app">
       {/* 1. TOP BRAND BAR */}
-      <header className="bg-slate-900 border-b border-blue-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-xl">
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-blue-500/20 border border-blue-400/40">
-            <BookOpen className="w-6 h-6 stroke-[2.5]" />
+      <header className="bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div className="flex items-center gap-5">
+          <div className="w-14 h-14 bg-blue-700 text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-blue-700/20">
+            <BookOpen className="w-8 h-8" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-white">JUMO SECONDARY SCHOOL</h1>
-              <span className="bg-blue-500/20 text-blue-400 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full border border-blue-500/30">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-black tracking-tighter text-slate-900">JUMO SECONDARY SCHOOL</h1>
+              <span className="bg-blue-50 text-blue-700 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-lg border border-blue-100">
                 Secondary & Boarding ERP
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">Authoritative Secondary Education & UNEB Academic Engine</p>
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Authoritative UNEB Academic Engine • Center U0842</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setNewStudentModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl transition-all flex items-center gap-2 cursor-pointer"
           >
             <UserPlus className="w-4 h-4" /> Register Student
+          </button>
+          <button
+            onClick={onBack}
+            className="px-4 py-3 border border-slate-200 text-slate-400 hover:text-slate-900 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all cursor-pointer"
+          >
+            Exit
           </button>
         </div>
       </header>
 
       {/* 2. STATS RIBBON */}
-      <section className="bg-slate-900/60 border-b border-slate-800 px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900 p-4 rounded-xl border border-blue-500/20 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Enrolled Students</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">2,150 Students</div>
-          <span className="text-[10px] font-bold text-blue-400 block mt-1">1,820 Boarding • 330 Day Scholars</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">UNEB Examination Center</span>
-          <div className="text-lg md:text-xl font-black text-blue-400 mt-1">Center U0842</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">O-Level & A-Level Certified</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Term Tuition Collections</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">UGX 942.8 Million</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">91.2% Fee Clearance Rate</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Boarding Occupancy</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">94% Capacity</div>
-          <span className="text-[10px] font-bold text-blue-400 block mt-1">Speke, Lugard & Kabalega Houses</span>
-        </div>
+      <section className="px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { label: "Enrolled Students", value: "2,150", sub: "1,820 Boarding • 330 Day", icon: GraduationCap, color: "text-blue-700" },
+          { label: "UNEB Center Status", value: "Center U0842", sub: "O-Level & A-Level Certified", icon: Award, color: "text-slate-900" },
+          { label: "Tuition Collections", value: "UGX 942.8M", sub: "91.2% Fee Clearance Rate", icon: DollarSign, color: "text-emerald-600" },
+          { label: "Boarding Occupancy", value: "94% Capacity", sub: "Speke, Lugard & Kabalega", icon: Building, color: "text-blue-700" }
+        ].map(stat => (
+          <div key={stat.label} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-start justify-between">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">{stat.label}</span>
+              <div className={`text-2xl font-black ${stat.color} tracking-tight`}>{stat.value}</div>
+              <span className="text-[10px] font-bold text-slate-500 block mt-2">{stat.sub}</span>
+            </div>
+            <stat.icon className={`w-6 h-6 ${stat.color} opacity-20`} />
+          </div>
+        ))}
       </section>
 
       {/* 3. TABS */}
-      <nav className="bg-slate-900 border-b border-slate-800 px-6 flex items-center gap-2 overflow-x-auto">
+      <nav className="bg-white border-y border-slate-200 px-8 flex items-center gap-4 overflow-x-auto">
         {[
           { id: "students", label: "Students & Houses", icon: GraduationCap },
-          { id: "academics", label: "UNEB Curriculum", icon: BookOpen },
-          { id: "exams", label: "Exam Performance", icon: Award },
-          { id: "bursar", label: "Bursary & Fees", icon: DollarSign },
-          { id: "facilities", label: "Labs & Library", icon: Building },
-          { id: "discipline", label: "Discipline & Welfare", icon: Shield }
+          { id: "academics", label: "Curriculum", icon: BookOpen },
+          { id: "exams", label: "Performance", icon: Award },
+          { id: "bursar", label: "Bursary", icon: DollarSign },
+          { id: "facilities", label: "Facilities", icon: Building },
+          { id: "discipline", label: "Discipline", icon: Shield }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -114,10 +112,10 @@ export function SecondarySchoolApplicationShell({ onBack, onNavigateToPlatform }
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`py-3.5 px-4 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`py-5 px-4 font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 border-b-4 transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? "border-blue-400 text-blue-400 bg-blue-500/10"
-                  : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "border-blue-700 text-blue-700 bg-blue-50/50"
+                  : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -128,56 +126,56 @@ export function SecondarySchoolApplicationShell({ onBack, onNavigateToPlatform }
       </nav>
 
       {/* 4. MAIN WORKSPACE */}
-      <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+      <main className="flex-1 p-8 max-w-7xl w-full mx-auto space-y-10">
         {activeTab === "students" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
+          <div className="space-y-8">
+            <div className="flex justify-between items-end">
               <div>
-                <h2 className="text-lg font-black text-white">Secondary Student Roster & House Allocations</h2>
-                <p className="text-xs text-slate-400">Manage O-Level & A-Level students, dormitories, and UNEB indexes.</p>
+                <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Student Registry</h2>
+                <p className="text-sm text-slate-500 font-medium">Authoritative academic roster for O-Level & A-Level scholars.</p>
               </div>
 
-              <div className="relative w-64">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+              <div className="relative w-80">
+                <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search student or UNEB index..."
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-blue-500/50"
+                  placeholder="Search scholars..."
+                  className="w-full bg-white border border-slate-200 rounded-2xl pl-12 pr-4 py-4 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-700/10"
                 />
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <div className="bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-2xl shadow-slate-200/50">
+              <table className="w-full text-left text-xs font-bold text-slate-600">
+                <thead className="bg-slate-50 text-slate-400 font-black uppercase tracking-widest border-b border-slate-200">
                   <tr>
-                    <th className="p-4">Student ID</th>
-                    <th className="p-4">Student Name</th>
-                    <th className="p-4">Class & Stream</th>
-                    <th className="p-4">Boarding House</th>
-                    <th className="p-4">UNEB Index No.</th>
-                    <th className="p-4">Residency</th>
-                    <th className="p-4">Fee Status</th>
+                    <th className="p-8">ID</th>
+                    <th className="p-8">Scholar Name</th>
+                    <th className="p-8">Class Level</th>
+                    <th className="p-8">Boarding House</th>
+                    <th className="p-8">UNEB Index</th>
+                    <th className="p-8 text-right">Fee Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-50">
                   {students
                     .filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.unebNo.toLowerCase().includes(searchQuery.toLowerCase()))
                     .map((s) => (
-                      <tr key={s.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-mono font-bold text-blue-400">{s.id}</td>
-                        <td className="p-4 font-bold text-white">{s.name}</td>
-                        <td className="p-4 text-slate-200">{s.class}</td>
-                        <td className="p-4 text-slate-400">{s.house}</td>
-                        <td className="p-4 font-mono text-slate-400">{s.unebNo}</td>
-                        <td className="p-4">
-                          <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[9px] font-black border border-blue-500/30">
-                            {s.status}
+                      <tr key={s.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="p-8 font-mono text-blue-700">{s.id}</td>
+                        <td className="p-8 text-slate-900 text-sm font-black">{s.name}</td>
+                        <td className="p-8 uppercase tracking-wide">{s.class}</td>
+                        <td className="p-8 text-slate-400">{s.house}</td>
+                        <td className="p-8 font-mono">{s.unebNo}</td>
+                        <td className="p-8 text-right">
+                          <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black tracking-widest uppercase ${
+                            s.fees === "PAID" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-amber-50 text-amber-700 border border-amber-100"
+                          }`}>
+                            {s.fees}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-emerald-400">{s.fees}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -187,76 +185,76 @@ export function SecondarySchoolApplicationShell({ onBack, onNavigateToPlatform }
         )}
 
         {activeTab === "academics" && (
-          <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h2 className="text-lg font-black text-white">UNEB Curriculum & Science Laboratory Timetables</h2>
-            <p className="text-xs text-slate-400">Physics, Chemistry, Biology practical rotas and ICT computer lab allocation.</p>
+          <div className="bg-white p-12 rounded-[40px] border border-slate-200 space-y-6 shadow-sm">
+            <div className="w-16 h-16 bg-blue-50 text-blue-700 rounded-2xl flex items-center justify-center">
+              <FileSpreadsheet className="w-8 h-8" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">UNEB Curriculum Center</h2>
+              <p className="text-slate-500 font-medium leading-relaxed max-w-2xl">Manage secondary curriculum alignment, subject allocations, and national examination schedules for O-Level (UCE) and A-Level (UACE) candidates.</p>
+            </div>
           </div>
         )}
       </main>
 
       {/* NEW STUDENT MODAL */}
       {newStudentModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-black text-white">Register Secondary Student</h3>
-            <form onSubmit={handleCreateStudent} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Student Full Name</label>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white border border-slate-200 rounded-[40px] max-w-md w-full p-10 space-y-8 shadow-2xl">
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Scholar Admission</h3>
+            <form onSubmit={handleCreateStudent} className="space-y-6 text-xs font-black uppercase tracking-widest text-slate-400">
+              <div className="space-y-2">
+                <label>Student Full Name</label>
                 <input
                   type="text"
                   required
                   value={studentForm.name}
                   onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
-                  placeholder="e.g. Patrick Ssemwanga"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-blue-700/20"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Class Level</label>
-                <select
-                  value={studentForm.class}
-                  onChange={(e) => setStudentForm({ ...studentForm, class: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
-                >
-                  <option>Senior 1 Arts</option>
-                  <option>Senior 2 Science</option>
-                  <option>Senior 3 General</option>
-                  <option>Senior 4 Candidate Science</option>
-                  <option>Senior 5 PCM/ICT</option>
-                  <option>Senior 5 BCM/SubMath</option>
-                  <option>Senior 6 HEG/Div</option>
-                  <option>Senior 6 Candidate PCM/ICT</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label>Class Level</label>
+                  <select
+                    value={studentForm.class}
+                    onChange={(e) => setStudentForm({ ...studentForm, class: e.target.value })}
+                    className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-blue-700/20 appearance-none"
+                  >
+                    <option>Senior 1</option>
+                    <option>Senior 2</option>
+                    <option>Senior 4</option>
+                    <option>Senior 6</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label>Boarding House</label>
+                  <select
+                    value={studentForm.house}
+                    onChange={(e) => setStudentForm({ ...studentForm, house: e.target.value })}
+                    className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-blue-700/20 appearance-none"
+                  >
+                    <option>Speke House</option>
+                    <option>Lugard House</option>
+                    <option>Kabalega House</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Boarding House</label>
-                <select
-                  value={studentForm.house}
-                  onChange={(e) => setStudentForm({ ...studentForm, house: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
-                >
-                  <option>Speke House</option>
-                  <option>Lugard House</option>
-                  <option>Kabalega House</option>
-                  <option>Nyerere House</option>
-                </select>
-              </div>
-
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setNewStudentModalOpen(false)}
-                  className="flex-1 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold cursor-pointer"
+                  className="flex-1 py-5 bg-slate-100 text-slate-500 rounded-3xl font-black hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black cursor-pointer shadow-md"
+                  className="flex-1 py-5 bg-blue-700 text-white rounded-3xl font-black shadow-xl shadow-blue-700/30 hover:bg-blue-800 transition-all"
                 >
-                  Confirm Registration
+                  Register
                 </button>
               </div>
             </form>

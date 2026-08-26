@@ -43,70 +43,68 @@ export function AlumniCommunityApplicationShell({ onBack, onNavigateToPlatform }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans" id="jumo-alumni-app">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans" id="jumo-alumni-app">
       {/* 1. TOP BRAND BAR */}
-      <header className="bg-slate-900 border-b border-cyan-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-xl">
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 bg-gradient-to-br from-cyan-600 to-cyan-900 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-cyan-500/20 border border-cyan-400/40">
-            <Users className="w-6 h-6 stroke-[2.5]" />
+      <header className="bg-white border-b border-rose-200 px-8 py-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div className="flex items-center gap-5">
+          <div className="w-14 h-14 bg-rose-900 text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-rose-900/20">
+            <Users className="w-8 h-8" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-white">JUMO ALUMNI & COMMUNITY</h1>
-              <span className="bg-cyan-500/20 text-cyan-400 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full border border-cyan-500/30">
-                Alumni Network & Community ERP
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-black tracking-tight text-slate-900">JUMO ALUMNI</h1>
+              <span className="bg-rose-50 text-rose-900 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-lg border border-rose-100">
+                Community Network
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">Authoritative Global Alumni Network & Degree Verification Gateway</p>
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Sovereign Graduate Registry • Verification Gateway</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setRegisterModalOpen(true)}
-            className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 bg-rose-900 hover:bg-rose-950 text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-xl transition-all flex items-center gap-2 cursor-pointer"
           >
-            <UserPlus className="w-4 h-4" /> Register Alumnus
+            <UserPlus className="w-4 h-4" /> Register Profile
+          </button>
+          <button
+            onClick={onBack}
+            className="px-4 py-3 text-slate-400 hover:text-slate-900 font-black text-[10px] uppercase tracking-widest transition-all cursor-pointer"
+          >
+            Exit
           </button>
         </div>
       </header>
 
       {/* 2. STATS RIBBON */}
-      <section className="bg-slate-900/60 border-b border-slate-800 px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900 p-4 rounded-xl border border-cyan-500/20 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Registered Alumni</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">18,520 Graduates</div>
-          <span className="text-[10px] font-bold text-cyan-400 block mt-1">Across 42 Graduating Classes</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Global Regional Chapters</span>
-          <div className="text-lg md:text-xl font-black text-cyan-400 mt-1">12 Chapters</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">Kampala, Nairobi, London, DC</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Endowment Campaign</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">UGX 1.840 Billion</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">Scholarships & Infrastructure</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Active Career Mentors</span>
-          <div className="text-lg md:text-xl font-black text-emerald-400 mt-1">340 Professionals</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">Student-Alumni Matching</span>
-        </div>
+      <section className="px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { label: "Registered Alumni", value: "18,520", sub: "Across 42 Graduating Classes", icon: Users, color: "text-rose-900" },
+          { label: "Global Chapters", value: "12 Chapters", sub: "Kampala, Nairobi, London, DC", icon: Globe, color: "text-slate-900" },
+          { label: "Endowment fund", value: "UGX 1.84B", sub: "Scholarships & Infrastructure", icon: DollarSign, color: "text-emerald-600" },
+          { label: "Career Mentors", value: "340 Experts", sub: "Professional Guidance network", icon: Briefcase, color: "text-rose-900" }
+        ].map(stat => (
+          <div key={stat.label} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex items-start justify-between">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">{stat.label}</span>
+              <div className={`text-2xl font-black ${stat.color} tracking-tight`}>{stat.value}</div>
+              <span className="text-[11px] font-bold text-slate-500 block mt-2">{stat.sub}</span>
+            </div>
+            <stat.icon className={`w-6 h-6 ${stat.color} opacity-20`} />
+          </div>
+        ))}
       </section>
 
       {/* 3. TABS */}
-      <nav className="bg-slate-900 border-b border-slate-800 px-6 flex items-center gap-2 overflow-x-auto">
+      <nav className="bg-white border-y border-slate-200 px-8 flex items-center gap-2 overflow-x-auto">
         {[
-          { id: "directory", label: "Alumni Directory", icon: Users },
-          { id: "chapters", label: "Global Chapters", icon: Globe },
-          { id: "events", label: "Events & Reunions", icon: Calendar },
-          { id: "giving", label: "Endowment Giving", icon: DollarSign },
-          { id: "mentorship", label: "Mentorship & Jobs", icon: Briefcase },
-          { id: "verification", label: "Degree Verification", icon: FileCheck }
+          { id: "directory", label: "Directory", icon: Users },
+          { id: "chapters", label: "Chapters", icon: Globe },
+          { id: "events", label: "Events", icon: Calendar },
+          { id: "giving", label: "Endowment", icon: DollarSign },
+          { id: "mentorship", label: "Mentorship", icon: Briefcase },
+          { id: "verification", label: "Verification", icon: FileCheck }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -114,10 +112,10 @@ export function AlumniCommunityApplicationShell({ onBack, onNavigateToPlatform }
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`py-3.5 px-4 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`py-6 px-5 font-black text-[10px] uppercase tracking-[0.25em] flex items-center gap-3 border-b-4 transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? "border-cyan-400 text-cyan-400 bg-cyan-500/10"
-                  : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "border-rose-900 text-rose-900 bg-rose-50/30"
+                  : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -128,54 +126,52 @@ export function AlumniCommunityApplicationShell({ onBack, onNavigateToPlatform }
       </nav>
 
       {/* 4. MAIN WORKSPACE */}
-      <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+      <main className="flex-1 p-8 max-w-7xl w-full mx-auto space-y-10">
         {activeTab === "directory" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
+          <div className="space-y-10">
+            <div className="flex justify-between items-end">
               <div>
-                <h2 className="text-lg font-black text-white">Global Alumni Directory & Network</h2>
-                <p className="text-xs text-slate-400">Search verified university and school graduates by class, industry, and location.</p>
+                <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Global Directory</h2>
+                <p className="text-sm text-slate-500 font-bold uppercase tracking-widest mt-2">Verified Professional Network</p>
               </div>
 
-              <div className="relative w-64">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+              <div className="relative w-80">
+                <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search alumni, company, city..."
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                  placeholder="Search alumni network..."
+                  className="w-full bg-white border border-slate-200 rounded-2xl pl-12 pr-4 py-4 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-900/10"
                 />
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <div className="bg-white rounded-[40px] border border-slate-200 overflow-hidden shadow-2xl shadow-slate-200/50">
+              <table className="w-full text-left text-xs font-bold text-slate-600">
+                <thead className="bg-slate-50 text-slate-400 font-black uppercase tracking-widest border-b border-slate-200">
                   <tr>
-                    <th className="p-4">Alumni ID</th>
-                    <th className="p-4">Alumnus Name</th>
-                    <th className="p-4">Graduation Class</th>
-                    <th className="p-4">Faculty / Field</th>
-                    <th className="p-4">Current Organization</th>
-                    <th className="p-4">Location</th>
-                    <th className="p-4">Mentor Status</th>
+                    <th className="p-8">Legacy ID</th>
+                    <th className="p-8">Alumnus Name</th>
+                    <th className="p-8">Class Year</th>
+                    <th className="p-8">Faculty</th>
+                    <th className="p-8">Organization</th>
+                    <th className="p-8 text-right">Mentorship</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-50">
                   {alumni
                     .filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) || a.company.toLowerCase().includes(searchQuery.toLowerCase()))
                     .map((a) => (
-                      <tr key={a.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-mono font-bold text-cyan-400">{a.id}</td>
-                        <td className="p-4 font-bold text-white">{a.name}</td>
-                        <td className="p-4 text-slate-300">{a.classYear}</td>
-                        <td className="p-4 text-slate-400">{a.faculty}</td>
-                        <td className="p-4 text-slate-200">{a.company}</td>
-                        <td className="p-4 text-slate-400">{a.location}</td>
-                        <td className="p-4">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
-                            a.mentor === "YES" ? "bg-emerald-500/20 text-emerald-400" : "bg-slate-800 text-slate-500"
+                      <tr key={a.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="p-8 font-mono text-rose-900">{a.id}</td>
+                        <td className="p-8 text-slate-900 text-sm font-black">{a.name}</td>
+                        <td className="p-8 uppercase tracking-widest text-[10px]">{a.classYear}</td>
+                        <td className="p-8 text-slate-400">{a.faculty}</td>
+                        <td className="p-8 text-slate-900">{a.company}</td>
+                        <td className="p-8 text-right">
+                          <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black tracking-widest uppercase ${
+                            a.mentor === "YES" ? "bg-rose-900 text-white" : "bg-slate-100 text-slate-400"
                           }`}>
                             {a.mentor === "YES" ? "ACTIVE MENTOR" : "MEMBER"}
                           </span>
@@ -189,11 +185,14 @@ export function AlumniCommunityApplicationShell({ onBack, onNavigateToPlatform }
         )}
 
         {activeTab === "verification" && (
-          <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h2 className="text-lg font-black text-white">Employer Degree & Qualification Verification Gateway</h2>
-            <p className="text-xs text-slate-400">Cryptographically signed degree verification portal for international employers and background check agencies.</p>
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-cyan-400">
-              [VERIFICATION-GATEWAY] Aegis Public Ledger Active • 0 Fraudulent Certificates Issued • 100% Instant Verification
+          <div className="bg-rose-900 p-12 rounded-[56px] text-white shadow-2xl shadow-rose-900/30 space-y-6">
+            <FileCheck className="w-12 h-12 opacity-80" />
+            <h2 className="text-4xl font-black tracking-tighter">Qualification Verification Gateway</h2>
+            <p className="text-rose-100 font-medium leading-relaxed max-w-2xl">Employer-facing portal for cryptographically signed degree and qualification verification. Sovereign academic records protected by Aegis security protocol.</p>
+            <div className="pt-6">
+              <button className="px-8 py-4 bg-white text-rose-900 font-black rounded-2xl uppercase tracking-widest text-xs shadow-xl shadow-white/10 hover:bg-rose-50 transition-all">
+                Launch verification Portal
+              </button>
             </div>
           </div>
         )}
@@ -201,58 +200,55 @@ export function AlumniCommunityApplicationShell({ onBack, onNavigateToPlatform }
 
       {/* REGISTER MODAL */}
       {registerModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-black text-white">Register Alumnus Profile</h3>
-            <form onSubmit={handleRegisterAlumnus} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Full Name</label>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white border border-slate-200 rounded-[40px] max-w-md w-full p-10 space-y-8 shadow-2xl">
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Alumni Enrollment</h3>
+            <form onSubmit={handleRegisterAlumnus} className="space-y-6 text-xs font-black uppercase tracking-widest text-slate-400">
+              <div className="space-y-2">
+                <label>Full Alumnus Name</label>
                 <input
                   type="text"
                   required
                   value={alumniForm.name}
                   onChange={(e) => setAlumniForm({ ...alumniForm, name: e.target.value })}
-                  placeholder="e.g. Eng. Moses Okwii"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-rose-900/20"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Graduation Class</label>
+              <div className="space-y-2">
+                <label>Graduation Year / Class</label>
                 <input
                   type="text"
                   required
                   value={alumniForm.classYear}
                   onChange={(e) => setAlumniForm({ ...alumniForm, classYear: e.target.value })}
-                  placeholder="Class of 2022"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-rose-900/20"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Current Organization / Employer</label>
+              <div className="space-y-2">
+                <label>Current Employer / Role</label>
                 <input
                   type="text"
                   value={alumniForm.company}
                   onChange={(e) => setAlumniForm({ ...alumniForm, company: e.target.value })}
-                  placeholder="e.g. Google / Ministry of Finance"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-rose-900/20"
                 />
               </div>
 
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setRegisterModalOpen(false)}
-                  className="flex-1 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold cursor-pointer"
+                  className="flex-1 py-5 bg-slate-100 text-slate-500 rounded-3xl font-black hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-cyan-600 text-white rounded-xl font-black cursor-pointer shadow-md"
+                  className="flex-1 py-5 bg-rose-900 text-white rounded-3xl font-black shadow-xl shadow-rose-900/30 hover:bg-rose-950 transition-all"
                 >
-                  Confirm Registration
+                  Join Network
                 </button>
               </div>
             </form>

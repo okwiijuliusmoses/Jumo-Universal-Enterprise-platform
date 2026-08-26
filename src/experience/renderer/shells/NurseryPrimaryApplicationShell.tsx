@@ -46,28 +46,28 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans" id="jumo-nursery-primary-app">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans" id="jumo-nursery-primary-app">
       {/* 1. APPLICATION TOP BRAND BAR */}
-      <header className="bg-slate-900 border-b border-emerald-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-xl">
+      <header className="bg-emerald-50 border-b border-emerald-100 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-700 text-slate-950 rounded-2xl flex items-center justify-center font-black shadow-lg shadow-emerald-500/20 border border-emerald-400/40">
+          <div className="w-11 h-11 bg-emerald-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-emerald-500/20">
             <School className="w-6 h-6 stroke-[2.5]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-white">JUMO NURSERY & PRIMARY</h1>
-              <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full border border-emerald-500/30">
+              <h1 className="text-xl font-black tracking-tight text-emerald-900">JUMO NURSERY & PRIMARY</h1>
+              <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full border border-emerald-200">
                 Early Education ERP
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">Authoritative Primary Education Operating Environment</p>
+            <p className="text-xs text-emerald-600/70 font-medium">Authoritative Primary Education Operating Environment</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setNewPupilModalOpen(true)}
-            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
           >
             <UserPlus className="w-4 h-4" /> Enroll New Pupil
           </button>
@@ -75,41 +75,41 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
       </header>
 
       {/* 2. STATS RIBBON */}
-      <section className="bg-slate-900/60 border-b border-slate-800 px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900 p-4 rounded-xl border border-emerald-500/20 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Enrolled Pupils</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">1,420 Pupils</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">Nursery: 340 • Primary: 1,080</span>
+      <section className="bg-emerald-50/30 border-b border-emerald-100 px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600/60 block mb-1">Total Enrolled Pupils</span>
+          <div className="text-2xl font-black text-slate-900">1,420</div>
+          <span className="text-[10px] font-bold text-emerald-600 block mt-1 bg-emerald-50 px-2 py-0.5 rounded-lg w-fit">Nursery: 340 • Primary: 1,080</span>
         </div>
 
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Today's Attendance Rate</span>
-          <div className="text-lg md:text-xl font-black text-emerald-400 mt-1">98.4%</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">48 Absent • Recorded 8:00 AM</span>
+        <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600/60 block mb-1">Today's Attendance</span>
+          <div className="text-2xl font-black text-emerald-600">98.4%</div>
+          <span className="text-[10px] font-bold text-slate-400 block mt-1">48 Absent Today</span>
         </div>
 
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Term Tuition Collections</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">UGX 384.2 Million</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">86.5% Paid • FAAP Synced</span>
+        <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600/60 block mb-1">Tuition Collections</span>
+          <div className="text-2xl font-black text-slate-900">UGX 384.2M</div>
+          <span className="text-[10px] font-bold text-emerald-600 block mt-1 bg-emerald-50 px-2 py-0.5 rounded-lg w-fit">86.5% Paid • FAAP Synced</span>
         </div>
 
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Staff On Duty</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">48 Educators</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">Class Teachers & Care Givers</span>
+        <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600/60 block mb-1">Staff On Duty</span>
+          <div className="text-2xl font-black text-slate-900">48</div>
+          <span className="text-[10px] font-bold text-emerald-600 block mt-1">Educators Active</span>
         </div>
       </section>
 
       {/* 3. TABS */}
-      <nav className="bg-slate-900 border-b border-slate-800 px-6 flex items-center gap-2 overflow-x-auto">
+      <nav className="bg-white border-b border-slate-100 px-6 flex items-center gap-4 overflow-x-auto">
         {[
           { id: "pupils", label: "Pupils & Admissions", icon: Baby },
-          { id: "attendance", label: "Daily Attendance & Roll Call", icon: Calendar },
-          { id: "curriculum", label: "Curriculum & Assessment", icon: BookOpen },
-          { id: "bursar", label: "Fee Receipts & Ledger", icon: DollarSign },
-          { id: "staff", label: "Teachers & Duty Roster", icon: Users },
-          { id: "parents", label: "Parent Portal & SMS", icon: MessageSquare }
+          { id: "attendance", label: "Roll Call", icon: Calendar },
+          { id: "curriculum", label: "Curriculum", icon: BookOpen },
+          { id: "bursar", label: "Bursar & Fees", icon: DollarSign },
+          { id: "staff", label: "Staff Roster", icon: Users },
+          { id: "parents", label: "Parent SMS", icon: MessageSquare }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -117,10 +117,10 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`py-3.5 px-4 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`py-5 px-2 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? "border-emerald-400 text-emerald-400 bg-emerald-500/10"
-                  : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "border-emerald-600 text-emerald-600"
+                  : "border-transparent text-slate-400 hover:text-emerald-600"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -131,58 +131,59 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
       </nav>
 
       {/* 4. MAIN CONTENT WORKSPACE */}
-      <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+      <main className="flex-1 p-8 max-w-7xl w-full mx-auto space-y-8">
         {activeTab === "pupils" && (
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h2 className="text-lg font-black text-white">Pupil Registry & Stream Allocation</h2>
-                <p className="text-xs text-slate-400">Manage early child development records, parent contacts, and class streams.</p>
+          <div className="space-y-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+              <div className="space-y-1">
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Pupil Registry</h2>
+                <p className="text-sm text-slate-500 font-medium">Class streams and parent directory.</p>
               </div>
 
-              <div className="relative w-full md:w-64">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+              <div className="relative w-full md:w-80">
+                <Search className="w-4 h-4 text-emerald-600 absolute left-4 top-3.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search pupil or parent..."
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/50"
+                  placeholder="Find a pupil or parent..."
+                  className="w-full bg-slate-50 border-none rounded-2xl pl-11 pr-4 py-3.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none"
                 />
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-xl shadow-slate-200/50">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-emerald-50/50 text-emerald-700 font-black uppercase text-[10px] tracking-[0.2em] border-b border-emerald-100">
                   <tr>
-                    <th className="p-4">Pupil ID</th>
-                    <th className="p-4">Pupil Name</th>
-                    <th className="p-4">Class Stream</th>
-                    <th className="p-4">Parent / Guardian</th>
-                    <th className="p-4">Contact</th>
-                    <th className="p-4">Tuition Status</th>
-                    <th className="p-4">Attendance</th>
+                    <th className="p-6">ID</th>
+                    <th className="p-6">Pupil Name</th>
+                    <th className="p-6">Stream</th>
+                    <th className="p-6">Parent</th>
+                    <th className="p-6">Tuition</th>
+                    <th className="p-6">Attendance</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-slate-50 font-bold text-slate-600">
                   {pupils
                     .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.parent.toLowerCase().includes(searchQuery.toLowerCase()))
                     .map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-mono font-bold text-emerald-400">{p.id}</td>
-                        <td className="p-4 font-bold text-white">{p.name}</td>
-                        <td className="p-4 text-slate-300">{p.classStream}</td>
-                        <td className="p-4 text-slate-400">{p.parent}</td>
-                        <td className="p-4 font-mono text-slate-400">{p.contact}</td>
-                        <td className="p-4">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
-                            p.feesStatus === "PAID" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                      <tr key={p.id} className="hover:bg-emerald-50/30 transition-colors">
+                        <td className="p-6 font-mono text-emerald-600">{p.id}</td>
+                        <td className="p-6 text-slate-900">{p.name}</td>
+                        <td className="p-6">{p.classStream}</td>
+                        <td className="p-6">
+                          <div className="text-slate-900">{p.parent}</div>
+                          <div className="text-[10px] text-slate-400 font-medium">{p.contact}</div>
+                        </td>
+                        <td className="p-6">
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black ${
+                            p.feesStatus === "PAID" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
                           }`}>
                             {p.feesStatus}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-emerald-400">{p.attendance}</td>
+                        <td className="p-6 text-emerald-600">{p.attendance}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -192,98 +193,81 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
         )}
 
         {activeTab === "attendance" && (
-          <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h2 className="text-lg font-black text-white">Daily Attendance Marking Matrix</h2>
-            <p className="text-xs text-slate-400">Class roll calls recorded digitally by primary class teachers.</p>
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-emerald-400">
-              [ROLL-CALL] P1 Blue: 42 Present, 1 Absent • P2 Gold: 40 Present, 0 Absent • P7 Eagles: 45 Present, 2 Absent
+          <div className="bg-emerald-50 p-10 rounded-[40px] border border-emerald-100 space-y-6">
+            <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+              <Calendar className="w-8 h-8" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black text-emerald-900">Attendance Marking Matrix</h2>
+              <p className="text-emerald-700/70 font-medium">Teachers are currently recording today's roll calls across all streams.</p>
+            </div>
+            <div className="p-6 bg-white rounded-2xl border border-emerald-100 font-mono text-xs text-emerald-600 shadow-inner">
+              [ROLL-CALL] P1 Blue: 42 Present • P2 Gold: 40 Present • P7 Eagles: 45 Present
             </div>
           </div>
         )}
 
         {activeTab === "bursar" && (
-          <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h2 className="text-lg font-black text-white">Primary School Tuition & Fees Ledger</h2>
-            <p className="text-xs text-slate-400">Automated tuition receipting linked with central FAAP Double-Entry ledger.</p>
-            <div className="text-2xl font-black text-emerald-400">UGX 384.200.000 Collected</div>
+          <div className="bg-white p-12 rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-8 text-center">
+            <div className="w-20 h-20 bg-emerald-600 text-white rounded-[32px] flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
+              <DollarSign className="w-10 h-10" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black text-slate-900">Tuition & Fees Ledger</h2>
+              <p className="text-slate-500 font-medium">Real-time collections synced with JUMO FAAP.</p>
+            </div>
+            <div className="text-5xl font-black text-emerald-600 tracking-tighter">UGX 384.2M</div>
           </div>
         )}
       </main>
 
       {/* NEW PUPIL MODAL */}
       {newPupilModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-black text-white">Enroll New Primary / Nursery Pupil</h3>
-            <form onSubmit={handleCreatePupil} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Pupil Full Name</label>
+        <div className="fixed inset-0 bg-emerald-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white border border-emerald-100 rounded-[32px] max-w-md w-full p-8 space-y-6 shadow-2xl">
+            <div className="space-y-1">
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">New Enrollment</h3>
+              <p className="text-sm text-slate-500 font-medium">Add a new pupil to the primary registry.</p>
+            </div>
+            
+            <form onSubmit={handleCreatePupil} className="space-y-4 text-sm font-bold">
+              <div className="space-y-1.5">
+                <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1">Pupil Full Name</label>
                 <input
                   type="text"
                   required
                   value={pupilForm.name}
                   onChange={(e) => setPupilForm({ ...pupilForm, name: e.target.value })}
-                  placeholder="e.g. John Baptist Kato"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-4 text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Class Stream</label>
+              <div className="space-y-1.5">
+                <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1">Class Stream</label>
                 <select
                   value={pupilForm.classStream}
                   onChange={(e) => setPupilForm({ ...pupilForm, classStream: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-4 text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 appearance-none"
                 >
                   <option>Baby Class Nursery</option>
-                  <option>Middle Class Nursery</option>
-                  <option>Top Class Nursery</option>
                   <option>Primary 1 Blue</option>
-                  <option>Primary 2 Gold</option>
-                  <option>Primary 3 Eagles</option>
-                  <option>Primary 4 Blue</option>
-                  <option>Primary 5 Lions</option>
-                  <option>Primary 6 Stars</option>
                   <option>Primary 7 Eagles</option>
                 </select>
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Parent / Guardian Name</label>
-                <input
-                  type="text"
-                  required
-                  value={pupilForm.parent}
-                  onChange={(e) => setPupilForm({ ...pupilForm, parent: e.target.value })}
-                  placeholder="e.g. Mary Kato"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Parent Contact Number</label>
-                <input
-                  type="text"
-                  value={pupilForm.contact}
-                  onChange={(e) => setPupilForm({ ...pupilForm, contact: e.target.value })}
-                  placeholder="+256 700 000000"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setNewPupilModalOpen(false)}
-                  className="flex-1 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold cursor-pointer"
+                  className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-emerald-500 text-slate-950 rounded-xl font-black cursor-pointer shadow-md"
+                  className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-500/30 hover:bg-emerald-700 transition-colors"
                 >
-                  Confirm Enrollment
+                  Enroll
                 </button>
               </div>
             </form>
@@ -291,5 +275,6 @@ export function NurseryPrimaryApplicationShell({ onBack, onNavigateToPlatform }:
         </div>
       )}
     </div>
+
   );
 }

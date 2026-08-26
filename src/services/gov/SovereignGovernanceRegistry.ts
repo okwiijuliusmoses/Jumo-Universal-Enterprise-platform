@@ -7,7 +7,7 @@ import {
   VerificationFailureRecord,
   CertificationRecord,
   ManufacturingCategory
-} from "../../core/factory/registry/HubRegistryTypes";
+} from "../../core/runtime/sovereignState.types";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 
 export interface SovereignLedgerEntry {

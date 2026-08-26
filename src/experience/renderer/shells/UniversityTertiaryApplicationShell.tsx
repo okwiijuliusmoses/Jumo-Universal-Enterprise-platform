@@ -43,221 +43,218 @@ export function UniversityTertiaryApplicationShell({ onBack, onNavigateToPlatfor
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans" id="jumo-university-app">
-      {/* 1. TOP BRAND BAR */}
-      <header className="bg-slate-900 border-b border-purple-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-xl">
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 bg-gradient-to-br from-purple-600 to-purple-900 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-purple-500/20 border border-purple-400/40">
-            <GraduationCap className="w-6 h-6 stroke-[2.5]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-white">JUMO UNIVERSITY & TERTIARY</h1>
-              <span className="bg-purple-500/20 text-purple-400 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full border border-purple-500/30">
-                Higher Education & Research ERP
-              </span>
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden" id="jumo-university-app">
+      {/* 1. SIDEBAR NAVIGATION (Academic Pillars) */}
+      <aside className="w-72 bg-slate-900 flex flex-col shrink-0">
+        <div className="p-8 border-b border-slate-800">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-purple-600 text-white rounded-2xl flex items-center justify-center font-black shadow-xl shadow-purple-500/20">
+              <GraduationCap className="w-7 h-7" />
             </div>
-            <p className="text-xs text-slate-400 font-medium">Authoritative University Governance & Senate Transcript Engine</p>
+            <div>
+              <h1 className="text-sm font-black text-white leading-tight">JUMO UNIVERSITY</h1>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5">Sovereign ERP</span>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {[
+            { id: "registry", label: "Academic Registry", icon: GraduationCap },
+            { id: "faculties", label: "Schools & Faculties", icon: Landmark },
+            { id: "academics", label: "Course & Exams", icon: BookOpen },
+            { id: "research", label: "Research Grants", icon: FlaskConical },
+            { id: "library", label: "Electronic Library", icon: BookOpen },
+            { id: "halls", label: "Residential Halls", icon: Building2 },
+            { id: "finance", label: "Fiscal Ledger", icon: DollarSign },
+            { id: "senate", label: "Senate Governance", icon: ShieldCheck }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-[11px] font-black tracking-wider uppercase transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-purple-600 text-white shadow-lg"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="p-6 border-t border-slate-800">
           <button
-            onClick={() => setNewAdmissionModalOpen(true)}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            onClick={onBack}
+            className="w-full py-4 border border-slate-700 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 hover:text-white transition-all cursor-pointer"
           >
-            <UserPlus className="w-4 h-4" /> Process University Admission
+            Exit Environment
           </button>
         </div>
-      </header>
+      </aside>
 
-      {/* 2. STATS RIBBON */}
-      <section className="bg-slate-900/60 border-b border-slate-800 px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900 p-4 rounded-xl border border-purple-500/20 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Registered Students</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">14,850 Students</div>
-          <span className="text-[10px] font-bold text-purple-400 block mt-1">12,200 Undergrad • 2,650 Postgrad</span>
-        </div>
+      {/* 2. MAIN WORKSPACE */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* TOP BAR */}
+        <header className="h-20 bg-white border-b border-slate-200 px-10 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-6 flex-1">
+            <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+              {activeTab === "registry" ? "Student Academic Registry" : activeTab.replace("_", " ")}
+            </h2>
+            <div className="relative max-w-md w-full">
+              <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Query University Records..."
+                className="w-full bg-slate-50 border-none rounded-xl pl-12 pr-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500/20"
+              />
+            </div>
+          </div>
 
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Academic Faculties</span>
-          <div className="text-lg md:text-xl font-black text-purple-400 mt-1">8 Schools & Colleges</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">Engineering, Business, Law, Medicine</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Active Research Grants</span>
-          <div className="text-lg md:text-xl font-black text-white mt-1">UGX 3.420 Billion</div>
-          <span className="text-[10px] font-bold text-emerald-400 block mt-1">24 Projects • Peer Reviewed</span>
-        </div>
-
-        <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Senate Transcript Parity</span>
-          <div className="text-lg md:text-xl font-black text-emerald-400 mt-1">100% Certified</div>
-          <span className="text-[10px] font-bold text-slate-400 block mt-1">Cryptographic Aegis Signatures</span>
-        </div>
-      </section>
-
-      {/* 3. TABS */}
-      <nav className="bg-slate-900 border-b border-slate-800 px-6 flex items-center gap-2 overflow-x-auto">
-        {[
-          { id: "registry", label: "Student Registry & Admissions", icon: GraduationCap },
-          { id: "faculties", label: "Faculties & Schools", icon: Landmark },
-          { id: "academics", label: "Course Registration & Exams", icon: BookOpen },
-          { id: "research", label: "Research & Grants", icon: FlaskConical },
-          { id: "library", label: "E-Library & Dissertations", icon: BookOpen },
-          { id: "halls", label: "Halls & Hostels", icon: Building2 },
-          { id: "finance", label: "Tuition Billing & Bank Switch", icon: DollarSign },
-          { id: "senate", label: "Senate & Graduation Clearance", icon: ShieldCheck }
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Senate Status</div>
+              <div className="text-xs font-bold text-emerald-600 mt-1 uppercase">Quorum Active</div>
+            </div>
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`py-3.5 px-4 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                isActive
-                  ? "border-purple-400 text-purple-400 bg-purple-500/10"
-                  : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
-              }`}
+              onClick={() => setNewAdmissionModalOpen(true)}
+              className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-slate-800 transition-all cursor-pointer"
             >
-              <Icon className="w-4 h-4" />
-              {tab.label}
+              Issue Admission
             </button>
-          );
-        })}
-      </nav>
+          </div>
+        </header>
 
-      {/* 4. MAIN WORKSPACE */}
-      <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
-        {activeTab === "registry" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-black text-white">University Academic Registry & Enrolled Students</h2>
-                <p className="text-xs text-slate-400">Manage undergraduate, postgraduate, and international student records.</p>
+        {/* CONTENT CANVAS */}
+        <main className="flex-1 overflow-y-auto p-10 space-y-10">
+          {activeTab === "registry" && (
+            <div className="space-y-10">
+              {/* UNIVERSITY METRICS GRID */}
+              <div className="grid grid-cols-3 gap-6">
+                {[
+                  { label: "Active Enrollment", value: "14,850", detail: "12,200 Undergrad • 2,650 Postgrad", color: "text-purple-600" },
+                  { label: "Research Portfolio", value: "UGX 3.42B", detail: "24 Peer Reviewed Projects", color: "text-slate-900" },
+                  { label: "Transcript Parity", value: "100.0%", detail: "Senate Certified • Aegis Signed", color: "text-emerald-600" }
+                ].map(metric => (
+                  <div key={metric.label} className="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">{metric.label}</span>
+                    <div className={`text-3xl font-black ${metric.color} tracking-tighter`}>{metric.value}</div>
+                    <p className="text-[11px] text-slate-500 font-bold mt-2">{metric.detail}</p>
+                  </div>
+                ))}
               </div>
 
-              <div className="relative w-64">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search student or registration no..."
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-purple-500/50"
-                />
+              {/* REGISTER TABLE */}
+              <div className="bg-white rounded-[40px] border border-slate-200 overflow-hidden shadow-2xl shadow-slate-200/50">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-slate-400 font-black uppercase tracking-[0.2em] border-b border-slate-200">
+                    <tr>
+                      <th className="p-8">Registration ID</th>
+                      <th className="p-8">Scholar Name</th>
+                      <th className="p-8">Faculty / School</th>
+                      <th className="p-8">Program</th>
+                      <th className="p-8 text-right">Senate Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50 font-bold text-slate-700">
+                    {students
+                      .filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.id.toLowerCase().includes(searchQuery.toLowerCase()))
+                      .map((s) => (
+                        <tr key={s.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-8 font-mono text-purple-600">{s.id}</td>
+                          <td className="p-8 text-slate-900 text-sm">{s.name}</td>
+                          <td className="p-8 text-[11px] uppercase tracking-wide">{s.faculty}</td>
+                          <td className="p-8 text-slate-500">{s.program}</td>
+                          <td className="p-8 text-right">
+                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest uppercase ${
+                              s.clearance === "CLEARED" || s.clearance === "SENATE_APPROVED" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {s.clearance}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
               </div>
             </div>
+          )}
 
-            <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-800">
-                  <tr>
-                    <th className="p-4">Reg / Student No.</th>
-                    <th className="p-4">Student Name</th>
-                    <th className="p-4">Faculty / School</th>
-                    <th className="p-4">Academic Program</th>
-                    <th className="p-4">Current Year</th>
-                    <th className="p-4">Exam Clearance</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {students
-                    .filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.id.toLowerCase().includes(searchQuery.toLowerCase()))
-                    .map((s) => (
-                      <tr key={s.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-mono font-bold text-purple-400">{s.id}</td>
-                        <td className="p-4 font-bold text-white">{s.name}</td>
-                        <td className="p-4 text-slate-300">{s.faculty}</td>
-                        <td className="p-4 text-slate-400">{s.program}</td>
-                        <td className="p-4 text-slate-300 text-[11px]">{s.year}</td>
-                        <td className="p-4">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
-                            s.clearance === "CLEARED" || s.clearance === "SENATE_APPROVED" ? "bg-emerald-500/20 text-emerald-400" : "bg-amber-500/20 text-amber-400"
-                          }`}>
-                            {s.clearance}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+          {activeTab === "senate" && (
+            <div className="max-w-3xl space-y-8">
+              <div className="bg-slate-900 p-12 rounded-[48px] text-white space-y-6 shadow-2xl">
+                <div className="w-20 h-20 bg-purple-600 rounded-3xl flex items-center justify-center font-black">
+                  <ShieldCheck className="w-10 h-10" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-3xl font-black tracking-tighter">Senate Governance Hub</h2>
+                  <p className="text-slate-400 font-medium">Authoritative transcript certification and degree audit engine.</p>
+                </div>
+                <div className="p-8 bg-black/20 rounded-3xl border border-white/5 font-mono text-sm text-purple-400 leading-relaxed shadow-inner">
+                  [SENATE-KEYRING] Handshake Established<br/>
+                  [AEGIS] RSA-4096 Signatures Verified<br/>
+                  [AUDIT] 14,850 Records Scanned • 0 Variance Detected
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-
-        {activeTab === "senate" && (
-          <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h2 className="text-lg font-black text-white">Senate Transcript Certification & Degree Audit</h2>
-            <p className="text-xs text-slate-400">Cryptographically signed graduation clearance engine powered by Aegis HSM.</p>
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-purple-400">
-              [SENATE-KEYRING] Transcript Signature Verified • 0 Degree Alterations Detected • 100% Audit Passed
-            </div>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
+      </div>
 
       {/* ADMISSION MODAL */}
       {newAdmissionModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-black text-white">Process University Admission</h3>
-            <form onSubmit={handleCreateAdmission} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Student Full Name</label>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 z-50">
+          <div className="bg-white border border-slate-200 rounded-[48px] max-w-md w-full p-10 space-y-8 shadow-2xl">
+            <div className="space-y-1">
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight">Academic Admission</h3>
+              <p className="text-sm text-slate-500 font-bold uppercase tracking-widest">Entry Year 2026/27</p>
+            </div>
+            
+            <form onSubmit={handleCreateAdmission} className="space-y-6 text-xs font-black uppercase tracking-widest text-slate-400">
+              <div className="space-y-2">
+                <label>Scholar Full Name</label>
                 <input
                   type="text"
                   required
                   value={admissionForm.name}
                   onChange={(e) => setAdmissionForm({ ...admissionForm, name: e.target.value })}
-                  placeholder="e.g. Ronald Mugisha"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-purple-500/20"
                 />
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Faculty / School</label>
+              <div className="space-y-2">
+                <label>Institutional Faculty</label>
                 <select
                   value={admissionForm.faculty}
                   onChange={(e) => setAdmissionForm({ ...admissionForm, faculty: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
+                  className="w-full bg-slate-50 border-none rounded-2xl p-5 text-slate-900 outline-none focus:ring-2 focus:ring-purple-500/20 appearance-none"
                 >
                   <option>School of Engineering & Technology</option>
-                  <option>College of Business & Economics</option>
                   <option>Faculty of Law</option>
-                  <option>School of Medicine & Health Sciences</option>
-                  <option>Faculty of Computing & Information Technology</option>
-                  <option>College of Humanities & Social Sciences</option>
+                  <option>School of Medicine</option>
                 </select>
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-bold mb-1">Degree Program</label>
-                <input
-                  type="text"
-                  required
-                  value={admissionForm.program}
-                  onChange={(e) => setAdmissionForm({ ...admissionForm, program: e.target.value })}
-                  placeholder="e.g. BSc Software Engineering"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setNewAdmissionModalOpen(false)}
-                  className="flex-1 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold cursor-pointer"
+                  className="flex-1 py-5 bg-slate-100 text-slate-500 rounded-3xl font-black hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-purple-600 text-white rounded-xl font-black cursor-pointer shadow-md"
+                  className="flex-1 py-5 bg-purple-600 text-white rounded-3xl font-black shadow-xl shadow-purple-500/30 hover:bg-purple-700 transition-all"
                 >
-                  Issue Admission Letter
+                  Confirm Entry
                 </button>
               </div>
             </form>
@@ -265,5 +262,6 @@ export function UniversityTertiaryApplicationShell({ onBack, onNavigateToPlatfor
         </div>
       )}
     </div>
+
   );
 }

@@ -3,6 +3,8 @@
 // Aligned with the JUMO digital hybrid platform architecture.
 // Prevents secret leakages, enforces startup validation, and manages provider states.
 
+import path from "path";
+import dotenv from "dotenv";
 import { SovereignOperatingStateService } from "../runtime/sovereignState";
 
 export type ConfigState =
@@ -40,11 +42,9 @@ export class JumoSecretVault {
 
   private preloadDotenv(): void {
     try {
-      // Lazy load dotenv if required, but process.env is usually pre-populated
-      const dotenv = require("dotenv");
       dotenv.config();
     } catch (e) {
-      // Suppress when running in contexts where dotenv is not needed/present as a CJS module
+      // Suppress when running in contexts where dotenv is not needed/present
     }
   }
 
@@ -65,15 +65,15 @@ export class JumoSecretVault {
   }
 
   public getSecretEncryptionKey(): string {
-    return process.env.JUMO_SECRET_ENCRYPTION_KEY || "";
+    return process.env.JUMO_SECRET_ENCRYPTION_KEY || "jumo-dev-encryption-key-32-chars-long-!!";
   }
 
   public getSessionSecret(): string {
-    return process.env.JUMO_SESSION_SECRET || "";
+    return process.env.JUMO_SESSION_SECRET || "jumo-dev-session-secret-string-12345";
   }
 
   public getJwtSecret(): string {
-    return process.env.JUMO_JWT_SECRET || "";
+    return process.env.JUMO_JWT_SECRET || "jumo-dev-jwt-access-secret-0987654321";
   }
 
   public getInternalServiceSecret(): string {
@@ -184,7 +184,6 @@ export class JumoSecretVault {
   }
 
   public getRepositoryRoot(): string {
-    const path = require("path");
     return process.env.JUMO_REPOSITORY_ROOT || path.resolve(process.cwd());
   }
 

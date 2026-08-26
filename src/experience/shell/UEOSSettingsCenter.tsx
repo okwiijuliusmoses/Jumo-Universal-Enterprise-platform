@@ -331,7 +331,7 @@ export function UEOSSettingsCenter({ isOpen, onClose, onSave, settings: initialS
                   <div className="flex items-center justify-between p-2.5 bg-slate-50/50 border border-slate-100 rounded-xl">
                     <div>
                       <span className="font-extrabold text-xs text-slate-900 block">Operational Stream Alerts</span>
-                      <span className="text-[10px] text-slate-500">Alerts on job status transitions and queue pipelines.</span>
+                      <span className="text-[10px] text-slate-500">Alerts on critical system transitions and operational events.</span>
                     </div>
                     <input 
                       type="checkbox" 
