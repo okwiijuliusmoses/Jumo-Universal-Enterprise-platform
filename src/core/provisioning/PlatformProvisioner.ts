@@ -3,7 +3,6 @@
  * Handles overall platform provisioning, orchestration, and instantiation.
  */
 
-import { ERPFactoryEngine } from "../factory/ERPFactoryEngine";
 import { TenantProvisioner } from "./TenantProvisioner";
 import { ModuleInstaller } from "./ModuleInstaller";
 import { WorkflowInstaller } from "./WorkflowInstaller";
@@ -57,17 +56,16 @@ export class PlatformProvisioner {
     // 1. Tenant Creation
     const tenant = await TenantProvisioner.createTenant(tenantId, request.institutionName, request.country);
 
-    // 2. Manufacture Bundle using Factory Engine
-    const manufactured = ERPFactoryEngine.manufacturePlatform({
-      institutionType: request.templateId as any,
-      institutionName: request.institutionName,
-      country: request.country,
-      region: request.region || "National HQ",
-      branchCount: request.branchCount || 10,
-      departmentCount: request.departmentCount || 60,
-      estimatedUsers: request.estimatedUsers || 25000,
-      customModules: request.customModules
-    });
+    // 2. Provisioning Bundle Construction
+    const manufactured = {
+      modules: [],
+      forms: [],
+      workflows: [],
+      compiledContract: {
+        name: request.institutionName,
+        ecosystem: "Sovereign Enterprise Platform"
+      }
+    };
 
     // 3. Module Installation
     const installedModules = await ModuleInstaller.installModules(tenantId, manufactured.modules);

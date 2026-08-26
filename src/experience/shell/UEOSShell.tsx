@@ -10,7 +10,6 @@ import {
   GraduationCap, Church, DollarSign, Lock, BrainCircuit, Workflow, Landmark
 } from "lucide-react";
 
-import { KernelDashboard } from "../renderer/KernelDashboard";
 import { SovereignProductDetailRenderer } from "../renderer/SovereignProductDetailRenderer";
 import { FAAPRenderer } from "../renderer/FAAPRenderer";
 import { DigitalPayRenderer } from "../renderer/DigitalPayRenderer";
@@ -70,7 +69,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     if (saved && validWorkspaces.includes(saved as SovereignWorkspace)) {
       return saved as SovereignWorkspace;
     }
-    return "overview";
+    return "fintech";
   });
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
@@ -318,14 +317,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
   // === 11. AUTHORITATIVE SOVEREIGN SIDEBAR GROUPS ===
   const sidebarGroups = [
     {
-      id: "01 — PLATFORM KERNEL & COMMAND",
-      items: [
-        { id: "overview" as SovereignWorkspace, label: "Kernel Telemetry", icon: Command, color: "text-blue-500" },
-        { id: "products" as SovereignWorkspace, label: "Products & Platforms", icon: Layers, color: "text-indigo-500" }
-      ]
-    },
-    {
-      id: "02 — SOVEREIGN COMMERCIAL PRODUCTS",
+      id: "INDEPENDENT APPLICATIONS",
       items: [
         { id: "fintech" as SovereignWorkspace, label: "JUMO FINTECH SACCO", icon: Zap, color: "text-amber-500" },
         { id: "nursery-primary" as SovereignWorkspace, label: "Nursery & Primary ERP", icon: School, color: "text-emerald-500" },
@@ -336,7 +328,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       ]
     },
     {
-      id: "03 — INDEPENDENT SHARED PLATFORMS",
+      id: "SHARED PLATFORMS",
       items: [
         { id: "faap" as SovereignWorkspace, label: "FAAP Double-Entry Ledger", icon: DollarSign, color: "text-emerald-600" },
         { id: "digital-pay" as SovereignWorkspace, label: "Digital Pay Switch", icon: CreditCard, color: "text-blue-600" },
@@ -349,7 +341,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       ]
     },
     {
-      id: "04 — GOVERNANCE & SETTINGS",
+      id: "GOVERNANCE & SETTINGS",
       items: [
         { id: "compliance" as SovereignWorkspace, label: "Legal & Compliance", icon: ShieldCheck, color: "text-emerald-700" },
         { id: "settings" as SovereignWorkspace, label: "Settings & Preferences", icon: Settings, color: "text-slate-500" }
@@ -364,20 +356,63 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
     switch (activeTab) {
       case "overview":
       case "products":
-        return <KernelDashboard onNavigate={(ws: string) => navigateTo(ws as SovereignWorkspace)} />;
+        return (
+          <div className="p-8 max-w-6xl mx-auto space-y-6">
+            <div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Independent Sovereign Applications</h1>
+              <p className="text-sm text-slate-500">Launch any of the standalone JUMO enterprise applications directly into its dedicated operating environment.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { id: "fintech", title: "JUMO FINTECH", category: "SACCO & Financial Services", icon: Zap, color: "from-amber-500 to-amber-700", badge: "Fintech", desc: "Dedicated financial operations, savings deposits, loan underwriting & FAAP double-entry ledger." },
+                { id: "nursery-primary", title: "JUMO NURSERY & PRIMARY", category: "Early Education ERP", icon: School, color: "from-emerald-500 to-emerald-700", badge: "Primary", desc: "Pupil roster, daily attendance roll call, early literacy curriculum & term fee receipts." },
+                { id: "secondary-school", title: "JUMO SECONDARY SCHOOL", category: "Secondary & Boarding ERP", icon: BookOpen, color: "from-blue-600 to-blue-800", badge: "Secondary", desc: "UNEB O & A-Level curriculum, boarding house management, science labs & exam analytics." },
+                { id: "university", title: "JUMO UNIVERSITY & TERTIARY", category: "Higher Education ERP", icon: GraduationCap, color: "from-purple-600 to-purple-900", badge: "University", desc: "8 academic faculties, student registry, research grant tracker & Senate transcript certification." },
+                { id: "church", title: "JUMO CHURCH & FAITH", category: "Ministry Operations ERP", icon: Church, color: "from-rose-600 to-rose-900", badge: "Ministry", desc: "Congregation directory, cell groups, weekly tithe & offering ledger & pastoral prayer queue." },
+                { id: "alumni", title: "JUMO ALUMNI & COMMUNITY", category: "Alumni Network ERP", icon: Users, color: "from-cyan-600 to-cyan-900", badge: "Alumni", desc: "Global graduate search, regional chapters, endowment campaigns & employer degree verification." },
+              ].map((app) => {
+                const Icon = app.icon;
+                return (
+                  <button
+                    key={app.id}
+                    onClick={() => navigateTo(app.id as SovereignWorkspace)}
+                    className="bg-white border border-slate-200 rounded-2xl p-6 text-left shadow-xs hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer space-y-4 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${app.color} text-white rounded-2xl flex items-center justify-center font-black shadow-md group-hover:scale-105 transition-transform`}>
+                        <Icon className="w-6 h-6 stroke-[2.5]" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full">
+                        {app.badge}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-base text-slate-900 group-hover:text-blue-600 transition-colors">{app.title}</h3>
+                      <p className="text-xs text-slate-500 mt-1">{app.desc}</p>
+                    </div>
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
+                      <span>Launch Application</span>
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
       // 6 Sovereign Products
       case "fintech":
-        return <SovereignProductDetailRenderer productId="prod-fintech" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-fintech" onBack={() => navigateTo("fintech")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       case "nursery-primary":
-        return <SovereignProductDetailRenderer productId="prod-nursery-primary" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-nursery-primary" onBack={() => navigateTo("nursery-primary")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       case "secondary-school":
-        return <SovereignProductDetailRenderer productId="prod-secondary-school" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-secondary-school" onBack={() => navigateTo("secondary-school")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       case "university":
-        return <SovereignProductDetailRenderer productId="prod-university-tertiary" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-university-tertiary" onBack={() => navigateTo("university")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       case "church":
-        return <SovereignProductDetailRenderer productId="prod-church-faith" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-church-faith" onBack={() => navigateTo("church")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       case "alumni":
-        return <SovereignProductDetailRenderer productId="prod-alumni-community" onBack={() => navigateTo("overview")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-alumni-community" onBack={() => navigateTo("alumni")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
       // 8 Independent Shared Platforms
       case "faap":
       case "treasury":
@@ -399,7 +434,7 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
       case "settings":
         return <SettingsRenderer />;
       default:
-        return <KernelDashboard onNavigate={(ws) => navigateTo(ws as SovereignWorkspace)} />;
+        return <SovereignProductDetailRenderer productId="prod-fintech" onBack={() => navigateTo("fintech")} onNavigateToPlatform={(p: string) => navigateTo(p as SovereignWorkspace)} />;
     }
   };
 

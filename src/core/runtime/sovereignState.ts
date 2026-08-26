@@ -16,7 +16,6 @@ if (!isBrowser) {
 import { faapEnterpriseRuntime } from "../faap/faapService";
 import { JumoAIAgentRegistry } from "../ai/registry/JumoAIAgentRegistry";
 import { UniversalHubRegistry } from "../factory/registry/UniversalHubRegistry";
-import { TemplateCompiler } from "../factory/TemplateCompiler";
 import { UniversalVerificationEngine } from "./verificationEngine";
 import { ERPTemplateRegistry } from "./erpTemplateRegistry";
 import { JUMO_HYBRID_ARCHITECTURE_REGISTRY, JumoArchitectureLayer } from "../hub/architecture/JumoHybridArchitectureLayers";
@@ -689,40 +688,25 @@ export class SovereignOperatingStateService {
     const bp = this.state.blueprints.find(b => b.blueprintId === bpId);
     if (!bp) throw new Error("Blueprint not found");
 
-    // Run the real TemplateCompiler!
-    // We look up an ERP template matching our ID, or we compile a virtual template.
-    const erpTemplates = UniversalHubRegistry.getERPTemplates();
-    const matchedTemplate = erpTemplates.find(t => t.id === bpId || bpId.includes(t.id));
-    
-    let compiledContract;
-    if (matchedTemplate) {
-      compiledContract = TemplateCompiler.compile(matchedTemplate);
-    } else {
-      // Simulate standard compilation
-      compiledContract = TemplateCompiler.compile({
-        id: bpId,
-        name: bp.name,
-        ecosystemId: "corporate",
-        description: `Sovereign enterprise operating platform for ${bp.name}.`,
-        version: "v4.0.0",
-        governance: {
-          title: "Sovereign Executive Council",
-          role: "Supreme Executive Leadership"
-        },
-        portals: [{ id: "operator-portal", name: "Operator Portal", roles: ["OPERATOR"], modules: ["Operations"] }],
-        availableModules: [],
-        modules: ["General Ledger", "Operations", "Audit System"],
-        roles: ["EXECUTIVE", "AUDITOR", "OPERATOR"],
-        workflows: ["Standard Approval Workflow"],
-        departments: ["Sovereign Operations"],
-        forms: ["IntakeForm"],
-        components: ["DataGrid", "ActionConsole"],
-        institutionTypes: ["Sovereign Branch"],
-        reports: [],
-        integrations: [],
-        status: "Active"
-      });
-    }
+    const compiledContract = {
+      id: bpId,
+      name: bp.name,
+      ecosystem: "Sovereign Enterprise",
+      version: "v4.0.0",
+      compiledAt: new Date().toISOString(),
+      governance: {
+        title: "Sovereign Executive Council",
+        role: "Supreme Executive Leadership"
+      },
+      portals: [{ id: "operator-portal", name: "Operator Portal", roles: ["OPERATOR"], modules: ["Operations"] }],
+      modules: ["General Ledger", "Operations", "Audit System"],
+      roles: ["EXECUTIVE", "AUDITOR", "OPERATOR"],
+      workflows: ["Standard Approval Workflow"],
+      departments: ["Sovereign Operations"],
+      forms: ["IntakeForm"],
+      components: ["DataGrid", "ActionConsole"],
+      status: "Active"
+    };
 
     bp.compilerStatus = 'OK';
     bp.lifecycleState = 'VALIDATED';

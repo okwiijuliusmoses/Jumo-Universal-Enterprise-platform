@@ -3,9 +3,7 @@ import { ERPTemplateRegistry } from "./erpTemplateRegistry";
 import { ModuleRegistry } from "./moduleRegistry";
 import { PortalRegistry } from "./portalRegistry";
 import { WorkflowRegistry } from "./workflowRegistry";
-import { EnterpriseInstance, GovernanceNode } from "../../ueos/kernel/GovernanceEngine";
-import { ERPFactoryEngine } from "../factory/ERPFactoryEngine";
-import { InstitutionGenerator } from "../factory/InstitutionGenerator";
+import { EnterpriseInstance } from "../../ueos/kernel/GovernanceEngine";
 
 export type ERPInstance = EnterpriseInstance;
 
@@ -16,37 +14,73 @@ export class UniversalERPFactory {
       throw new Error(`Provisioning failure: Template blueprint '${templateId}' not found in registry.`);
     }
 
-    // Use the sophisticated ERPFactoryEngine to manufacture the platform
-    const bundle = ERPFactoryEngine.manufacturePlatform({
-      institutionName: config.name,
-      institutionType: template.ecosystemId as any,
-      ...config
-    });
-    
-    // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
-    bundle.portalSuite.portals.forEach((portal: unknown) => PortalRegistry.register(portal as any, signature));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
+    const instance: EnterpriseInstance = {
+      id: `inst-${templateId}-${Date.now()}`,
+      instanceId: `inst-${templateId}-${Date.now()}`,
+      name: config.name || "Sovereign Enterprise Platform",
+      templateId: templateId,
+      templateName: template.name || templateId,
+      ecosystemId: template.ecosystemId || "ERP_ECOSYSTEM",
+      profile: {
+        country: config.country || "UGANDA",
+        region: config.region || "Central",
+        operator: "SOVEREIGN_ADMIN"
+      },
+      institution: {
+        institutionId: `INST-${Date.now()}`,
+        institutionName: config.name || "Sovereign Enterprise Platform",
+        country: config.country || "UGANDA",
+        region: config.region || "Central",
+        operator: "SOVEREIGN_ADMIN"
+      },
+      governance: {
+        id: "GOV-NODE-01",
+        title: "Executive Council",
+        role: "GOVERNANCE"
+      },
+      modules: [],
+      users: [],
+      status: "Operational",
+      tenantConfig: {},
+      createdAt: new Date().toISOString()
+    };
 
-    return ERPInstanceRegistry.register(bundle.instance);
+    return ERPInstanceRegistry.register(instance);
   }
 
   static manufactureFromBlueprintInput(input: any, signature: string): EnterpriseInstance {
-    // This uses the more sophisticated AI-driven factory engine
-    const bundle = ERPFactoryEngine.manufacturePlatform({
-      institutionName: input.name,
-      institutionType: (input.sector || "enterprise") as any,
-      country: input.country,
-      region: input.region,
-      branchCount: 1
-    });
-    
-    // Register all platform components
-    bundle.modules.forEach(mod => ModuleRegistry.register(mod as any, signature));
-    bundle.portalSuite.portals.forEach((portal: unknown) => PortalRegistry.register(portal as any, signature));
-    bundle.workflows.forEach(wf => WorkflowRegistry.register(wf as any, signature));
-    
-    return ERPInstanceRegistry.register(bundle.instance);
+    const instance: EnterpriseInstance = {
+      id: `inst-blueprint-${Date.now()}`,
+      instanceId: `inst-blueprint-${Date.now()}`,
+      name: input.name || "Sovereign Blueprint Platform",
+      templateId: "tpl-blueprint",
+      templateName: "Blueprint Template",
+      ecosystemId: input.sector || "ERP_ECOSYSTEM",
+      profile: {
+        country: input.country || "UGANDA",
+        region: input.region || "Central",
+        operator: "SOVEREIGN_ADMIN"
+      },
+      institution: {
+        institutionId: `INST-${Date.now()}`,
+        institutionName: input.name || "Sovereign Blueprint Platform",
+        country: input.country || "UGANDA",
+        region: input.region || "Central",
+        operator: "SOVEREIGN_ADMIN"
+      },
+      governance: {
+        id: "GOV-NODE-01",
+        title: "Executive Council",
+        role: "GOVERNANCE"
+      },
+      modules: [],
+      users: [],
+      status: "Operational",
+      tenantConfig: {},
+      createdAt: new Date().toISOString()
+    };
+
+    return ERPInstanceRegistry.register(instance);
   }
 }
 
