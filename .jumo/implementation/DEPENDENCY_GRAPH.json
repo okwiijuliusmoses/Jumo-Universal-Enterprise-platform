@@ -1,0 +1,50 @@
+{
+  "topology": "DIRECTED_ACYCLIC_GRAPH",
+  "root": "PLATFORM_KERNEL",
+  "layers": [
+    {
+      "layer": 0,
+      "name": "Kernel Core & Workspace Protocol",
+      "nodes": ["WORKSPACE_PERSISTENCE", "KERNEL_BLUEPRINT"]
+    },
+    {
+      "layer": 1,
+      "name": "Independent Shared Platforms",
+      "nodes": [
+        "JUMO_FAAP_PLATFORM",
+        "JUMO_DIGITAL_PAY_PLATFORM",
+        "JUMO_AEGIS_SECURITY",
+        "JUMO_AI_HYBRID_MESH",
+        "JUMO_TREASURY_PLATFORM",
+        "JUMO_DIGITAL_AUDITOR",
+        "JUMO_WORKFLOW_ENGINE",
+        "JUMO_CLOUD_INFRA"
+      ],
+      "dependencies": ["KERNEL_BLUEPRINT"]
+    },
+    {
+      "layer": 2,
+      "name": "Universal Metadata Runtime & Product Factory",
+      "nodes": ["UNIVERSAL_HUB_REGISTRY", "ERP_FACTORY_ENGINE", "METADATA_PORTAL_RUNTIME"],
+      "dependencies": ["JUMO_FAAP_PLATFORM", "JUMO_DIGITAL_PAY_PLATFORM", "JUMO_AEGIS_SECURITY"]
+    },
+    {
+      "layer": 3,
+      "name": "Sovereign Commercial Products",
+      "nodes": [
+        "PROD_FINTECH_SACCO_BANKING",
+        "PROD_NURSERY_PRIMARY_ERP",
+        "PROD_SECONDARY_SCHOOL_ERP",
+        "PROD_UNIVERSITY_TERTIARY_ERP",
+        "PROD_CHURCH_FAITH_ERP",
+        "PROD_ALUMNI_COMMUNITY_ERP"
+      ],
+      "dependencies": [
+        "UNIVERSAL_HUB_REGISTRY",
+        "JUMO_FAAP_PLATFORM",
+        "JUMO_DIGITAL_PAY_PLATFORM",
+        "JUMO_AI_HYBRID_MESH"
+      ]
+    }
+  ]
+}

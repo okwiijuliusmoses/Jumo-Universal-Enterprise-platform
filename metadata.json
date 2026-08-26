@@ -1,6 +1,6 @@
 {
-  "name": "JUMO DIGITAL ENTERPRISE PLATFORM",
-  "description": "JUMO UEOS Digital Hybrid Enterprise Operating System with Sovereign Control Center Governance, Sovereign AI Identity, ERP Intelligence, and Subscription Access Architecture.",
+  "name": "JUMO UEOS Sovereign Command",
+  "description": "National-scale digital manufacturing control-plane and sovereign operating layer for JUMO Universal Enterprise Operating System (UEOS), integrating specification validation, 420+ cognitive workforce architecture expansion, verification command center, and 32-stage manufacturing pipeline.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

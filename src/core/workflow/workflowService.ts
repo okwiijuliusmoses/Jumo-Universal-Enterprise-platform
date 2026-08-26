@@ -1,3 +1,5 @@
+import { WorkflowRepository, AuditLogRepository } from "../../repositories/repositories";
+
 export interface WorkflowTask {
   id: string;
   name: string;
@@ -92,6 +94,16 @@ export class WorkflowService {
 
     for (const task of defaultTasks) {
       this.activeTasks.set(task.id, task);
+      
+      // Seed matching workflow configuration record in db repository
+      WorkflowRepository.save({
+        id: task.id,
+        name: task.name,
+        triggerEvent: "APPROVAL_CHAIN",
+        status: task.currentState.toUpperCase(),
+        approvers: task.approvalChain.map(c => c.assignedRole).join(","),
+        lastTriggered: task.createdAt
+      });
     }
   }
 
@@ -130,7 +142,17 @@ export class WorkflowService {
 
     this.activeTasks.set(id, task);
 
-    console.log(`[WORKFLOW_CREATE] Created workflow approval chain '${name}' [Task ID: ${id}].`);
+    // Save to repository
+    WorkflowRepository.save({
+      id: task.id,
+      name: task.name,
+      triggerEvent: "APPROVAL_CHAIN",
+      status: "PENDING",
+      approvers: roles.join(","),
+      lastTriggered: task.createdAt
+    });
+
+    AuditLogRepository.log("System_Core", "WORKFLOW_CREATE", `Created workflow approval chain '${name}' [Task ID: ${id}].`);
     return task;
   }
 
@@ -140,7 +162,7 @@ export class WorkflowService {
 
     const currentChainStep = task.approvalChain.find(c => c.step === task.currentStep);
     if (!currentChainStep || currentChainStep.assignedRole !== role) {
-      console.warn(`[WORKFLOW_APPROVE_BLOCKED] Attempted to approve step ${task.currentStep} of workflow ${id} but lacked role ${currentChainStep?.assignedRole}.`);
+      AuditLogRepository.log(email, "WORKFLOW_APPROVE_BLOCKED", `Attempted to approve step ${task.currentStep} of workflow ${id} but lacked role ${currentChainStep?.assignedRole}.`, "blocked");
       return false;
     }
 
@@ -157,10 +179,18 @@ export class WorkflowService {
 
     if (task.currentStep < task.approvalChain.length) {
       task.currentStep++;
-      console.log(`[WORKFLOW_STEP_APPROVED] Approved step ${task.currentStep - 1} of workflow ${id}. Advancing to step ${task.currentStep}.`);
+      AuditLogRepository.log(email, "WORKFLOW_STEP_APPROVED", `Approved step ${task.currentStep - 1} of workflow ${id}. Advancing to step ${task.currentStep}.`);
     } else {
       task.currentState = "approved";
-      console.log(`[WORKFLOW_FINAL_APPROVED] Workflow approval chain fully completed for task '${task.name}' [ID: ${id}].`);
+      
+      // Update persistent repo state
+      const wfConfig = WorkflowRepository.findById(id);
+      if (wfConfig) {
+        wfConfig.status = "APPROVED";
+        WorkflowRepository.save(wfConfig);
+      }
+
+      AuditLogRepository.log(email, "WORKFLOW_FINAL_APPROVED", `Workflow approval chain fully completed for task '${task.name}' [ID: ${id}].`);
     }
 
     return true;
@@ -172,7 +202,7 @@ export class WorkflowService {
 
     const currentChainStep = task.approvalChain.find(c => c.step === task.currentStep);
     if (!currentChainStep || currentChainStep.assignedRole !== role) {
-      console.warn(`[WORKFLOW_REJECT_BLOCKED] Attempted to reject step ${task.currentStep} of workflow ${id} but lacked role ${currentChainStep?.assignedRole}.`);
+      AuditLogRepository.log(email, "WORKFLOW_REJECT_BLOCKED", `Attempted to reject step ${task.currentStep} of workflow ${id} but lacked role ${currentChainStep?.assignedRole}.`, "blocked");
       return false;
     }
 
@@ -188,7 +218,14 @@ export class WorkflowService {
       comment: `Workflow rejected at step ${task.currentStep}: ${comment}`
     });
 
-    console.log(`[WORKFLOW_REJECTED] Rejected workflow ${id} at step ${task.currentStep}.`);
+    // Update persistent repo state
+    const wfConfig = WorkflowRepository.findById(id);
+    if (wfConfig) {
+      wfConfig.status = "REJECTED";
+      WorkflowRepository.save(wfConfig);
+    }
+
+    AuditLogRepository.log(email, "WORKFLOW_REJECTED", `Rejected workflow ${id} at step ${task.currentStep}.`);
     return true;
   }
 
@@ -208,17 +245,24 @@ export class WorkflowService {
 
     if (action === "auto_approve") {
       task.currentState = "approved";
-      console.log(`[WORKFLOW_AUTO_APPROVE] Auto-approved task '${task.name}' [ID: ${id}] due to escalation rule.`);
+      AuditLogRepository.log("System_Scheduler", "WORKFLOW_AUTO_APPROVE", `Auto-approved task '${task.name}' [ID: ${id}] due to escalation rule.`);
     } else if (action === "auto_reject") {
       task.currentState = "rejected";
-      console.log(`[WORKFLOW_AUTO_REJECT] Auto-rejected task '${task.name}' [ID: ${id}] due to escalation rule.`);
+      AuditLogRepository.log("System_Scheduler", "WORKFLOW_AUTO_REJECT", `Auto-rejected task '${task.name}' [ID: ${id}] due to escalation rule.`);
     } else {
       // Re-assign step to Admin
       const currentStep = task.approvalChain.find(c => c.step === task.currentStep);
       if (currentStep) {
         currentStep.assignedRole = "SecOps_Administrator";
       }
-      console.log(`[WORKFLOW_ESCALATION] Escalated task '${task.name}' [ID: ${id}] assigned role reassigned to SecOps_Administrator.`);
+      AuditLogRepository.log("System_Scheduler", "WORKFLOW_ESCALATION", `Escalated task '${task.name}' [ID: ${id}] assigned role reassigned to SecOps_Administrator.`);
+    }
+
+    // Update repo state
+    const wfConfig = WorkflowRepository.findById(id);
+    if (wfConfig) {
+      wfConfig.status = task.currentState.toUpperCase();
+      WorkflowRepository.save(wfConfig);
     }
 
     return true;

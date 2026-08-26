@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
+import { JumoSecretVault } from "../security/JumoSecretVault";
 
-if (typeof window === "undefined") {
-  dotenv.config();
-}
+dotenv.config();
 
 export interface SystemConfig {
   nodeEnv: string;
@@ -48,14 +47,16 @@ export class ConfigService {
 
     const usePostgres = !!(pgHost && pgDb);
 
+    const vault = JumoSecretVault.getInstance();
+
     // Dynamic secure encryption key with a secure fallback
-    const secureEncryptionKey = process.env.SECURE_ENCRYPTION_KEY || "JUMO_UEOS_DHP_DEFAULT_SECURE_KEY_2026";
+    const secureEncryptionKey = vault.getSecretEncryptionKey() || "JUMO_UEOS_DHP_DEFAULT_SECURE_KEY_2026";
 
     if (nodeEnv === "production" && secureEncryptionKey === "JUMO_UEOS_DHP_DEFAULT_SECURE_KEY_2026") {
       console.warn("[WARN] CONFIG: Running in production mode with a default SECURE_ENCRYPTION_KEY! Hardening required.");
     }
 
-    const geminiApiKey = process.env.GEMINI_API_KEY;
+    const geminiApiKey = vault.getGeminiKey();
 
     return {
       nodeEnv,

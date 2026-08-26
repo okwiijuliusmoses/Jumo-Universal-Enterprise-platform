@@ -4,10 +4,12 @@ import {
   LedgerRepository, 
   RegistryRepository, 
   WorkflowRepository, 
-  AuditLogRepository 
+  AuditLogRepository,
+  EcosystemRepository as UEOS_EcosystemRepository,
+  TemplateRepository as UEOS_TemplateRepository
 } from "../repositories/repositories";
 
-export function runMigrations() {
+export async function runMigrations() {
   console.log("[MIGRATION] Checking tables and seeding default operational metrics...");
 
   // 1. Seed Identity & RBAC User profiles

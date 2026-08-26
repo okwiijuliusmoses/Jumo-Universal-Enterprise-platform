@@ -53,10 +53,8 @@ export class ShutdownManager {
   }
 
   public setupSignalHandlers(): void {
-    if (typeof window === "undefined" && typeof process !== "undefined" && typeof process.on === "function") {
-      process.on("SIGINT", () => this.shutdown("SIGINT"));
-      process.on("SIGTERM", () => this.shutdown("SIGTERM"));
-    }
+    process.on("SIGINT", () => this.shutdown("SIGINT"));
+    process.on("SIGTERM", () => this.shutdown("SIGTERM"));
   }
 }
 

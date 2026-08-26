@@ -1,0 +1,25 @@
+{
+  "changes": [
+    {
+      "changeId": "CHG-WORKSPACE-INIT-001",
+      "timestamp": "2026-08-26T09:28:00.000Z",
+      "author": "Gemini-3.7-Flash",
+      "type": "INFRASTRUCTURE_PERSISTENCE",
+      "description": "Created .jumo/implementation/ persistent workspace and model handoff protocol."
+    },
+    {
+      "changeId": "CHG-FAAP-ENGINE-002",
+      "timestamp": "2026-08-26T09:32:00.000Z",
+      "author": "Gemini-3.7-Flash",
+      "type": "PLATFORM_IMPLEMENTATION",
+      "description": "Implemented FAAP statutory double-entry ledger, vote books, 3-way matching, and Merkle audit blocks in src/platforms/faap/."
+    },
+    {
+      "changeId": "CHG-PLATFORMS-CONSOLIDATION-003",
+      "timestamp": "2026-08-26T09:36:00.000Z",
+      "author": "Gemini-3.7-Flash",
+      "type": "PLATFORM_CONSOLIDATION",
+      "description": "Consolidated Digital Pay, Aegis Security, and AI Hybrid Mesh platforms under src/platforms/ with zero-parity accounting bridge and zero build/lint errors."
+    }
+  ]
+}

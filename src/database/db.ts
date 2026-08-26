@@ -4,7 +4,33 @@ import { UEOS_SCHEMAS } from "../schema/schema";
 
 const isBrowser = typeof window !== "undefined";
 
-const DB_FILE_PATH = "assets/ueos_database.json";
+let nodeFs: any = null;
+let nodePath: any = null;
+let PgPool: any = null;
+
+if (!isBrowser) {
+  try {
+    // Using eval to hide require calls from Vite's static analysis
+    nodeFs = eval('require("fs")');
+    nodePath = eval('require("path")');
+    PgPool = eval('require("pg")').Pool;
+  } catch {
+    // Node modules unavailable
+  }
+}
+
+const getDBFilePath = () => {
+  try {
+    if (!isBrowser && typeof process !== "undefined" && typeof process.cwd === "function" && nodePath) {
+      return nodePath.join(process.cwd(), "assets", "ueos_database.json");
+    }
+  } catch {
+    // fallback
+  }
+  return "assets/ueos_database.json";
+};
+
+const DB_FILE_PATH = getDBFilePath();
 
 export class JUMODBEngine {
   private static instance: JUMODBEngine;
@@ -13,8 +39,18 @@ export class JUMODBEngine {
   private pool: any = null;
   private usePostgres = false;
 
+  private readyPromise: Promise<void>;
+  private resolveReady!: () => void;
+
   private constructor() {
+    this.readyPromise = new Promise((resolve) => {
+      this.resolveReady = resolve;
+    });
     this.initializeEngine();
+  }
+
+  public async waitUntilReady(): Promise<void> {
+    return this.readyPromise;
   }
 
   public static getInstance(): JUMODBEngine {
@@ -29,9 +65,6 @@ export class JUMODBEngine {
   }
 
   public getStorageMode(): string {
-    if (isBrowser) {
-      return "Browser Client In-Memory Mode";
-    }
     return this.usePostgres ? "Production-Grade PostgreSQL (Cloud SQL)" : "Durable JSON Backup (Hybrid Mode)";
   }
 
@@ -75,77 +108,69 @@ export class JUMODBEngine {
   private async initializeEngine() {
     if (this.isInitialized) return;
 
-    // 1. Initialize collections in memory
+    // 1. Ensure assets directory exists for backup (Node environment only)
+    try {
+      if (!isBrowser && nodeFs && nodePath && typeof nodeFs.existsSync === "function") {
+        const dir = nodePath.dirname(DB_FILE_PATH);
+        if (!nodeFs.existsSync(dir)) {
+          nodeFs.mkdirSync(dir, { recursive: true });
+        }
+      }
+    } catch (err: any) {
+      console.warn("[DATABASE_WARN] Directory initialization skipped:", err.message);
+    }
+
+    // 2. Initialize collections in memory
     for (const key of Object.keys(UEOS_SCHEMAS)) {
       this.data[key] = [];
     }
 
-    if (isBrowser) {
-      this.isInitialized = true;
-      console.log("[DATABASE] JUMO UEOS Database initialized in Browser In-Memory Mode.");
-      return;
-    }
+    // 3. Detect and establish PostgreSQL connection if variables exist (Node environment only)
+    if (!isBrowser && typeof process !== "undefined" && process.env && PgPool) {
+      const host = process.env.SQL_HOST;
+      const dbName = process.env.SQL_DB_NAME;
+      const user = process.env.SQL_USER || process.env.SQL_ADMIN_USER;
+      const password = process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD;
 
-    // 2. Ensure assets directory exists for backup in Node environment
-    try {
-      if (typeof process !== "undefined" && typeof require !== "undefined") {
-        const fs = require("fs");
-        const path = require("path");
-        const resolvedPath = path.resolve(process.cwd(), DB_FILE_PATH);
-        const dir = path.dirname(resolvedPath);
-        if (fs && fs.existsSync && !fs.existsSync(dir)) {
-          fs.mkdirSync(dir, { recursive: true });
+      if (host && dbName && user) {
+        console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
+        try {
+          this.pool = new PgPool({
+            host,
+            database: dbName,
+            user,
+            password,
+            connectionTimeoutMillis: 5000,
+          });
+
+          // Test connection
+          const client = await this.pool.connect();
+          client.release();
+
+          this.usePostgres = true;
+          console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
+
+          // Initialize Postgres tables and load data
+          await this.bootstrapPostgresTables();
+        } catch (err: any) {
+          console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
+          this.usePostgres = false;
         }
+      } else {
+        console.log("[DATABASE] No PostgreSQL variables. Running on secure local JSON storage mode.");
       }
-    } catch (e) {
-      console.warn("[DATABASE_WARN] Could not initialize database directory:", e);
-    }
-
-    // 3. Detect and establish PostgreSQL connection if variables exist in Node environment
-    const host = typeof process !== "undefined" ? (process.env.SQL_HOST || process.env.PGHOST) : undefined;
-    const dbName = typeof process !== "undefined" ? (process.env.SQL_DB_NAME || process.env.PGDATABASE) : undefined;
-    const user = typeof process !== "undefined" ? (process.env.SQL_USER || process.env.SQL_ADMIN_USER || process.env.PGUSER) : undefined;
-    const password = typeof process !== "undefined" ? (process.env.SQL_PASSWORD || process.env.SQL_ADMIN_PASSWORD || process.env.PGPASSWORD) : undefined;
-
-    if (host && dbName && user) {
-      console.log(`[DATABASE] Production PostgreSQL host detected: ${host}. Initializing pool...`);
-      try {
-        const pgModule = await import("pg");
-        const Pool = pgModule.Pool || (pgModule as any).default?.Pool;
-        this.pool = new Pool({
-          host,
-          database: dbName,
-          user,
-          password,
-          connectionTimeoutMillis: 5000,
-        });
-
-        // Test connection
-        const client = await this.pool.connect();
-        client.release();
-
-        this.usePostgres = true;
-        console.log("[DATABASE] Successfully connected to PostgreSQL instance.");
-
-        // Initialize Postgres tables and load data
-        await this.bootstrapPostgresTables();
-      } catch (err: any) {
-        console.error(`[DATABASE_WARN] PostgreSQL connection failed: ${err.message}. Falling back to local JSON persistence.`);
-        this.usePostgres = false;
-      }
-    } else {
-      console.log("[DATABASE] Running on secure local JSON storage mode.");
     }
 
     // Load backup data or local store
     this.load();
     this.isInitialized = true;
+    this.resolveReady();
     console.log(`[DATABASE] JUMO UEOS Database initialized.`);
   }
 
   // Create PostgreSQL tables if not exists
   private async bootstrapPostgresTables() {
-    if (!this.pool || isBrowser) return;
+    if (!this.pool) return;
 
     try {
       console.log("[DATABASE] Bootstrapping PostgreSQL tables if they don't exist...");
@@ -213,6 +238,57 @@ export class JUMODBEngine {
           created_by VARCHAR(255),
           updated_by VARCHAR(255)
         );
+
+        CREATE TABLE IF NOT EXISTS ueos_ecosystems (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          version VARCHAR(50),
+          category VARCHAR(100),
+          description TEXT,
+          governance_model VARCHAR(255),
+          status VARCHAR(50),
+          config TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_templates (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          ecosystem_id VARCHAR(100),
+          description TEXT,
+          version VARCHAR(50),
+          status VARCHAR(50),
+          blueprint TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_instances (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          template_id VARCHAR(100),
+          ecosystem_id VARCHAR(100),
+          status VARCHAR(50),
+          configuration TEXT,
+          created_at VARCHAR(100)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_modules (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          category VARCHAR(100),
+          config TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_forms (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          definition TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_components (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255),
+          type VARCHAR(50),
+          description TEXT
+        );
       `);
       console.log("[DATABASE] PostgreSQL tables verified/created.");
     } catch (err: any) {
@@ -220,26 +296,32 @@ export class JUMODBEngine {
     }
   }
 
-  // Load database from file / Postgres with error recovery
+  // Load database from file / Postgres / localStorage with error recovery
   public async load() {
-    if (isBrowser) return;
-
-    // Read from local JSON first to verify schema and local baseline
+    // Read from local storage (browser) or JSON file (Node)
     try {
-      if (typeof process !== "undefined" && typeof require !== "undefined") {
-        const fs = require("fs");
-        if (fs && fs.existsSync && fs.existsSync(DB_FILE_PATH)) {
-          const raw = fs.readFileSync(DB_FILE_PATH, "utf-8");
-          const parsed = JSON.parse(raw);
+      if (isBrowser && typeof localStorage !== "undefined") {
+        let stored = null;
+        try { stored = localStorage.getItem("ueos_db_backup"); } catch(e) {}
+        if (stored) {
+          const parsed = JSON.parse(stored);
           for (const key of Object.keys(UEOS_SCHEMAS)) {
             if (Array.isArray(parsed[key])) {
               this.data[key] = parsed[key];
             }
           }
         }
+      } else if (!isBrowser && nodeFs && typeof nodeFs.existsSync === "function" && nodeFs.existsSync(DB_FILE_PATH)) {
+        const raw = nodeFs.readFileSync(DB_FILE_PATH, "utf-8");
+        const parsed = JSON.parse(raw);
+        for (const key of Object.keys(UEOS_SCHEMAS)) {
+          if (Array.isArray(parsed[key])) {
+            this.data[key] = parsed[key];
+          }
+        }
       }
     } catch (err: any) {
-      console.error("[DATABASE_ERROR] Local JSON read failed:", err.message);
+      console.error("[DATABASE_ERROR] Local storage/JSON read failed:", err.message);
     }
 
     // Overwrite cache from PostgreSQL if active
@@ -332,6 +414,75 @@ export class JUMODBEngine {
           }));
         }
 
+        const rEcosystems = await this.pool.query("SELECT * FROM ueos_ecosystems");
+        if (rEcosystems.rows.length > 0) {
+          this.data["ecosystems"] = rEcosystems.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            version: r.version,
+            category: r.category,
+            description: r.description,
+            governanceModel: r.governance_model,
+            status: r.status,
+            config: r.config
+          }));
+        }
+
+        const rTemplates = await this.pool.query("SELECT * FROM ueos_templates");
+        if (rTemplates.rows.length > 0) {
+          this.data["templates"] = rTemplates.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            ecosystemId: r.ecosystem_id,
+            description: r.description,
+            version: r.version,
+            status: r.status,
+            blueprint: r.blueprint
+          }));
+        }
+
+        const rInstances = await this.pool.query("SELECT * FROM ueos_instances");
+        if (rInstances.rows.length > 0) {
+          this.data["instances"] = rInstances.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            templateId: r.template_id,
+            ecosystemId: r.ecosystem_id,
+            status: r.status,
+            configuration: r.configuration,
+            createdAt: r.created_at
+          }));
+        }
+
+        const rModules = await this.pool.query("SELECT * FROM ueos_modules");
+        if (rModules.rows.length > 0) {
+          this.data["modules"] = rModules.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            category: r.category,
+            config: r.config
+          }));
+        }
+
+        const rForms = await this.pool.query("SELECT * FROM ueos_forms");
+        if (rForms.rows.length > 0) {
+          this.data["forms"] = rForms.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            definition: r.definition
+          }));
+        }
+
+        const rComponents = await this.pool.query("SELECT * FROM ueos_components");
+        if (rComponents.rows.length > 0) {
+          this.data["components"] = rComponents.rows.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            type: r.type,
+            description: r.description
+          }));
+        }
+
         console.log("[DATABASE] Loaded state from PostgreSQL successfully.");
       } catch (err: any) {
         console.error("[DATABASE_ERROR] PostgreSQL sync load failed:", err.message);
@@ -339,16 +490,14 @@ export class JUMODBEngine {
     }
   }
 
-  // Synchronize memory state to disk (always runs as backup)
+  // Synchronize memory state to disk / localStorage (always runs as backup)
   public save() {
-    if (isBrowser) return;
     try {
-      if (typeof process !== "undefined" && typeof require !== "undefined") {
-        const fs = require("fs");
-        if (fs && fs.writeFileSync) {
-          const payload = JSON.stringify(this.data, null, 2);
-          fs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
-        }
+      const payload = JSON.stringify(this.data, null, 2);
+      if (isBrowser && typeof localStorage !== "undefined") {
+        try { localStorage.setItem("ueos_db_backup", payload); } catch (e) {}
+      } else if (!isBrowser && nodeFs && typeof nodeFs.writeFileSync === "function") {
+        nodeFs.writeFileSync(DB_FILE_PATH, payload, "utf-8");
       }
     } catch (err: any) {
       console.error("[DATABASE_ERROR] Write backup failed:", err.message);
@@ -383,7 +532,7 @@ export class JUMODBEngine {
     this.save();
 
     // Sync to PostgreSQL in background
-    if (this.usePostgres && this.pool && !isBrowser) {
+    if (this.usePostgres && this.pool) {
       this.syncInsertToPostgres(tableName, record);
     }
 
@@ -391,7 +540,7 @@ export class JUMODBEngine {
   }
 
   private async syncInsertToPostgres(tableName: string, record: any) {
-    if (!this.pool || isBrowser) return;
+    if (!this.pool) return;
     try {
       if (tableName === "users") {
         await this.pool.query(
@@ -428,6 +577,36 @@ export class JUMODBEngine {
           "INSERT INTO ueos_secrets_vault (key, value, category, description, status, version_history, last_rotated, expires_at, created_by, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (key) DO NOTHING",
           [record.key, record.value, record.category, record.description, record.status, record.versionHistory, record.lastRotated, record.expiresAt, record.createdBy, record.updatedBy]
         );
+      } else if (tableName === "ecosystems") {
+        await this.pool.query(
+          "INSERT INTO ueos_ecosystems (id, name, version, category, description, governance_model, status, config) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.version, record.category, record.description, record.governanceModel, record.status, record.config]
+        );
+      } else if (tableName === "templates") {
+        await this.pool.query(
+          "INSERT INTO ueos_templates (id, name, ecosystem_id, description, version, status, blueprint) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.ecosystemId, record.description, record.version, record.status, record.blueprint]
+        );
+      } else if (tableName === "instances") {
+        await this.pool.query(
+          "INSERT INTO ueos_instances (id, name, template_id, ecosystem_id, status, configuration, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.templateId, record.ecosystemId, record.status, record.configuration, record.createdAt]
+        );
+      } else if (tableName === "modules") {
+        await this.pool.query(
+          "INSERT INTO ueos_modules (id, name, category, config) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.category, record.config]
+        );
+      } else if (tableName === "forms") {
+        await this.pool.query(
+          "INSERT INTO ueos_forms (id, name, definition) VALUES ($1, $2, $3) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.definition]
+        );
+      } else if (tableName === "components") {
+        await this.pool.query(
+          "INSERT INTO ueos_components (id, name, type, description) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.name, record.type, record.description]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres insert sync failed for ${tableName}:`, err.message);
@@ -454,7 +633,7 @@ export class JUMODBEngine {
     if (count > 0) {
       this.save();
       // Sync update to Postgres
-      if (this.usePostgres && this.pool && !isBrowser) {
+      if (this.usePostgres && this.pool) {
         for (const record of updatedRecords) {
           this.syncUpdateToPostgres(tableName, record);
         }
@@ -464,7 +643,7 @@ export class JUMODBEngine {
   }
 
   private async syncUpdateToPostgres(tableName: string, record: any) {
-    if (!this.pool || isBrowser) return;
+    if (!this.pool) return;
     try {
       if (tableName === "users") {
         await this.pool.query(
@@ -501,6 +680,36 @@ export class JUMODBEngine {
           "UPDATE ueos_secrets_vault SET value = $2, category = $3, description = $4, status = $5, version_history = $6, last_rotated = $7, expires_at = $8, created_by = $9, updated_by = $10 WHERE key = $1",
           [record.key, record.value, record.category, record.description, record.status, record.versionHistory, record.lastRotated, record.expiresAt, record.createdBy, record.updatedBy]
         );
+      } else if (tableName === "ecosystems") {
+        await this.pool.query(
+          "UPDATE ueos_ecosystems SET name = $2, version = $3, category = $4, description = $5, governance_model = $6, status = $7, config = $8 WHERE id = $1",
+          [record.id, record.name, record.version, record.category, record.description, record.governanceModel, record.status, record.config]
+        );
+      } else if (tableName === "templates") {
+        await this.pool.query(
+          "UPDATE ueos_templates SET name = $2, ecosystem_id = $3, description = $4, version = $5, status = $6, blueprint = $7 WHERE id = $1",
+          [record.id, record.name, record.ecosystemId, record.description, record.version, record.status, record.blueprint]
+        );
+      } else if (tableName === "instances") {
+        await this.pool.query(
+          "UPDATE ueos_instances SET name = $2, template_id = $3, ecosystem_id = $4, status = $5, configuration = $6, created_at = $7 WHERE id = $1",
+          [record.id, record.name, record.templateId, record.ecosystemId, record.status, record.configuration, record.createdAt]
+        );
+      } else if (tableName === "modules") {
+        await this.pool.query(
+          "UPDATE ueos_modules SET name = $2, category = $3, config = $4 WHERE id = $1",
+          [record.id, record.name, record.category, record.config]
+        );
+      } else if (tableName === "forms") {
+        await this.pool.query(
+          "UPDATE ueos_forms SET name = $2, definition = $3 WHERE id = $1",
+          [record.id, record.name, record.definition]
+        );
+      } else if (tableName === "components") {
+        await this.pool.query(
+          "UPDATE ueos_components SET name = $2, type = $3, description = $4 WHERE id = $1",
+          [record.id, record.name, record.type, record.description]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres update sync failed for ${tableName}:`, err.message);
@@ -519,7 +728,7 @@ export class JUMODBEngine {
     if (deletedCount > 0) {
       this.save();
       // Sync delete to PostgreSQL
-      if (this.usePostgres && this.pool && !isBrowser) {
+      if (this.usePostgres && this.pool) {
         for (const record of recordsToDelete) {
           this.syncDeleteFromPostgres(tableName, record);
         }
@@ -529,7 +738,7 @@ export class JUMODBEngine {
   }
 
   private async syncDeleteFromPostgres(tableName: string, record: any) {
-    if (!this.pool || isBrowser) return;
+    if (!this.pool) return;
     try {
       if (tableName === "users") {
         await this.pool.query("DELETE FROM ueos_users WHERE email = $1", [record.email]);
@@ -545,6 +754,18 @@ export class JUMODBEngine {
         await this.pool.query("DELETE FROM ueos_ai_agent_memory WHERE id = $1", [record.id]);
       } else if (tableName === "secrets_vault") {
         await this.pool.query("DELETE FROM ueos_secrets_vault WHERE key = $1", [record.key]);
+      } else if (tableName === "ecosystems") {
+        await this.pool.query("DELETE FROM ueos_ecosystems WHERE id = $1", [record.id]);
+      } else if (tableName === "templates") {
+        await this.pool.query("DELETE FROM ueos_templates WHERE id = $1", [record.id]);
+      } else if (tableName === "instances") {
+        await this.pool.query("DELETE FROM ueos_instances WHERE id = $1", [record.id]);
+      } else if (tableName === "modules") {
+        await this.pool.query("DELETE FROM ueos_modules WHERE id = $1", [record.id]);
+      } else if (tableName === "forms") {
+        await this.pool.query("DELETE FROM ueos_forms WHERE id = $1", [record.id]);
+      } else if (tableName === "components") {
+        await this.pool.query("DELETE FROM ueos_components WHERE id = $1", [record.id]);
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres delete sync failed for ${tableName}:`, err.message);
@@ -557,7 +778,7 @@ export class JUMODBEngine {
       this.data[tableName] = [];
       this.save();
       
-      if (this.usePostgres && this.pool && !isBrowser) {
+      if (this.usePostgres && this.pool) {
         const pgTable = tableName === "users" ? "ueos_users" :
                         tableName === "ledger_accounts" ? "ueos_ledger_accounts" :
                         tableName === "registries" ? "ueos_registries" :
@@ -566,7 +787,7 @@ export class JUMODBEngine {
                         tableName === "ai_agent_memory" ? "ueos_ai_agent_memory" :
                         tableName === "secrets_vault" ? "ueos_secrets_vault" : null;
         if (pgTable) {
-          this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch(err => {
+          this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch((err: any) => {
             console.error(`[DATABASE_ERROR] Async PostgreSQL truncate failed for ${tableName}:`, err.message);
           });
         }
@@ -575,4 +796,3 @@ export class JUMODBEngine {
   }
 }
 export const db = JUMODBEngine.getInstance();
-

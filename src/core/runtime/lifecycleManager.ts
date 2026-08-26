@@ -1,5 +1,6 @@
 import { serviceRegistry, PlatformService } from "./serviceRegistry";
 import { shutdownManager } from "./shutdownManager";
+import { db } from "../../database/db";
 
 export class LifecycleManager {
   private static instance: LifecycleManager;
@@ -19,28 +20,25 @@ export class LifecycleManager {
     
     console.log("[BOOT] JUMO UEOS Platform Lifecycle Bootloader starting...");
 
-    // 1. Setup Signal Handlers for Safe Teardowns (Node only)
-    if (typeof window === "undefined") {
-      shutdownManager.setupSignalHandlers();
+    // 1. Setup Signal Handlers for Safe Teardowns
+    shutdownManager.setupSignalHandlers();
+
+    // 2. Initialize Database engine
+    console.log("[BOOT] Initializing database core connectivity...");
+    try {
+      // Connect/Check the DB connection or load JSON fallback
+      await db.load();
+      console.log("[BOOT] Database subsystem loaded successfully.");
+    } catch (err: any) {
+      console.error("[FATAL] Database bootstrap failed:", err.message);
+      throw err;
     }
 
-    // 2. Initialize Database engine if on server
-    if (typeof window === "undefined") {
-      console.log("[BOOT] Initializing database core connectivity...");
-      try {
-        const { db } = await import("../../database/db");
-        await db.load();
-        console.log("[BOOT] Database subsystem loaded successfully.");
-
-        // Register a cleanup handler to save the database cache
-        shutdownManager.registerCleanup(async () => {
-          console.log("[SHUTDOWN] Executing JUMODBEngine auto-save commit...");
-          db.save();
-        });
-      } catch (err: any) {
-        console.warn("[WARN] Database bootstrap skipped or running local:", err.message);
-      }
-    }
+    // Register a cleanup handler to save the database cache
+    shutdownManager.registerCleanup(async () => {
+      console.log("[SHUTDOWN] Executing JUMODBEngine auto-save commit...");
+      db.save();
+    });
 
     // 3. Register standard services and boot them
     for (const service of registerDefaultServices) {

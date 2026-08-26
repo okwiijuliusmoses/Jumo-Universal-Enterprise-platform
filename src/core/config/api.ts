@@ -1,11 +1,23 @@
 export const API_BASE_URL = typeof window !== "undefined" ? window.location.origin : "";
 
+export const API_ENDPOINTS = {
+  PLATFORM_STATUS: "/api/v1/platform/status",
+  TREASURY_SUMMARY: "/api/v1/treasury/summary",
+  SECURITY_EVENTS: "/api/v1/security/events",
+  WORKFLOW_STATUS: "/api/v1/workflow/status",
+  DOMAINS: "/api/v1/domains",
+  DASHBOARD_OWNER: "/api/dashboard/owner",
+  LEDGER_ACCOUNTS: "/api/ueos/ledger/accounts",
+  FAAP_TRANSACTIONS: "/api/ueos/faap/transactions",
+  TRIAL_BALANCE: "/api/ueos/ledger/trial-balance",
+} as const;
+
 export async function jumoFetch(endpoint: string, options: RequestInit = {}) {
   const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${normalizedEndpoint}`;
 
   const token = typeof window !== "undefined" 
-    ? (localStorage.getItem("JUMO_SESSION") || localStorage.getItem("jumo_session_token")) 
+    ? (() => { try { return localStorage.getItem("JUMO_SESSION") || localStorage.getItem("jumo_session_token"); } catch(e) { return null; } })() 
     : null;
 
   const authHeaders: Record<string, string> = {};

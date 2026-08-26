@@ -1,3 +1,4 @@
+import { LedgerRepository, AuditLogRepository } from "../../repositories/repositories";
 import { LedgerAccountRecord } from "../../models/models";
 
 export interface FinancialTransaction {
@@ -22,22 +23,11 @@ export interface ReconciliationReport {
   recommendation: string;
 }
 
-const DEFAULT_ACCOUNTS: LedgerAccountRecord[] = [
-  { code: "10001", name: "Master Cash Reserve", category: "Asset", balance: 1450000.00 },
-  { code: "10002", name: "Central Settlement Bank", category: "Asset", balance: 3200000.00 },
-  { code: "20001", name: "Member Savings & Shares", category: "Liability", balance: 2800000.00 },
-  { code: "30001", name: "Capital Reserves", category: "Equity", balance: 1200000.00 },
-  { code: "40001", name: "Interest Income", category: "Revenue", balance: 450000.00 },
-  { code: "50001", name: "Operational Expenses", category: "Expense", balance: 200000.00 },
-];
-
 export class FAAPService {
   private static instance: FAAPService;
   private transactionLedger: Map<string, FinancialTransaction> = new Map();
-  private accountStore: Map<string, LedgerAccountRecord> = new Map();
 
   private constructor() {
-    DEFAULT_ACCOUNTS.forEach(acc => this.accountStore.set(acc.code, { ...acc }));
     this.seedDefaultTransactions();
   }
 
@@ -46,26 +36,6 @@ export class FAAPService {
       FAAPService.instance = new FAAPService();
     }
     return FAAPService.instance;
-  }
-
-  public findAccountByCode(code: string): LedgerAccountRecord | undefined {
-    return this.accountStore.get(code);
-  }
-
-  public findAllAccounts(): LedgerAccountRecord[] {
-    return Array.from(this.accountStore.values());
-  }
-
-  public updateBalance(code: string, delta: number, category: string): LedgerAccountRecord | undefined {
-    const acc = this.accountStore.get(code);
-    if (!acc) return undefined;
-    if (category === "Asset" || category === "Expense") {
-      acc.balance += delta;
-    } else {
-      acc.balance += delta;
-    }
-    this.accountStore.set(code, acc);
-    return acc;
   }
 
   private seedDefaultTransactions() {
@@ -114,8 +84,8 @@ export class FAAPService {
       return { valid: false, error: "Narration must be a descriptive string of at least 5 characters." };
     }
 
-    const src = this.findAccountByCode(tx.sourceAccount);
-    const dest = this.findAccountByCode(tx.destinationAccount);
+    const src = LedgerRepository.findAccountByCode(tx.sourceAccount);
+    const dest = LedgerRepository.findAccountByCode(tx.destinationAccount);
 
     if (!src) {
       return { valid: false, error: `Source account code '${tx.sourceAccount}' does not exist.` };
@@ -131,7 +101,12 @@ export class FAAPService {
   public postTransaction(txData: Omit<FinancialTransaction, "id" | "timestamp" | "status">): FinancialTransaction {
     const validation = this.validateTransaction(txData);
     if (!validation.valid) {
-      console.warn(`[FAAP_TRANSACTION_FAILED] Validation failed for ledger post: ${validation.error}`);
+      AuditLogRepository.log(
+        txData.postedBy,
+        "FAAP_TRANSACTION_FAILED",
+        `Validation failed for ledger post: ${validation.error}`,
+        "failed"
+      );
       throw new Error(validation.error || "Transaction validation failed.");
     }
 
@@ -143,22 +118,33 @@ export class FAAPService {
       status: "posted"
     };
 
-    const src = this.findAccountByCode(tx.sourceAccount)!;
-    const dest = this.findAccountByCode(tx.destinationAccount)!;
+    const src = LedgerRepository.findAccountByCode(tx.sourceAccount)!;
+    const dest = LedgerRepository.findAccountByCode(tx.destinationAccount)!;
 
     // Mutate source account and destination account balances in db
-    this.updateBalance(tx.sourceAccount, -tx.amount, src.category);
-    this.updateBalance(tx.destinationAccount, tx.amount, dest.category);
+    // Asset/Expense increase on debit (+), other accounts decrease on debit (-)
+    // Liability/Equity/Revenue increase on credit (+), other accounts decrease on credit (-)
+    LedgerRepository.updateBalance(tx.sourceAccount, -tx.amount, src.category);
+    LedgerRepository.updateBalance(tx.destinationAccount, tx.amount, dest.category);
 
     this.transactionLedger.set(id, tx);
 
-    console.log(`[FAAP_LEDGER_POST] Posted double-entry FAAP transaction ${tx.id} from [${tx.sourceAccount}] to [${tx.destinationAccount}] of amount ${tx.amount} (${tx.narration}).`);
+    // 3. Audit Trail Logger
+    AuditLogRepository.log(
+      tx.postedBy,
+      "FAAP_LEDGER_POST",
+      `Posted double-entry FAAP transaction ${tx.id} from [${tx.sourceAccount}] to [${tx.destinationAccount}] of amount ${tx.amount} (${tx.narration}).`
+    );
+
+    // 4. Financial Event Publishing (Simulated webhook & WebSocket dispatch log)
+    console.log(`[FAAP_EVENT_PUBLISHER] Dispatched transaction event: ${JSON.stringify(tx)}`);
+
     return tx;
   }
 
   // 5. Ledger Reconciliation Service
   public performReconciliation(tenantId: string): ReconciliationReport {
-    const accounts = this.findAllAccounts();
+    const accounts = LedgerRepository.findAllAccounts();
     
     let totalDebits = 0;
     let totalCredits = 0;
@@ -185,10 +171,15 @@ export class FAAPService {
       status: isBalanced ? "Matched" : "Unreconciled_Discrepancy",
       recommendation: isBalanced 
         ? "All double-entry ledger categories matched with exactly $0.00 offset. Core parity verified." 
-        : `Ledger discrepancy of ${(difference ?? 0).toFixed(2)} discovered. Review audit trail logs and void unbalanced postings.`
+        : `Ledger discrepancy of ${difference.toFixed(2)} discovered. Review audit trail logs and void unbalanced postings.`
     };
 
-    console.log(`[FAAP_RECONCILIATION] Ledger reconciliation executed for tenant ${tenantId}. Status: ${report.status}. Debits: ${(totalDebits ?? 0).toFixed(2)}, Credits: ${(totalCredits ?? 0).toFixed(2)}.`);
+    AuditLogRepository.log(
+      "FAAP_System_Auditor",
+      "LEDGER_RECONCILIATION",
+      `Ledger reconciliation executed. Status: ${report.status}. Debits: ${totalDebits.toFixed(2)}, Credits: ${totalCredits.toFixed(2)}.`
+    );
+
     return report;
   }
 
@@ -197,8 +188,8 @@ export class FAAPService {
   }
 
   public getTreasuryStatus() {
-    const cashAcc = this.findAccountByCode("10001");
-    const bankAcc = this.findAccountByCode("10002");
+    const cashAcc = LedgerRepository.findAccountByCode("10001");
+    const bankAcc = LedgerRepository.findAccountByCode("10002");
     
     return {
       masterTreasuryBalance: (cashAcc?.balance || 0) + (bankAcc?.balance || 0),
@@ -210,3 +201,5 @@ export class FAAPService {
 }
 
 export const faapService = FAAPService.getInstance();
+export { faapEnterpriseEngine } from "./faapEnterpriseEngine";
+export * from "./faapEnterpriseTypes";

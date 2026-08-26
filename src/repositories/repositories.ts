@@ -242,3 +242,123 @@ export const SecretsRepository = {
     db.truncate("secrets_vault");
   }
 };
+
+// 8. UEOS Ecosystems Repository
+export const EcosystemRepository = {
+  findAll(): any[] {
+    return db.select<any>("ecosystems");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("ecosystems", e => e.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(eco: any): any {
+    const exists = this.findById(eco.id);
+    if (exists) {
+      db.update<any>("ecosystems", e => e.id === eco.id, () => eco);
+      return eco;
+    } else {
+      return db.insert<any>("ecosystems", eco);
+    }
+  }
+};
+
+// 9. UEOS Templates Repository
+export const TemplateRepository = {
+  findAll(): any[] {
+    return db.select<any>("templates");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("templates", t => t.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(temp: any): any {
+    const exists = this.findById(temp.id);
+    if (exists) {
+      db.update<any>("templates", t => t.id === temp.id, () => temp);
+      return temp;
+    } else {
+      return db.insert<any>("templates", temp);
+    }
+  }
+};
+
+// 10. UEOS Instances Repository
+export const InstanceRepository = {
+  findAll(): any[] {
+    return db.select<any>("instances");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("instances", i => i.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(inst: any): any {
+    const exists = this.findById(inst.id);
+    if (exists) {
+      db.update<any>("instances", i => i.id === inst.id, () => inst);
+      return inst;
+    } else {
+      return db.insert<any>("instances", inst);
+    }
+  }
+};
+
+// 11. UEOS Modules Repository
+export const ModuleRepository = {
+  findAll(): any[] {
+    return db.select<any>("modules");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("modules", m => m.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(mod: any): any {
+    const exists = this.findById(mod.id);
+    if (exists) {
+      db.update<any>("modules", m => m.id === mod.id, () => mod);
+      return mod;
+    } else {
+      return db.insert<any>("modules", mod);
+    }
+  }
+};
+
+// 12. UEOS Forms Repository
+export const FormRepository = {
+  findAll(): any[] {
+    return db.select<any>("forms");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("forms", f => f.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(form: any): any {
+    const exists = this.findById(form.id);
+    if (exists) {
+      db.update<any>("forms", f => f.id === form.id, () => form);
+      return form;
+    } else {
+      return db.insert<any>("forms", form);
+    }
+  }
+};
+
+// 13. UEOS Components Repository
+export const ComponentRepository = {
+  findAll(): any[] {
+    return db.select<any>("components");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("components", c => c.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(comp: any): any {
+    const exists = this.findById(comp.id);
+    if (exists) {
+      db.update<any>("components", c => c.id === comp.id, () => comp);
+      return comp;
+    } else {
+      return db.insert<any>("components", comp);
+    }
+  }
+};

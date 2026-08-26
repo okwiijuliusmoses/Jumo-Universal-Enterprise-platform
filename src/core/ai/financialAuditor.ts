@@ -1,5 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
+import { LedgerRepository, AuditLogRepository } from "../../repositories/repositories";
 import { faapService, FinancialTransaction } from "../../platforms/faap/faapService";
+import { JumoSecretVault } from "../security/JumoSecretVault";
 
 export interface LedgerAuditResult {
   isAuditHealthy: boolean;
@@ -24,9 +26,9 @@ export class FinancialAuditor {
 
   private getAI(): GoogleGenAI {
     if (!this.aiInstance) {
-      const key = typeof process !== "undefined" && process.env ? process.env.GEMINI_API_KEY : undefined;
+      const key = JumoSecretVault.getInstance().getGeminiKey();
       if (!key) {
-        throw new Error("GEMINI_API_KEY is not defined. Please add your key in the Settings panel.");
+        throw new Error("JUMO_GEMINI_API_KEY is not defined. Please add your key in the Settings panel.");
       }
       this.aiInstance = new GoogleGenAI({
         apiKey: key,
@@ -42,7 +44,7 @@ export class FinancialAuditor {
 
   public async runCognitiveAudit(tenantId: string): Promise<LedgerAuditResult> {
     try {
-      const accounts = faapService.findAllAccounts();
+      const accounts = LedgerRepository.findAllAccounts();
       const transactions = faapService.getTransactionHistory().filter(tx => tx.tenantId === tenantId || tenantId === "Global");
 
       const sysInfo = `You are the Supreme JUMO UEOS Cognitive FAAP Auditor.
@@ -65,7 +67,7 @@ Ensure you verify standard accounting principles:
 
       const ai = this.getAI();
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: prompt,
         config: {
           systemInstruction: sysInfo,
@@ -111,21 +113,16 @@ Ensure you verify standard accounting principles:
 
       const parsedResult: LedgerAuditResult = JSON.parse(response.text || "{}");
       
-      console.log(`[COGNITIVE_AUDIT_EXEC] Completed cognitive audit for tenant: ${tenantId}. Score: ${parsedResult.score}/100. Status: ${parsedResult.isAuditHealthy ? "HEALTHY" : "WARNING"}`);
+      AuditLogRepository.log(
+        "Gemini_Cognitive_Auditor",
+        "COGNITIVE_AUDIT_EXEC",
+        `Completed cognitive audit for tenant: ${tenantId}. Score: ${parsedResult.score}/100. Status: ${parsedResult.isAuditHealthy ? "HEALTHY" : "WARNING"}`
+      );
 
       return parsedResult;
     } catch (error: any) {
       console.error("[AUDITOR_ERROR] Cognitive audit execution failed:", error);
-      // Failover safely to a rule-based mock matching interface signature
-      return {
-        isAuditHealthy: true,
-        score: 95,
-        discrepancies: [],
-        anomalies: [
-          { txId: "TX-GENERIC", description: `Failover triggered due to error: ${error.message}`, riskLevel: "Low" }
-        ],
-        recommendation: "Review manual double-entry ledgers. Cognitive models are temporarily running in local failover state."
-      };
+      throw new Error(`Cognitive audit failed: ${error.message}`);
     }
   }
 }

@@ -1,32 +1,16 @@
+import { Buffer } from "buffer";
+import { JumoSecretVault } from "./JumoSecretVault";
+const isBrowser = typeof window !== "undefined";
+let crypto: any = null;
+if (!isBrowser) {
+  try {
+    crypto = require("crypto");
+  } catch {
+    // node crypto unavailable
+  }
+}
+import { UserRepository, AuditLogRepository } from "../../repositories/repositories";
 import { UserRecord } from "../../models/models";
-
-function safeHexToUtf8(hex: string): string {
-  try {
-    if (typeof Buffer !== "undefined") {
-      return Buffer.from(hex, "hex").toString("utf-8");
-    }
-    const cleanHex = hex.replace(/[^0-9a-fA-F]/g, "");
-    if (!cleanHex) return "";
-    const matches = cleanHex.match(/.{1,2}/g);
-    if (!matches) return "";
-    const bytes = new Uint8Array(matches.map(byte => parseInt(byte, 16)));
-    return new TextDecoder().decode(bytes);
-  } catch {
-    return "";
-  }
-}
-
-function safeUtf8ToHex(str: string): string {
-  try {
-    if (typeof Buffer !== "undefined") {
-      return Buffer.from(str, "utf-8").toString("hex");
-    }
-    const bytes = new TextEncoder().encode(str);
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
-  } catch {
-    return "";
-  }
-}
 
 export type RoleName = "SecOps_Administrator" | "FAAP_Controller" | "Kernel_Operator" | "Developer" | "General_User";
 
@@ -36,36 +20,11 @@ export interface Permission {
   description: string;
 }
 
-const DEFAULT_SECURITY_USERS: UserRecord[] = [
-  {
-    email: "secops@jumo.net",
-    name: "Sovereign SecOps Admin",
-    role: "SecOps_Administrator",
-    tenantId: "master_system",
-    trustLevel: "Level_5_Sovereign"
-  },
-  {
-    email: "controller@jumo.net",
-    name: "FAAP Master Controller",
-    role: "FAAP_Controller",
-    tenantId: "sacco-zambia-hq",
-    trustLevel: "Level_4_Executive"
-  },
-  {
-    email: "operator@jumo.net",
-    name: "System Operator",
-    role: "Kernel_Operator",
-    tenantId: "master_system",
-    trustLevel: "Level_3_Operational"
-  }
-];
-
 export class SecurityService {
   private static instance: SecurityService;
 
   // Role -> Permissions mapping
   private rolePermissions: Map<RoleName, string[]> = new Map();
-  private userStore: Map<string, UserRecord> = new Map();
 
   private constructor() {
     this.initializePermissions();
@@ -77,18 +36,6 @@ export class SecurityService {
       SecurityService.instance = new SecurityService();
     }
     return SecurityService.instance;
-  }
-
-  private seedDefaultUsers() {
-    DEFAULT_SECURITY_USERS.forEach(u => this.userStore.set(u.email, { ...u }));
-  }
-
-  public findUserByEmail(email: string): UserRecord | undefined {
-    return this.userStore.get(email);
-  }
-
-  public saveUser(user: UserRecord) {
-    this.userStore.set(user.email, user);
   }
 
   private initializePermissions() {
@@ -133,6 +80,36 @@ export class SecurityService {
     ]);
   }
 
+  private seedDefaultUsers() {
+    const defaultUsers: UserRecord[] = [
+      {
+        email: "okwiijuliusmoses@gmail.com",
+        name: "Julius Moses Okwi",
+        role: "SecOps_Administrator",
+        tenantId: "sacco-zambia-hq",
+        trustLevel: "Supreme Operator"
+      },
+      {
+        email: "controller@jumo.net",
+        name: "FAAP Head Controller",
+        role: "FAAP_Controller",
+        tenantId: "sacco-zambia-hq",
+        trustLevel: "Sovereign Ledger Officer"
+      },
+      {
+        email: "operator@jumo.net",
+        name: "Kernel Node Operator",
+        role: "Kernel_Operator",
+        tenantId: "church-uganda-diocese",
+        trustLevel: "Infrastructure Admin"
+      }
+    ];
+
+    for (const u of defaultUsers) {
+      UserRepository.save(u);
+    }
+  }
+
   /**
    * Evaluates if a role has permission to perform a specific action on a resource
    */
@@ -169,9 +146,9 @@ export class SecurityService {
     if (token.startsWith("zt_")) {
       const hex = token.substring(3);
       try {
-        const decodedEmail = safeHexToUtf8(hex);
-        const user = this.findUserByEmail(decodedEmail);
-        return user || null;
+        const decodedEmail = Buffer.from(hex, "hex").toString("utf-8");
+        const user = UserRepository.findByEmail(decodedEmail);
+        return user;
       } catch (err) {
         return null;
       }
@@ -184,21 +161,20 @@ export class SecurityService {
    */
   public encryptSecret(text: string, secretKeyHex?: string): string {
     try {
-      if (typeof process !== "undefined" && typeof require !== "undefined") {
-        const nodeCrypto = require("crypto");
-        if (nodeCrypto && typeof nodeCrypto.createCipheriv === "function" && typeof nodeCrypto.scryptSync === "function") {
-          const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : nodeCrypto.scryptSync(process.env?.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
-          const iv = nodeCrypto.randomBytes(16);
-          const cipher = nodeCrypto.createCipheriv("aes-256-cbc", key, iv);
-          let encrypted = cipher.update(text, "utf8", "hex");
-          encrypted += cipher.final("hex");
-          return `${iv.toString("hex")}:${encrypted}`;
-        }
+      if (crypto && typeof crypto.scryptSync === "function") {
+        const vault = JumoSecretVault.getInstance();
+        const masterKey = vault.getJwtSecret() || "jumo_master_default_salt_key_0123";
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(masterKey, "salt", 32);
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+        let encrypted = cipher.update(text, "utf8", "hex");
+        encrypted += cipher.final("hex");
+        return `${iv.toString("hex")}:${encrypted}`;
       }
     } catch {
-      // Fallback below
+      // Browser fallback
     }
-    return `enc_${safeUtf8ToHex(text)}`;
+    return `b64:${Buffer.from(text).toString("base64")}`;
   }
 
   /**
@@ -206,28 +182,25 @@ export class SecurityService {
    */
   public decryptSecret(cipherText: string, secretKeyHex?: string): string {
     try {
-      if (cipherText.startsWith("enc_")) {
-        return safeHexToUtf8(cipherText.substring(4));
+      if (cipherText.startsWith("b64:")) {
+        return Buffer.from(cipherText.slice(4), "base64").toString("utf8");
       }
-      if (typeof process !== "undefined" && typeof require !== "undefined") {
-        const nodeCrypto = require("crypto");
-        if (nodeCrypto && typeof nodeCrypto.createDecipheriv === "function" && typeof nodeCrypto.scryptSync === "function") {
-          const parts = cipherText.split(":");
-          if (parts.length === 2) {
-            const iv = Buffer.from(parts[0], "hex");
-            const encryptedText = parts[1];
-            const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : nodeCrypto.scryptSync(process.env?.JWT_SECRET || "jumo_master_default_salt_key_0123", "salt", 32);
-            const decipher = nodeCrypto.createDecipheriv("aes-256-cbc", key, iv);
-            let decrypted = decipher.update(encryptedText, "hex", "utf8");
-            decrypted += decipher.final("utf8");
-            return decrypted;
-          }
-        }
+      if (crypto && typeof crypto.createDecipheriv === "function") {
+        const parts = cipherText.split(":");
+        const iv = Buffer.from(parts[0], "hex");
+        const encryptedText = parts[1];
+        const vault = JumoSecretVault.getInstance();
+        const masterKey = vault.getJwtSecret() || "jumo_master_default_salt_key_0123";
+        const key = secretKeyHex ? Buffer.from(secretKeyHex, "hex") : crypto.scryptSync(masterKey, "salt", 32);
+        const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+        let decrypted = decipher.update(encryptedText, "hex", "utf8");
+        decrypted += decipher.final("utf8");
+        return decrypted;
       }
-      return safeHexToUtf8(cipherText);
     } catch (err) {
       return "DECRYPTION_FAILED";
     }
+    return cipherText;
   }
 }
 

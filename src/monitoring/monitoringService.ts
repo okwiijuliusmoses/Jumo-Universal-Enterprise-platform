@@ -1,3 +1,4 @@
+import { AuditLogRepository } from "../repositories/repositories";
 import { runtimeHealthMonitor } from "../core/runtime/runtimeHealthMonitor";
 
 export interface MetricSnapshot {
@@ -17,30 +18,16 @@ export interface ErrorLog {
   context?: string;
 }
 
-export interface AuditEventLog {
-  timestamp: string;
-  actor: string;
-  action: string;
-  details: string;
-  status: "success" | "failed" | "blocked";
-}
-
 export class MonitoringService {
   private static instance: MonitoringService;
   private errorLogs: ErrorLog[] = [];
   private metricsHistory: MetricSnapshot[] = [];
-  private auditEvents: AuditEventLog[] = [];
 
   private constructor() {
     // Periodically collect metric snapshot in development or production
-    if (typeof setInterval !== "undefined") {
-      const interval = setInterval(() => {
-        this.collectMetrics();
-      }, 60000);
-      if (interval && typeof interval.unref === "function") {
-        interval.unref();
-      }
-    }
+    setInterval(() => {
+      this.collectMetrics();
+    }, 60000).unref(); // Run every minute in background without holding process alive
   }
 
   public static getInstance(): MonitoringService {
@@ -80,7 +67,13 @@ export class MonitoringService {
       this.errorLogs.shift();
     }
 
-    console.error(`[MONITORING_ERROR] [${context || "System_Monitor"}]: ${message}`);
+    // Log this error as blocked/failed in audit logs
+    AuditLogRepository.log(
+      context || "System_Monitor",
+      "RUNTIME_ERROR",
+      `Error captured: ${message}`,
+      "failed"
+    );
   }
 
   public getErrors(): ErrorLog[] {
@@ -92,22 +85,7 @@ export class MonitoringService {
   }
 
   public publishAuditEvent(actor: string, action: string, details: string, status: "success" | "failed" | "blocked" = "success"): void {
-    const event: AuditEventLog = {
-      timestamp: new Date().toISOString(),
-      actor,
-      action,
-      details,
-      status
-    };
-    this.auditEvents.push(event);
-    if (this.auditEvents.length > 200) {
-      this.auditEvents.shift();
-    }
-    console.log(`[AUDIT_EVENT] [${actor}] [${action}]: ${details} (${status})`);
-  }
-
-  public getAuditEvents(): AuditEventLog[] {
-    return [...this.auditEvents];
+    AuditLogRepository.log(actor, action, details, status);
   }
 }
 

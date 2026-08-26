@@ -100,5 +100,74 @@ export const UEOS_SCHEMAS: Record<string, TableSchema> = {
       { name: "createdBy", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User or system agent that registered key" },
       { name: "updatedBy", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User or system agent that updated key" }
     ]
+  },
+  ecosystems: {
+    tableName: "ecosystems",
+    description: "National industry categories for institutional platforms.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Ecosystem unique identifier" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Ecosystem display name" },
+      { name: "version", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Version semantic tag" },
+      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Industry classification" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Purpose and scope" },
+      { name: "governanceModel", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Governance pattern name" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Draft, or Archived" },
+      { name: "config", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized ecosystem configuration" }
+    ]
+  },
+  templates: {
+    tableName: "templates",
+    description: "Sovereign enterprise operating blueprints.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Template unique identifier" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Template display name" },
+      { name: "ecosystemId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Parent ecosystem ID" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Blueprint description" },
+      { name: "version", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Template version" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active or Draft" },
+      { name: "blueprint", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized complete enterprise blueprint" }
+    ]
+  },
+  instances: {
+    tableName: "instances",
+    description: "Deployed institutional platform instances.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Platform instance unique ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Institutional name" },
+      { name: "templateId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Origin blueprint ID" },
+      { name: "ecosystemId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Parent ecosystem ID" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Operational, Provisioning, Maintenance, or Suspended" },
+      { name: "configuration", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized instance state and config" },
+      { name: "createdAt", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Creation ISO timestamp" }
+    ]
+  },
+  modules: {
+    tableName: "modules",
+    description: "Enterprise functional modules and packages.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Module ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Module Name" },
+      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Category" },
+      { name: "config", type: "TEXT", primaryKey: false, nullable: false, description: "JSON Config" }
+    ]
+  },
+  forms: {
+    tableName: "forms",
+    description: "Enterprise form definitions.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Form ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Form Name" },
+      { name: "definition", type: "TEXT", primaryKey: false, nullable: false, description: "JSON Definition" }
+    ]
+  },
+  components: {
+    tableName: "components",
+    description: "Reusable enterprise UI/Service components.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Component ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Component Name" },
+      { name: "type", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "UI, SERVICE, or DATA" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Description" }
+    ]
   }
 };
