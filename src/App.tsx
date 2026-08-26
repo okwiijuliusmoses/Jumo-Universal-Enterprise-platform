@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { PublicGateway } from "./experience/gateway/PublicGateway";
+import { NationalIdentityApplicationShell } from "./experience/renderer/shells/NationalIdentityApplicationShell";
+import { NationalHealthApplicationShell } from "./experience/renderer/shells/NationalHealthApplicationShell";
+import { NationalEducationApplicationShell } from "./experience/renderer/shells/NationalEducationApplicationShell";
 import { FintechApplicationShell } from "./experience/renderer/shells/FintechApplicationShell";
 import { NurseryPrimaryApplicationShell } from "./experience/renderer/shells/NurseryPrimaryApplicationShell";
 import { SecondarySchoolApplicationShell } from "./experience/renderer/shells/SecondarySchoolApplicationShell";
@@ -59,6 +62,15 @@ export default function App() {
   // ---------------------------------------------------------
 
   // 1. Sovereign Commercial Products
+  if (path === "/identity") {
+    return <NationalIdentityApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/health") {
+    return <NationalHealthApplicationShell onBack={() => navigate("/")} />;
+  }
+  if (path === "/education") {
+    return <NationalEducationApplicationShell onBack={() => navigate("/")} />;
+  }
   if (path === "/fintech") {
     return <FintechApplicationShell onBack={() => navigate("/")} />;
   }

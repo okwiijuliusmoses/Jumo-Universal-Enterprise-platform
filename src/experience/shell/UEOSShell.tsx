@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { 
-  Zap, School, BookOpen, GraduationCap, Church, Users,
+  Zap, School, BookOpen, GraduationCap, Church, Users, HeartPulse, Fingerprint,
   DollarSign, CreditCard, Lock, Landmark, ShieldCheck, BrainCircuit, Workflow, Cloud,
   LogOut, Activity
 } from "lucide-react";
@@ -71,7 +71,27 @@ export function UEOSShell({ user, onLogout }: UEOSShellProps) {
             let shadow = "shadow-amber-500/20";
             let path = "/fintech";
 
-            if (manifest.productId.includes("fintech")) {
+            if (manifest.productId === "prod-national-identity") {
+              Icon = Fingerprint;
+              color = "from-indigo-500 to-indigo-700";
+              shadow = "shadow-indigo-500/20";
+              path = "/identity";
+            } else if (manifest.productId === "prod-national-health") {
+              Icon = HeartPulse;
+              color = "from-rose-500 to-rose-700";
+              shadow = "shadow-rose-500/20";
+              path = "/health";
+            } else if (manifest.productId === "prod-national-education") {
+              Icon = GraduationCap;
+              color = "from-blue-500 to-blue-700";
+              shadow = "shadow-blue-500/20";
+              path = "/education";
+            } else if (manifest.productId === "prod-faap-product") {
+              Icon = DollarSign;
+              color = "from-emerald-500 to-emerald-700";
+              shadow = "shadow-emerald-500/20";
+              path = "/faap";
+            } else if (manifest.productId.includes("fintech")) { 
               Icon = Zap;
               color = "from-amber-500 to-amber-700";
               shadow = "shadow-amber-500/20";

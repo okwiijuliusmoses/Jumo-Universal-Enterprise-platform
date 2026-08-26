@@ -27,12 +27,7 @@ const SHARED_PRODUCTS = [
       'FAAP_AUDIT',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'finance',
-      'accounting',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-digital-pay',
       'prod-aegis',
@@ -64,12 +59,7 @@ const SHARED_PRODUCTS = [
       'PAYMENT_RECONCILIATION',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'payments',
-      'treasury',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-faap',
       'prod-aegis',
@@ -102,11 +92,7 @@ const SHARED_PRODUCTS = [
       'AEGIS_SECURITY_LOG',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'security',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-faap',
       'prod-digital-pay',
@@ -138,12 +124,7 @@ const SHARED_PRODUCTS = [
       'TREASURY_RECONCILIATION',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'treasury',
-      'finance',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-faap',
       'prod-digital-pay',
@@ -175,11 +156,7 @@ const SHARED_PRODUCTS = [
       'AUDIT_ARCHIVE',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'audit',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-faap',
       'prod-aegis',
@@ -209,12 +186,7 @@ const SHARED_PRODUCTS = [
       'CLOUD_ORCHESTRATION',
     ],
     architectureLayerIds: [],
-    studioIds: [
-      'infrastructure',
-      'deployment',
-      'verification',
-      'configuration',
-    ],
+    
     sharedServiceIds: [
       'prod-aegis',
       'prod-auditor',
