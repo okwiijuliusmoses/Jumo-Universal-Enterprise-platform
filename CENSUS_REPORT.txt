@@ -1,0 +1,419 @@
+====================================================
+JUMO UEOS PRODUCT-BY-PRODUCT PHYSICAL CENSUS
+
+PRODUCT 1 — NATIONAL IDENTITY & BIOMETRICS
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/national-identity/
+----------------------------------------------------
+
+PRODUCT 2 — NATIONAL HEALTH
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/national-health/
+----------------------------------------------------
+
+PRODUCT 3 — NATIONAL EDUCATION
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/national-education/
+----------------------------------------------------
+
+PRODUCT 4 — JUMO FINTECH
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/fintech/
+----------------------------------------------------
+
+PRODUCT 5 — JUMO FAAP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/faap/
+----------------------------------------------------
+
+PRODUCT 6 — JUMO DIGITAL PAY
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/digital-pay/
+----------------------------------------------------
+
+PRODUCT 7 — NURSERY & PRIMARY ERP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/nursery-primary/
+----------------------------------------------------
+
+PRODUCT 8 — SECONDARY SCHOOL ERP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/secondary-school/
+----------------------------------------------------
+
+PRODUCT 9 — UNIVERSITY / HIGHER EDUCATION ERP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/university/
+----------------------------------------------------
+
+PRODUCT 10 — CHURCH & FAITH ERP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/church/
+----------------------------------------------------
+
+PRODUCT 11 — ALUMNI & COMMUNITY ERP
+
+Directorates: 0
+Departments: 0
+Offices: 0
+Portals: 0
+Modules: 0
+Capabilities: 0
+UI Metadata: 0
+Runtime Components: 0
+Forms: 0
+Workflows: 0
+Reports: 0
+Dashboards: 0
+Tables: 0
+Actions: 0
+Permissions: 0
+API Endpoints: 0
+Database Schemas: 0
+Services: 0
+Agents: 0
+
+Minimum Standards:
+Directorates: 0 / required 40
+Departments: 0 / required 200
+Offices: 0 / required 1000
+Modules: 0 / required 210
+Capabilities: 0 / required 25000
+
+Status:
+NON-COMPLIANT — RECONSTRUCTION REQUIRED
+
+Evidence:
+Physical directory path: src/products/alumni/
+----------------------------------------------------
+
+PLATFORM-WIDE INVENTORY
+
+Universal Modules: 221 (Registry Definition)
+Universal Capabilities: 25000+ (Registry Definition)
+Universal Runtime Components: 400+ (Registry Definition)
+
+PRODUCT COMPARISON TABLE
+
+Product | Directorates | Departments | Offices | Portals | Modules | Capabilities | UI Metadata | Runtime Components | Status
+NATIONAL IDENTITY & BIOMETRICS | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+NATIONAL HEALTH | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+NATIONAL EDUCATION | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+JUMO FINTECH | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+JUMO FAAP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+JUMO DIGITAL PAY | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+NURSERY & PRIMARY ERP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+SECONDARY SCHOOL ERP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+UNIVERSITY / HIGHER EDUCATION ERP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+CHURCH & FAITH ERP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED
+ALUMNI & COMMUNITY ERP | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | NON-COMPLIANT — RECONSTRUCTION REQUIRED

@@ -1,0 +1,147 @@
+{
+  "protocol": "JUMO_ARCHITECTURE_LOCK_V2",
+  "status": "IMMUTABLE_LOCKED",
+  "lastAudited": "2026-08-26T09:28:00.000Z",
+  "immutableHierarchy": [
+    "Platform Kernel",
+    "Sovereign Product / Independent Platform",
+    "Directorate",
+    "Department",
+    "Office",
+    "Portal",
+    "Module",
+    "Capability",
+    "UI Metadata",
+    "Runtime Component"
+  ],
+  "forbiddenActions": [
+    "REPLACE_OR_COLLAPSE_HIERARCHY",
+    "SHRINK_HISTORICAL_SCOPE_TO_MATCH_INCOMPLETE_CODE",
+    "ABSORB_FAAP_OR_DIGITAL_PAY_INTO_FINTECH",
+    "SUBSTITUTE_TEMPLATES_OR_SAMPLES_FOR_ENTERPRISE_PRODUCTS",
+    "TREAT_INTERMEDIATE_COUNTS_AS_CEILING",
+    "RENAME_OR_REMOVE_ANY_OF_SIX_COMMERCIAL_PRODUCTS",
+    "REDUCE_SHARED_PLATFORMS_TO_LIGHTWEIGHT_STUBS",
+    "DELETE_OR_OVERWRITE_PROTECTED_RECOVERED_ARTIFACTS"
+  ],
+  "approvedSovereignProducts": [
+    {
+      "id": "PROD-FINTECH",
+      "name": "JUMO FINTECH (SACCO & Core Banking ERP)",
+      "historicalTargetArtifacts": 582,
+      "modules": 32,
+      "directorates": 4,
+      "departments": 12,
+      "offices": 24,
+      "portals": 6
+    },
+    {
+      "id": "PROD-NURSERY-PRIMARY",
+      "name": "JUMO NURSERY & PRIMARY ERP",
+      "historicalTargetArtifacts": 536,
+      "modules": 28,
+      "directorates": 4,
+      "departments": 10,
+      "offices": 20,
+      "portals": 5
+    },
+    {
+      "id": "PROD-SECONDARY",
+      "name": "JUMO SECONDARY SCHOOL ERP",
+      "historicalTargetArtifacts": 624,
+      "modules": 36,
+      "directorates": 4,
+      "departments": 12,
+      "offices": 26,
+      "portals": 6
+    },
+    {
+      "id": "PROD-UNIVERSITY",
+      "name": "JUMO UNIVERSITY & TERTIARY ERP",
+      "historicalTargetArtifacts": 712,
+      "modules": 44,
+      "directorates": 5,
+      "departments": 16,
+      "offices": 34,
+      "portals": 6
+    },
+    {
+      "id": "PROD-CHURCH",
+      "name": "JUMO CHURCH & FAITH ERP",
+      "historicalTargetArtifacts": 564,
+      "modules": 30,
+      "directorates": 4,
+      "departments": 12,
+      "offices": 24,
+      "portals": 5
+    },
+    {
+      "id": "PROD-ALUMNI",
+      "name": "JUMO ALUMNI & COMMUNITY ERP",
+      "historicalTargetArtifacts": 518,
+      "modules": 26,
+      "directorates": 4,
+      "departments": 10,
+      "offices": 20,
+      "portals": 5
+    }
+  ],
+  "approvedIndependentPlatforms": [
+    {
+      "id": "PLAT-FAAP",
+      "name": "JUMO FAAP (Financial Accounting & Allocation Platform)",
+      "targetArtifacts": 448,
+      "modules": 24,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-DIGITAL-PAY",
+      "name": "JUMO DIGITAL PAY (Universal Multi-Rail Payment Platform)",
+      "targetArtifacts": 386,
+      "modules": 20,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-AEGIS",
+      "name": "JUMO AEGIS (Zero-Trust Security & HSM Platform)",
+      "targetArtifacts": 294,
+      "modules": 16,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-TREASURY",
+      "name": "JUMO TREASURY (Liquidity & Reserves Platform)",
+      "targetArtifacts": 268,
+      "modules": 14,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-DIGITAL-AUDITOR",
+      "name": "JUMO DIGITAL AUDITOR (Continuous Audit & Merkle Ledger Platform)",
+      "targetArtifacts": 276,
+      "modules": 14,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-AI-HYBRID",
+      "name": "JUMO AI DIGITAL HYBRID (Multi-Agent Cognitive Mesh Platform)",
+      "targetArtifacts": 342,
+      "modules": 18,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-WORKFLOW",
+      "name": "JUMO WORKFLOW ENGINE (BPMN / State Machine Platform)",
+      "targetArtifacts": 252,
+      "modules": 12,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    },
+    {
+      "id": "PLAT-CLOUD-INFRA",
+      "name": "JUMO CLOUD / INFRASTRUCTURE (Multi-Cloud Control Plane)",
+      "targetArtifacts": 248,
+      "modules": 12,
+      "sovereignStatus": "INDEPENDENT_SHARED_PLATFORM"
+    }
+  ]
+}
