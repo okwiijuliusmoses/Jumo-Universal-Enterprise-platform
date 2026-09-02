@@ -1,6 +1,6 @@
 {
-  "name": "JUMO Sovereign Enterprise Platform",
-  "description": "Sovereign enterprise operating platform for JUMO Universal Enterprise Operating System (UEOS), executing 4 consolidated sovereign enterprise products with shared FAAP, Digital Pay, and Alumni platform engines.",
+  "name": "JUMO FINTECH",
+  "description": "Unified financial enterprise operating system providing consolidated Core Banking, Digital Payments (Switch), and FAAP Accounting modules within a sovereign officer-portal architecture.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

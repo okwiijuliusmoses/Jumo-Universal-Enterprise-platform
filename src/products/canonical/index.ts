@@ -1,42 +1,21 @@
 import { CanonicalProductHierarchy } from './types';
 import { FINTECH_HIERARCHY } from './fintech';
-import { CHURCH_FAITH_HIERARCHY } from './churchFaith';
-import { SECONDARY_SCHOOL_HIERARCHY } from './secondarySchool';
-import { NURSERY_PRIMARY_HIERARCHY } from './nurseryPrimary';
 
-// Shared Sovereign Platform Layers
+// Shared Sovereign Platform Layers (Mounted as FINTECH internal modules)
 import { FAAP_HIERARCHY } from './faap';
 import { DIGITAL_PAY_HIERARCHY } from './digitalPay';
-import { ALUMNI_COMMUNITY_HIERARCHY } from './alumniCommunity';
-
-// Historical / Reclassified Reference Hierarchies
-import { NATIONAL_IDENTITY_HIERARCHY } from './nationalIdentity';
-import { NATIONAL_HEALTH_HIERARCHY } from './nationalHealth';
-import { NATIONAL_EDUCATION_HIERARCHY } from './nationalEducation';
-import { UNIVERSITY_TERTIARY_HIERARCHY } from './universityTertiary';
 
 export * from './types';
 export { FINTECH_HIERARCHY } from './fintech';
-export { CHURCH_FAITH_HIERARCHY } from './churchFaith';
-export { SECONDARY_SCHOOL_HIERARCHY } from './secondarySchool';
-export { NURSERY_PRIMARY_HIERARCHY } from './nurseryPrimary';
 export { FAAP_HIERARCHY } from './faap';
 export { DIGITAL_PAY_HIERARCHY } from './digitalPay';
-export { ALUMNI_COMMUNITY_HIERARCHY } from './alumniCommunity';
-export { NATIONAL_IDENTITY_HIERARCHY } from './nationalIdentity';
-export { NATIONAL_HEALTH_HIERARCHY } from './nationalHealth';
-export { NATIONAL_EDUCATION_HIERARCHY } from './nationalEducation';
-export { UNIVERSITY_TERTIARY_HIERARCHY } from './universityTertiary';
 
 /**
  * 1. AUTHORITATIVE PRIMARY SOVEREIGN PRODUCT FAMILIES
- * Exclusively 4 Consolidated Primary Products
+ * Exclusively JUMO FINTECH for the current reconstruction phase.
  */
 export const PRIMARY_SOVEREIGN_PRODUCTS: CanonicalProductHierarchy[] = [
-  CHURCH_FAITH_HIERARCHY,        // JUMO CHURCH ERP
   FINTECH_HIERARCHY,             // JUMO FINTECH
-  SECONDARY_SCHOOL_HIERARCHY,    // JUMO SECONDARY SCHOOL ERP
-  NURSERY_PRIMARY_HIERARCHY      // JUMO NURSERY & PRIMARY SCHOOL ERP
 ];
 
 /**
@@ -45,37 +24,24 @@ export const PRIMARY_SOVEREIGN_PRODUCTS: CanonicalProductHierarchy[] = [
 export const SHARED_SOVEREIGN_PLATFORMS: CanonicalProductHierarchy[] = [
   FAAP_HIERARCHY,                // JUMO FAAP
   DIGITAL_PAY_HIERARCHY,         // JUMO DIGITAL PAY
-  ALUMNI_COMMUNITY_HIERARCHY     // JUMO ALUMNI PLATFORM
 ];
 
 /**
  * 3. RECLASSIFIED HISTORICAL / DOMAIN SERVICES
  */
-export const RECLASSIFIED_HISTORICAL_REGISTRIES: CanonicalProductHierarchy[] = [
-  NATIONAL_IDENTITY_HIERARCHY,
-  NATIONAL_HEALTH_HIERARCHY,
-  NATIONAL_EDUCATION_HIERARCHY,
-  UNIVERSITY_TERTIARY_HIERARCHY
-];
+export const RECLASSIFIED_HISTORICAL_REGISTRIES: CanonicalProductHierarchy[] = [];
 
 /**
  * ALL COMBINED HIERARCHIES FOR UNIFIED REGISTRY SCANNING
  */
 export const ALL_CANONICAL_PRODUCT_HIERARCHIES: CanonicalProductHierarchy[] = [
   ...PRIMARY_SOVEREIGN_PRODUCTS,
-  ...SHARED_SOVEREIGN_PLATFORMS,
-  ...RECLASSIFIED_HISTORICAL_REGISTRIES
+  ...SHARED_SOVEREIGN_PLATFORMS
 ];
 
 export const PRIMARY_PRODUCT_MAP: Record<string, CanonicalProductHierarchy> = {
-  'JUMO-CHURCH': CHURCH_FAITH_HIERARCHY,
-  'prod-church-faith': CHURCH_FAITH_HIERARCHY,
   'JUMO-FINTECH': FINTECH_HIERARCHY,
-  'prod-fintech': FINTECH_HIERARCHY,
-  'JUMO-SECONDARY-ERP': SECONDARY_SCHOOL_HIERARCHY,
-  'prod-secondary-school': SECONDARY_SCHOOL_HIERARCHY,
-  'JUMO-NURSERY-PRIMARY-ERP': NURSERY_PRIMARY_HIERARCHY,
-  'prod-nursery-primary': NURSERY_PRIMARY_HIERARCHY,
+  'prod-fintech': FINTECH_HIERARCHY
 };
 
 export const CANONICAL_PRODUCT_MAP: Record<string, CanonicalProductHierarchy> = {
@@ -83,13 +49,7 @@ export const CANONICAL_PRODUCT_MAP: Record<string, CanonicalProductHierarchy> = 
   'prod-faap': FAAP_HIERARCHY,
   'JUMO-FAAP': FAAP_HIERARCHY,
   'prod-digital-pay': DIGITAL_PAY_HIERARCHY,
-  'JUMO-DIGITAL-PAY': DIGITAL_PAY_HIERARCHY,
-  'prod-alumni-community': ALUMNI_COMMUNITY_HIERARCHY,
-  'JUMO-ALUMNI': ALUMNI_COMMUNITY_HIERARCHY,
-  'prod-national-id': NATIONAL_IDENTITY_HIERARCHY,
-  'prod-national-health': NATIONAL_HEALTH_HIERARCHY,
-  'prod-national-education': NATIONAL_EDUCATION_HIERARCHY,
-  'prod-university-tertiary': UNIVERSITY_TERTIARY_HIERARCHY
+  'JUMO-DIGITAL-PAY': DIGITAL_PAY_HIERARCHY
 };
 
 export function getCanonicalProduct(productId: string): CanonicalProductHierarchy | undefined {

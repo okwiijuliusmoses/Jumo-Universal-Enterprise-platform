@@ -35,6 +35,9 @@ export const FINTECH_MANIFEST: ProductManifest = {
   },
   benchmarkSources: [
     'QuickBooks Enterprise Accounting Benchmark & Financial Standards',
-    'Uganda Microfinance Regulatory Authority (UMRA) SACCO Operating Guidelines 2026'
+    'Stripe Payment Lifecycle & API Interaction Patterns',
+    'SchoolPay Institutional Payment & Reconciliation Patterns',
+    'Uganda Microfinance Regulatory Authority (UMRA) SACCO Operating Guidelines 2026',
+    'Agent Banking & Branchless Operational Standards'
   ]
 };
