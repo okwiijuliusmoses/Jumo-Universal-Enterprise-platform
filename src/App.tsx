@@ -24,8 +24,25 @@ import { BENCHMARK_TRACEABILITY_REGISTRY, BenchmarkTraceRecord } from './core/en
 import { BENCHMARK_QUESTIONS } from './data';
 
 export default function App() {
+  const parseUrlToProduct = (): string | null => {
+    try {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase().replace('#', '').replace('/', '');
+      const search = new URLSearchParams(window.location.search);
+      const appParam = search.get('app')?.toLowerCase() || search.get('product')?.toLowerCase();
+
+      if (path.includes('cherp') || hash === 'cherp' || hash === 'church' || appParam === 'cherp' || appParam === 'church') return 'prod-church-faith';
+      if (path.includes('fintech') || path.includes('fterp') || hash === 'fintech' || hash === 'fterp' || appParam === 'fintech' || appParam === 'fterp') return 'prod-fintech';
+      if (path.includes('secondary') || path.includes('secerp') || hash === 'secondary' || hash === 'secerp' || appParam === 'secondary' || appParam === 'secerp') return 'prod-secondary-school';
+      if (path.includes('nursery') || path.includes('nperp') || path.includes('primary') || hash === 'nursery' || hash === 'nperp' || hash === 'primary' || appParam === 'nursery' || appParam === 'nperp' || appParam === 'primary') return 'prod-nursery-primary';
+    } catch {
+      // ignore
+    }
+    return null;
+  };
+
   const [activeView, setActiveView] = useState<'PRODUCTS' | 'BENCHMARK_TRACE' | 'SHARED_PLATFORMS' | 'AUDIT' | 'ASSESSMENT'>('PRODUCTS');
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(parseUrlToProduct);
 
   // Verification results state
   const [auditResults, setAuditResults] = useState<Record<string, ProductVerificationResult>>({});
@@ -45,6 +62,47 @@ export default function App() {
   // Countdown timer for 5th Sept 2026
   const targetDate = new Date('2026-09-05T08:00:00+03:00');
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    // Sync browser back/forward and hash changes
+    const handleLocationChange = () => {
+      const prod = parseUrlToProduct();
+      setSelectedProductId(prod);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProductId(productId);
+    try {
+      const productSlugMap: Record<string, string> = {
+        'prod-church-faith': 'cherp',
+        'prod-fintech': 'fintech',
+        'prod-secondary-school': 'secondary',
+        'prod-nursery-primary': 'nursery-primary'
+      };
+      const slug = productSlugMap[productId] || productId;
+      window.history.pushState({ productId }, '', `#/${slug}`);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleReturnToLauncher = () => {
+    setSelectedProductId(null);
+    try {
+      window.history.pushState({}, '', window.location.pathname);
+    } catch {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     // Initial verification run
@@ -172,7 +230,7 @@ export default function App() {
     return (
       <ProductWorkspaceComponent
         productId={selectedProductId}
-        onBack={() => setSelectedProductId(null)}
+        onBack={handleReturnToLauncher}
       />
     );
   }
@@ -359,7 +417,7 @@ export default function App() {
                         LEAD: <strong className="text-slate-800">{p.leadExecutiveRole.split('/')[0] || p.leadExecutiveRole}</strong>
                       </span>
                       <button
-                        onClick={() => setSelectedProductId(p.id)}
+                        onClick={() => handleSelectProduct(p.id)}
                         className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         Launch Product Workspace <ArrowRight className="w-3.5 h-3.5" />
