@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FINTECH_MODULES } from '../modules';
 import { FintechShell } from './FintechShell';
 import { FintechWorkspace } from './FintechWorkspace';
+import { faapEnterpriseRuntime } from '../../../core/faap/faapService';
 
 // JUMO FTERP — FINTECH & SACCO ENTERPRISE OPERATING SYSTEM
 const OFFICER_PORTALS = [
@@ -47,9 +48,13 @@ export interface FintechStandaloneAppProps {
 export function FintechStandaloneApp({ onBackToLauncher }: FintechStandaloneAppProps) {
   const [activePortalId, setActivePortalId] = useState(OFFICER_PORTALS[0].id);
   const [activeModuleId, setActiveModuleId] = useState('FT-MOD-MEMBER-KYC');
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'RECORDS' | 'TERMINAL' | 'REPORTS'>('RECORDS');
+  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'RECORDS' | 'TERMINAL' | 'REPORTS' | 'WORKFLOW'>('RECORDS');
   const [executionMessage, setExecutionMessage] = useState<string | null>(null);
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    faapEnterpriseRuntime.ensureSeeded();
+  }, []);
 
   // Operational State (Replacing static hardcoded stats)
   const [operationalMetrics] = useState({
@@ -107,7 +112,9 @@ export function FintechStandaloneApp({ onBackToLauncher }: FintechStandaloneAppP
         </div>
         
         <div className="flex gap-4">
-          {(['OVERVIEW', 'RECORDS', 'TERMINAL', 'REPORTS'] as const).map(tab => (
+          {(['OVERVIEW', 'RECORDS', 'TERMINAL', 'REPORTS', 'WORKFLOW'] as const)
+            .filter(tab => tab !== 'WORKFLOW' || activeModuleId === 'FT-MOD-GENERAL-LEDGER')
+            .map(tab => (
              <button
               key={tab}
               onClick={() => {

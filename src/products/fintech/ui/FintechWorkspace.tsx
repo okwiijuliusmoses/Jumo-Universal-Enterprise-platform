@@ -9,7 +9,7 @@ import { FintechRecordView } from './FintechRecordView';
 
 interface WorkspaceProps {
   moduleId: string;
-  activeTab: 'OVERVIEW' | 'RECORDS' | 'TERMINAL' | 'REPORTS';
+  activeTab: 'OVERVIEW' | 'RECORDS' | 'TERMINAL' | 'REPORTS' | 'WORKFLOW';
   onSuccess: (msg: string) => void;
   onCancel: () => void;
   onNavigateToTerminal: () => void;
@@ -23,13 +23,24 @@ interface WorkspaceProps {
   };
 }
 
+import { faapEnterpriseRuntime } from '../../../core/faap/faapService';
+import { LedgerDashboard } from './LedgerDashboard';
+import { JournalWorkflowTerminal } from './JournalWorkflowTerminal';
+
 export const FintechWorkspace = ({ 
   moduleId, activeTab, onSuccess, onCancel, onNavigateToTerminal, 
   selectedRecordId, onSelectRecord, metrics 
 }: WorkspaceProps) => {
 
+  const accounts = faapEnterpriseRuntime.listAccounts();
+  const journals = faapEnterpriseRuntime.listJournals();
+
   if (selectedRecordId) {
     return <FintechRecordView type="MEMBER" id={selectedRecordId} onBack={() => onSelectRecord(null)} />;
+  }
+
+  if (activeTab === 'WORKFLOW') {
+    return <JournalWorkflowTerminal onActionComplete={onSuccess} />;
   }
 
   if (activeTab === 'OVERVIEW') {
@@ -59,6 +70,9 @@ export const FintechWorkspace = ({
   }
 
   if (activeTab === 'REPORTS') {
+    if (moduleId === 'FT-MOD-GENERAL-LEDGER') {
+      return <LedgerDashboard />;
+    }
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
@@ -104,10 +118,10 @@ export const FintechWorkspace = ({
           <table className="w-full text-left border-collapse">
             <thead className="bg-slate-50/50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
               <tr>
-                <th className="px-6 py-4">Reference</th>
-                <th className="px-6 py-4">Primary Subject</th>
-                <th className="px-6 py-4">Metric / Status</th>
-                <th className="px-6 py-4">Verification</th>
+                <th className="px-6 py-4">{moduleId === 'FT-MOD-GENERAL-LEDGER' ? 'GL Code' : 'Reference'}</th>
+                <th className="px-6 py-4">{moduleId === 'FT-MOD-GENERAL-LEDGER' ? 'Account Name' : 'Primary Subject'}</th>
+                <th className="px-6 py-4">{moduleId === 'FT-MOD-GENERAL-LEDGER' ? 'Balance' : 'Metric / Status'}</th>
+                <th className="px-6 py-4">{moduleId === 'FT-MOD-GENERAL-LEDGER' ? 'Audit Status' : 'Verification'}</th>
                 <th className="px-6 py-4">Action</th>
               </tr>
             </thead>
@@ -134,6 +148,28 @@ export const FintechWorkspace = ({
                     <td className="px-6 py-4">
                       <button onClick={() => onSelectRecord(row.id)} className="text-slate-400 hover:text-emerald-600 transition-colors">
                         <Eye className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : moduleId === 'FT-MOD-GENERAL-LEDGER' ? (
+                accounts.map((acc: any, i: number) => (
+                  <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-6 py-4 font-mono font-bold text-slate-400 group-hover:text-slate-900">{acc.code}</td>
+                    <td className="px-6 py-4">
+                      <p className="font-black text-slate-900 tracking-tight">{acc.name}</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{acc.category}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-black text-slate-900">UGX {acc.balance.toLocaleString()}</p>
+                    </td>
+                    <td className="px-6 py-4 flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${acc.balance === 0 ? 'bg-slate-200' : 'bg-emerald-500'}`} />
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reconciled</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button className="text-slate-400 hover:text-emerald-600 transition-colors">
+                        <History className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>

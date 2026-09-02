@@ -34,7 +34,43 @@ export const UEOS_SCHEMAS: Record<string, TableSchema> = {
       { name: "code", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique General Ledger Account Code" },
       { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Account display name" },
       { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Asset, Liability, Equity, Revenue, or Expense" },
-      { name: "balance", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Current account balance (Debit/Credit-adjusted)" }
+      { name: "balance", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Current account balance (Debit/Credit-adjusted)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Inactive, or Frozen" }
+    ]
+  },
+  accounting_periods: {
+    tableName: "accounting_periods",
+    description: "Financial periods for controlling ledger openness and reporting boundaries.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Period ID (e.g., FY2026-Q1)" },
+      { name: "startDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Start of period" },
+      { name: "endDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "End of period" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Open, Closed, or Permanent" }
+    ]
+  },
+  journals: {
+    tableName: "journals",
+    description: "FAAP General Ledger Journal Header records.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique Journal ID" },
+      { name: "date", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Accounting Date" },
+      { name: "reference", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "External reference number (Invoice/Bill ID)" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Narrative description of the entry" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "draft, pending, approved, posted" },
+      { name: "source", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "manual, system, invoice, bill" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "System entry timestamp" }
+    ]
+  },
+  ledger_entries: {
+    tableName: "ledger_entries",
+    description: "Individual double-entry line items for journals.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique Line Item ID" },
+      { name: "journalId", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Parent Journal ID" },
+      { name: "accountId", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Target Account Code" },
+      { name: "debit", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Debit amount" },
+      { name: "credit", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Credit amount" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Currency code (ISO)" }
     ]
   },
   registries: {

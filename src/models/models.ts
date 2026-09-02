@@ -13,6 +13,33 @@ export interface LedgerAccountRecord {
   name: string;
   category: string;
   balance: number;
+  status: string;
+}
+
+export interface AccountingPeriodRecord {
+  id: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+}
+
+export interface JournalRecord {
+  id: string;
+  date: string;
+  reference: string;
+  description: string;
+  status: string;
+  source: string;
+  createdAt: string;
+}
+
+export interface LedgerEntryRecord {
+  id: string;
+  journalId: string;
+  accountId: string;
+  debit: number;
+  credit: number;
+  currency: string;
 }
 
 export interface RegistryRecord {
