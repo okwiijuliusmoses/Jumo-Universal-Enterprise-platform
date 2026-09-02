@@ -1,5 +1,7 @@
 import React from 'react';
 import { faapEnterpriseRuntime } from '../../../core/faap/faapService';
+import { db } from '../../../database/db';
+import { LedgerEntryRecord } from '../../../models/models';
 import { 
   ClipboardCheck, 
   Clock, 
@@ -22,6 +24,11 @@ export const JournalWorkflowTerminal = ({ onActionComplete }: { onActionComplete
     setDrafts(pendingDrafts);
     setLoading(false);
   }, []);
+
+  const getDraftAmount = (journalId: string): number => {
+    const entries = db.select<LedgerEntryRecord>("ledger_entries", e => e.journalId === journalId);
+    return entries.reduce((sum, e) => sum + (e.debit || 0), 0);
+  };
 
   React.useEffect(() => {
     loadDrafts();
@@ -93,7 +100,7 @@ export const JournalWorkflowTerminal = ({ onActionComplete }: { onActionComplete
                 <div className="flex items-center gap-4">
                   <div className="text-right mr-6">
                     <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest">Aggregate Value</p>
-                    <p className="text-lg font-black text-slate-900">UGX {draft.reference.includes('INV') ? '...' : 'Verified'}</p>
+                    <p className="text-lg font-black text-slate-900">UGX {getDraftAmount(draft.id).toLocaleString()}</p>
                   </div>
                   <button 
                     onClick={() => handleApprove(draft.id)}
