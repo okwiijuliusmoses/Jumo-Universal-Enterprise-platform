@@ -153,7 +153,7 @@ export function EnterpriseWorkspaceLayout({
                   <CheckCircle2 className="w-3 h-3 text-emerald-600" /> SYSTEM ONLINE
                 </span>
               </div>
-              <h1 className="text-lg font-black text-slate-900 tracking-tight leading-snug mt-0.5 font-sans">{productName}</h1>
+              <h1 className="mt-0.5">{productName}</h1>
             </div>
           </div>
 
@@ -266,8 +266,8 @@ export function EnterpriseWorkspaceLayout({
                       <ModuleIcon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[10px] font-mono font-bold tracking-wider uppercase opacity-75 module-code">{module.code}</div>
-                      <div className="text-xs font-semibold tracking-tight truncate module-title">{module.name}</div>
+                      <div className="opacity-75 module-code">{module.code}</div>
+                      <div className="truncate module-title">{module.name}</div>
                     </div>
                   </button>
                 );
@@ -306,7 +306,7 @@ export function EnterpriseWorkspaceLayout({
                   {currentPortal.code}
                 </span>
               </div>
-              <h2 className="text-xl font-black text-slate-900 tracking-tight leading-snug mt-1 font-sans">{currentModule?.name}</h2>
+              <h2 className="mt-1">{currentModule?.name}</h2>
               {currentModule?.description && (
                 <p className="text-xs font-medium text-slate-600 mt-1 leading-relaxed">{currentModule.description}</p>
               )}
