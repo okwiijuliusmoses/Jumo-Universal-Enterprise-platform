@@ -260,8 +260,8 @@ export function EnterpriseWorkspaceLayout({
                       <ModuleIcon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[10px] font-mono font-bold tracking-wider uppercase opacity-75">{module.code}</div>
-                      <div className="text-xs font-semibold tracking-tight truncate">{module.name}</div>
+                      <div className="text-[10px] font-mono font-bold tracking-wider uppercase opacity-75 module-code">{module.code}</div>
+                      <div className="text-xs font-semibold tracking-tight truncate module-title">{module.name}</div>
                     </div>
                   </button>
                 );
@@ -282,6 +282,15 @@ export function EnterpriseWorkspaceLayout({
         {/* RIGHT WORKSPACE AREA */}
         <main className="flex-1 space-y-6 min-w-0">
           
+          {/* WORKSPACE BREADCRUMBS */}
+          <div className="breadcrumb-container flex items-center gap-1.5 text-xs text-slate-500 font-medium px-1">
+            <span>{productName}</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span>{currentPortal.title}</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span className="breadcrumb-active text-slate-900 font-bold">{currentModule?.name}</span>
+          </div>
+
           {/* WORKSPACE HEADER BAR */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>

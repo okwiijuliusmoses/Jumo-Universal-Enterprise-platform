@@ -9,3 +9,116 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
 }
+
+/* JUMO Design System - Global Enterprise Typography Hierarchy */
+#jumo-ueos-app-root {
+  /* Enforce consistent font-family and anti-aliasing */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Breadcrumb hierarchy */
+#jumo-ueos-app-root .breadcrumb-container {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem;
+  font-weight: 500;
+  color: #64748b;
+  letter-spacing: -0.01em;
+}
+
+#jumo-ueos-app-root .breadcrumb-active {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Dashboard / Workspace Headers */
+#jumo-ueos-app-root h1 {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+}
+
+#jumo-ueos-app-root h2 {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+}
+
+#jumo-ueos-app-root h3 {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: #0f172a;
+}
+
+/* Sidebar navigation links */
+#jumo-ueos-app-root aside nav button {
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+#jumo-ueos-app-root aside nav button .module-title {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+#jumo-ueos-app-root aside nav button .module-code {
+  font-size: 0.625rem; /* 10px */
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+/* Table Headers & Rows */
+#jumo-ueos-app-root table thead th {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+#jumo-ueos-app-root table tbody tr {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.25rem;
+}
+
+#jumo-ueos-app-root table tbody td {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+#jumo-ueos-app-root table tbody td.font-mono {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+/* Form Controls & Labels */
+#jumo-ueos-app-root label {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #334155;
+}
+
+#jumo-ueos-app-root input,
+#jumo-ueos-app-root select,
+#jumo-ueos-app-root textarea {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: normal;
+  color: #0f172a;
+}
