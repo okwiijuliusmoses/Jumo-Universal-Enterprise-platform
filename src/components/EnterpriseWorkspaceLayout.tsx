@@ -100,15 +100,16 @@ export function EnterpriseWorkspaceLayout({
     return () => clearTimeout(timer);
   }, [activeModuleId, activePortalId, activeTab]);
 
-  // Compute dynamic sidebar width based on product name and longest module title length
-  const dynamicSidebarWidth = useMemo(() => {
+  // Compute dynamic sidebar grid track width based on product name and longest module title length
+  const dynamicSidebarWidthPx = useMemo(() => {
     const nameLength = productName.length;
     const maxModuleLen = Math.max(0, ...modules.map(m => (m.name || '').length));
     const combinedMax = Math.max(nameLength, maxModuleLen);
 
-    if (combinedMax > 30) return 'md:w-80';
-    if (combinedMax > 20) return 'md:w-72';
-    return 'md:w-64';
+    if (combinedMax > 34) return '336px';
+    if (combinedMax > 26) return '300px';
+    if (combinedMax > 18) return '268px';
+    return '240px';
   }, [productName, modules]);
 
   const defaultTabs = [
@@ -224,11 +225,16 @@ export function EnterpriseWorkspaceLayout({
         </div>
       </header>
 
-      {/* 4. TWO-COLUMN MAIN BODY: GRID WITH DYNAMIC SIDEBAR + WORKSPACE */}
-      <div className="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 p-4 sm:p-6 md:p-8">
+      {/* 4. TWO-COLUMN MAIN BODY: CSS GRID WITH DYNAMIC SIDEBAR + DEDICATED WORKSPACE LAYOUT AREA */}
+      <div 
+        className="jumo-enterprise-grid max-w-7xl w-full mx-auto flex-1 gap-6 p-4 sm:p-6 md:p-8"
+        style={{
+          gridTemplateColumns: `minmax(0, ${dynamicSidebarWidthPx}) minmax(0, 1fr)`
+        }}
+      >
         
-        {/* LEFT SIDEBAR NAVIGATION WITH DYNAMIC WIDTH */}
-        <aside className={`w-full ${dynamicSidebarWidth} shrink-0 space-y-4`}>
+        {/* LEFT SIDEBAR NAVIGATION AREA */}
+        <aside className="jumo-sidebar-area w-full shrink-0 space-y-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 space-y-3">
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
               <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
@@ -279,8 +285,8 @@ export function EnterpriseWorkspaceLayout({
           </div>
         </aside>
 
-        {/* RIGHT WORKSPACE AREA */}
-        <main className="flex-1 space-y-6 min-w-0">
+        {/* RIGHT DEDICATED WORKSPACE MODULE LAYOUT AREA */}
+        <main className="jumo-workspace-area space-y-6 min-w-0">
           
           {/* WORKSPACE BREADCRUMBS */}
           <div className="breadcrumb-container flex items-center gap-1.5 text-xs text-slate-500 font-medium px-1">
@@ -347,10 +353,10 @@ export function EnterpriseWorkspaceLayout({
             </div>
           )}
 
-          {/* WORKSPACE CHILDREN CONTENT WITH CONSISTENT LOADING OVERLAY TO PREVENT CLS */}
+          {/* WORKSPACE CHILDREN CONTENT WITH CONSISTENT CSS-BASED LOADING OVERLAY */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 md:p-8 min-h-[480px] relative">
             {isWorkspaceLoading && (
-              <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center rounded-2xl transition-all duration-200">
+              <div className="jumo-loading-overlay">
                 <div className="flex items-center gap-3 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md font-sans tracking-tight">
                   <RefreshCw className="w-4 h-4 text-emerald-400 animate-spin" />
                   <span>Loading {currentModule?.name || 'Workspace'}...</span>
