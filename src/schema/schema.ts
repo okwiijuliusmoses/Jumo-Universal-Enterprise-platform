@@ -1,0 +1,269 @@
+// JUMO UEOS Database Table Schemas & Validation Rule Definitions
+
+export interface TableField {
+  name: string;
+  type: string;
+  primaryKey: boolean;
+  nullable: boolean;
+  description: string;
+}
+
+export interface TableSchema {
+  tableName: string;
+  fields: TableField[];
+  description: string;
+}
+
+// Canonical Schemas for FAAP, Identity, Registries, Workflows, and AI Memory
+export const UEOS_SCHEMAS: Record<string, TableSchema> = {
+  users: {
+    tableName: "users",
+    description: "Multi-tenant user profile details with RBAC role metadata.",
+    fields: [
+      { name: "email", type: "VARCHAR(255)", primaryKey: true, nullable: false, description: "Unique email identifier" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User full display name" },
+      { name: "role", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Assigned Security Role (e.g., FAAP_Controller, SecOps_Administrator)" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated tenant node domain ID" },
+      { name: "trustLevel", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Security sandbox clearance status" }
+    ]
+  },
+  ledger_accounts: {
+    tableName: "ledger_accounts",
+    description: "Universal Double-Entry Chart of Accounts containing current balances.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique account identifier" },
+      { name: "tenant_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated tenant ID" },
+      { name: "workspace_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated workspace ID" },
+      { name: "code", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "General Ledger Account Code" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Account display name" },
+      { name: "account_type", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Asset, Liability, Equity, Revenue, or Expense" },
+      { name: "balance_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Current account balance in minor units" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "ACTIVE, INACTIVE, FROZEN" }
+    ]
+  },
+  accounting_periods: {
+    tableName: "accounting_periods",
+    description: "Financial periods for controlling ledger openness and reporting boundaries.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Period ID (e.g., FY2026-Q1)" },
+      { name: "startDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Start of period" },
+      { name: "endDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "End of period" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Open, Closed, or Permanent" }
+    ]
+  },
+  journals: {
+    tableName: "journals",
+    description: "FAAP General Ledger Journal Header records.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique Journal ID" },
+      { name: "date", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Accounting Date" },
+      { name: "reference", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "External reference number (Invoice/Bill ID)" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Narrative description of the entry" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "draft, pending, approved, posted" },
+      { name: "source", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "manual, system, invoice, bill" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "System entry timestamp" }
+    ]
+  },
+  ledger_entries: {
+    tableName: "ledger_entries",
+    description: "Individual double-entry line items for journals (Universal Schema).",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique Line Item ID" },
+      { name: "tenant_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Tenant ID" },
+      { name: "journal_entry_id", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Parent Journal ID" },
+      { name: "ledger_account_id", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Target Account ID" },
+      { name: "debit_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Debit amount in minor units" },
+      { name: "credit_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Credit amount in minor units" }
+    ]
+  },
+  registries: {
+    tableName: "registries",
+    description: "JUMO UEOS dynamic platform capabilities, domains, services, and extensions.",
+    fields: [
+      { name: "name", type: "VARCHAR(255)", primaryKey: true, nullable: false, description: "Registry component unique identifier name" },
+      { name: "type", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Domain, Service, AI, Security, Module, etc." },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Inactive, Standby, or Deprecated" },
+      { name: "tenant", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Tenant bounding ID or Global" },
+      { name: "version", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Version semantic tag" },
+      { name: "permissions", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "RBAC permission requirements for invocation" },
+      { name: "updatedBy", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User or agent that executed the registry transaction" }
+    ]
+  },
+  audit_logs: {
+    tableName: "audit_logs",
+    description: "Immutable, chronological ledger of all platform and transaction audits.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Cryptographically verifiable log event ID" },
+      { name: "timestamp", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "ISO 8601 creation timestamp" },
+      { name: "actor", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User, machine role, or AI agent that triggered the action" },
+      { name: "action", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Event action descriptor (e.g., LEDGER_POST, REGISTRY_INJECT)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "success, failed, or blocked" },
+      { name: "details", type: "TEXT", primaryKey: false, nullable: false, description: "Full diagnostic detail string for auditing" }
+    ]
+  },
+  workflows: {
+    tableName: "workflows",
+    description: "Automation definitions and active triggers loaded in the orchestration engine.",
+    fields: [
+      { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Workflow configuration ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Workflow human-readable title" },
+      { name: "triggerEvent", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "System trigger metric boundary" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active or Inactive" },
+      { name: "approvers", type: "TEXT", primaryKey: false, nullable: false, description: "JSON list of required human/AI approver profiles" },
+      { name: "lastTriggered", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "ISO timestamp or Never" }
+    ]
+  },
+  ai_agent_memory: {
+    tableName: "ai_agent_memory",
+    description: "Durable memory and decision log for multi-agent enterprise helpers.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Durable memory ID" },
+      { name: "agentName", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Name of the AI Agent (e.g. LedgerAuditor, ComplianceOfficer)" },
+      { name: "contextId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Session or workflow reference ID" },
+      { name: "memoryText", type: "TEXT", primaryKey: false, nullable: false, description: "Short/long-term context string" },
+      { name: "timestamp", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Timestamp of logging" }
+    ]
+  },
+  secrets_vault: {
+    tableName: "secrets_vault",
+    description: "JUMO UEOS secure, encrypted secrets and credentials store.",
+    fields: [
+      { name: "key", type: "VARCHAR(255)", primaryKey: true, nullable: false, description: "Unique configuration credential key" },
+      { name: "value", type: "TEXT", primaryKey: false, nullable: false, description: "AES-256 encrypted value of the credential" },
+      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Category classification of secret" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: true, description: "Credential description and usage context" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Expiring, or Expired" },
+      { name: "versionHistory", type: "TEXT", primaryKey: false, nullable: false, description: "JSON list representing version history of rotations" },
+      { name: "lastRotated", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "ISO timestamp or date of last rotation" },
+      { name: "expiresAt", type: "VARCHAR(100)", primaryKey: false, nullable: true, description: "Optional credential expiration date" },
+      { name: "createdBy", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User or system agent that registered key" },
+      { name: "updatedBy", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "User or system agent that updated key" }
+    ]
+  },
+  ecosystems: {
+    tableName: "ecosystems",
+    description: "National industry categories for institutional platforms.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Ecosystem unique identifier" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Ecosystem display name" },
+      { name: "version", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Version semantic tag" },
+      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Industry classification" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Purpose and scope" },
+      { name: "governanceModel", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Governance pattern name" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Draft, or Archived" },
+      { name: "config", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized ecosystem configuration" }
+    ]
+  },
+  templates: {
+    tableName: "templates",
+    description: "Sovereign enterprise operating blueprints.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Template unique identifier" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Template display name" },
+      { name: "ecosystemId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Parent ecosystem ID" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Blueprint description" },
+      { name: "version", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Template version" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active or Draft" },
+      { name: "blueprint", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized complete enterprise blueprint" }
+    ]
+  },
+  instances: {
+    tableName: "instances",
+    description: "Deployed institutional platform instances.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Platform instance unique ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Institutional name" },
+      { name: "templateId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Origin blueprint ID" },
+      { name: "ecosystemId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Parent ecosystem ID" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Operational, Provisioning, Maintenance, or Suspended" },
+      { name: "configuration", type: "TEXT", primaryKey: false, nullable: false, description: "JSON-serialized instance state and config" },
+      { name: "createdAt", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Creation ISO timestamp" }
+    ]
+  },
+  modules: {
+    tableName: "modules",
+    description: "Enterprise functional modules and packages.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Module ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Module Name" },
+      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Category" },
+      { name: "config", type: "TEXT", primaryKey: false, nullable: false, description: "JSON Config" }
+    ]
+  },
+  forms: {
+    tableName: "forms",
+    description: "Enterprise form definitions.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Form ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Form Name" },
+      { name: "definition", type: "TEXT", primaryKey: false, nullable: false, description: "JSON Definition" }
+    ]
+  },
+  components: {
+    tableName: "components",
+    description: "Reusable enterprise UI/Service components.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Component ID" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Component Name" },
+      { name: "type", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "UI, SERVICE, or DATA" },
+      { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Description" }
+    ]
+  },
+  parties: {
+    tableName: "parties",
+    description: "Universal business/institution parties (customers, students, members).",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique Party ID" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "routingCode", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "10-digit public routing resolver code" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Party name/identity" },
+      { name: "type", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Type of party (e.g., student, retail_customer)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Status: ACTIVE, FROZEN, SUSPENDED" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Record creation date" }
+    ]
+  },
+  open_items: {
+    tableName: "open_items",
+    description: "Unpaid obligations (tuition invoice, sales bill, faith pledge).",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique obligation identifier" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Payer party identifier" },
+      { name: "amountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Total obligation in minor units (integer)" },
+      { name: "allocatedAmountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Allocated/paid amount in minor units (integer)" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Currency code" },
+      { name: "type", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Type of obligation (e.g., tuition, pledge, invoice)" },
+      { name: "dueDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Payment due date" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Obligation creation timestamp" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "UNPAID, PARTIALLY_PAID, PAID" }
+    ]
+  },
+  wallets: {
+    tableName: "wallets",
+    description: "Sovereign multi-tenant digital S-wallets tracking entity liabilities.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique Wallet ID" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Owner party identifier" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Wallet currency code" },
+      { name: "balanceMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Wallet balance in minor units (integer)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "ACTIVE, FROZEN, CLOSED" },
+      { name: "updatedAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Last state change timestamp" }
+    ]
+  },
+  processed_payments: {
+    tableName: "processed_payments",
+    description: "Payment transaction tracking ledger for strong idempotency boundaries.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique reference/idempotency key" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Payer party identifier" },
+      { name: "amountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Payment amount in minor units" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Payment currency code" },
+      { name: "allocatedMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Amount allocated to open items" },
+      { name: "residualMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Amount routed to overpayment/wallet" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "PROCESSED, VOIDED" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Payment processing timestamp" }
+    ]
+  }
+};

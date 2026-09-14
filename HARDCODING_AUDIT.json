@@ -1,0 +1,42 @@
+[
+  {
+    "file": "src/04_ussd.controller.ts",
+    "category": "Currency",
+    "severity": "High",
+    "current_behavior": "Hardcoded 'UGX' in USSD strings",
+    "problematic": true,
+    "replacement_strategy": "Fetch currency from ConfigEngine"
+  },
+  {
+    "file": "src/05_Dashboard.tsx",
+    "category": "UI Metadata",
+    "severity": "Medium",
+    "current_behavior": "Hardcoded tenant labels (Church, School)",
+    "problematic": true,
+    "replacement_strategy": "Derive from ConfigEngine metadata"
+  },
+  {
+    "file": "server.ts",
+    "category": "Seeding",
+    "severity": "Low",
+    "current_behavior": "Hardcoded seed entities",
+    "problematic": false,
+    "replacement_strategy": "Dynamic seed manifest"
+  },
+  {
+    "file": "src/ueosBlueprint.ts",
+    "category": "Domain Coupling",
+    "severity": "High",
+    "current_behavior": "Sector-specific terms (SACCO, FAAP)",
+    "problematic": true,
+    "replacement_strategy": "Universalize terminology"
+  },
+  {
+    "file": "src/schema/schema.ts",
+    "category": "Data Types",
+    "severity": "High",
+    "current_behavior": "DOUBLE PRECISION for balances",
+    "problematic": true,
+    "replacement_strategy": "Migrate to BIGINT minor units"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "education-erp-1785752300316-portal-0",
+    "name": "Administration Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-1",
+    "name": "Operations Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-2",
+    "name": "Finance Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-3",
+    "name": "Analytics Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-4",
+    "name": "Workflow Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-5",
+    "name": "Document Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-6",
+    "name": "AI Assistant Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-7",
+    "name": "Institutional ERP Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-8",
+    "name": "User Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-9",
+    "name": "Service Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-10",
+    "name": "Reporting Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-11",
+    "name": "Compliance Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-12",
+    "name": "Integration Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-13",
+    "name": "Notification Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-14",
+    "name": "Knowledge Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-15",
+    "name": "Mobile Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-16",
+    "name": "Self Service Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-17",
+    "name": "Executive Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-18",
+    "name": "Audit Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  },
+  {
+    "id": "education-erp-1785752300316-portal-19",
+    "name": "Partner Portal",
+    "erpId": "education-erp-1785752300316",
+    "aiEnabled": true
+  }
+]

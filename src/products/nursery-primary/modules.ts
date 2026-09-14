@@ -1,0 +1,8 @@
+import { NURSERY_PRIMARY_HIERARCHY } from '../canonical/nurseryPrimary';
+
+export const NPERP_MODULES = NURSERY_PRIMARY_HIERARCHY.modules;
+export const NPERP_CAPABILITIES = NURSERY_PRIMARY_HIERARCHY.capabilities;
+export const NPERP_FORMS = NURSERY_PRIMARY_HIERARCHY.forms;
+export const NPERP_DASHBOARDS = NURSERY_PRIMARY_HIERARCHY.dashboards;
+export const NPERP_WORKFLOWS = NURSERY_PRIMARY_HIERARCHY.workflows;
+export const NPERP_DB_ENTITIES = NURSERY_PRIMARY_HIERARCHY.databaseEntities;

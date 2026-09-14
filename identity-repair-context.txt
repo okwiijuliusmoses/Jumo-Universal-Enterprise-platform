@@ -1,0 +1,507 @@
+===== REGISTRY =====
+/**
+ * JUMO DIGITAL PAY
+ * Phase 3 — Protected Payment Identity Registry
+ *
+ * Internal registry only.
+ *
+ * The public payment layer receives only the
+ * ten-digit payee code. Platform, product, ERP,
+ * tenant, template, institution and internal
+ * payee identities remain protected.
+ */
+
+import {
+  createPaymentIdentity,
+  isValidPublicPayeeCode,
+  type PaymentIdentityRecord,
+  type PaymentIdentityScope,
+  type PaymentIdentityStatus,
+} from "./paymentIdentityService";
+
+export type PaymentIdentityLookup =
+  | {
+      found: true;
+      identity: PaymentIdentityRecord;
+    }
+  | {
+      found: false;
+      identity: null;
+    };
+
+export type PublicPayeeRecord = {
+  payeeCode: string;
+  status: PaymentIdentityStatus;
+};
+
+export class PaymentIdentityRegistry {
+  private readonly byInternalId =
+    new Map<string, PaymentIdentityRecord>();
+
+  private readonly byPublicCode =
+    new Map<string, string>();
+
+  private readonly byScope =
+    new Map<string, string>();
+
+  constructor(
+    private readonly identitySecret: string,
+  ) {
+    if (identitySecret.length < 32) {
+      throw new Error(
+        "Payment identity secret must contain at least 32 characters.",
+      );
+    }
+  }
+
+  private scopeKey(
+    scope: PaymentIdentityScope,
+  ): string {
+    return [
+      scope.platformId,
+      scope.productId,
+      scope.erpId,
+      scope.tenantId,
+      scope.templateId,
+      scope.institutionId,
+      scope.payeeId,
+    ]
+      .map((value) =>
+        value.trim().toLowerCase(),
+      )
+      .join("|");
+  }
+
+  register(
+    scope: PaymentIdentityScope,
+  ): PaymentIdentityRecord {
+    const existing =
+      this.findByScope(scope);
+
+    if (existing.found) {
+      return existing.identity;
+    }
+
+    const identity =
+      createPaymentIdentity(
+        scope,
+        this.identitySecret,
+      );
+
+    const publicCode =
+      identity.publicPayeeCode;
+
+    const collision =
+      this.byPublicCode.get(publicCode);
+
+    if (
+      collision &&
+      collision !== identity.paymentIdentityId
+    ) {
+      throw new Error(
+        "Public payee code collision detected.",
+      );
+    }
+
+    this.byInternalId.set(
+      identity.paymentIdentityId,
+      identity,
+    );
+
+    this.byPublicCode.set(
+      publicCode,
+      identity.paymentIdentityId,
+    );
+
+    this.byScope.set(
+      this.scopeKey(scope),
+      identity.paymentIdentityId,
+    );
+
+    return identity;
+  }
+
+  findByScope(
+    scope: PaymentIdentityScope,
+  ): PaymentIdentityLookup {
+    const internalId =
+      this.byScope.get(
+        this.scopeKey(scope),
+      );
+
+    if (!internalId) {
+      return {
+        found: false,
+        identity: null,
+      };
+    }
+
+    return this.findByInternalId(
+      internalId,
+    );
+  }
+
+  findByInternalId(
+    paymentIdentityId: string,
+  ): PaymentIdentityLookup {
+    const identity =
+      this.byInternalId.get(
+        paymentIdentityId,
+      );
+
+    if (!identity) {
+      return {
+        found: false,
+        identity: null,
+      };
+    }
+
+    return {
+      found: true,
+      identity,
+    };
+  }
+
+  findByPublicCode(
+    publicPayeeCode: string,
+  ): PaymentIdentityLookup {
+    if (
+      !isValidPublicPayeeCode(
+        publicPayeeCode,
+      )
+    ) {
+      return {
+        found: false,
+        identity: null,
+      };
+    }
+
+    const internalId =
+      this.byPublicCode.get(
+        publicPayeeCode,
+      );
+
+    if (!internalId) {
+      return {
+        found: false,
+        identity: null,
+      };
+    }
+
+    return this.findByInternalId(
+      internalId,
+    );
+  }
+
+  suspend(
+    paymentIdentityId: string,
+  ): PaymentIdentityRecord {
+    return this.changeStatus(
+      paymentIdentityId,
+      "SUSPENDED",
+    );
+  }
+
+  revoke(
+    paymentIdentityId: string,
+  ): PaymentIdentityRecord {
+    return this.changeStatus(
+      paymentIdentityId,
+      "REVOKED",
+    );
+  }
+
+  activate(
+    paymentIdentityId: string,
+  ): PaymentIdentityRecord {
+    return this.changeStatus(
+      paymentIdentityId,
+      "ACTIVE",
+    );
+  }
+
+  private changeStatus(
+    paymentIdentityId: string,
+    status: PaymentIdentityStatus,
+  ): PaymentIdentityRecord {
+    const result =
+      this.findByInternalId(
+        paymentIdentityId,
+      );
+
+    if (!result.found) {
+      throw new Error(
+        "Payment identity not found.",
+      );
+    }
+
+    const updated: PaymentIdentityRecord = {
+      ...result.identity,
+      status,
+      updatedAt:
+        new Date().toISOString(),
+    };
+
+    this.byInternalId.set(
+      paymentIdentityId,
+      updated,
+    );
+
+    return updated;
+  }
+
+  getPublicPayeeRecord(
+    publicPayeeCode: string,
+  ): PublicPayeeRecord | null {
+    const result =
+      this.findByPublicCode(
+        publicPayeeCode,
+      );
+
+    if (!result.found) {
+      return null;
+    }
+
+    return {
+      payeeCode:
+        result.identity.publicPayeeCode,
+      status:
+        result.identity.status,
+    };
+  }
+
+  size(): number {
+    return this.byInternalId.size;
+  }
+
+  clear(): void {
+    this.byInternalId.clear();
+    this.byPublicCode.clear();
+    this.byScope.clear();
+  }
+}
+
+export default PaymentIdentityRegistry;
+
+===== RESOLVER =====
+/**
+ * JUMO DIGITAL PAY
+ * Phase 3 — Payment Identity Resolver
+ *
+ * Rules:
+ * 1. Every ERP/product has an isolated identity namespace.
+ * 2. Internal platform/tenant/institution identifiers
+ *    never become public payment identifiers.
+ * 3. External callers use only the ten-digit payee code.
+ * 4. Resolution is performed inside the protected UEOS
+ *    payment runtime.
+ */
+
+import {
+  isValidPublicPayeeCode,
+  type PaymentIdentityRecord,
+  type PaymentIdentityScope,
+} from "./paymentIdentityService";
+
+import {
+  PaymentIdentityRegistry,
+  type PaymentIdentityLookup,
+} from "./paymentIdentityRegistry";
+
+export type PaymentNamespace = {
+  platformId: string;
+  productId: string;
+  erpId: string;
+  tenantId: string;
+  templateId: string;
+  institutionId: string;
+};
+
+export type PaymentResolution = {
+  resolved: boolean;
+  payeeCode: string;
+  paymentIdentityId?: string;
+  namespaceVerified: boolean;
+  status?: PaymentIdentityRecord["status"];
+};
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function namespaceMatches(
+  identity: PaymentIdentityRecord,
+  namespace: PaymentNamespace,
+): boolean {
+  return (
+    normalize(identity.platformId) ===
+      normalize(namespace.platformId) &&
+    normalize(identity.productId) ===
+      normalize(namespace.productId) &&
+    normalize(identity.erpId) ===
+      normalize(namespace.erpId) &&
+    normalize(identity.tenantId) ===
+      normalize(namespace.tenantId) &&
+    normalize(identity.templateId) ===
+      normalize(namespace.templateId) &&
+    normalize(identity.institutionId) ===
+      normalize(namespace.institutionId)
+  );
+}
+
+export class PaymentIdentityResolver {
+  constructor(
+    private readonly registry: PaymentIdentityRegistry,
+  ) {}
+
+  registerPayee(
+    namespace: PaymentNamespace,
+    payeeId: string,
+  ): PaymentIdentityRecord {
+    const scope: PaymentIdentityScope = {
+      ...namespace,
+      payeeId,
+    };
+
+    return this.registry.register(scope);
+  }
+
+  resolvePublicPayee(
+    publicPayeeCode: string,
+  ): PaymentIdentityLookup {
+    if (
+      !isValidPublicPayeeCode(
+        publicPayeeCode,
+      )
+    ) {
+      return {
+        found: false,
+        identity: null,
+      };
+    }
+
+    return this.registry.findByPublicCode(
+      publicPayeeCode,
+    );
+  }
+
+  resolveForNamespace(
+    publicPayeeCode: string,
+    namespace: PaymentNamespace,
+  ): PaymentResolution {
+    const result =
+      this.resolvePublicPayee(
+        publicPayeeCode,
+      );
+
+    if (!result.found) {
+      return {
+        resolved: false,
+        payeeCode: publicPayeeCode,
+        namespaceVerified: false,
+      };
+    }
+
+    const verified =
+      namespaceMatches(
+        result.identity,
+        namespace,
+      );
+
+    if (!verified) {
+      return {
+        resolved: false,
+        payeeCode: publicPayeeCode,
+        namespaceVerified: false,
+      };
+    }
+
+    return {
+      resolved: true,
+      payeeCode: publicPayeeCode,
+      paymentIdentityId:
+        result.identity.paymentIdentityId,
+      namespaceVerified: true,
+      status:
+        result.identity.status,
+    };
+  }
+
+  /**
+   * Creates a transaction-safe internal scope.
+   *
+   * This object must never be returned directly
+   * by a public payment endpoint.
+   */
+  getInternalScope(
+    publicPayeeCode: string,
+    namespace: PaymentNamespace,
+  ): PaymentIdentityScope | null {
+    const resolution =
+      this.resolveForNamespace(
+        publicPayeeCode,
+        namespace,
+      );
+
+    if (
+      !resolution.resolved ||
+      !resolution.paymentIdentityId
+    ) {
+      return null;
+    }
+
+    const result =
+      this.registry.findByInternalId(
+        resolution.paymentIdentityId,
+      );
+
+    if (!result.found) {
+      return null;
+    }
+
+    return {
+      platformId:
+        result.identity.platformId,
+      productId:
+        result.identity.productId,
+      erpId:
+        result.identity.erpId,
+      tenantId:
+        result.identity.tenantId,
+      templateId:
+        result.identity.templateId,
+      institutionId:
+        result.identity.institutionId,
+      payeeId:
+        result.identity.payeeId,
+    };
+  }
+
+  /**
+   * Public-safe response.
+   *
+   * Never expose internal identity values.
+   */
+  toPublicResolution(
+    resolution: PaymentResolution,
+  ): {
+    resolved: boolean;
+    payeeCode: string;
+    status?: PaymentIdentityRecord["status"];
+  } {
+    return {
+      resolved:
+        resolution.resolved,
+      payeeCode:
+        resolution.payeeCode,
+      ...(resolution.status
+        ? {
+            status:
+              resolution.status,
+          }
+        : {}),
+    };
+  }
+}
+
+export default PaymentIdentityResolver;

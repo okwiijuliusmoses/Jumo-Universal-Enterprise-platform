@@ -1,0 +1,30 @@
+{
+  "ownershipPolicy": "STRICT_CLASSIFICATION_CONTROL",
+  "categories": {
+    "PROTECTED_HISTORICAL_EVIDENCE": [
+      ".recovery/**",
+      "JUMO_HISTORICAL_PRODUCT_RECONSTRUCTION_EVIDENCE_MATRIX.md",
+      "JUMO_APPROVED_SIX_PRODUCT_EXHAUSTIVE_RECOVERY_CENSUS.md",
+      ".jumo/implementation/ARCHITECTURE_PROTECTION.json"
+    ],
+    "SHARED_PLATFORM_CORE": [
+      "src/platforms/faap/**",
+      "src/platforms/digitalPay/**",
+      "src/platforms/aegis/**",
+      "src/platforms/aiHybrid/**"
+    ],
+    "SOVEREIGN_PRODUCTS_CORE": [
+      "src/core/factory/divisions/**",
+      "src/experience/renderer/CommercialProductsRenderer.tsx",
+      "src/experience/renderer/studios/**"
+    ],
+    "UNIVERSAL_RUNTIME_METADATA": [
+      "src/core/factory/UniversalHubRegistry.ts",
+      "src/core/factory/registry/**",
+      "src/experience/renderer/PortalRenderer.tsx"
+    ],
+    "PERSISTENT_WORKSPACE": [
+      ".jumo/implementation/**"
+    ]
+  }
+}

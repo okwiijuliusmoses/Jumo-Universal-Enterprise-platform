@@ -1,0 +1,6 @@
+{
+  "name": "JUMO FINTECH",
+  "description": "Unified financial enterprise operating system providing consolidated Core Banking, Digital Payments (Switch), and FAAP Accounting modules within a sovereign officer-portal architecture.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

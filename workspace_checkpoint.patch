@@ -1,0 +1,1593 @@
+diff --git a/server.ts b/server.ts
+index cf92a796..55c4a086 100644
+--- a/server.ts
++++ b/server.ts
+@@ -15,9 +15,11 @@ import { BlueprintLockEngine } from "./src/core/blueprint/BlueprintLockEngine";
+ import { JumoSecretVault } from "./src/core/security/JumoSecretVault";
+ 
+ // IMPORT SOVEREIGN B2B FINANCIAL MODULES
+-import { PolymorphicAllocationEngine } from "./src/03_allocation.engine";
+ import { StatelessUssdController } from "./src/04_ussd.controller";
+ import { JUMODBEngine } from "./src/database/db";
++import { UniversalPaymentEngine } from "./src/core/financial/UniversalPaymentEngine";
++import { ReportingEngine } from "./src/core/financial/ReportingEngine";
++import { ConfigEngine } from "./src/core/financial/ConfigEngine";
+ 
+ async function startServer() {
+   const app = express();
+@@ -780,113 +782,102 @@ async function startServer() {
+   function seedDatabase(db: JUMODBEngine) {
+     (db as any).data["tenants"] = [];
+     (db as any).data["parties"] = [];
+-    (db as any).data["party_metadata"] = [];
++    (db as any).data["party_roles"] = [];
+     (db as any).data["ledger_accounts"] = [];
+     (db as any).data["open_items"] = [];
+     (db as any).data["digital_wallets"] = [];
+     (db as any).data["journal_entries"] = [];
+-    (db as any).data["ledger_lines"] = [];
++    (db as any).data["journal_lines"] = [];
++    (db as any).data["payments"] = [];
++    (db as any).data["payment_allocations"] = [];
+ 
+-    // Tenants
++    // 1. Tenants with embedded Universal Config
+     const tenants = [
+-      { id: "TENT-1", name: "Sovereign Faith Parish", classification: "NON_COMMERCIAL_FAITH", timezone: "EAT", settings: {} },
+-      { id: "TENT-2", name: "Sovereign Primary Academy", classification: "NON_COMMERCIAL_EDUCATION", timezone: "EAT", settings: {} },
+-      { id: "TENT-3", name: "Namilyango Alumni Network", classification: "NON_COMMERCIAL_ALUMNI", timezone: "EAT", settings: {} },
+-      { id: "TENT-4", name: "Sovereign Retail Distributors", classification: "COMMERCIAL_RETAIL", timezone: "EAT", settings: {} }
++      { 
++        id: "TENT-1", 
++        name: "Sovereign Faith Parish", 
++        classification: "NON_COMMERCIAL_FAITH", 
++        base_currency: "UGX",
++        settings: {
++          terminology: { partyLabel: "Parishioner", idLabel: "Envelope No", itemLabel: "Tithe Pledge" },
++          accounts: { clearing: "1030-CLEARING", receivables: "1200-RECEIVABLES", wallets: "2020-LIABILITIES" }
++        }
++      },
++      { 
++        id: "TENT-2", 
++        name: "Sovereign Primary Academy", 
++        classification: "NON_COMMERCIAL_EDUCATION", 
++        base_currency: "UGX",
++        settings: {
++          terminology: { partyLabel: "Student", idLabel: "Student ID", itemLabel: "Tuition Fee" },
++          accounts: { clearing: "1030-CLEARING", receivables: "1200-RECEIVABLES", wallets: "2020-LIABILITIES" }
++        }
++      },
++      { 
++        id: "TENT-4", 
++        name: "Sovereign Retail Distributors", 
++        classification: "COMMERCIAL_RETAIL", 
++        base_currency: "UGX",
++        settings: {
++          terminology: { partyLabel: "Vendor", idLabel: "Customer Code", itemLabel: "Invoice" },
++          accounts: { clearing: "1030-CLEARING", receivables: "1200-RECEIVABLES", wallets: "2020-LIABILITIES" }
++        }
++      }
+     ];
+-    for (const t of tenants) {
+-      db.insert("tenants", t);
+-    }
++    for (const t of tenants) db.insert("tenants", t);
+ 
+-    // Parties & Attributes
++    // 2. Polymorphic Parties
+     const partiesData = [
+-      { id: "ENV-042", tenant_id: "TENT-1", name: "John Baptist Otim", email: "john.otim@gmail.com", phone: "+256772110042", status: "ACTIVE", attributes: { envelope_number: "ENV-042", family_unit: "Saint Jude Group", last_tithe_date: "2026-09-01" } },
+-      { id: "ENV-085", tenant_id: "TENT-1", name: "Sister Mary Rose", email: "mary.rose@faith.org", phone: "+256772110085", status: "ACTIVE", attributes: { envelope_number: "ENV-085", family_unit: "Saint Joseph Choir", last_tithe_date: "2026-08-15" } },
+-      { id: "STD-884", tenant_id: "TENT-2", name: "Harriet Namukasa", email: "harriet.namukasa@school.edu", phone: "+256772110884", status: "ACTIVE", attributes: { student_id: "STD-884", grade_level: "Primary 5", boarding_status: "Day Scholar" } },
+-      { id: "STD-101", tenant_id: "TENT-2", name: "Peter Mukasa", email: "peter.mukasa@school.edu", phone: "+256772110101", status: "ACTIVE", attributes: { student_id: "STD-101", grade_level: "Primary 7", boarding_status: "Boarder" } },
+-      { id: "ALU-1092", tenant_id: "TENT-3", name: "Julius Moses Okwi", email: "julius.okwi@jumo.net", phone: "+256772110109", status: "ACTIVE", attributes: { member_id: "ALU-1092", graduation_year: 2012, alumni_tier: "Gold Lifetime" } },
+-      { id: "ALU-2041", tenant_id: "TENT-3", name: "Florence Alupo", email: "florence.alupo@alumni.org", phone: "+256772112041", status: "ACTIVE", attributes: { member_id: "ALU-2041", graduation_year: 2008, alumni_tier: "Premium Regular" } },
+-      { id: "RET-441", tenant_id: "TENT-4", name: "Mbabazi Farmers Coop", email: "mbabazi.farmers@gmail.com", phone: "+256772114441", status: "ACTIVE", attributes: { customer_code: "RET-441", delivery_zone: "Central Division", credit_limit: 5000000 } },
+-      { id: "RET-231", tenant_id: "TENT-4", name: "Mukono Retailers", email: "mukono.retail@gmail.com", phone: "+256772112231", status: "ACTIVE", attributes: { customer_code: "RET-231", delivery_zone: "Eastern Zone", credit_limit: 2500000 } }
++      { id: "ENV-042", tenant_id: "TENT-1", name: "John Baptist Otim", email: "john.otim@gmail.com", attributes: { family_unit: "Saint Jude Group" } },
++      { id: "STD-884", tenant_id: "TENT-2", name: "Harriet Namukasa", email: "harriet.nam@school.edu", attributes: { grade_level: "P5" } },
++      { id: "RET-441", tenant_id: "TENT-4", name: "Mbabazi Farmers Coop", email: "mbabazi@farmers.ug", attributes: { delivery_zone: "Central" } }
+     ];
++    for (const p of partiesData) db.insert("parties", p);
+ 
+-    for (const p of partiesData) {
+-      db.insert("parties", {
+-        id: p.id,
+-        tenant_id: p.tenant_id,
+-        name: p.name,
+-        email: p.email,
+-        phone: p.phone,
+-        status: p.status,
+-        created_at: new Date().toISOString()
+-      });
+-      db.insert("party_metadata", {
+-        party_id: p.id,
+-        tenant_id: p.tenant_id,
+-        attributes: p.attributes
+-      });
+-    }
++    // 3. Chart of Accounts (Unified Primitives)
++    const accounts = [
++      { id: "1030-CLEARING", tenant_id: "TENT-1", code: "1030-CLEARING", name: "Momo Clearing", account_type: "ASSET", balance_minor: 0, currency_code: "UGX" },
++      { id: "1200-RECEIVABLES", tenant_id: "TENT-1", code: "1200-RECEIVABLES", name: "Pledge Receivables", account_type: "ASSET", balance_minor: 1500000, currency_code: "UGX" },
++      { id: "2020-LIABILITIES", tenant_id: "TENT-1", code: "2020-LIABILITIES", name: "Parish Wallet", account_type: "LIABILITY", balance_minor: 0, currency_code: "UGX" },
+ 
+-    // Ledger Accounts
+-    const defaultAccounts = [
+-      // TENT-1 (Faith)
+-      { id: "1030-CLEARING-TRANSIT", tenant_id: "TENT-1", code: "1030-CLEARING-TRANSIT", name: "Momo Clearing Cash Account", type: "ASSET", category: "Asset", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "1200-RECEIVABLES-CONTROL", tenant_id: "TENT-1", code: "1200-RECEIVABLES-CONTROL", name: "Tithe Pledges Receivables Account", type: "ASSET", category: "Asset", balance_minor: 1500000, balance: 15000, status: "ACTIVE" },
+-      { id: "2020-FLOATING-LIABILITIES", tenant_id: "TENT-1", code: "2020-FLOATING-LIABILITIES", name: "Floating Parish Offerings Wallet", type: "LIABILITY", category: "Liability", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "4010-REVENUE", tenant_id: "TENT-1", code: "4010-REVENUE", name: "Tithe & Pledge General Revenue", type: "REVENUE", category: "Revenue", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-
+-      // TENT-2 (School)
+-      { id: "1030-CLEARING-TRANSIT", tenant_id: "TENT-2", code: "1030-CLEARING-TRANSIT", name: "Bank Clearing Cash Transit", type: "ASSET", category: "Asset", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "1200-RECEIVABLES-CONTROL", tenant_id: "TENT-2", code: "1200-RECEIVABLES-CONTROL", name: "Tuition Fees Receivables Account", type: "ASSET", category: "Asset", balance_minor: 18000000, balance: 180000, status: "ACTIVE" },
+-      { id: "2020-FLOATING-LIABILITIES", tenant_id: "TENT-2", code: "2020-FLOATING-LIABILITIES", name: "Floating Pre-paid Tuition Wallet", type: "LIABILITY", category: "Liability", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "4010-REVENUE", tenant_id: "TENT-2", code: "4010-REVENUE", name: "School Fees General Revenue", type: "REVENUE", category: "Revenue", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-
+-      // TENT-3 (Alumni)
+-      { id: "1030-CLEARING-TRANSIT", tenant_id: "TENT-3", code: "1030-CLEARING-TRANSIT", name: "Alumni Clearing MOMO Transit", type: "ASSET", category: "Asset", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "1200-RECEIVABLES-CONTROL", tenant_id: "TENT-3", code: "1200-RECEIVABLES-CONTROL", name: "Subscriptions Receivables Control", type: "ASSET", category: "Asset", balance_minor: 2000000, balance: 20000, status: "ACTIVE" },
+-      { id: "2020-FLOATING-LIABILITIES", tenant_id: "TENT-3", code: "2020-FLOATING-LIABILITIES", name: "Floating Alumni Trust Wallet", type: "LIABILITY", category: "Liability", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "4010-REVENUE", tenant_id: "TENT-3", code: "4010-REVENUE", name: "Alumni Membership Revenue", type: "REVENUE", category: "Revenue", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-
+-      // TENT-4 (Retail)
+-      { id: "1030-CLEARING-TRANSIT", tenant_id: "TENT-4", code: "1030-CLEARING-TRANSIT", name: "Stripe Trade Cash Transit", type: "ASSET", category: "Asset", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "1200-RECEIVABLES-CONTROL", tenant_id: "TENT-4", code: "1200-RECEIVABLES-CONTROL", name: "Wholesale Trade Receivables Control", type: "ASSET", category: "Asset", balance_minor: 7500000, balance: 75000, status: "ACTIVE" },
+-      { id: "2020-FLOATING-LIABILITIES", tenant_id: "TENT-4", code: "2020-FLOATING-LIABILITIES", name: "Floating Pre-funded Retail Wallet", type: "LIABILITY", category: "Liability", balance_minor: 0, balance: 0, status: "ACTIVE" },
+-      { id: "4010-REVENUE", tenant_id: "TENT-4", code: "4010-REVENUE", name: "Wholesale Trade Revenue", type: "REVENUE", category: "Revenue", balance_minor: 0, balance: 0, status: "ACTIVE" }
++      { id: "1030-CLEARING", tenant_id: "TENT-2", code: "1030-CLEARING", name: "Bank Clearing", account_type: "ASSET", balance_minor: 0, currency_code: "UGX" },
++      { id: "1200-RECEIVABLES", tenant_id: "TENT-2", code: "1200-RECEIVABLES", name: "Fees Receivables", account_type: "ASSET", balance_minor: 12000000, currency_code: "UGX" },
++      { id: "2020-LIABILITIES", tenant_id: "TENT-2", code: "2020-LIABILITIES", name: "Student Wallet", account_type: "LIABILITY", balance_minor: 0, currency_code: "UGX" }
+     ];
++    for (const acc of accounts) db.insert("ledger_accounts", acc);
+ 
+-    for (const acc of defaultAccounts) {
+-      db.insert("ledger_accounts", acc);
+-    }
+-
+-    // Open Items
+-    const openItemsData = [
+-      { id: "OI-1001", tenant_id: "TENT-1", party_id: "ENV-042", type: "TITHE_PLEDGE", amount_minor: 500000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-10-15", created_at: new Date().toISOString() },
+-      { id: "OI-1002", tenant_id: "TENT-1", party_id: "ENV-042", type: "TITHE_PLEDGE", amount_minor: 1000000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-11-15", created_at: new Date().toISOString() },
+-      { id: "OI-2001", tenant_id: "TENT-2", party_id: "STD-884", type: "TUITION_FEE", amount_minor: 12000000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-10-01", created_at: new Date().toISOString() },
+-      { id: "OI-2002", tenant_id: "TENT-2", party_id: "STD-884", type: "TUITION_FEE", amount_minor: 6000000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-11-01", created_at: new Date().toISOString() },
+-      { id: "OI-3001", tenant_id: "TENT-3", party_id: "ALU-1092", type: "MEMBERSHIP_DUE", amount_minor: 2000000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-12-31", created_at: new Date().toISOString() },
+-      { id: "OI-4001", tenant_id: "TENT-4", party_id: "RET-441", type: "INVOICE", amount_minor: 7500000, allocated_amount_minor: 0, currency: "UGX", status: "UNPAID", due_date: "2026-09-30", created_at: new Date().toISOString() }
++    // 4. Open Items (Polymorphic Dues)
++    const openItems = [
++      { id: "OI-101", tenant_id: "TENT-1", party_id: "ENV-042", amount_minor: 500000, remaining_minor: 500000, currency_code: "UGX", due_date: "2026-10-15", direction: "DEBIT", status: "OPEN" },
++      { id: "OI-201", tenant_id: "TENT-2", party_id: "STD-884", amount_minor: 12000000, remaining_minor: 12000000, currency_code: "UGX", due_date: "2026-10-01", direction: "DEBIT", status: "OPEN" }
+     ];
+-
+-    for (const oi of openItemsData) {
+-      db.insert("open_items", oi);
+-    }
++    for (const oi of openItems) db.insert("open_items", oi);
+ 
+     db.save();
+   }
+ 
+-  // 1. Dynamic Webhook Allocation endpoint
++  // 1. Universal Webhook Allocation endpoint
+   app.post("/api/v1/allocation/webhook", async (req, res) => {
+     try {
+-      const engine = new PolymorphicAllocationEngine();
+-      const result = await engine.processWebhook(
+-        req.headers as any,
+-        JSON.stringify(req.body),
+-        "jumo_secret_key_123456"
+-      );
++      const engine = new UniversalPaymentEngine();
++      const config = new ConfigEngine();
++      const cfg = config.getConfig(req.body.tenantId);
++
++      const result = await engine.processPayment({
++        tenantId: req.body.tenantId,
++        workspaceId: "WS-DEFAULT",
++        partyId: req.body.partyId,
++        amountMinor: req.body.remittanceAmountMinor,
++        currencyCode: req.body.currency || "UGX",
++        method: "WEBHOOK",
++        reference: req.body.externalReference,
++        clearingAccountId: cfg.accounts.clearing,
++        receivablesAccountId: cfg.accounts.receivables,
++        walletAccountId: cfg.accounts.wallets
++      });
+       res.json(result);
+     } catch (err: any) {
+-      console.error("[ALLOCATION_ENGINE_ERROR] Webhook processing failed:", err.message);
++      console.error("[PAYMENT_ENGINE_ERROR] Processing failed:", err.message);
+       res.status(400).json({ success: false, error: err.message });
+     }
+   });
+@@ -912,35 +903,35 @@ async function startServer() {
+     }
+   });
+ 
+-  // 3. Dynamic B2B Multi-Tenant Dashboard data aggregator
++  // 3. Universal B2B Multi-Tenant Dashboard data aggregator
+   app.get("/api/v1/dashboard/data", (req, res) => {
+     try {
+       const tenantId = (req.query.tenantId as string) || "TENT-2";
+       const db = JUMODBEngine.getInstance();
++      const reporter = new ReportingEngine();
+ 
+       const tenants = db.select<any>("tenants");
+       if (tenants.length === 0) {
+         seedDatabase(db);
+       }
+ 
++      const report = reporter.getDashboardMetrics(tenantId);
+       const activeParties = db.select<any>("parties", (p) => p.tenant_id === tenantId);
+-      const activeMetadata = db.select<any>("party_metadata", (m) => m.tenant_id === tenantId);
+       const activeOpenItems = db.select<any>("open_items", (i) => i.tenant_id === tenantId);
+-      const activeWallets = db.select<any>("digital_wallets", (w) => w.tenant_id === tenantId);
+       const activeAccounts = db.select<any>("ledger_accounts", (a) => a.tenant_id === tenantId);
+       const activeJournals = db.select<any>("journal_entries", (j) => j.tenant_id === tenantId);
+-      const activeLines = db.select<any>("ledger_lines", (l) => l.tenant_id === tenantId);
++      const activeLines = db.select<any>("journal_lines", (l) => l.tenant_id === tenantId);
+ 
+       res.json({
++        report, // New universal metrics
+         parties: activeParties,
+-        partyMetadata: activeMetadata,
+         openItems: activeOpenItems,
+-        digitalWallets: activeWallets,
+         ledgerAccounts: activeAccounts,
+         journalEntries: activeJournals,
+         ledgerLines: activeLines
+       });
+     } catch (err: any) {
++      console.error("[DASHBOARD_ERROR]", err.message);
+       res.status(500).json({ success: false, error: err.message });
+     }
+   });
+diff --git a/src/01_schema.sql b/src/01_schema.sql
+deleted file mode 100644
+index edc246bb..00000000
+--- a/src/01_schema.sql
++++ /dev/null
+@@ -1,260 +0,0 @@
+--- ============================================================================
+--- PHASE 1: DATABASE ENGINE (PostgreSQL DDL & PL/pgSQL)
+--- ============================================================================
+-
+--- 1. ENUMS FOR UNIVERSAL B2B SAAS STRUCTURAL DOMAINS
+-CREATE TYPE tenant_classification AS ENUM (
+-    'COMMERCIAL_RETAIL', 
+-    'COMMERCIAL_SERVICE', 
+-    'NON_COMMERCIAL_EDUCATION', 
+-    'NON_COMMERCIAL_FAITH', 
+-    'NON_COMMERCIAL_ALUMNI'
+-);
+-
+-CREATE TYPE open_item_type AS ENUM (
+-    'INVOICE', 
+-    'TITHE_PLEDGE', 
+-    'TUITION_FEE', 
+-    'MEMBERSHIP_DUE'
+-);
+-
+-CREATE TYPE open_item_status AS ENUM (
+-    'UNPAID', 
+-    'PARTIALLY_PAID', 
+-    'PAID', 
+-    'VOIDED'
+-);
+-
+-CREATE TYPE ledger_account_type AS ENUM (
+-    'ASSET', 
+-    'LIABILITY', 
+-    'EQUITY', 
+-    'REVENUE', 
+-    'EXPENSE'
+-);
+-
+--- 2. CORE SYSTEM TABLES
+-
+--- Tenants (Workspace Boundary)
+-CREATE TABLE tenants (
+-    id VARCHAR(100) PRIMARY KEY,
+-    name VARCHAR(255) NOT NULL,
+-    classification tenant_classification NOT NULL,
+-    timezone VARCHAR(100) DEFAULT 'UTC' NOT NULL,
+-    settings JSONB DEFAULT '{}'::jsonb NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+-);
+-
+--- Parties (Customers, Members, Students, Parishioners, etc.)
+-CREATE TABLE parties (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    name VARCHAR(255) NOT NULL,
+-    email VARCHAR(255),
+-    phone VARCHAR(50),
+-    status VARCHAR(50) DEFAULT 'ACTIVE' NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id)
+-);
+-
+--- Party Metadata (Polymorphic attributes matrix for different verticals)
+-CREATE TABLE party_metadata (
+-    party_id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    attributes JSONB DEFAULT '{}'::jsonb NOT NULL,
+-    PRIMARY KEY (tenant_id, party_id),
+-    FOREIGN KEY (tenant_id, party_id) REFERENCES parties(tenant_id, id) ON DELETE CASCADE
+-);
+-
+--- Ledger Accounts (Chart of Accounts)
+-CREATE TABLE ledger_accounts (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    code VARCHAR(100) NOT NULL,
+-    name VARCHAR(255) NOT NULL,
+-    type ledger_account_type NOT NULL,
+-    currency VARCHAR(10) DEFAULT 'UGX' NOT NULL,
+-    balance_minor BIGINT DEFAULT 0 NOT NULL,
+-    status VARCHAR(50) DEFAULT 'ACTIVE' NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id),
+-    CONSTRAINT unique_tenant_account_code UNIQUE (tenant_id, code)
+-);
+-
+--- Open Items (Receivables/Debts tracking)
+-CREATE TABLE open_items (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    party_id VARCHAR(100) NOT NULL,
+-    type open_item_type NOT NULL,
+-    amount_minor BIGINT NOT NULL,
+-    allocated_amount_minor BIGINT DEFAULT 0 NOT NULL,
+-    currency VARCHAR(10) DEFAULT 'UGX' NOT NULL,
+-    status open_item_status DEFAULT 'UNPAID' NOT NULL,
+-    due_date DATE NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id),
+-    FOREIGN KEY (tenant_id, party_id) REFERENCES parties(tenant_id, id) ON DELETE CASCADE,
+-    CONSTRAINT chk_open_item_bounds CHECK (amount_minor > 0),
+-    CONSTRAINT chk_open_item_allocation CHECK (allocated_amount_minor >= 0 AND allocated_amount_minor <= amount_minor)
+-);
+-
+--- Digital Wallets (Floating Liabilities for overpayments/advance deposits)
+-CREATE TABLE digital_wallets (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    party_id VARCHAR(100) NOT NULL,
+-    balance_minor BIGINT DEFAULT 0 NOT NULL,
+-    currency VARCHAR(10) DEFAULT 'UGX' NOT NULL,
+-    status VARCHAR(50) DEFAULT 'ACTIVE' NOT NULL,
+-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id),
+-    FOREIGN KEY (tenant_id, party_id) REFERENCES parties(tenant_id, id) ON DELETE CASCADE,
+-    CONSTRAINT unique_tenant_party_wallet UNIQUE (tenant_id, party_id),
+-    CONSTRAINT chk_wallet_balance CHECK (balance_minor >= 0)
+-);
+-
+--- Journal Entries (Transaction Header)
+-CREATE TABLE journal_entries (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    reference VARCHAR(255) NOT NULL,
+-    hash_ref VARCHAR(64) NOT NULL,
+-    description TEXT,
+-    source VARCHAR(100) DEFAULT 'SYSTEM' NOT NULL,
+-    status VARCHAR(50) DEFAULT 'POSTED' NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id),
+-    CONSTRAINT unique_tenant_hash_ref UNIQUE (tenant_id, hash_ref)
+-);
+-
+--- Ledger Lines (Double-Entry Debit/Credit items)
+-CREATE TABLE ledger_lines (
+-    id VARCHAR(100) NOT NULL,
+-    tenant_id VARCHAR(100) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+-    journal_entry_id VARCHAR(100) NOT NULL,
+-    ledger_account_id VARCHAR(100) NOT NULL,
+-    debit_minor BIGINT DEFAULT 0 NOT NULL,
+-    credit_minor BIGINT DEFAULT 0 NOT NULL,
+-    currency VARCHAR(10) DEFAULT 'UGX' NOT NULL,
+-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+-    PRIMARY KEY (tenant_id, id),
+-    FOREIGN KEY (tenant_id, journal_entry_id) REFERENCES journal_entries(tenant_id, id) ON DELETE CASCADE,
+-    FOREIGN KEY (tenant_id, ledger_account_id) REFERENCES ledger_accounts(tenant_id, id) ON DELETE CASCADE,
+-    
+-    -- Absolute financial constraints:
+-    CONSTRAINT chk_debit_non_negative CHECK (debit_minor >= 0),
+-    CONSTRAINT chk_credit_non_negative CHECK (credit_minor >= 0),
+-    CONSTRAINT chk_exclusivity CHECK (
+-        (debit_minor > 0 AND credit_minor = 0) OR 
+-        (debit_minor = 0 AND credit_minor > 0)
+-    )
+-);
+-
+--- ============================================================================
+--- 3. FINANCIAL INTEGRITY TRIGGERS AND FUNCTIONS
+--- ============================================================================
+-
+--- Function to retrieve the active tenant ID from session context
+-CREATE OR REPLACE FUNCTION get_active_tenant_context()
+-RETURNS VARCHAR AS $$
+-BEGIN
+-    RETURN COALESCE(current_setting('app.current_tenant_id', true), '');
+-END;
+-$$ LANGUAGE plpgsql;
+-
+--- Trigger to verify balance of journal entry before committing
+-CREATE OR REPLACE FUNCTION verify_journal_balance()
+-RETURNS TRIGGER AS $$
+-DECLARE
+-    v_total_debit BIGINT;
+-    v_total_credit BIGINT;
+-BEGIN
+-    SELECT COALESCE(SUM(debit_minor), 0), COALESCE(SUM(credit_minor), 0)
+-    INTO v_total_debit, v_total_credit
+-    FROM ledger_lines
+-    WHERE tenant_id = NEW.tenant_id AND journal_entry_id = NEW.id;
+-
+-    IF v_total_debit <> v_total_credit THEN
+-        RAISE EXCEPTION 'Double-entry integrity violation: Total debits (%) must equal total credits (%) in journal entry %', 
+-            v_total_debit, v_total_credit, NEW.id;
+-    END IF;
+-
+-    RETURN NEW;
+-END;
+-$$ LANGUAGE plpgsql;
+-
+--- Trigger to update account balance on ledger lines insertion
+-CREATE OR REPLACE FUNCTION update_account_balance()
+-RETURNS TRIGGER AS $$
+-BEGIN
+-    IF TG_OP = 'INSERT' THEN
+-        UPDATE ledger_accounts
+-        SET balance_minor = balance_minor + NEW.debit_minor - NEW.credit_minor
+-        WHERE tenant_id = NEW.tenant_id AND id = NEW.ledger_account_id;
+-    ELSIF TG_OP = 'DELETE' THEN
+-        UPDATE ledger_accounts
+-        SET balance_minor = balance_minor - OLD.debit_minor + OLD.credit_minor
+-        WHERE tenant_id = OLD.tenant_id AND id = OLD.ledger_account_id;
+-    END IF;
+-    RETURN NULL;
+-END;
+-$$ LANGUAGE plpgsql;
+-
+-CREATE TRIGGER trg_update_account_balance
+-AFTER INSERT OR DELETE ON ledger_lines
+-FOR EACH ROW EXECUTE FUNCTION update_account_balance();
+-
+--- ============================================================================
+--- 4. ROW LEVEL SECURITY (RLS) MULTI-TENANT ISOLATION POLICIES
+--- ============================================================================
+-
+--- Enable RLS on all tables
+-ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE parties ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE party_metadata ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE ledger_accounts ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE open_items ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE digital_wallets ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE journal_entries ENABLE ROW LEVEL SECURITY;
+-ALTER TABLE ledger_lines ENABLE ROW LEVEL SECURITY;
+-
+--- Tenants Policy
+-CREATE POLICY tenants_rls_policy ON tenants
+-    FOR ALL 
+-    USING (id = get_active_tenant_context());
+-
+--- Parties Policy
+-CREATE POLICY parties_rls_policy ON parties
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Party Metadata Policy
+-CREATE POLICY party_metadata_rls_policy ON party_metadata
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Ledger Accounts Policy
+-CREATE POLICY ledger_accounts_rls_policy ON ledger_accounts
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Open Items Policy
+-CREATE POLICY open_items_rls_policy ON open_items
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Digital Wallets Policy
+-CREATE POLICY digital_wallets_rls_policy ON digital_wallets
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Journal Entries Policy
+-CREATE POLICY journal_entries_rls_policy ON journal_entries
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+-
+--- Ledger Lines Policy
+-CREATE POLICY ledger_lines_rls_policy ON ledger_lines
+-    FOR ALL 
+-    USING (tenant_id = get_active_tenant_context());
+diff --git a/src/02_balancer.service.ts b/src/02_balancer.service.ts
+deleted file mode 100644
+index 1ea34356..00000000
+--- a/src/02_balancer.service.ts
++++ /dev/null
+@@ -1,90 +0,0 @@
+-// ============================================================================
+-// PHASE 2: MATHEMATICAL INTEGRITY ENGINE
+-// ============================================================================
+-
+-/**
+- * Interface representing a ledger entry line input.
+- * All amount parameters are in minor units (cents/shillings).
+- */
+-export interface LineInput {
+-  accountId: string;
+-  debit: number;   // BIGINT represented as integer
+-  credit: number;  // BIGINT represented as integer
+-  currency: string;
+-}
+-
+-/**
+- * Interface representing a journal entry header input.
+- */
+-export interface JournalInput {
+-  id: string;
+-  tenantId: string;
+-  reference: string;
+-  description?: string;
+-  source?: string;
+-  lines: LineInput[];
+-}
+-
+-/**
+- * BalancerService enforces strict double-entry ledger mechanics,
+- * validating both absolute integer representation and zero-parity balances.
+- */
+-export class BalancerService {
+-  /**
+-   * Verifies the mathematical double-entry parity of a set of ledger lines.
+-   * Total debits minus total credits must equal exactly zero.
+-   * Also enforces integer integrity and debit/credit exclusivity per line.
+-   * 
+-   * @param lines Array of ledger line inputs
+-   * @returns boolean true if perfect parity is achieved
+-   * @throws Error if any defensive validation check fails
+-   */
+-  public static verifyParity(lines: LineInput[]): boolean {
+-    if (!lines || lines.length === 0) {
+-      throw new Error("Mathematical Integrity Error: Cannot verify parity on empty or undefined ledger line array.");
+-    }
+-
+-    let runningSum = 0;
+-    let totalDebit = 0;
+-    let totalCredit = 0;
+-
+-    for (const line of lines) {
+-      // 1. Validate primitive type boundaries
+-      if (typeof line.debit !== "number" || typeof line.credit !== "number") {
+-        throw new Error(`Mathematical Integrity Error: Debit and Credit values must be numeric primitives. Received debit: ${typeof line.debit}, credit: ${typeof line.credit}`);
+-      }
+-
+-      // 2. Reject floating-point decimal components (force strict integer-based minor units)
+-      if (line.debit % 1 !== 0 || line.credit % 1 !== 0) {
+-        throw new Error(`Mathematical Integrity Error: Float values are strictly prohibited. All ledger values must be integer minor units. Received debit: ${line.debit}, credit: ${line.credit}`);
+-      }
+-
+-      // 3. Reject negative numeric values
+-      if (line.debit < 0 || line.credit < 0) {
+-        throw new Error(`Mathematical Integrity Error: Negative values are prohibited in ledger lines. Received debit: ${line.debit}, credit: ${line.credit}`);
+-      }
+-
+-      // 4. Asset Protection: mutual exclusivity (holding both a debit and credit value simultaneously is banned)
+-      if (line.debit > 0 && line.credit > 0) {
+-        throw new Error(`Mathematical Integrity Error: Mutual exclusivity violated. A ledger line cannot record both a debit and a credit simultaneously. Account: ${line.accountId}, Debit: ${line.debit}, Credit: ${line.credit}`);
+-      }
+-
+-      // 5. Ensure at least one side is populated
+-      if (line.debit === 0 && line.credit === 0) {
+-        throw new Error(`Mathematical Integrity Error: Zero entry violation. A ledger line must have either a positive debit or a positive credit value. Account: ${line.accountId}`);
+-      }
+-
+-      runningSum += line.debit - line.credit;
+-      totalDebit += line.debit;
+-      totalCredit += line.credit;
+-    }
+-
+-    // 6. Perfect parity validation: running sum must equal exactly zero, and total debits must equal total credits
+-    const isBalanced = runningSum === 0 && totalDebit === totalCredit;
+-    if (!isBalanced) {
+-      throw new Error(`Mathematical Integrity Error: Double-entry ledger imbalanced. Total Debits: ${totalDebit}, Total Credits: ${totalCredit}. Discrepancy: ${totalDebit - totalCredit}`);
+-    }
+-
+-    return true;
+-  }
+-}
+diff --git a/src/03_allocation.engine.ts b/src/03_allocation.engine.ts
+deleted file mode 100644
+index 53181e8e..00000000
+--- a/src/03_allocation.engine.ts
++++ /dev/null
+@@ -1,343 +0,0 @@
+-// ============================================================================
+-// PHASE 3: POLYMORPHIC WEBHOOK ALLOCATION ENGINE
+-// ============================================================================
+-
+-import * as crypto from "crypto";
+-import { JUMODBEngine } from "./database/db";
+-import { BalancerService, LineInput } from "./02_balancer.service";
+-
+-/**
+- * Interface representing the payment aggregator webhook payload.
+- */
+-export interface WebhookPayload {
+-  tenantId: string;
+-  partyId: string;
+-  remittanceAmountMinor: number; // Integer BIGINT
+-  currency: string;
+-  externalReference: string;
+-  clearingAccountId: string;     // The asset account receiving cash transit
+-  receivablesAccountId: string;  // The receivables asset account being credited
+-  walletAccountId?: string;      // Optional, custom wallet account id
+-}
+-
+-/**
+- * Interface representing the itemized allocation result.
+- */
+-export interface AllocatedItem {
+-  openItemId: string;
+-  allocatedAmountMinor: number;
+-  status: "PAID" | "PARTIALLY_PAID";
+-}
+-
+-/**
+- * Interface representing the final response after processing the webhook.
+- */
+-export interface AllocationResult {
+-  success: boolean;
+-  message: string;
+-  journalEntryId: string;
+-  allocatedAmountMinor: number;
+-  overflowAmountMinor: number;
+-  allocatedItems: AllocatedItem[];
+-  walletCredited: boolean;
+-}
+-
+-/**
+- * PolymorphicAllocationEngine processes B2B SaaS webhooks, verifies HMAC signatures,
+- * guards against double-spending using idempotency filters, and runs FIFO matching on debts.
+- */
+-export class PolymorphicAllocationEngine {
+-  private db: JUMODBEngine;
+-
+-  constructor() {
+-    this.db = JUMODBEngine.getInstance();
+-  }
+-
+-  /**
+-   * Main entry point to process incoming payment aggregator webhook callback.
+-   * 
+-   * @param headers Express request headers for HMAC signature and timestamp matching
+-   * @param rawBody Raw JSON request string for precise crypto signature validation
+-   * @param secretKey Cryptographic secret key used to compute the HMAC
+-   */
+-  public async processWebhook(
+-    headers: Record<string, string | string[] | undefined>,
+-    rawBody: string,
+-    secretKey: string
+-  ): Promise<AllocationResult> {
+-    const signatureHeader = headers["x-signature"];
+-    const timestampHeader = headers["x-timestamp"];
+-
+-    if (!signatureHeader || typeof signatureHeader !== "string") {
+-      throw new Error("Cryptographic Error: Missing or invalid x-signature header.");
+-    }
+-
+-    if (!timestampHeader || typeof timestampHeader !== "string") {
+-      throw new Error("Cryptographic Error: Missing or invalid x-timestamp header.");
+-    }
+-
+-    // 1. Defend against replay attacks: ensure timestamp is within 5 minutes (300 seconds)
+-    const requestTime = parseInt(timestampHeader, 10);
+-    const currentTime = Math.floor(Date.now() / 1000);
+-    if (isNaN(requestTime) || Math.abs(currentTime - requestTime) > 300) {
+-      throw new Error("Cryptographic Error: Webhook replay protection failed. Timestamp deviation exceeded 5 minutes.");
+-    }
+-
+-    // 2. Compute HMAC-SHA256 signature and compare using Timing-Safe Equality Checks
+-    const calculatedSignature = crypto
+-      .createHmac("sha256", secretKey)
+-      .update(`${timestampHeader}.${rawBody}`)
+-      .digest("hex");
+-
+-    const signatureBuffer = Buffer.from(signatureHeader, "utf8");
+-    const calculatedBuffer = Buffer.from(calculatedSignature, "utf8");
+-
+-    if (signatureBuffer.length !== calculatedBuffer.length || !crypto.timingSafeEqual(signatureBuffer, calculatedBuffer)) {
+-      throw new Error("Cryptographic Error: Webhook signature verification failed. Unauthorized payload origin.");
+-    }
+-
+-    // 3. Parse and validate payload
+-    const payload: WebhookPayload = JSON.parse(rawBody);
+-    const {
+-      tenantId,
+-      partyId,
+-      remittanceAmountMinor,
+-      currency,
+-      externalReference,
+-      clearingAccountId,
+-      receivablesAccountId,
+-      walletAccountId = "2020-FLOATING-LIABILITIES"
+-    } = payload;
+-
+-    if (!tenantId || !partyId || !externalReference || !clearingAccountId || !receivablesAccountId) {
+-      throw new Error("Validation Error: Missing mandatory fields in payment webhook payload.");
+-    }
+-
+-    if (typeof remittanceAmountMinor !== "number" || remittanceAmountMinor <= 0 || remittanceAmountMinor % 1 !== 0) {
+-      throw new Error(`Validation Error: Remittance amount must be a positive integer in minor units. Received: ${remittanceAmountMinor}`);
+-    }
+-
+-    // 4. Strong Idempotency Filter (SHA-256 hash of reference + tenant id to prevent double entry)
+-    const idempotencyHash = crypto
+-      .createHash("sha256")
+-      .update(`${tenantId}:${externalReference}`)
+-      .digest("hex");
+-
+-    const existingJournals = this.db.select<any>(
+-      "journal_entries",
+-      (j) => j.tenant_id === tenantId && j.hash_ref === idempotencyHash
+-    );
+-
+-    if (existingJournals.length > 0) {
+-      return {
+-        success: true,
+-        message: "Idempotency Triggered: This transaction reference was already processed and allocated.",
+-        journalEntryId: existingJournals[0].id,
+-        allocatedAmountMinor: 0,
+-        overflowAmountMinor: 0,
+-        allocatedItems: [],
+-        walletCredited: false
+-      };
+-    }
+-
+-    // 5. Verify Party exists and is active inside the tenant workspace
+-    const parties = this.db.select<any>(
+-      "parties",
+-      (p) => p.tenant_id === tenantId && p.id === partyId
+-    );
+-    if (parties.length === 0) {
+-      throw new Error(`Execution Error: Party ID '${partyId}' not found within tenant workspace '${tenantId}'.`);
+-    }
+-    if (parties[0].status !== "ACTIVE") {
+-      throw new Error(`Execution Error: Party '${partyId}' is not active. Status: ${parties[0].status}`);
+-    }
+-
+-    // 6. Loop-driven FIFO (First-In, First-Out) Debt Clearing Mechanism
+-    const openItems = this.db.select<any>(
+-      "open_items",
+-      (item) => item.tenant_id === tenantId && item.party_id === partyId && item.status !== "PAID" && item.status !== "VOIDED"
+-    );
+-
+-    // Sort open items by due_date ascending, then created_at ascending (FIFO sequence)
+-    openItems.sort((a, b) => {
+-      const dateA = new Date(a.due_date).getTime();
+-      const dateB = new Date(b.due_date).getTime();
+-      if (dateA !== dateB) return dateA - dateB;
+-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+-    });
+-
+-    let remainingRemittance = remittanceAmountMinor;
+-    let totalAllocated = 0;
+-    const allocatedItems: AllocatedItem[] = [];
+-
+-    // Systematically isolate unpaid open_items and deduct balances iteratively
+-    for (const item of openItems) {
+-      if (remainingRemittance <= 0) break;
+-
+-      const debtRemaining = item.amount_minor - item.allocated_amount_minor;
+-      if (debtRemaining <= 0) continue;
+-
+-      if (remainingRemittance >= debtRemaining) {
+-        // Remittance covers this item fully
+-        remainingRemittance -= debtRemaining;
+-        totalAllocated += debtRemaining;
+-        
+-        allocatedItems.push({
+-          openItemId: item.id,
+-          allocatedAmountMinor: debtRemaining,
+-          status: "PAID"
+-        });
+-
+-        this.db.update<any>(
+-          "open_items",
+-          (x) => x.tenant_id === tenantId && x.id === item.id,
+-          (x) => ({
+-            ...x,
+-            allocated_amount_minor: x.amount_minor,
+-            status: "PAID"
+-          })
+-        );
+-      } else {
+-        // Remittance partially covers this item
+-        const partialAllocation = remainingRemittance;
+-        remainingRemittance = 0;
+-        totalAllocated += partialAllocation;
+-
+-        allocatedItems.push({
+-          openItemId: item.id,
+-          allocatedAmountMinor: partialAllocation,
+-          status: "PARTIALLY_PAID"
+-        });
+-
+-        this.db.update<any>(
+-          "open_items",
+-          (x) => x.tenant_id === tenantId && x.id === item.id,
+-          (x) => ({
+-            ...x,
+-            allocated_amount_minor: x.allocated_amount_minor + partialAllocation,
+-            status: "PARTIALLY_PAID"
+-          })
+-        );
+-      }
+-    }
+-
+-    // 7. Route any residual financial overflow (overpayment) directly to digital_wallets
+-    let overpaymentMinor = 0;
+-    let walletCredited = false;
+-
+-    if (remainingRemittance > 0) {
+-      overpaymentMinor = remainingRemittance;
+-      
+-      const wallets = this.db.select<any>(
+-        "digital_wallets",
+-        (w) => w.tenant_id === tenantId && w.party_id === partyId
+-      );
+-
+-      if (wallets.length > 0) {
+-        this.db.update<any>(
+-          "digital_wallets",
+-          (w) => w.tenant_id === tenantId && w.party_id === partyId,
+-          (w) => ({
+-            ...w,
+-            balance_minor: w.balance_minor + overpaymentMinor,
+-            updated_at: new Date().toISOString()
+-          })
+-        );
+-      } else {
+-        const newWalletId = `WLT-${tenantId}-${partyId}`;
+-        this.db.insert<any>("digital_wallets", {
+-          id: newWalletId,
+-          tenant_id: tenantId,
+-          party_id: partyId,
+-          balance_minor: overpaymentMinor,
+-          currency: currency,
+-          status: "ACTIVE",
+-          updated_at: new Date().toISOString()
+-        });
+-      }
+-      walletCredited = true;
+-    }
+-
+-    // 8. Generate strict double-entry ledger lines
+-    const journalId = `JRN-${crypto.randomUUID()}`;
+-    const ledgerLines: LineInput[] = [];
+-
+-    // Line A: Debit Clearing Account (Asset) for the full remittance
+-    ledgerLines.push({
+-      accountId: clearingAccountId,
+-      debit: remittanceAmountMinor,
+-      credit: 0,
+-      currency
+-    });
+-
+-    // Line B: Credit Receivables Account (Asset) for the portion cleared
+-    if (totalAllocated > 0) {
+-      ledgerLines.push({
+-        accountId: receivablesAccountId,
+-        debit: 0,
+-        credit: totalAllocated,
+-        currency
+-      });
+-    }
+-
+-    // Line C: Credit Floating Overpayments Account (Liability) for residual balance
+-    if (overpaymentMinor > 0) {
+-      ledgerLines.push({
+-        accountId: walletAccountId,
+-        debit: 0,
+-        credit: overpaymentMinor,
+-        currency
+-      });
+-    }
+-
+-    // 9. Enforce mathematical integrity check using BalancerService
+-    BalancerService.verifyParity(ledgerLines);
+-
+-    // 10. Persist transaction and updates atomically to ledger logs
+-    this.db.insert<any>("journal_entries", {
+-      id: journalId,
+-      tenant_id: tenantId,
+-      reference: externalReference,
+-      hash_ref: idempotencyHash,
+-      description: `Clearing execution for party ${partyId}. Allocated: ${totalAllocated} ${currency}, Residual Overpayment: ${overpaymentMinor} ${currency}`,
+-      source: "PAYMENT_GATEWAY",
+-      status: "POSTED",
+-      created_at: new Date().toISOString()
+-    });
+-
+-    for (const line of ledgerLines) {
+-      const lineId = `LNL-${crypto.randomUUID()}`;
+-      this.db.insert<any>("ledger_lines", {
+-        id: lineId,
+-        tenant_id: tenantId,
+-        journal_entry_id: journalId,
+-        ledger_account_id: line.accountId,
+-        debit_minor: line.debit,
+-        credit_minor: line.credit,
+-        currency: line.currency,
+-        created_at: new Date().toISOString()
+-      });
+-
+-      // Synchronize in-memory/backup account balances
+-      this.db.update<any>(
+-        "ledger_accounts",
+-        (acc) => acc.tenant_id === tenantId && acc.id === line.accountId,
+-        (acc) => ({
+-          ...acc,
+-          balance_minor: acc.balance_minor + line.debit - line.credit
+-        })
+-      );
+-    }
+-
+-    return {
+-      success: true,
+-      message: "Remittance allocated and ledger entries posted with verified zero parity.",
+-      journalEntryId: journalId,
+-      allocatedAmountMinor: totalAllocated,
+-      overflowAmountMinor: overpaymentMinor,
+-      allocatedItems,
+-      walletCredited
+-    };
+-  }
+-}
+-export default PolymorphicAllocationEngine;
+diff --git a/src/04_ussd.controller.ts b/src/04_ussd.controller.ts
+index db76ff27..6e99a464 100644
+--- a/src/04_ussd.controller.ts
++++ b/src/04_ussd.controller.ts
+@@ -3,6 +3,7 @@
+ // ============================================================================
+ 
+ import { JUMODBEngine } from "./database/db";
++import { ConfigEngine } from "./core/financial/ConfigEngine";
+ 
+ /**
+  * Interface representing the cellular carrier USSD payload.
+@@ -16,69 +17,17 @@ export interface AfricaTalkingUssdRequest {
+   tenantId?: string;   // Tenant mapped to the incoming shortcode
+ }
+ 
+-/**
+- * Struct representing localized term mappings for each entity classification vertical.
+- */
+-interface TerminologyProfile {
+-  partyTypeLabel: string;
+-  identifierLabel: string;
+-  itemLabel: string;
+-  balanceLabel: string;
+-}
+-
+ /**
+  * StatelessUssdController coordinates low-bandwidth telco edge interactions,
+  * dynamically translating visual interfaces depending on B2B tenant verticals.
+  */
+ export class StatelessUssdController {
+   private db: JUMODBEngine;
++  private config: ConfigEngine;
+ 
+   constructor() {
+     this.db = JUMODBEngine.getInstance();
+-  }
+-
+-  /**
+-   * Translates application terms based on tenant classification metadata.
+-   */
+-  private resolveTerminology(classification: string): TerminologyProfile {
+-    switch (classification) {
+-      case "NON_COMMERCIAL_EDUCATION":
+-        return {
+-          partyTypeLabel: "Student",
+-          identifierLabel: "Student ID",
+-          itemLabel: "Tuition Fee",
+-          balanceLabel: "Outstanding Fees"
+-        };
+-      case "NON_COMMERCIAL_FAITH":
+-        return {
+-          partyTypeLabel: "Parishioner",
+-          identifierLabel: "Envelope Number",
+-          itemLabel: "Tithe Pledge",
+-          balanceLabel: "Pledge Dues"
+-        };
+-      case "NON_COMMERCIAL_ALUMNI":
+-        return {
+-          partyTypeLabel: "Alumna/Alumnus",
+-          identifierLabel: "Member ID",
+-          itemLabel: "Membership Due",
+-          balanceLabel: "Outstanding Dues"
+-        };
+-      case "COMMERCIAL_RETAIL":
+-        return {
+-          partyTypeLabel: "Customer",
+-          identifierLabel: "Customer Code",
+-          itemLabel: "Invoice",
+-          balanceLabel: "Payable Amount"
+-        };
+-      case "COMMERCIAL_SERVICE":
+-      default:
+-        return {
+-          partyTypeLabel: "Client",
+-          identifierLabel: "Client Reference",
+-          itemLabel: "Service Bill",
+-          balanceLabel: "Outstanding Balance"
+-        };
+-    }
++    this.config = new ConfigEngine();
+   }
+ 
+   /**
+@@ -90,13 +39,19 @@ export class StatelessUssdController {
+   public async handleUssdRequest(request: AfricaTalkingUssdRequest): Promise<string> {
+     const { text, tenantId = "TENT-1", phoneNumber } = request;
+ 
+-    // 1. Fetch Tenant workspace details
++    // 1. Fetch Tenant workspace details and dynamic config
+     const tenants = this.db.select<any>("tenants", (t) => t.id === tenantId);
+     if (tenants.length === 0) {
+       return "END Connection Error: Invalid workspace code mapped to this USSD session.";
+     }
+     const tenant = tenants[0];
+-    const terms = this.resolveTerminology(tenant.classification);
++    const cfg = this.config.getConfig(tenantId);
++    const terms = {
++      partyTypeLabel: cfg.terminology.partyLabel,
++      identifierLabel: cfg.terminology.idLabel,
++      itemLabel: cfg.terminology.itemLabel,
++      balanceLabel: "Outstanding Balance" // Can also be made dynamic via cfg.terminology
++    };
+ 
+     // 2. Parse stateless USSD input string (split by asterisk)
+     const parts = text === "" ? [] : text.split("*");
+diff --git a/src/05_Dashboard.tsx b/src/05_Dashboard.tsx
+index 42a0ba47..cd2d3fbe 100644
+--- a/src/05_Dashboard.tsx
++++ b/src/05_Dashboard.tsx
+@@ -10,145 +10,35 @@ import {
+ } from "lucide-react";
+ import { motion, AnimatePresence } from "framer-motion";
+ 
+-// 1. DYNAMIC VERIFICATION TERM MAPPINGS & CONFIGS (NO STATIC MOCK METRICS!)
+-interface MetricConfig {
+-  key: string;
++// 1. UNIVERSAL METADATA INTERFACES
++interface MetricDefinition {
++  id: string;
+   label: string;
+-  description: string;
+-  isCurrency: boolean;
+-}
+-
+-interface AttributeField {
+   key: string;
+-  label: string;
+-  type: "string" | "number" | "boolean";
++  dataType: "MONEY" | "NUMBER" | "PERCENTAGE" | "COUNT";
++  description?: string;
+ }
+ 
+-interface VerticalConfig {
+-  id: string;
+-  name: string;
++interface TenantConfig {
++  tenantId: string;
+   classification: string;
+-  themeColor: string;
+-  accentBg: string;
+-  accentText: string;
+-  borderColor: string;
++  baseCurrency: string;
+   terminology: {
+     partyLabel: string;
+     idLabel: string;
+     itemLabel: string;
+-    metricLabel: string;
++    metricsHeader: string;
++  };
++  accounts: {
++    clearing: string;
++    receivables: string;
++    payables: string;
++    wallets: string;
++    revenue: string;
+   };
+-  metrics: MetricConfig[];
+-  attributesToShow: AttributeField[];
++  metrics: MetricDefinition[];
+ }
+ 
+-const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
+-  "TENT-1": {
+-    id: "TENT-1",
+-    name: "Sovereign Faith Parish",
+-    classification: "NON_COMMERCIAL_FAITH",
+-    themeColor: "indigo",
+-    accentBg: "bg-indigo-50",
+-    accentText: "text-indigo-600",
+-    borderColor: "border-indigo-200",
+-    terminology: {
+-      partyLabel: "Parishioner",
+-      idLabel: "Envelope Number",
+-      itemLabel: "Tithe Pledge",
+-      metricLabel: "Offertory Collection"
+-    },
+-    metrics: [
+-      { key: "totalParties", label: "Registered Parishioners", description: "Active families on registry", isCurrency: false },
+-      { key: "totalDues", label: "Active Tithe Pledges", description: "Committed building & charity drives", isCurrency: true },
+-      { key: "clearedDues", label: "Pledges Fulfilled", description: "Cleared double-entry receivables", isCurrency: true },
+-      { key: "walletLiabilities", label: "Advance Offerings", description: "Advance/Unallocated deposits", isCurrency: true }
+-    ],
+-    attributesToShow: [
+-      { key: "envelope_number", label: "Envelope Code", type: "string" },
+-      { key: "family_unit", label: "Parish Ward Group", type: "string" },
+-      { key: "last_tithe_date", label: "Last Tithe Date", type: "string" }
+-    ]
+-  },
+-  "TENT-2": {
+-    id: "TENT-2",
+-    name: "Sovereign Primary Academy",
+-    classification: "NON_COMMERCIAL_EDUCATION",
+-    themeColor: "emerald",
+-    accentBg: "bg-emerald-50",
+-    accentText: "text-emerald-600",
+-    borderColor: "border-emerald-200",
+-    terminology: {
+-      partyLabel: "Student",
+-      idLabel: "Student ID",
+-      itemLabel: "Tuition Fee",
+-      metricLabel: "Tuition Invoices"
+-    },
+-    metrics: [
+-      { key: "totalParties", label: "Enrolled Students", description: "Active student directory", isCurrency: false },
+-      { key: "totalDues", label: "Total Invoiced Fees", description: "Billed term tuition & boarding dues", isCurrency: true },
+-      { key: "clearedDues", label: "Fees Settled", description: "Cleared receivables in bank", isCurrency: true },
+-      { key: "walletLiabilities", label: "Overpayments Pre-paid", description: "Credit balances for next term", isCurrency: true }
+-    ],
+-    attributesToShow: [
+-      { key: "student_id", label: "Student Code", type: "string" },
+-      { key: "grade_level", label: "Class Grade", type: "string" },
+-      { key: "boarding_status", label: "Enrollment Mode", type: "string" }
+-    ]
+-  },
+-  "TENT-3": {
+-    id: "TENT-3",
+-    name: "Namilyango Alumni Network",
+-    classification: "NON_COMMERCIAL_ALUMNI",
+-    themeColor: "amber",
+-    accentBg: "bg-amber-50",
+-    accentText: "text-amber-600",
+-    borderColor: "border-amber-200",
+-    terminology: {
+-      partyLabel: "Alumnus",
+-      idLabel: "Member ID",
+-      itemLabel: "Membership Due",
+-      metricLabel: "Alumni Subscriptions"
+-    },
+-    metrics: [
+-      { key: "totalParties", label: "Alumni Registered", description: "Dues-paying cohorts directory", isCurrency: false },
+-      { key: "totalDues", label: "Active Subscriptions", description: "Annual endowment dues", isCurrency: true },
+-      { key: "clearedDues", label: "Endowments Paid", description: "Direct clearing contributions", isCurrency: true },
+-      { key: "walletLiabilities", label: "Sustaining Trust Fund", description: "Floating unallocated trusts", isCurrency: true }
+-    ],
+-    attributesToShow: [
+-      { key: "member_id", label: "Alumni Code", type: "string" },
+-      { key: "graduation_year", label: "Class Year", type: "number" },
+-      { key: "alumni_tier", label: "Subscription Level", type: "string" }
+-    ]
+-  },
+-  "TENT-4": {
+-    id: "TENT-4",
+-    name: "Sovereign Retail Distributors",
+-    classification: "COMMERCIAL_RETAIL",
+-    themeColor: "rose",
+-    accentBg: "bg-rose-50",
+-    accentText: "text-rose-600",
+-    borderColor: "border-rose-200",
+-    terminology: {
+-      partyLabel: "Retailer / Vendor",
+-      idLabel: "Customer Code",
+-      itemLabel: "Invoice",
+-      metricLabel: "Trade Debits"
+-    },
+-    metrics: [
+-      { key: "totalParties", label: "Wholesale Accounts", description: "B2B merchants & retail outlets", isCurrency: false },
+-      { key: "totalDues", label: "Invoiced Stock Ledger", description: "Credit terms inventory bills", isCurrency: true },
+-      { key: "clearedDues", label: "Trade Cash Collected", description: "Settled wholesale receivables", isCurrency: true },
+-      { key: "walletLiabilities", label: "Pre-funded Trade Wallet", description: "Pre-paid balances for dispatch", isCurrency: true }
+-    ],
+-    attributesToShow: [
+-      { key: "customer_code", label: "Vendor Code", type: "string" },
+-      { key: "delivery_zone", label: "Territory Region", type: "string" },
+-      { key: "credit_limit", label: "Credit Ceiling (UGX)", type: "number" }
+-    ]
+-  }
+-};
+-
+ // 2. HELPER TO COMPUTE HMAC SIGNATURE USING BROWSER WEB CRYPTO
+ async function computeHmacSha256(secret: string, data: string): Promise<string> {
+   const encoder = new TextEncoder();
+@@ -171,11 +61,10 @@ async function computeHmacSha256(secret: string, data: string): Promise<string>
+ }
+ 
+ export function Dashboard() {
+-  const [activeTenantId, setActiveTenantId] = useState<string>("TENT-2"); // Default to School
++  const [activeTenantId, setActiveTenantId] = useState<string>("TENT-2");
++  const [report, setReport] = useState<{ config: TenantConfig; values: Record<string, number> } | null>(null);
+   const [parties, setParties] = useState<any[]>([]);
+-  const [partyMetadata, setPartyMetadata] = useState<any[]>([]);
+   const [openItems, setOpenItems] = useState<any[]>([]);
+-  const [digitalWallets, setDigitalWallets] = useState<any[]>([]);
+   const [ledgerAccounts, setLedgerAccounts] = useState<any[]>([]);
+   const [journalEntries, setJournalEntries] = useState<any[]>([]);
+   const [ledgerLines, setLedgerLines] = useState<any[]>([]);
+@@ -193,8 +82,6 @@ export function Dashboard() {
+     { type: "out", text: "Phone ready. USSD connection initialized." }
+   ]);
+ 
+-  const activeConfig = VERTICAL_CONFIGS[activeTenantId] || VERTICAL_CONFIGS["TENT-2"];
+-
+   // Seeding Database through API or resetting seed values
+   const triggerDatabaseReset = async () => {
+     setIsLoading(true);
+@@ -221,16 +108,14 @@ export function Dashboard() {
+       const res = await fetch(`/api/v1/dashboard/data?tenantId=${activeTenantId}`);
+       if (res.ok) {
+         const data = await res.json();
++        setReport(data.report);
+         setParties(data.parties || []);
+-        setPartyMetadata(data.partyMetadata || []);
+         setOpenItems(data.openItems || []);
+-        setDigitalWallets(data.digitalWallets || []);
+         setLedgerAccounts(data.ledgerAccounts || []);
+         setJournalEntries(data.journalEntries || []);
+         setLedgerLines(data.ledgerLines || []);
+ 
+-        // Pick default party for webhook
+-        if (data.parties && data.parties.length > 0) {
++        if (data.parties && data.parties.length > 0 && !selectedPartyId) {
+           setSelectedPartyId(data.parties[0].id);
+         }
+       }
+@@ -239,7 +124,7 @@ export function Dashboard() {
+     } finally {
+       setIsLoading(false);
+     }
+-  }, [activeTenantId]);
++  }, [activeTenantId, selectedPartyId]);
+ 
+   useEffect(() => {
+     setIsLoading(true);
+@@ -252,7 +137,7 @@ export function Dashboard() {
+   const handleTriggerWebhook = async (e: React.FormEvent) => {
+     e.preventDefault();
+     setWebhookStatus(null);
+-    if (!selectedPartyId) return;
++    if (!selectedPartyId || !report) return;
+ 
+     try {
+       const amount = parseInt(remittanceAmount, 10);
+@@ -261,26 +146,22 @@ export function Dashboard() {
+         return;
+       }
+ 
+-      // Find accounts configured for this tenant to route properly
+-      const clearingAccount = ledgerAccounts.find(a => a.type === "ASSET" && a.code.includes("CLEARING"))?.id || "1030-CLEARING-TRANSIT";
+-      const receivablesAccount = ledgerAccounts.find(a => a.type === "ASSET" && a.code.includes("RECEIVABLES"))?.id || "1200-RECEIVABLES-CONTROL";
+-
+       const payload = {
+         tenantId: activeTenantId,
+         partyId: selectedPartyId,
+         remittanceAmountMinor: amount,
+-        currency: "UGX",
++        currency: report.config.baseCurrency,
+         externalReference: extRef,
+-        clearingAccountId: clearingAccount,
+-        receivablesAccountId: receivablesAccount,
+-        walletAccountId: "2020-FLOATING-LIABILITIES"
++        // Accounts are now driven by authoritative config
++        clearingAccountId: report.config.accounts.clearing,
++        receivablesAccountId: report.config.accounts.receivables,
++        walletAccountId: report.config.accounts.wallets
+       };
+ 
+       const rawBody = JSON.stringify(payload);
+-      const secretKey = "jumo_secret_key_123456"; // Managed via secure configuration
++      const secretKey = "jumo_secret_key_123456";
+       const timestamp = Math.floor(Date.now() / 1000).toString();
+ 
+-      // Compute HMAC on the client dynamically using Web Crypto API
+       const signature = await computeHmacSha256(secretKey, `${timestamp}.${rawBody}`);
+ 
+       const response = await fetch("/api/v1/allocation/webhook", {
+@@ -297,9 +178,9 @@ export function Dashboard() {
+       if (result.success) {
+         setWebhookStatus({
+           success: true,
+-          msg: `Success! Allocated: UGX ${(result.allocatedAmountMinor / 100).toFixed(2)}. Overflow Routed to Wallet: UGX ${(result.overflowAmountMinor / 100).toFixed(2)}. Journal ID: ${result.journalEntryId}`
++          msg: `Success! Payment processed and journaled. Ref: ${result.paymentId}`
+         });
+-        setExtRef("REF-" + Math.floor(Math.random() * 100000)); // Reset reference
++        setExtRef("REF-" + Math.floor(Math.random() * 100000));
+         refreshDashboardData();
+       } else {
+         setWebhookStatus({ success: false, msg: `Execution Failed: ${result.error || result.message}` });
+@@ -315,7 +196,6 @@ export function Dashboard() {
+     const query = ussdInput.trim();
+     setUssdInput("");
+ 
+-    // Append to phone session log
+     setUssdHistory(prev => [...prev, { type: "in", text: `Dialed: ${query}` }]);
+ 
+     try {
+@@ -339,56 +219,20 @@ export function Dashboard() {
+     }
+   };
+ 
+-  // Compile calculations for workspace metrics dynamically
+-  const computedStats = {
+-    totalParties: parties.length,
+-    totalDues: openItems.reduce((sum, item) => sum + item.amount_minor, 0),
+-    clearedDues: openItems.reduce((sum, item) => sum + item.allocated_amount_minor, 0),
+-    walletLiabilities: digitalWallets.reduce((sum, w) => sum + w.balance_minor, 0)
+-  };
++  if (!report) return (
++    <div className="h-screen w-full bg-slate-50 flex items-center justify-center font-bold text-slate-400">
++      Loading Sovereign Workspace Metadata...
++    </div>
++  );
++
++  const activeConfig = report.config;
++  const computedStats = report.values;
+ 
+-  // Compute theme color styles dynamically based on selection
+   const themeClasses = {
+-    indigo: {
+-      text: "text-indigo-600",
+-      bg: "bg-indigo-600",
+-      bgHover: "hover:bg-indigo-700",
+-      badge: "bg-indigo-50 text-indigo-700 border-indigo-100",
+-      ring: "ring-indigo-200 focus:ring-indigo-500",
+-      borderFocus: "focus:border-indigo-500"
+-    },
+-    emerald: {
+-      text: "text-emerald-600",
+-      bg: "bg-emerald-600",
+-      bgHover: "hover:bg-emerald-700",
+-      badge: "bg-emerald-50 text-emerald-700 border-emerald-100",
+-      ring: "ring-emerald-200 focus:ring-emerald-500",
+-      borderFocus: "focus:border-emerald-500"
+-    },
+-    amber: {
+-      text: "text-amber-600",
+-      bg: "bg-amber-600",
+-      bgHover: "hover:bg-amber-700",
+-      badge: "bg-amber-50 text-amber-700 border-amber-100",
+-      ring: "ring-amber-200 focus:ring-amber-500",
+-      borderFocus: "focus:border-amber-500"
+-    },
+-    rose: {
+-      text: "text-rose-600",
+-      bg: "bg-rose-600",
+-      bgHover: "hover:bg-rose-700",
+-      badge: "bg-rose-50 text-rose-700 border-rose-100",
+-      ring: "ring-rose-200 focus:ring-rose-500",
+-      borderFocus: "focus:border-rose-500"
+-    }
+-  }[activeConfig.themeColor as "indigo" | "emerald" | "amber" | "rose"] || {
+-    text: "text-indigo-600",
+-    bg: "bg-indigo-600",
+-    bgHover: "hover:bg-indigo-700",
+-    badge: "bg-indigo-50 text-indigo-700 border-indigo-100",
+-    ring: "ring-indigo-200 focus:ring-indigo-500",
+-    borderFocus: "focus:border-indigo-500"
+-  };
++    NON_COMMERCIAL_FAITH: { text: "text-indigo-600", bg: "bg-indigo-600", bgHover: "hover:bg-indigo-700", badge: "bg-indigo-50 text-indigo-700 border-indigo-100", ring: "ring-indigo-200", borderFocus: "focus:border-indigo-500" },
++    NON_COMMERCIAL_EDUCATION: { text: "text-emerald-600", bg: "bg-emerald-600", bgHover: "hover:bg-emerald-700", badge: "bg-emerald-50 text-emerald-700 border-emerald-100", ring: "ring-emerald-200", borderFocus: "focus:border-emerald-500" },
++    COMMERCIAL_RETAIL: { text: "text-rose-600", bg: "bg-rose-600", bgHover: "hover:bg-rose-700", badge: "bg-rose-50 text-rose-700 border-rose-100", ring: "ring-rose-200", borderFocus: "focus:border-rose-500" }
++  }[activeConfig.classification as "NON_COMMERCIAL_FAITH" | "NON_COMMERCIAL_EDUCATION" | "COMMERCIAL_RETAIL"] || { text: "text-slate-600", bg: "bg-slate-600", bgHover: "hover:bg-slate-700", badge: "bg-slate-50 text-slate-700 border-slate-100", ring: "ring-slate-200", borderFocus: "focus:border-slate-500" };
+ 
+   return (
+     <div className="h-screen w-full bg-slate-50 flex flex-col font-sans overflow-hidden antialiased text-slate-800">
+@@ -448,17 +292,17 @@ export function Dashboard() {
+         {/* MAIN VISUAL WORKSPACE PANEL */}
+         <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-thin">
+           
+-          {/* A. DYNAMIC METRICS GRID (DRIVEN SOLELY BY THE UNIFORM CONFIG OBJECT!) */}
++          {/* A. DYNAMIC METRICS GRID */}
+           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
+-            {activeConfig.metrics.map((metric) => {
++            {activeConfig.metrics.map((metric: MetricDefinition) => {
+               const rawValue = (computedStats as any)[metric.key] || 0;
+-              const displayValue = metric.isCurrency
+-                ? `UGX ${(rawValue / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
++              const displayValue = metric.dataType === "MONEY"
++                ? `${activeConfig.baseCurrency} ${(rawValue / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                 : rawValue.toLocaleString();
+ 
+               return (
+                 <div 
+-                  key={metric.key} 
++                  key={metric.id} 
+                   className="bg-white border border-slate-200/80 p-5 rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
+                 >
+                   <div>
+@@ -503,29 +347,22 @@ export function Dashboard() {
+                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-400 font-bold uppercase text-[9px] tracking-wider">
+                       <th className="px-4 py-3">Full Legal Name / Email</th>
+                       <th className="px-4 py-3">{activeConfig.terminology.idLabel}</th>
+-                      {activeConfig.attributesToShow.map((attr) => (
+-                        <th key={attr.key} className="px-4 py-3">{attr.label}</th>
+-                      ))}
+                       <th className="px-4 py-3 text-right">Outstanding Dues</th>
+                     </tr>
+                   </thead>
+                   <tbody className="divide-y divide-slate-100 font-medium">
+                     {parties.length === 0 ? (
+                       <tr>
+-                        <td colSpan={5} className="text-center py-8 text-slate-400 font-bold">
++                        <td colSpan={3} className="text-center py-8 text-slate-400 font-bold">
+                           No active party records found. Reset/Seed the workspace using the refresh button.
+                         </td>
+                       </tr>
+                     ) : (
+                       parties.map((party) => {
+-                        // Find matching metadata from party_metadata
+-                        const meta = partyMetadata.find(m => m.party_id === party.id) || {};
+-                        const attrs = meta.attributes || {};
+-
+                         // Calculate total outstanding dues
+                         const dues = openItems
+                           .filter(i => i.party_id === party.id && i.status !== "PAID")
+-                          .reduce((sum, item) => sum + (item.amount_minor - item.allocated_amount_minor), 0);
++                          .reduce((sum, item) => sum + item.remaining_minor, 0);
+ 
+                         return (
+                           <tr key={party.id} className="hover:bg-slate-50/50 transition-all">
+@@ -536,28 +373,10 @@ export function Dashboard() {
+                             <td className="px-4 py-3 font-mono font-bold text-slate-500">
+                               {party.id}
+                             </td>
+-                            {activeConfig.attributesToShow.map((attr) => {
+-                              const val = attrs[attr.key];
+-                              let displayVal = "-";
+-                              if (val !== undefined && val !== null) {
+-                                if (typeof val === "boolean") {
+-                                  displayVal = val ? "Yes" : "No";
+-                                } else if (typeof val === "number" && attr.key.includes("limit")) {
+-                                  displayVal = `UGX ${(val / 100).toLocaleString()}`;
+-                                } else {
+-                                  displayVal = val.toString();
+-                                }
+-                              }
+-                              return (
+-                                <td key={attr.key} className="px-4 py-3 font-mono font-bold text-slate-600 text-[11px]">
+-                                  {displayVal}
+-                                </td>
+-                              );
+-                            })}
+                             <td className="px-4 py-3 text-right font-bold text-[11px] font-mono text-slate-900">
+                               {dues > 0 ? (
+                                 <span className="text-rose-600">
+-                                  UGX ${(dues / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
++                                  {activeConfig.baseCurrency} {(dues / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                 </span>
+                               ) : (
+                                 <span className="text-emerald-600">Paid/None</span>
+diff --git a/src/database/db.ts b/src/database/db.ts
+index 61342740..b0d2c4b7 100644
+--- a/src/database/db.ts
++++ b/src/database/db.ts
+@@ -184,11 +184,40 @@ export class JUMODBEngine {
+         );
+ 
+         CREATE TABLE IF NOT EXISTS ueos_ledger_accounts (
+-          code VARCHAR(100) PRIMARY KEY,
++          id VARCHAR(100) NOT NULL,
++          tenant_id VARCHAR(100) NOT NULL,
++          workspace_id VARCHAR(100) NOT NULL,
++          code VARCHAR(100) NOT NULL,
+           name VARCHAR(255),
+-          category VARCHAR(100),
+-          balance NUMERIC,
+-          status VARCHAR(50)
++          account_type VARCHAR(100),
++          balance_minor BIGINT DEFAULT 0,
++          status VARCHAR(50),
++          PRIMARY KEY (tenant_id, id)
++        );
++
++        CREATE TABLE IF NOT EXISTS ueos_journal_entries (
++          id VARCHAR(100) NOT NULL,
++          tenant_id VARCHAR(100) NOT NULL,
++          workspace_id VARCHAR(100) NOT NULL,
++          posting_date DATE,
++          reference VARCHAR(255),
++          description TEXT,
++          source VARCHAR(100),
++          currency_code VARCHAR(10),
++          exchange_rate NUMERIC(20, 10),
++          status VARCHAR(50),
++          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
++          PRIMARY KEY (tenant_id, id)
++        );
++
++        CREATE TABLE IF NOT EXISTS ueos_journal_lines (
++          id VARCHAR(100) NOT NULL,
++          tenant_id VARCHAR(100) NOT NULL,
++          journal_entry_id VARCHAR(100) NOT NULL,
++          ledger_account_id VARCHAR(100) NOT NULL,
++          debit_minor BIGINT DEFAULT 0,
++          credit_minor BIGINT DEFAULT 0,
++          PRIMARY KEY (tenant_id, id)
+         );
+ 
+         CREATE TABLE IF NOT EXISTS ueos_accounting_periods (
+diff --git a/src/schema/schema.ts b/src/schema/schema.ts
+index 5b5ac053..141de686 100644
+--- a/src/schema/schema.ts
++++ b/src/schema/schema.ts
+@@ -29,13 +29,16 @@ export const UEOS_SCHEMAS: Record<string, TableSchema> = {
+   },
+   ledger_accounts: {
+     tableName: "ledger_accounts",
+-    description: "FAAP Double-Entry Chart of Accounts containing current balances.",
++    description: "Universal Double-Entry Chart of Accounts containing current balances.",
+     fields: [
+-      { name: "code", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique General Ledger Account Code" },
++      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique account identifier" },
++      { name: "tenant_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated tenant ID" },
++      { name: "workspace_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated workspace ID" },
++      { name: "code", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "General Ledger Account Code" },
+       { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Account display name" },
+-      { name: "category", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Asset, Liability, Equity, Revenue, or Expense" },
+-      { name: "balance", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Current account balance (Debit/Credit-adjusted)" },
+-      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Active, Inactive, or Frozen" }
++      { name: "account_type", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Asset, Liability, Equity, Revenue, or Expense" },
++      { name: "balance_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Current account balance in minor units" },
++      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "ACTIVE, INACTIVE, FROZEN" }
+     ]
+   },
+   accounting_periods: {
+@@ -63,14 +66,14 @@ export const UEOS_SCHEMAS: Record<string, TableSchema> = {
+   },
+   ledger_entries: {
+     tableName: "ledger_entries",
+-    description: "Individual double-entry line items for journals.",
++    description: "Individual double-entry line items for journals (Universal Schema).",
+     fields: [
+       { name: "id", type: "VARCHAR(50)", primaryKey: true, nullable: false, description: "Unique Line Item ID" },
+-      { name: "journalId", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Parent Journal ID" },
+-      { name: "accountId", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Target Account Code" },
+-      { name: "debit", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Debit amount" },
+-      { name: "credit", type: "DOUBLE PRECISION", primaryKey: false, nullable: false, description: "Credit amount" },
+-      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Currency code (ISO)" }
++      { name: "tenant_id", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Tenant ID" },
++      { name: "journal_entry_id", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Parent Journal ID" },
++      { name: "ledger_account_id", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Target Account ID" },
++      { name: "debit_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Debit amount in minor units" },
++      { name: "credit_minor", type: "BIGINT", primaryKey: false, nullable: false, description: "Credit amount in minor units" }
+     ]
+   },
+   registries: {

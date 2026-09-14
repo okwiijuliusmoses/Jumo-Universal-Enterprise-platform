@@ -1,0 +1,204 @@
+{
+  "architectureRequests": [],
+  "architectureContracts": [],
+  "blueprints": [],
+  "engineeringAgents": [
+    {
+      "agentId": "agent-01",
+      "jumoName": "ARCHITECT-01",
+      "displayName": "Sovereign Architect",
+      "role": "Architecture Agent",
+      "division": "Design",
+      "specialization": "System Architecture",
+      "description": "Authoritative system design agent.",
+      "capabilities": [
+        "Blueprint Generation",
+        "Contract Validation"
+      ],
+      "status": "IDLE",
+      "workload": 0,
+      "health": "HEALTHY",
+      "modelPolicy": {
+        "modelAlias": "Flash-v3",
+        "isolationLevel": "TENANT"
+      }
+    },
+    {
+      "agentId": "agent-02",
+      "jumoName": "FRONTEND-01",
+      "displayName": "Sovereign Frontend",
+      "role": "Frontend Agent",
+      "division": "Engineering",
+      "specialization": "React / Tailwind",
+      "description": "User experience implementation agent.",
+      "capabilities": [
+        "UI Generation",
+        "Responsive Design"
+      ],
+      "status": "IDLE",
+      "workload": 0,
+      "health": "HEALTHY"
+    },
+    {
+      "agentId": "agent-03",
+      "jumoName": "BACKEND-01",
+      "displayName": "Sovereign Backend",
+      "role": "Backend Agent",
+      "division": "Engineering",
+      "specialization": "Node.js / Express",
+      "description": "Authoritative server-side implementation agent.",
+      "capabilities": [
+        "API Design",
+        "Database Integration"
+      ],
+      "status": "IDLE",
+      "workload": 0,
+      "health": "HEALTHY"
+    },
+    {
+      "agentId": "agent-04",
+      "jumoName": "SECURITY-01",
+      "displayName": "Sovereign Security",
+      "role": "Security Agent",
+      "division": "Cyber",
+      "specialization": "Zero Trust / Crypto",
+      "description": "Authoritative security hardening agent.",
+      "capabilities": [
+        "Penetration Testing",
+        "Encryption Validation"
+      ],
+      "status": "IDLE",
+      "workload": 0,
+      "health": "HEALTHY"
+    }
+  ],
+  "jobs": [],
+  "buildArtifacts": [],
+  "deploymentRecords": [],
+  "verificationFailures": [],
+  "certificationRecords": [],
+  "incidents": [],
+  "cloudSlots": [
+    {
+      "id": "dev",
+      "name": "Development (Isolated-01)",
+      "activeRelease": "N/A",
+      "health": "HEALTHY",
+      "cpu": 12,
+      "memory": 18,
+      "trafficWeight": 100
+    },
+    {
+      "id": "staging",
+      "name": "Staging Canary Floor",
+      "activeRelease": "N/A",
+      "health": "HEALTHY",
+      "cpu": 25,
+      "memory": 40,
+      "trafficWeight": 10
+    },
+    {
+      "id": "production",
+      "name": "National Production Cluster",
+      "activeRelease": "N/A",
+      "health": "HEALTHY",
+      "cpu": 48,
+      "memory": 62,
+      "trafficWeight": 90
+    }
+  ],
+  "auditEvents": [
+    {
+      "id": "AUD-00009",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T16:21:00.952Z"
+    },
+    {
+      "id": "AUD-00008",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T15:03:46.438Z"
+    },
+    {
+      "id": "AUD-00007",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T15:00:22.443Z"
+    },
+    {
+      "id": "AUD-00006",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:59:39.187Z"
+    },
+    {
+      "id": "AUD-00005",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:52:47.918Z"
+    },
+    {
+      "id": "AUD-00004",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:50:54.133Z"
+    },
+    {
+      "id": "AUD-00003",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:47:04.575Z"
+    },
+    {
+      "id": "AUD-00002",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:41:29.767Z"
+    },
+    {
+      "id": "AUD-00001",
+      "actor": "JUMO_SECRET_VAULT",
+      "operation": "STARTUP_VALIDATION",
+      "details": "JUMO Secret Configuration/Vault initialized. Status: READY. Validity: true. Configured secrets: JUMO_SECRET_ENCRYPTION_KEY, JUMO_SESSION_SECRET, JUMO_JWT_SECRET",
+      "timestamp": "2026-08-26T14:39:10.514Z"
+    }
+  ],
+  "verificationGates": [],
+  "databaseVolumes": [
+    {
+      "name": "ueos_ledger_db",
+      "tenant": "Global Core Ledger",
+      "pool": "FAAP_RESERVE_PRIMARY",
+      "size": "4.2TB",
+      "status": "HEALTHY"
+    }
+  ],
+  "migrations": [],
+  "assets": [],
+  "counters": {
+    "audit": 10,
+    "archReq": 1,
+    "archContract": 1,
+    "job": 1,
+    "artifact": 1,
+    "deployment": 1,
+    "failure": 1,
+    "certification": 1
+  },
+  "cryptographicKeys": {
+    "primaryKey": "SHA256:06dfbc2a8e8b919feae99a0d39c3a2aeebe5035e8985df1932a7a6c96fce30f2",
+    "backupKey": "SHA256:77ae93aeebe5035e8985df1932a7a6c96fce30f206dfbc2a8e8b919feae99a0d",
+    "algorithm": "ECDSA P-384 / SHA-256",
+    "lastRotation": "2026-08-10T10:46:07-07:00"
+  },
+  "emergencyMode": false
+}

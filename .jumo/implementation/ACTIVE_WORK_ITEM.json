@@ -1,0 +1,42 @@
+{
+  "workItemId": "ITEM-DIGITAL-PAY-CORE-002",
+  "title": "JUMO DIGITAL PAY Sovereign PayCodes, Multi-Rail Gateway & 3-Way Reconciler",
+  "type": "SHARED_PLATFORM_CORE_ENGINE",
+  "targetPlatform": "JUMO_DIGITAL_PAY",
+  "priority": "P0_BLOCKING_DEPENDENCY",
+  "status": "QUEUED",
+  "assignedModel": "Gemini-3.7-Flash",
+  "startedAt": "2026-08-26T09:32:00.000Z",
+  "architecturalScope": {
+    "directorate": "DIR-PAY-SWITCH-OPERATIONS",
+    "department": "DEPT-PAY-MULTI-RAIL-INGESTION",
+    "offices": [
+      "OFF-PAY-PAYCODES-REGISTRY",
+      "OFF-PAY-MOMO-SWITCH",
+      "OFF-PAY-BANK-RAILS",
+      "OFF-PAY-SETTLEMENT-RECONCILER"
+    ],
+    "modules": [
+      "MOD-PAY-UNIVERSAL-ROUTER",
+      "MOD-PAY-PAYCODES-REGISTRY",
+      "MOD-PAY-MOMO-GATEWAY",
+      "MOD-PAY-3WAY-SETTLEMENT"
+    ],
+    "capabilities": [
+      "CAP-PAY-TRANSACTION-ROUTING",
+      "CAP-PAY-CODE-RESOLUTION",
+      "CAP-PAY-MULTI-RAIL-INGESTION",
+      "CAP-PAY-AUTOMATED-RECONCILIATION"
+    ]
+  },
+  "deliverables": [
+    "src/platforms/digitalPay/digitalPayTypes.ts",
+    "src/platforms/digitalPay/digitalPayOrchestrator.ts"
+  ],
+  "verificationCriteria": [
+    "Sovereign PayCode resolution (e.g. PAY-MED-2026-X, SCH-FEES-992) without internal ID exposure",
+    "Multi-rail payment command dispatch (MoMo, EFT, Card, QR)",
+    "1.5% fee calculation & FAAP clearing event dispatch",
+    "Zero lint and clean TypeScript build"
+  ]
+}
