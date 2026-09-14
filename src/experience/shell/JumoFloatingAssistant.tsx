@@ -15,17 +15,21 @@ interface ChatMessage {
 }
 
 interface JumoFloatingAssistantProps {
-  activeStudio: string;
+  currentWorkspace?: string;
+  activeStudio?: string;
   activeJobId?: string | null;
   activeJobStage?: string | null;
   variant?: 'floating' | 'embedded';
+  onCommandAction?: (actionId: string) => void;
 }
 
 export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
+  currentWorkspace = 'overview',
   activeStudio,
   activeJobId: propActiveJobId,
   activeJobStage: propActiveJobStage,
-  variant = 'floating'
+  variant = 'floating',
+  onCommandAction
 }) => {
   const [isOpen, setIsOpen] = useState(variant === 'embedded');
   const [inputMessage, setInputMessage] = useState('');
@@ -215,7 +219,7 @@ export const JumoFloatingAssistant: React.FC<JumoFloatingAssistantProps> = ({
             <div className="bg-slate-50 border-b border-slate-200 px-4 py-2 flex items-center justify-between text-[10px]">
               <div className="flex items-center gap-1.5 font-bold text-slate-600 uppercase tracking-wider">
                 <Layers className="w-3 h-3 text-slate-500" />
-                <span>Context: <span className="text-blue-600 font-extrabold">{activeStudio.replace('_', ' ')}</span></span>
+                <span>Context: <span className="text-blue-600 font-extrabold">{(activeStudio || currentWorkspace || 'Sovereign Kernel').replace('_', ' ')}</span></span>
               </div>
               {activeJobId && (
                 <div className="flex items-center gap-1 font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100 uppercase text-[9px]">

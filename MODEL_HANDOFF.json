@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "handoff_version": "1.0.0",
+  "protocol": "JUMO_PERSISTENT_MODEL_HANDOFF",
+  "timestamp": "2026-08-26T09:55:00Z",
+  "executive_summary": "Manufacturing Factory UI destructively removed. Sovereign Enterprise Platform architecture restored with 6 Sovereign Products and 8 Independent Shared Platforms accessible directly in UEOS Shell navigation and Commercial Products Ecosystem.",
+  "core_invariants": [
+    "Platform Kernel -> Sovereign Product -> Directorate -> Department -> Portal -> Module hierarchy is immutable.",
+    "The 6 Sovereign Products are peer commercial products, never subordinate to each other.",
+    "The 8 Independent Platforms provide shared infrastructure services, never embedded into a single product.",
+    "No factory/pipeline/blueprint manufacturing UI is to be re-introduced."
+  ],
+  "active_entrypoints": {
+    "shell": "src/experience/shell/UEOSShell.tsx",
+    "gateway": "src/experience/gateway/PublicGateway.tsx",
+    "commercial_products": "src/experience/renderer/CommercialProductsRenderer.tsx",
+    "command_registry": "src/experience/shell/UEOSCommandRegistry.ts"
+  },
+  "git_repository": "https://github.com/okwiijuliusmoses/Jumo-Universal-Enterprise-platform",
+  "git_branch": "manufacturing-hub-architecture"
+}

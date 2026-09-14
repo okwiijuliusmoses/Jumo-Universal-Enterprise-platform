@@ -2,8 +2,9 @@
 // Single source of truth for both keyboard commands and Command Palette search indexing.
 
 import { 
-  Command, Cpu, FileText, Users, Server, Layers, CheckSquare, Globe, 
-  RefreshCw, Shield, History, Settings, Menu
+  Command, FileText, Users, Server, Layers, CheckSquare, Globe, 
+  RefreshCw, Shield, History, Settings, Menu, Zap, School, BookOpen,
+  GraduationCap, Church, CreditCard, DollarSign, Lock, BrainCircuit, Workflow, Cloud, Landmark
 } from "lucide-react";
 
 export interface UEOSCommand {
@@ -11,7 +12,7 @@ export interface UEOSCommand {
   label: string;
   description: string;
   icon: any;
-  category: "COMMAND" | "BUILD" | "ENTERPRISE" | "INTELLIGENCE" | "CLOUD" | "OPERATIONS" | "GOVERNANCE" | "FINANCE" | "SYSTEM";
+  category: "COMMAND" | "PRODUCTS" | "PLATFORMS" | "INTELLIGENCE" | "CLOUD" | "OPERATIONS" | "GOVERNANCE" | "FINANCE" | "SYSTEM";
   shortcut?: string;
   requiredPermission?: string;
   auditClassification: "QUERY" | "MUTATION" | "SYSTEM_RELOAD" | "SECURITY_ENFORCEMENT" | "CONFIG";
@@ -44,7 +45,7 @@ export class UEOSCommandRegistry {
   }
 }
 
-// Register baseline JUMO commands
+// Register baseline JUMO Sovereign commands
 export const initializeSovereignCommandRegistry = (navigationActions: {
   navigate: (workspace: any) => void;
   toggleSidebar: () => void;
@@ -53,114 +54,140 @@ export const initializeSovereignCommandRegistry = (navigationActions: {
 }) => {
   const commands: UEOSCommand[] = [
     {
-      id: "hub.open",
-      label: "Open Command Center",
-      description: "Return to the sovereign JUMO UEOS National Command Center dashboard",
+      id: "kernel.open",
+      label: "Open Sovereign Kernel Dashboard",
+      description: "Inspect live telemetry, health metrics, and ledger parity across the sovereign kernel",
       icon: Command,
       category: "COMMAND",
       shortcut: "Alt + ↑",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("command")
+      action: () => navigationActions.navigate("overview")
     },
     {
-      id: "manufacturing.queue.open",
-      label: "Open Manufacturing Planner",
-      description: "Open the active Manufacturing Queue, Intake requirements and compile blueprints",
-      icon: Cpu,
-      category: "BUILD",
+      id: "products.open",
+      label: "Open Commercial Products Ecosystem",
+      description: "Browse all 6 Sovereign Products and 8 Independent Shared Platforms",
+      icon: Layers,
+      category: "PRODUCTS",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("manufacturing")
+      action: () => navigationActions.navigate("products")
     },
     {
-      id: "blueprints.open",
-      label: "Open Blueprint Factory",
-      description: "Inspect sovereign modular compilation templates and generated blueprints",
-      icon: FileText,
-      category: "BUILD",
+      id: "fintech.open",
+      label: "Open JUMO FINTECH SACCO ERP",
+      description: "Manage savings, credit scoring, loan underwriting, share capital, and USSD banking",
+      icon: Zap,
+      category: "PRODUCTS",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("blueprints")
+      action: () => navigationActions.navigate("fintech")
     },
     {
-      id: "workforce.open",
-      label: "Open AI Workforce Registry",
-      description: "Inspect and command all 252 JUMO AI agents across 9 specializations",
+      id: "nursery.open",
+      label: "Open JUMO Nursery & Primary ERP",
+      description: "Manage pupil enrollment, continuous assessment, competency matrix, and fee billing",
+      icon: School,
+      category: "PRODUCTS",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("nursery-primary")
+    },
+    {
+      id: "secondary.open",
+      label: "Open JUMO Secondary School ERP",
+      description: "Manage departments, national examinations, boarding houses, and academic timetables",
+      icon: BookOpen,
+      category: "PRODUCTS",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("secondary-school")
+    },
+    {
+      id: "university.open",
+      label: "Open JUMO University & Tertiary ERP",
+      description: "Manage collegiate faculties, credit hours, senate grading, research grants, and housing",
+      icon: GraduationCap,
+      category: "PRODUCTS",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("university")
+    },
+    {
+      id: "church.open",
+      label: "Open JUMO Church & Faith ERP",
+      description: "Manage diocesan ministries, member registries, electronic tithes, and pastoral care",
+      icon: Church,
+      category: "PRODUCTS",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("church")
+    },
+    {
+      id: "alumni.open",
+      label: "Open JUMO Alumni & Community ERP",
+      description: "Manage alumni chapters, endowment funds, career mentorship, and reunion conventions",
       icon: Users,
+      category: "PRODUCTS",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("alumni")
+    },
+    {
+      id: "faap.open",
+      label: "Open JUMO FAAP Ledger",
+      description: "Access zero-parity double-entry accounting, chart of accounts, budget control, and taxes",
+      icon: DollarSign,
+      category: "FINANCE",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("faap")
+    },
+    {
+      id: "pay.open",
+      label: "Open JUMO Digital Pay Switch",
+      description: "Monitor multi-rail transactions, mobile money settlements, and banking gateway routing",
+      icon: CreditCard,
+      category: "FINANCE",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("digital-pay")
+    },
+    {
+      id: "aegis.open",
+      label: "Open JUMO AEGIS Security Console",
+      description: "Inspect zero-trust policy enforcement, cryptographic HSM keys, and session protection",
+      icon: Lock,
+      category: "GOVERNANCE",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("aegis")
+    },
+    {
+      id: "ai.open",
+      label: "Open JUMO AI Digital Hybrid Mesh",
+      description: "Inspect multi-model cognitive routing, domain assistants, and semantic RAG intelligence",
+      icon: BrainCircuit,
       category: "INTELLIGENCE",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("workforce")
+      action: () => navigationActions.navigate("ai-hybrid")
     },
     {
-      id: "cloud.open",
-      label: "Open Cloud Control",
-      description: "Configure virtual slots, allocate hypervisor memory and scaling weights",
-      icon: Server,
-      category: "CLOUD",
-      auditClassification: "QUERY",
-      action: () => navigationActions.navigate("cloud")
-    },
-    {
-      id: "registries.open",
-      label: "Open Registries Fabric",
-      description: "Inspect enterprise databases, systems, ERP ecosystems and static products catalog",
-      icon: Layers,
-      category: "GOVERNANCE",
-      auditClassification: "QUERY",
-      action: () => navigationActions.navigate("registries")
-    },
-    {
-      id: "verification.open",
-      label: "Open Verification Console",
-      description: "Monitor and run the sovereign 20-Gate cryptographic audit verification suite",
-      icon: CheckSquare,
-      category: "GOVERNANCE",
-      auditClassification: "QUERY",
-      action: () => navigationActions.navigate("verification")
-    },
-    {
-      id: "deployment.open",
-      label: "Open Deployment Center",
-      description: "Observe staging builds, promote stable releases, or execute live container rollbacks",
-      icon: Globe,
-      category: "OPERATIONS",
-      auditClassification: "QUERY",
-      action: () => navigationActions.navigate("deployment")
-    },
-    {
-      id: "migration.open",
-      label: "Open Migration & Upgrade",
-      description: "Trigger secure memory-backed DDL schema upgrades and verifiable database migrations",
-      icon: RefreshCw,
-      category: "OPERATIONS",
-      auditClassification: "QUERY",
-      action: () => navigationActions.navigate("migration")
-    },
-    {
-      id: "audit.open",
-      label: "Open Audit & Guardian",
-      description: "Execute baseline directory hashing verification and integrity scanning loops",
+      id: "auditor.open",
+      label: "Open JUMO Digital Auditor",
+      description: "Run continuous forensic ledger parity audit and statutory compliance verification",
       icon: Shield,
       category: "GOVERNANCE",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("audit")
+      action: () => navigationActions.navigate("digital-auditor")
     },
     {
-      id: "lifecycle.open",
-      label: "Open Lifecycle Center",
-      description: "Observe system event streams and recent operating logs",
-      icon: History,
+      id: "workflow.open",
+      label: "Open JUMO Workflow Engine",
+      description: "Inspect BPMN process state machines, multi-tier approvals, and SLA escalations",
+      icon: Workflow,
       category: "OPERATIONS",
       auditClassification: "QUERY",
-      action: () => navigationActions.navigate("lifecycle")
+      action: () => navigationActions.navigate("workflow")
     },
     {
-      id: "settings.open",
-      label: "Open Settings Center",
-      description: "Configure layout densities, visual modes, offline preferences, and keys",
-      icon: Settings,
-      category: "SYSTEM",
-      shortcut: "Ctrl + ,",
-      auditClassification: "CONFIG",
-      action: () => navigationActions.openSettings()
+      id: "cloud.open",
+      label: "Open JUMO Cloud & Compute Fabric",
+      description: "Inspect sovereign container nodes, multi-tenant isolation, and cluster telemetry",
+      icon: Cloud,
+      category: "CLOUD",
+      auditClassification: "QUERY",
+      action: () => navigationActions.navigate("cloud")
     },
     {
       id: "sidebar.toggle",
@@ -173,32 +200,14 @@ export const initializeSovereignCommandRegistry = (navigationActions: {
       action: () => navigationActions.toggleSidebar()
     },
     {
-      id: "audit.verify_hash",
-      label: "Trigger Integrity Drift Scan",
-      description: "Execute live SHA-256 baseline verification audit on key platform files",
-      icon: Shield,
-      category: "GOVERNANCE",
-      auditClassification: "SECURITY_ENFORCEMENT",
-      action: () => {
-        navigationActions.navigate("audit");
-        if (navigationActions.runTriggerAction) {
-          navigationActions.runTriggerAction("verify-hashes");
-        }
-      }
-    },
-    {
-      id: "verification.run_all",
-      label: "Run Full 20-Gate Suite",
-      description: "Execute the unified compliance verification logic to sign and seal release candidates",
-      icon: CheckSquare,
-      category: "GOVERNANCE",
-      auditClassification: "SECURITY_ENFORCEMENT",
-      action: () => {
-        navigationActions.navigate("verification");
-        if (navigationActions.runTriggerAction) {
-          navigationActions.runTriggerAction("run-verification-suite");
-        }
-      }
+      id: "settings.open",
+      label: "Open Settings Center",
+      description: "Configure layout densities, visual modes, offline preferences, and keys",
+      icon: Settings,
+      category: "SYSTEM",
+      shortcut: "Ctrl + ,",
+      auditClassification: "CONFIG",
+      action: () => navigationActions.openSettings()
     }
   ];
 

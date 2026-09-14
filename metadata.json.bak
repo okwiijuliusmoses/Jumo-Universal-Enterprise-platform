@@ -1,0 +1,6 @@
+{
+  "name": "JUMO DIGITAL ENTERPRISE PLATFORM",
+  "description": "JUMO UEOS Digital Hybrid Enterprise Operating System with Sovereign Control Center Governance, Sovereign AI Identity, ERP Intelligence, and Subscription Access Architecture.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

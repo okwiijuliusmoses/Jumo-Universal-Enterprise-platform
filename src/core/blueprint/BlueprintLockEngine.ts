@@ -2,7 +2,7 @@
  * JUMO UEOS — Architectural Blueprint Lock Engine
  * 
  * Enforces human approval gate and baseline lock governance for all product blueprints:
- * 1. AWAITING_HUMAN_APPROVAL: Mandatory human authorization state before manufacturing.
+ * 1. AWAITING_HUMAN_APPROVAL: Mandatory human authorization state before provisioning.
  * 2. Human Actions: APPROVE, REJECT, REQUEST_CHANGES.
  * 3. BLUEPRINT LOCK: Locks the approved blueprint into the authoritative baseline.
  * 4. Version History: Post-approval changes produce incremental versions (v1.0.0, v2.0.0, etc.) with complete audit trail.
@@ -221,7 +221,7 @@ export class BlueprintLockEngine {
         {
           version: "v1.0.0",
           status: "AWAITING_HUMAN_APPROVAL",
-          actionBy: "JUMO Architecture Studio Orchestrator",
+          actionBy: "JUMO Sovereign Control Plane Orchestrator",
           timestamp,
           notes: "Consolidated blueprint compiled and submitted for mandatory human authorization."
         }
@@ -254,7 +254,7 @@ export class BlueprintLockEngine {
       status: "BLUEPRINT_LOCKED",
       actionBy: approvedBy,
       timestamp,
-      notes: "Blueprint approved by authorized human and locked as authoritative manufacturing baseline."
+      notes: "Blueprint approved by authorized human and locked as authoritative provisioning baseline."
     });
 
     return bp;

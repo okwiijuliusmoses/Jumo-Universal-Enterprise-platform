@@ -2,10 +2,29 @@
 // Orchestrates the 12-step cognitive workforce lifecycle with real state persistence.
 
 import { JumoAIAgentRegistry } from "../registry/JumoAIAgentRegistry";
-import { SovereignOperatingStateService, AgentWorkLog } from "../../runtime/sovereignState";
+import { SovereignOperatingStateService } from "../../runtime/sovereignState";
 import { AIAgentRecord, AgentLifecycleStatus } from "../types/JumoAITypes";
 import { JumoAIProviderGateway } from "../gateway/JumoAIProviderGateway";
 
+
+export interface AgentWorkLog {
+  id: string;
+  agentId: string;
+  division: string;
+  specialization: string;
+  jobId: string;
+  architectureId?: string;
+  task: string;
+  timestamp: string;
+  status: 'STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'VERIFIED';
+  toolsUsed: string[];
+  providerUsed: string;
+  result: string;
+  verificationResult?: string;
+  evidenceHash?: string;
+  errors?: string;
+  humanApprovalRequired: boolean;
+}
 export interface AgentTaskRequest {
   agentId: string;
   jobId: string;

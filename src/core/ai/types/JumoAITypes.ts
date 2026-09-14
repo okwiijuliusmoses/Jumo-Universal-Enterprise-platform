@@ -10,7 +10,7 @@ export type AIWorkforceDivision =
   | 'SECURITY_AEGIS'
   | 'TESTING_VERIFICATION'
   | 'GUARDIAN_GOVERNANCE'
-  | 'MANUFACTURING_ORCHESTRATION';
+  | 'SYSTEM_PROVISIONING';
 
 export type AgentLifecycleStatus = 
   | 'REGISTERED'
@@ -94,12 +94,12 @@ export interface AIAgentRecord {
   escalationRules?: string[];
 }
 
-export interface ManufacturingTaskRequest {
+export interface ProvisioningTaskRequest {
   taskId: string;
   requestorRole: string;
   institutionType?: string;
   institutionName?: string;
-  targetCategory: 'ERP_ECOSYSTEM' | 'JUMO_CLOUD_ECOSYSTEM' | 'SOFTWARE_ECOSYSTEM' | 'COMMERCIAL_PRODUCTS_ECOSYSTEM' | 'RESEARCH_INNOVATION_ECOSYSTEM';
+  targetCategory: string;
   requestedCapabilities: string[];
   architectureConstraints: string[];
   requestedBy: string;
@@ -115,9 +115,9 @@ export interface PipelineGateResult {
   timestamp: string;
 }
 
-export interface ManufacturingExecutionPlan {
+export interface ProvisioningExecutionPlan {
   planId: string;
-  request: ManufacturingTaskRequest;
+  request: ProvisioningTaskRequest;
   assignedOrchestratorId: string;
   assignedSwarmAgentIds: string[];
   pipelineGates: PipelineGateResult[];

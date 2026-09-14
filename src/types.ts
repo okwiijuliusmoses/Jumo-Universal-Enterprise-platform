@@ -124,7 +124,7 @@ export interface NotificationItem {
   read: boolean;
 }
 
-// JUMO UEOS Operational & Manufacturing Types
+// JUMO UEOS Operational & Provisioning Types
 export interface OperationalNode {
   id: string;
   name: string;
@@ -168,7 +168,7 @@ export interface CloudService {
   autoScaling: boolean;
 }
 
-export interface ManufacturingModule {
+export interface ProvisioningModule {
   id: string;
   name: string;
   category: "generator" | "validator" | "deployer" | "monitor";

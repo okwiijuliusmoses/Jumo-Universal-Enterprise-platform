@@ -1,6 +1,6 @@
 {
-  "name": "JUMO UEOS Sovereign Command",
-  "description": "National-scale digital manufacturing control-plane and sovereign operating layer for JUMO Universal Enterprise Operating System (UEOS), integrating specification validation, 420+ cognitive workforce architecture expansion, verification command center, and 32-stage manufacturing pipeline.",
+  "name": "JUMO FINTECH",
+  "description": "Unified financial enterprise operating system providing consolidated Core Banking, Digital Payments (Switch), and FAAP Accounting modules within a sovereign officer-portal architecture.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

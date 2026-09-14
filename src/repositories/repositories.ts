@@ -82,6 +82,26 @@ export const LedgerRepository = {
   }
 };
 
+// 2.1 Accounting Periods Repository
+export const PeriodRepository = {
+  findAll(): any[] {
+    return db.select<any>("accounting_periods");
+  },
+  findById(id: string): any | null {
+    const results = db.select<any>("accounting_periods", p => p.id === id);
+    return results.length > 0 ? results[0] : null;
+  },
+  save(period: any): any {
+    const exists = this.findById(period.id);
+    if (exists) {
+      db.update<any>("accounting_periods", p => p.id === period.id, () => period);
+      return period;
+    } else {
+      return db.insert<any>("accounting_periods", period);
+    }
+  }
+};
+
 // 3. Platform Dynamic Registries Repository
 export const RegistryRepository = {
   findAll(): RegistryRecord[] {

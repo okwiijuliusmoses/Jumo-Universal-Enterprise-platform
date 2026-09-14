@@ -104,10 +104,10 @@ export function PublicGateway({ onLoginSuccess }: PublicGatewayProps) {
 
             <div className="space-y-4 pt-4">
               <h1 className="text-xl font-black text-white tracking-tight leading-snug">
-                National Manufacturing Operating Environment
+                Sovereign Enterprise Operating Platform
               </h1>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Authoritative terminal for compiling, validating, and deploying JUMO ecosystem-grade services. Protected by the AEGIS Zero-Trust security framework.
+                Authoritative runtime environment for executing JUMO sovereign enterprise products and independent shared platforms. Protected by the AEGIS Zero-Trust framework.
               </p>
             </div>
           </div>

@@ -15,7 +15,7 @@ import saccoBlueprint from "../runtime/enterprise-blueprints/sacco.json";
 import healthcareBlueprint from "../runtime/enterprise-blueprints/healthcare.json";
 
 export interface SynthesizeInstitutionInput {
-  institutionType: "university" | "college" | "tvet" | "church" | "ngo" | "government" | "sacco" | "healthcare" | "banking" | "manufacturing" | "agriculture" | "hospitality" | "corporate" | "legal" | "logistics" | "realestate" | "telecom" | "insurance" | "retail" | "research" | "enterprise";
+  institutionType: "university" | "college" | "tvet" | "church" | "ngo" | "government" | "sacco" | "healthcare" | "banking" | "provisioning" | "agriculture" | "hospitality" | "corporate" | "legal" | "logistics" | "realestate" | "telecom" | "insurance" | "retail" | "research" | "enterprise";
   institutionName: string;
   country?: string;
   region?: string;
@@ -26,7 +26,7 @@ export interface SynthesizeInstitutionInput {
   financialModel?: string;
   customModules?: string[];
   
-  // Intelligent Manufacturing Extensions (v14)
+  // Intelligent Provisioning Extensions (v14)
   category?: string;
   regulatoryAuthority?: string;
   deploymentTarget?: string;
@@ -170,8 +170,8 @@ const ALL_10_PLATFORM_BLUEPRINTS: Record<string, ERPTemplateDefinition> = {
   // 5. SACCO
   "sacco-national-platform": saccoBlueprint as unknown as ERPTemplateDefinition,
 
-  // 6. Manufacturing
-  "manufacturing-national-platform": createPlatformBlueprint("manufacturing-national-platform", "Manufacturing & Industrial Enterprise Platform", "industrial", "JUMO MFG-NATIONAL PLATFORM", "manufacturing"),
+  // 6. Enterprise
+  "enterprise-national-platform": createPlatformBlueprint("enterprise-national-platform", "Commercial & Enterprise Operations Platform", "enterprise", "JUMO ENTERPRISE PLATFORM", "enterprise"),
 
   // 7. Agriculture
   "agriculture-national-platform": createPlatformBlueprint("agriculture-national-platform", "Agriculture & Agribusiness National Platform", "agriculture", "JUMO AGRI-NATIONAL PLATFORM", "agriculture"),

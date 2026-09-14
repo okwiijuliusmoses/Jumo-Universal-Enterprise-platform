@@ -1,36 +1,16 @@
-import { 
-  ArchitectureContract, 
-  ManufacturingJob, 
-  ManufacturingJobStatus, 
-  EngineeringAssignment, 
-  EngineeringTask, 
-  EngineeringAgent,
-  BuildArtifact,
-  DeploymentRecord,
-  VerificationFailureRecord,
-  CertificationRecord,
-  ManufacturingCategory
-} from "../factory/registry/HubRegistryTypes";
-import { JumoArchitectureLayer } from "../hub/architecture/JumoHybridArchitectureLayers";
+/**
+ * Authoritative Sovereign State Types
+ * Houses the core state definitions for the JUMO UEOS Sovereign Platform.
+ */
 
-export interface ArchitectureRequest {
-  id: string;
-  title: string;
-  problem: string;
-  targetUsers: string;
-  organization: string;
-  capabilities: string[];
-  infrastructure: string;
-  integrations: string[];
-  aiRequirements: string;
-  ecosystemType: ManufacturingCategory;
-  sector: string;
-  governmentScale?: string;
-  applicationType?: string;
-  detailedSpecification?: any;
-  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'COMPILED';
-  createdAt: string;
-}
+export type ProvisioningCategory = 
+  | 'GOVERNMENT'
+  | 'EDUCATION'
+  | 'FINANCIAL'
+  | 'RELIGIOUS'
+  | 'NON_PROFIT'
+  | 'COMMUNITY'
+  | 'SOVEREIGN_PLATFORM';
 
 export interface JumoBlueprint {
   blueprintId: string;
@@ -101,21 +81,6 @@ export interface AuditEvent {
   timestamp: string;
 }
 
-export interface ArchitectureExpansionTrace {
-  id: string;
-  specificationId: string;
-  requirement: string;
-  gap: string;
-  proposedLayerId: string;
-  dependencies: string[];
-  assignedAgents: string[];
-  reason: string;
-  recommendation: string;
-  evidenceHash: string;
-  status: 'PROPOSED' | 'REVIEWED' | 'APPROVED' | 'IMPLEMENTED';
-  timestamp: string;
-}
-
 export interface ApplicationBranding {
   name: string;
   productIdentity: string;
@@ -183,68 +148,20 @@ export interface InstallationConfig {
   };
 }
 
-export interface AgentWorkLog {
-  id: string;
-  agentId: string;
-  division: string;
-  specialization: string;
-  jobId: string;
-  architectureId?: string;
-  task: string;
-  timestamp: string;
-  status: 'STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'VERIFIED';
-  toolsUsed: string[];
-  providerUsed: string;
-  result: string;
-  verificationResult?: string;
-  evidenceHash?: string;
-  errors?: string;
-  humanApprovalRequired: boolean;
-}
-export interface CoordinationEvent {
-  id: string;
-  timestamp: string;
-  sourceStudio: string;
-  destinationStudio: string;
-  entityId: string;
-  action: string;
-  status: 'PENDING' | 'EXECUTED' | 'FAILED' | 'BLOCKED';
-  payload: any;
-}
-
 export interface SovereignState {
   branding: ApplicationBranding;
   installation: InstallationConfig;
-  architectureRequests: ArchitectureRequest[];
-  architectureContracts: ArchitectureContract[];
   blueprints: JumoBlueprint[];
-  engineeringAgents: EngineeringAgent[];
-  agentWorkLogs: AgentWorkLog[];
-  jobs: ManufacturingJob[];
-  buildArtifacts: BuildArtifact[];
-  deploymentRecords: DeploymentRecord[];
-  verificationFailures: VerificationFailureRecord[];
-  certificationRecords: CertificationRecord[];
   incidents: JumoIncident[];
   cloudSlots: DeploymentSlot[];
   auditEvents: AuditEvent[];
-  eventLog: CoordinationEvent[];
   verificationGates: VerificationGateResult[];
   databaseVolumes: DatabaseVolume[];
   migrations: SchemaMigration[];
   assets: LifecycleAsset[];
-  archLayers?: JumoArchitectureLayer[];
-  expansionTraces: ArchitectureExpansionTrace[];
   counters: {
     audit: number;
     event: number;
-    archReq: number;
-    archContract: number;
-    job: number;
-    artifact: number;
-    deployment: number;
-    failure: number;
-    certification: number;
   };
   cryptographicKeys: {
     primaryKey: string;
@@ -253,4 +170,14 @@ export interface SovereignState {
     lastRotation: string;
   };
   emergencyMode: boolean;
+}
+
+export interface VerificationLayer {
+  layerId: string;
+  name: string;
+  category: string;
+  gate: string;
+  enabled: boolean;
+  blocking: boolean;
+  standards: string[];
 }

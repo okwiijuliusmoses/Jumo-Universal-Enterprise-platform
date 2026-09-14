@@ -112,7 +112,7 @@ export class JumoApplicationCompletenessVerificationEngine {
         passedCount++;
         evidenceTrail.push({
           verificationId: `VERIF-PORTAL-${idx + 1}`,
-          stage: 'PRE_MANUFACTURING_ARCHITECTURE',
+          stage: 'PRE_PROVISIONING_ARCHITECTURE',
           gateName: 'PORTAL_COVERAGE_GATE',
           requirement: `Required Portal: ${portalName}`,
           component: `Application Engineering / ${portalName}`,
@@ -139,7 +139,7 @@ export class JumoApplicationCompletenessVerificationEngine {
 
         evidenceTrail.push({
           verificationId: `VERIF-PORTAL-${idx + 1}`,
-          stage: 'PRE_MANUFACTURING_ARCHITECTURE',
+          stage: 'PRE_PROVISIONING_ARCHITECTURE',
           gateName: 'PORTAL_COVERAGE_GATE',
           requirement: `Required Portal: ${portalName}`,
           component: `Application Engineering / ${portalName}`,
@@ -194,7 +194,7 @@ export class JumoApplicationCompletenessVerificationEngine {
       passedCount++;
       evidenceTrail.push({
         verificationId: 'VERIF-DATA-PERSISTENCE',
-        stage: 'PRE_MANUFACTURING_ARCHITECTURE',
+        stage: 'PRE_PROVISIONING_ARCHITECTURE',
         gateName: 'DATA_PERSISTENCE_GATE',
         requirement: 'Executable Relational Database Persistence Engine',
         component: 'Data Architecture / PostgreSQL ORM',
@@ -226,7 +226,7 @@ export class JumoApplicationCompletenessVerificationEngine {
       passedCount++;
       evidenceTrail.push({
         verificationId: 'VERIF-API-GATEWAY',
-        stage: 'PRE_MANUFACTURING_ARCHITECTURE',
+        stage: 'PRE_PROVISIONING_ARCHITECTURE',
         gateName: 'INGRESS_GATEWAY_GATE',
         requirement: 'Sovereign Ingress API Gateway',
         component: 'API & Integration / L039',

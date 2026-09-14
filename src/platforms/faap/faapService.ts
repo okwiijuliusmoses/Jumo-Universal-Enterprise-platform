@@ -201,3 +201,5 @@ export class FAAPService {
 }
 
 export const faapService = FAAPService.getInstance();
+export { faapEnterpriseEngine } from "./faapEnterpriseEngine";
+export * from "./faapEnterpriseTypes";

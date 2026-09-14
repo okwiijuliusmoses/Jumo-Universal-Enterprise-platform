@@ -3,17 +3,8 @@ import {
   type JumoArchitectureLayer,
 } from './JumoHybridArchitectureLayers';
 
-import {
-  JUMO_STUDIO_REGISTRY,
-  type JumoStudioDefinition,
-} from './JumoStudioRegistry';
-
 export interface JumoArchitectureRegistrationRequest {
   layer: JumoArchitectureLayer;
-}
-
-export interface JumoStudioRegistrationRequest {
-  studio: JumoStudioDefinition;
 }
 
 export class JumoHybridArchitectureControlPlane {
@@ -35,24 +26,12 @@ export class JumoHybridArchitectureControlPlane {
     return request.layer;
   }
 
-  registerStudio(
-    request: JumoStudioRegistrationRequest
-  ): JumoStudioDefinition {
-    JUMO_STUDIO_REGISTRY.upsert(request.studio);
-    return request.studio;
-  }
-
   layers(): JumoArchitectureLayer[] {
     return JUMO_HYBRID_ARCHITECTURE_REGISTRY.listLayers();
   }
 
-  studios(): JumoStudioDefinition[] {
-    return JUMO_STUDIO_REGISTRY.list();
-  }
-
   status() {
     const layers = this.layers();
-    const studios = this.studios();
 
     return {
       architecture: {
@@ -69,19 +48,9 @@ export class JumoHybridArchitectureControlPlane {
           JUMO_HYBRID_ARCHITECTURE_REGISTRY.validateDependencies(),
       },
 
-      studios: {
-        totalStudios: studios.length,
-        activeStudios: JUMO_STUDIO_REGISTRY.active().length,
-        executableStudios: JUMO_STUDIO_REGISTRY.executable().length,
-        humanFacingStudios:
-          JUMO_STUDIO_REGISTRY.humanFacing().length,
-      },
-
       extensibility: {
         fixedLayerLimit: false,
-        fixedStudioLimit: false,
         dynamicLayerRegistration: true,
-        dynamicStudioRegistration: true,
       },
     };
   }

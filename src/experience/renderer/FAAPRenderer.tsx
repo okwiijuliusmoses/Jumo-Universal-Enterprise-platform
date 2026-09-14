@@ -113,141 +113,13 @@ const currencySymbols: Record<CurrencyCode, string> = {
   NGN: "₦"
 };
 
-const initialJournals: JournalEntry[] = [
-  {
-    id: "JE-10001",
-    reference: "FAAP-GL-10001",
-    account: "1100 · Main Operating Bank",
-    description: "Institutional operating receipt",
-    debit: 245000000,
-    credit: 0,
-    currency: "UGX",
-    status: "Posted",
-    date: "2026-08-08"
-  },
-  {
-    id: "JE-10002",
-    reference: "FAAP-GL-10002",
-    account: "4100 · Service Revenue",
-    description: "Enterprise service revenue recognition",
-    debit: 0,
-    credit: 245000000,
-    currency: "UGX",
-    status: "Posted",
-    date: "2026-08-08"
-  },
-  {
-    id: "JE-10003",
-    reference: "FAAP-GL-10003",
-    account: "5200 · Operating Expense",
-    description: "Approved supplier expenditure",
-    debit: 18500000,
-    credit: 0,
-    currency: "UGX",
-    status: "Approved",
-    date: "2026-08-08"
-  },
-  {
-    id: "JE-10004",
-    reference: "FAAP-GL-10004",
-    account: "2100 · Accounts Payable",
-    description: "Supplier liability recognition",
-    debit: 0,
-    credit: 18500000,
-    currency: "UGX",
-    status: "Approved",
-    date: "2026-08-08"
-  }
-];
+const initialJournals: JournalEntry[] = [];
 
-const initialPayables: Payable[] = [
-  {
-    id: "AP-24001",
-    vendor: "Enterprise Infrastructure Services",
-    amount: 18500000,
-    currency: "UGX",
-    due: "2026-08-15",
-    status: "Pending Approval"
-  },
-  {
-    id: "AP-24002",
-    vendor: "Digital Communications Provider",
-    amount: 4200000,
-    currency: "UGX",
-    due: "2026-08-18",
-    status: "Approved"
-  },
-  {
-    id: "AP-24003",
-    vendor: "Cloud Infrastructure Partner",
-    amount: 3200,
-    currency: "USD",
-    due: "2026-08-20",
-    status: "Paid"
-  }
-];
+const initialPayables: Payable[] = [];
 
-const initialReceivables: Receivable[] = [
-  {
-    id: "AR-34001",
-    client: "Enterprise Platform Tenant",
-    amount: 78000000,
-    currency: "UGX",
-    due: "2026-08-12",
-    status: "Invoiced"
-  },
-  {
-    id: "AR-34002",
-    client: "National Services Institution",
-    amount: 124000000,
-    currency: "UGX",
-    due: "2026-08-10",
-    status: "Collected"
-  },
-  {
-    id: "AR-34003",
-    client: "Regional Enterprise Group",
-    amount: 8500,
-    currency: "USD",
-    due: "2026-08-25",
-    status: "Invoiced"
-  }
-];
+const initialReceivables: Receivable[] = [];
 
-const initialBudgets: Budget[] = [
-  {
-    id: "B-001",
-    department: "Digital Infrastructure",
-    category: "Operations",
-    allocated: 850000000,
-    committed: 420000000,
-    utilized: 318000000
-  },
-  {
-    id: "B-002",
-    department: "Enterprise Services",
-    category: "Service Delivery",
-    allocated: 620000000,
-    committed: 284000000,
-    utilized: 221000000
-  },
-  {
-    id: "B-003",
-    department: "Research & Innovation",
-    category: "Development",
-    allocated: 380000000,
-    committed: 141000000,
-    utilized: 96000000
-  },
-  {
-    id: "B-004",
-    department: "Administration",
-    category: "Corporate",
-    allocated: 260000000,
-    committed: 97000000,
-    utilized: 74000000
-  }
-];
+const initialBudgets: Budget[] = [];
 
 const tabs: Array<{
   id: FinanceTab;
@@ -468,10 +340,10 @@ export function FAAPRenderer() {
     );
   }, [journals, search]);
 
-  const totalAssets = 2840000000;
-  const totalLiabilities = 1160000000;
-  const netPosition = totalAssets - totalLiabilities;
-  const cashPosition = 1680000000;
+  const totalAssets = 0;
+  const totalLiabilities = 0;
+  const netPosition = 0;
+  const cashPosition = 0;
   const receivableValue = receivables
     .filter((r) => r.status === "Invoiced")
     .reduce((sum, r) => sum + r.amount, 0);
@@ -1200,12 +1072,9 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {[
-                    ["Enterprise Server Cluster", "FA-001", "UGX 820,000,000", "12.5%"],
-                    ["Office Property", "FA-002", "UGX 1,240,000,000", "2.5%"],
-                    ["Transport Fleet", "FA-003", "UGX 310,000,000", "20%"],
-                    ["Network Infrastructure", "FA-004", "UGX 185,000,000", "15%"],
-                    ["Office Equipment", "FA-005", "UGX 92,000,000", "20%"],
-                    ["Digital Infrastructure", "FA-006", "UGX 148,000,000", "25%"]
+                    ["Core Asset Alpha", "FA-001", "0", "0%"],
+                    ["Core Asset Beta", "FA-002", "0", "0%"],
+                    ["Core Asset Gamma", "FA-003", "0", "0%"]
                   ].map(([name, id, value, rate]) => (
                     <div
                       key={id}
@@ -1241,9 +1110,9 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
                   {[
-                    ["Inventory Value", "UGX 486,000,000", "FIFO"],
-                    ["Stock Turnover", "7.8x", "Annualized"],
-                    ["Pending Receipts", "26", "Purchase orders"]
+                    ["Inventory Value", "0", "Calculated"],
+                    ["Stock Turnover", "0.0x", "Calculated"],
+                    ["Pending Receipts", "0", "Active POs"]
                   ].map(([label, value, detail]) => (
                     <div
                       key={label}
@@ -1287,10 +1156,10 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
                   {[
-                    ["Employees", "1,284"],
-                    ["Gross Payroll", "UGX 1.84B"],
-                    ["Statutory Deductions", "UGX 312M"],
-                    ["Net Disbursement", "UGX 1.53B"]
+                    ["Personnel Count", "0"],
+                    ["Gross Payroll", "0"],
+                    ["Statutory Deductions", "0"],
+                    ["Net Disbursement", "0"]
                   ].map(([label, value]) => (
                     <MetricCard
                       key={label}
@@ -1353,9 +1222,9 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {[
-                    ["VAT Control", "18%", "Current configured rate"],
-                    ["VAT Pool", "UGX 160.27M", "Collected"],
-                    ["WHT Payable", "UGX 18.9M", "Pending statutory settlement"]
+                    ["VAT Control", "0%", "Configured rate"],
+                    ["VAT Pool", "0", "Accumulated"],
+                    ["WHT Payable", "0", "Pending settlement"]
                   ].map(([label, value, detail]) => (
                     <div
                       key={label}
@@ -1385,10 +1254,10 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                   {[
-                    ["UGX", "UGX 1.68B", "Primary liquidity"],
-                    ["USD", "$184,200", "Settlement reserve"],
-                    ["EUR", "€72,400", "Operating reserve"],
-                    ["KES", "KES 9.4M", "Regional reserve"]
+                    ["UGX", "0", "Local liquidity"],
+                    ["USD", "0", "Settlement reserve"],
+                    ["EUR", "0", "Operating reserve"],
+                    ["KES", "0", "Regional reserve"]
                   ].map(([currency, amount, detail]) => (
                     <div
                       key={currency}
@@ -1486,9 +1355,9 @@ export function FAAPRenderer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                   {[
-                    ["Ledger Integrity", "100%", "Passed"],
-                    ["Segregation of Duties", "98.7%", "Healthy"],
-                    ["Approval Compliance", "96.4%", "Healthy"],
+                    ["Ledger Integrity", "100%", "Verified"],
+                    ["Segregation of Duties", "100%", "Healthy"],
+                    ["Approval Compliance", "100%", "Healthy"],
                     ["Audit Evidence", "100%", "Available"]
                   ].map(([name, value, status]) => (
                     <div

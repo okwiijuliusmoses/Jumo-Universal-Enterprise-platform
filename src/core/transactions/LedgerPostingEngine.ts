@@ -1,9 +1,9 @@
 
-import { UniversalTransaction } from "../faap/types";
+import { LedgerEngine } from "../faap/LedgerEngine";
+import { LedgerEntryRecord } from "../../models/models";
 
 export class LedgerPostingEngine {
-  static validate(transaction: UniversalTransaction) {
-    // SUM(debits) === SUM(credits) check
-    return true; 
+  static validate(entries: Omit<LedgerEntryRecord, "id" | "journalId">[]) {
+    return LedgerEngine.validateBalance(entries);
   }
 }

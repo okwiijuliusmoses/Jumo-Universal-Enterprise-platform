@@ -12,7 +12,7 @@
 export type JumoAILifecycleStage =
   | 'SPECIFICATION'
   | 'ARCHITECTURE'
-  | 'MANUFACTURING'
+  | 'PROVISIONING'
   | 'VERIFICATION'
   | 'TESTING'
   | 'PACKAGING'
@@ -75,7 +75,7 @@ export interface JumoAIVerificationDetection {
 const ALL_LIFECYCLE_STAGES: JumoAILifecycleStage[] = [
   'SPECIFICATION',
   'ARCHITECTURE',
-  'MANUFACTURING',
+  'PROVISIONING',
   'VERIFICATION',
   'TESTING',
   'PACKAGING',

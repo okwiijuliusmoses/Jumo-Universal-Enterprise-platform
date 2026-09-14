@@ -13,7 +13,7 @@ Core systems are protected.
 - Registry Contracts
 - Authentication Flow
 - Tenant Isolation Model
-- Factory Architecture
+- Provisioning & Provisioner Architecture
 
 ### Commercial Platform Expansion (AI Digital Hybrid Standard)
 Platforms (Cloud, Marketplace, API Management, Data Intelligence, Audit, FAAP, Pay, etc.) are evolving into independent, installable, AI-driven products operating on top of the protected UEOS Kernel.

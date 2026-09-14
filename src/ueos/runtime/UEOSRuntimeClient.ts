@@ -65,7 +65,7 @@ export class UEOSRuntimeClient {
   }
 
   static async provisionPlatform(templateId: string, config: any, signature: string) {
-    const response = await fetch(`${this.BASE_URL}/factory/provision`, {
+    const response = await fetch(`${this.BASE_URL}/provision`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ templateId, config, signature })
@@ -74,25 +74,15 @@ export class UEOSRuntimeClient {
     return response.json();
   }
 
-  static async fetchFactoryMetadata() {
-    const response = await fetch(`${this.BASE_URL}/factory/metadata`);
-    if (!response.ok) throw new Error("Failed to fetch factory metadata");
+  static async fetchProvisioningMetadata() {
+    const response = await fetch(`${this.BASE_URL}/provision/metadata`);
+    if (!response.ok) throw new Error("Failed to fetch provisioning metadata");
     return response.json();
   }
 
   static async fetchDigitalTwin(id: string) {
     const response = await fetch(`${this.BASE_URL}/digital-twin/${id}`);
     if (!response.ok) throw new Error("Failed to fetch digital twin");
-    return response.json();
-  }
-
-  static async runManufacturingPipeline(templateId: string, ecosystemId: string) {
-    const response = await fetch(`${this.BASE_URL}/factory/pipeline`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ templateId, ecosystemId })
-    });
-    if (!response.ok) throw new Error("Manufacturing pipeline failed");
     return response.json();
   }
 }

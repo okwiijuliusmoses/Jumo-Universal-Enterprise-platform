@@ -31,7 +31,7 @@ export function SecurityRegistryRenderer() {
     { email: "okwiijuliusmoses@gmail.com", name: "okwiijuliusmoses", role: "SecOps_Administrator", trustLevel: "L4_High_Trust", mfa: "ACTIVE", lastActive: "Just Now" },
     { email: "faap-controller@jumo.net", name: "FAAP Supervisor", role: "FAAP_Controller", trustLevel: "L3_Elevated", mfa: "ACTIVE", lastActive: "14m ago" },
     { email: "kernel-operator@jumo.net", name: "Kernel System Daemon", role: "Kernel_Operator", trustLevel: "L3_Elevated", mfa: "ACTIVE", lastActive: "2m ago" },
-    { email: "dev-builder@jumo.net", name: "ERP Manufacturing System", role: "Developer", trustLevel: "L2_Standard", mfa: "ACTIVE", lastActive: "Just Now" }
+    { email: "dev-builder@jumo.net", name: "ERP Provisioning System", role: "Developer", trustLevel: "L2_Standard", mfa: "ACTIVE", lastActive: "Just Now" }
   ]);
 
   // PKI / Certificate States

@@ -4,7 +4,6 @@ import { Cpu, Server, Activity, Shield, ArrowRight, Settings, Database, BrainCir
 import { UEOSRuntimeClient } from "../../ueos/runtime/UEOSRuntimeClient";
 import { JumoAIAgentRegistry } from "../../core/ai/registry/JumoAIAgentRegistry";
 import { AIAgentRecord, AIWorkforceDivision } from "../../core/ai/types/JumoAITypes";
-import { UniversalHubRegistry } from "../../core/factory/registry/UniversalHubRegistry";
 
 export function AIGatewayRenderer() {
   const [activeTab, setActiveTab] = useState<"gateway" | "agents" | "models" | "memory" | "governance">("gateway");
@@ -110,7 +109,7 @@ export function AIGatewayRenderer() {
     { id: "models", title: "JUMO Model Gateway", icon: BrainCircuit, detail: "Gemini 3.6 Flash / 3.1 Pro & Sovereign Local Runtime", status: "Operational" },
     { id: "memory", title: "Semantic Memory & RAG", icon: Database, detail: "Tenant-Isolated Knowledge Scopes", status: "Enforced" },
     { id: "governance", title: "JUMO AEGIS Security & Audit", icon: Shield, detail: "Zero Trust & Anti-Deletion Guardian", status: "Active" },
-    { id: "manufacturing", title: "JUMO National Manufacturing Hub", icon: Zap, detail: `${UniversalHubRegistry.getERPEcosystems().length} ERP Ecosystems Configured`, status: "Ready" },
+    { id: "products", title: "Sovereign Commercial Products", icon: Zap, detail: "6 Independent Enterprise Applications Active", status: "Ready" },
     { id: "eval", title: "Reasoning & Cognitive Telemetry", icon: BarChart3, detail: "Model Policy & Pipeline Gates", status: "100% Passed" },
   ];
 
@@ -132,7 +131,7 @@ export function AIGatewayRenderer() {
 
       {/* Division Selector Filter */}
       <div className="flex flex-wrap gap-3">
-        {["ALL", "ARCHITECTURE", "ERP_ENGINEERING", "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING", "SOFTWARE_ENGINEERING", "INTELLIGENCE", "SECURITY_AEGIS", "TESTING_VERIFICATION", "GUARDIAN_GOVERNANCE", "MANUFACTURING_ORCHESTRATION"].map(div => (
+        {["ALL", "ARCHITECTURE", "ERP_ENGINEERING", "COMMERCIAL_PRODUCTS_ECOSYSTEM_ENGINEERING", "SOFTWARE_ENGINEERING", "INTELLIGENCE", "SECURITY_AEGIS", "TESTING_VERIFICATION", "GUARDIAN_GOVERNANCE", "SYSTEM_PROVISIONING"].map(div => (
           <button
             key={div}
             onClick={() => setSelectedDivision(div)}
@@ -221,7 +220,7 @@ export function AIGatewayRenderer() {
                    </div>
                 </div>
                 <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-2xl">
-                  Universal cognitive gateway and sovereign agent orchestration layer. Managing national reasoning models, tenant-isolated vector memory, and autonomous AI manufacturing swarms.
+                  Universal cognitive gateway and sovereign agent orchestration layer. Managing national reasoning models, tenant-isolated vector memory, and autonomous AI cognitive swarms.
                 </p>
               </div>
               <div className="bg-white/5 backdrop-blur-3xl border border-white/10 p-12 rounded-[3.5rem] flex flex-col items-center justify-center text-center shadow-inner group min-w-[300px]">

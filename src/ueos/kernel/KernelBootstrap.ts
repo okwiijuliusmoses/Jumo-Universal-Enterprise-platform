@@ -40,18 +40,18 @@ export class KernelBootstrap implements PlatformService {
       critical: true
     },
     {
-      id: "factory-engine",
-      name: "Universal ERP Manufacturing Factory Engine",
+      id: "provisioning-engine",
+      name: "Universal ERP Provisioning & Lifecycle Engine",
       version: "13.0.0",
-      integrityHash: "sha256-factory-mfg-lock-v13-secure",
+      integrityHash: "sha256-provisioning-lifecycle-lock-v13-secure",
       status: "LOCKED",
       critical: true
     },
     {
-      id: "provisioning-engine",
-      name: "Cryptographic Provisioning & Instance Lifecycle Engine",
+      id: "security-engine",
+      name: "Cryptographic Security & Identity Lifecycle Engine",
       version: "13.0.0",
-      integrityHash: "sha256-provisioning-lifecycle-lock-v13-secure",
+      integrityHash: "sha256-security-lifecycle-lock-v13-secure",
       status: "LOCKED",
       critical: true
     }
@@ -61,7 +61,7 @@ export class KernelBootstrap implements PlatformService {
     { endpoint: "/api/ueos/ecosystems", methods: ["GET"], locked: true },
     { endpoint: "/api/ueos/templates", methods: ["GET"], locked: true },
     { endpoint: "/api/ueos/instances", methods: ["GET", "POST", "DELETE"], locked: true },
-    { endpoint: "/api/ueos/registry/factory/provision", methods: ["POST"], locked: true },
+    { endpoint: "/api/ueos/registry/provision", methods: ["POST"], locked: true },
     { endpoint: "/api/ueos/runtime/telemetry", methods: ["GET"], locked: true },
     { endpoint: "/api/ueos/faap/transaction/orchestrate", methods: ["POST"], locked: true }
   ];

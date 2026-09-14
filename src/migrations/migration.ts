@@ -71,18 +71,18 @@ export async function runMigrations() {
   const accounts = LedgerRepository.findAllAccounts();
   if (accounts.length === 0) {
     console.log("[MIGRATION] Seeding standard FAAP Chart of Accounts balances...");
-    LedgerRepository.saveAccount({ code: "1010-CASH", name: "Cooperative Vault Cash", category: "Asset", balance: 142500.50 });
-    LedgerRepository.saveAccount({ code: "1200-LOANS", name: "Outstanding Member Loans", category: "Asset", balance: 489200.00 });
-    LedgerRepository.saveAccount({ code: "2010-SAVINGS", name: "Member Savings Deposits", category: "Liability", balance: 350450.00 });
-    LedgerRepository.saveAccount({ code: "3010-SHARES", name: "Cooperative Capital Shares", category: "Equity", balance: 275000.00 });
-    LedgerRepository.saveAccount({ code: "4010-INTEREST", name: "Loan Interest Revenue", category: "Revenue", balance: 12500.25 });
-    LedgerRepository.saveAccount({ code: "5010-SALARIES", name: "Staff Payroll Expense", category: "Expense", balance: 6250.00 });
+    LedgerRepository.saveAccount({ code: "1010-CASH", name: "Cooperative Vault Cash", category: "Asset", balance: 142500.50, status: "Active" });
+    LedgerRepository.saveAccount({ code: "1200-LOANS", name: "Outstanding Member Loans", category: "Asset", balance: 489200.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "2010-SAVINGS", name: "Member Savings Deposits", category: "Liability", balance: 350450.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "3010-SHARES", name: "Cooperative Capital Shares", category: "Equity", balance: 275000.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "4010-INTEREST", name: "Loan Interest Revenue", category: "Revenue", balance: 12500.25, status: "Active" });
+    LedgerRepository.saveAccount({ code: "5010-SALARIES", name: "Staff Payroll Expense", category: "Expense", balance: 6250.00, status: "Active" });
     
     // Hardened JUMO UEOS Master Treasury Ledger Accounts
-    LedgerRepository.saveAccount({ code: "1020-JUMO-TREASURY", name: "JUMO Master Treasury Cash Reserves", category: "Asset", balance: 250000.00 });
-    LedgerRepository.saveAccount({ code: "4020-JUMO-FEES", name: "JUMO Master Treasury Platform Service Fees", category: "Revenue", balance: 12450.00 });
-    LedgerRepository.saveAccount({ code: "1030-CLEARING-TRANSIT", name: "JUMO Fintech Transit Clearing Pool", category: "Asset", balance: 50000.00 });
-    LedgerRepository.saveAccount({ code: "4030-RECONCILIATION-RESERVE", name: "JUMO Ledger Discrepancy Reserve Offset", category: "Equity", balance: 0.00 });
+    LedgerRepository.saveAccount({ code: "1020-JUMO-TREASURY", name: "JUMO Master Treasury Cash Reserves", category: "Asset", balance: 250000.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "4020-JUMO-FEES", name: "JUMO Master Treasury Platform Service Fees", category: "Revenue", balance: 12450.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "1030-CLEARING-TRANSIT", name: "JUMO Fintech Transit Clearing Pool", category: "Asset", balance: 50000.00, status: "Active" });
+    LedgerRepository.saveAccount({ code: "4030-RECONCILIATION-RESERVE", name: "JUMO Ledger Discrepancy Reserve Offset", category: "Equity", balance: 0.00, status: "Active" });
   }
 
   // 3. Seed Platform registries

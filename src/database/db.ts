@@ -187,7 +187,15 @@ export class JUMODBEngine {
           code VARCHAR(100) PRIMARY KEY,
           name VARCHAR(255),
           category VARCHAR(100),
-          balance NUMERIC
+          balance NUMERIC,
+          status VARCHAR(50)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_accounting_periods (
+          id VARCHAR(100) PRIMARY KEY,
+          start_date VARCHAR(100),
+          end_date VARCHAR(100),
+          status VARCHAR(50)
         );
 
         CREATE TABLE IF NOT EXISTS ueos_registries (
@@ -289,6 +297,25 @@ export class JUMODBEngine {
           type VARCHAR(50),
           description TEXT
         );
+
+        CREATE TABLE IF NOT EXISTS ueos_journals (
+          id VARCHAR(100) PRIMARY KEY,
+          date VARCHAR(100),
+          reference VARCHAR(255),
+          description TEXT,
+          status VARCHAR(50),
+          source VARCHAR(50),
+          created_at VARCHAR(100)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_ledger_entries (
+          id VARCHAR(100) PRIMARY KEY,
+          journal_id VARCHAR(100),
+          account_id VARCHAR(100),
+          debit NUMERIC,
+          credit NUMERIC,
+          currency VARCHAR(10)
+        );
       `);
       console.log("[DATABASE] PostgreSQL tables verified/created.");
     } catch (err: any) {
@@ -346,7 +373,18 @@ export class JUMODBEngine {
             code: r.code,
             name: r.name,
             category: r.category,
-            balance: parseFloat(r.balance)
+            balance: parseFloat(r.balance),
+            status: r.status
+          }));
+        }
+
+        const rPeriods = await this.pool.query("SELECT * FROM ueos_accounting_periods");
+        if (rPeriods.rows.length > 0) {
+          this.data["accounting_periods"] = rPeriods.rows.map((r: any) => ({
+            id: r.id,
+            startDate: r.start_date,
+            endDate: r.end_date,
+            status: r.status
           }));
         }
 
@@ -483,6 +521,31 @@ export class JUMODBEngine {
           }));
         }
 
+        const rJournals = await this.pool.query("SELECT * FROM ueos_journals");
+        if (rJournals.rows.length > 0) {
+          this.data["journals"] = rJournals.rows.map((r: any) => ({
+            id: r.id,
+            date: r.date,
+            reference: r.reference,
+            description: r.description,
+            status: r.status,
+            source: r.source,
+            createdAt: r.created_at
+          }));
+        }
+
+        const rEntries = await this.pool.query("SELECT * FROM ueos_ledger_entries");
+        if (rEntries.rows.length > 0) {
+          this.data["ledger_entries"] = rEntries.rows.map((r: any) => ({
+            id: r.id,
+            journalId: r.journal_id,
+            accountId: r.account_id,
+            debit: parseFloat(r.debit),
+            credit: parseFloat(r.credit),
+            currency: r.currency
+          }));
+        }
+
         console.log("[DATABASE] Loaded state from PostgreSQL successfully.");
       } catch (err: any) {
         console.error("[DATABASE_ERROR] PostgreSQL sync load failed:", err.message);
@@ -549,8 +612,13 @@ export class JUMODBEngine {
         );
       } else if (tableName === "ledger_accounts") {
         await this.pool.query(
-          "INSERT INTO ueos_ledger_accounts (code, name, category, balance) VALUES ($1, $2, $3, $4) ON CONFLICT (code) DO NOTHING",
-          [record.code, record.name, record.category, record.balance]
+          "INSERT INTO ueos_ledger_accounts (code, name, category, balance, status) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (code) DO NOTHING",
+          [record.code, record.name, record.category, record.balance, record.status]
+        );
+      } else if (tableName === "accounting_periods") {
+        await this.pool.query(
+          "INSERT INTO ueos_accounting_periods (id, start_date, end_date, status) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.startDate, record.endDate, record.status]
         );
       } else if (tableName === "registries") {
         await this.pool.query(
@@ -607,6 +675,16 @@ export class JUMODBEngine {
           "INSERT INTO ueos_components (id, name, type, description) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING",
           [record.id, record.name, record.type, record.description]
         );
+      } else if (tableName === "journals") {
+        await this.pool.query(
+          "INSERT INTO ueos_journals (id, date, reference, description, status, source, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.date, record.reference, record.description, record.status, record.source, record.createdAt]
+        );
+      } else if (tableName === "ledger_entries") {
+        await this.pool.query(
+          "INSERT INTO ueos_ledger_entries (id, journal_id, account_id, debit, credit, currency) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.journalId, record.accountId, record.debit, record.credit, record.currency]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres insert sync failed for ${tableName}:`, err.message);
@@ -652,8 +730,13 @@ export class JUMODBEngine {
         );
       } else if (tableName === "ledger_accounts") {
         await this.pool.query(
-          "UPDATE ueos_ledger_accounts SET name = $2, category = $3, balance = $4 WHERE code = $1",
-          [record.code, record.name, record.category, record.balance]
+          "UPDATE ueos_ledger_accounts SET name = $2, category = $3, balance = $4, status = $5 WHERE code = $1",
+          [record.code, record.name, record.category, record.balance, record.status]
+        );
+      } else if (tableName === "accounting_periods") {
+        await this.pool.query(
+          "UPDATE ueos_accounting_periods SET start_date = $2, end_date = $3, status = $4 WHERE id = $1",
+          [record.id, record.startDate, record.endDate, record.status]
         );
       } else if (tableName === "registries") {
         await this.pool.query(
@@ -710,6 +793,16 @@ export class JUMODBEngine {
           "UPDATE ueos_components SET name = $2, type = $3, description = $4 WHERE id = $1",
           [record.id, record.name, record.type, record.description]
         );
+      } else if (tableName === "journals") {
+        await this.pool.query(
+          "UPDATE ueos_journals SET date = $2, reference = $3, description = $4, status = $5, source = $6, created_at = $7 WHERE id = $1",
+          [record.id, record.date, record.reference, record.description, record.status, record.source, record.createdAt]
+        );
+      } else if (tableName === "ledger_entries") {
+        await this.pool.query(
+          "UPDATE ueos_ledger_entries SET journal_id = $2, account_id = $3, debit = $4, credit = $5, currency = $6 WHERE id = $1",
+          [record.id, record.journalId, record.accountId, record.debit, record.credit, record.currency]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres update sync failed for ${tableName}:`, err.message);
@@ -744,6 +837,8 @@ export class JUMODBEngine {
         await this.pool.query("DELETE FROM ueos_users WHERE email = $1", [record.email]);
       } else if (tableName === "ledger_accounts") {
         await this.pool.query("DELETE FROM ueos_ledger_accounts WHERE code = $1", [record.code]);
+      } else if (tableName === "accounting_periods") {
+        await this.pool.query("DELETE FROM ueos_accounting_periods WHERE id = $1", [record.id]);
       } else if (tableName === "registries") {
         await this.pool.query("DELETE FROM ueos_registries WHERE name = $1", [record.name]);
       } else if (tableName === "audit_logs") {
@@ -766,6 +861,10 @@ export class JUMODBEngine {
         await this.pool.query("DELETE FROM ueos_forms WHERE id = $1", [record.id]);
       } else if (tableName === "components") {
         await this.pool.query("DELETE FROM ueos_components WHERE id = $1", [record.id]);
+      } else if (tableName === "journals") {
+        await this.pool.query("DELETE FROM ueos_journals WHERE id = $1", [record.id]);
+      } else if (tableName === "ledger_entries") {
+        await this.pool.query("DELETE FROM ueos_ledger_entries WHERE id = $1", [record.id]);
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres delete sync failed for ${tableName}:`, err.message);
@@ -785,7 +884,10 @@ export class JUMODBEngine {
                         tableName === "audit_logs" ? "ueos_audit_logs" :
                         tableName === "workflows" ? "ueos_workflows" :
                         tableName === "ai_agent_memory" ? "ueos_ai_agent_memory" :
-                        tableName === "secrets_vault" ? "ueos_secrets_vault" : null;
+                        tableName === "secrets_vault" ? "ueos_secrets_vault" :
+                        tableName === "journals" ? "ueos_journals" :
+                        tableName === "ledger_entries" ? "ueos_ledger_entries" :
+                        tableName === "accounting_periods" ? "ueos_accounting_periods" : null;
         if (pgTable) {
           this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch((err: any) => {
             console.error(`[DATABASE_ERROR] Async PostgreSQL truncate failed for ${tableName}:`, err.message);
