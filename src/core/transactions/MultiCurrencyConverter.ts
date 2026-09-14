@@ -44,10 +44,11 @@ export class MultiCurrencyConverter {
     const rate = await this.fetchLiveExchangeRate(normalizedFrom, normalizedTo);
 
     // Minor unit integer calculations: prevent standard float multiplication drift
-    // By scaling rate by a factor of 100,000 for high-precision integer division if necessary,
-    // or performing highly controlled arithmetic.
-    const scaledRate = Math.round(rate * 1000000);
-    const convertedAmountMinor = Math.round((originalAmountMinor * scaledRate) / 1000000);
+    // Utilizes strict BigInt scaling to execute precise integer-only division
+    const amtBig = BigInt(originalAmountMinor);
+    const scaledRateBig = BigInt(Math.round(rate * 1000000));
+    const convertedBig = (amtBig * scaledRateBig) / 1000000n;
+    const convertedAmountMinor = Number(convertedBig);
 
     return {
       originalAmountMinor,

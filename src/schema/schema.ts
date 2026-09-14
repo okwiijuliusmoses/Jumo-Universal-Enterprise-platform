@@ -205,5 +205,62 @@ export const UEOS_SCHEMAS: Record<string, TableSchema> = {
       { name: "type", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "UI, SERVICE, or DATA" },
       { name: "description", type: "TEXT", primaryKey: false, nullable: false, description: "Description" }
     ]
+  },
+  parties: {
+    tableName: "parties",
+    description: "Universal business/institution parties (customers, students, members).",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique Party ID" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "routingCode", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "10-digit public routing resolver code" },
+      { name: "name", type: "VARCHAR(255)", primaryKey: false, nullable: false, description: "Party name/identity" },
+      { name: "type", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Type of party (e.g., student, retail_customer)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "Status: ACTIVE, FROZEN, SUSPENDED" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Record creation date" }
+    ]
+  },
+  open_items: {
+    tableName: "open_items",
+    description: "Unpaid obligations (tuition invoice, sales bill, faith pledge).",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique obligation identifier" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Payer party identifier" },
+      { name: "amountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Total obligation in minor units (integer)" },
+      { name: "allocatedAmountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Allocated/paid amount in minor units (integer)" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Currency code" },
+      { name: "type", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Type of obligation (e.g., tuition, pledge, invoice)" },
+      { name: "dueDate", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Payment due date" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Obligation creation timestamp" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "UNPAID, PARTIALLY_PAID, PAID" }
+    ]
+  },
+  wallets: {
+    tableName: "wallets",
+    description: "Sovereign multi-tenant digital S-wallets tracking entity liabilities.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique Wallet ID" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Owner party identifier" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Wallet currency code" },
+      { name: "balanceMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Wallet balance in minor units (integer)" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "ACTIVE, FROZEN, CLOSED" },
+      { name: "updatedAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Last state change timestamp" }
+    ]
+  },
+  processed_payments: {
+    tableName: "processed_payments",
+    description: "Payment transaction tracking ledger for strong idempotency boundaries.",
+    fields: [
+      { name: "id", type: "VARCHAR(100)", primaryKey: true, nullable: false, description: "Unique reference/idempotency key" },
+      { name: "tenantId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Associated Tenant ID" },
+      { name: "partyId", type: "VARCHAR(100)", primaryKey: false, nullable: false, description: "Payer party identifier" },
+      { name: "amountMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Payment amount in minor units" },
+      { name: "currency", type: "VARCHAR(10)", primaryKey: false, nullable: false, description: "Payment currency code" },
+      { name: "allocatedMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Amount allocated to open items" },
+      { name: "residualMinor", type: "BIGINT", primaryKey: false, nullable: false, description: "Amount routed to overpayment/wallet" },
+      { name: "status", type: "VARCHAR(50)", primaryKey: false, nullable: false, description: "PROCESSED, VOIDED" },
+      { name: "createdAt", type: "TIMESTAMP", primaryKey: false, nullable: false, description: "Payment processing timestamp" }
+    ]
   }
 };

@@ -316,6 +316,51 @@ export class JUMODBEngine {
           credit NUMERIC,
           currency VARCHAR(10)
         );
+
+        CREATE TABLE IF NOT EXISTS ueos_parties (
+          id VARCHAR(100) PRIMARY KEY,
+          tenant_id VARCHAR(100),
+          routing_code VARCHAR(100),
+          name VARCHAR(255),
+          type VARCHAR(100),
+          status VARCHAR(50),
+          created_at VARCHAR(100)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_open_items (
+          id VARCHAR(100) PRIMARY KEY,
+          tenant_id VARCHAR(100),
+          party_id VARCHAR(100),
+          amount_minor BIGINT,
+          allocated_amount_minor BIGINT,
+          currency VARCHAR(10),
+          type VARCHAR(100),
+          due_date VARCHAR(100),
+          created_at VARCHAR(100),
+          status VARCHAR(50)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_wallets (
+          id VARCHAR(100) PRIMARY KEY,
+          tenant_id VARCHAR(100),
+          party_id VARCHAR(100),
+          currency VARCHAR(10),
+          balance_minor BIGINT,
+          status VARCHAR(50),
+          updated_at VARCHAR(100)
+        );
+
+        CREATE TABLE IF NOT EXISTS ueos_processed_payments (
+          id VARCHAR(100) PRIMARY KEY,
+          tenant_id VARCHAR(100),
+          party_id VARCHAR(100),
+          amount_minor BIGINT,
+          currency VARCHAR(10),
+          allocated_minor BIGINT,
+          residual_minor BIGINT,
+          status VARCHAR(50),
+          created_at VARCHAR(100)
+        );
       `);
       console.log("[DATABASE] PostgreSQL tables verified/created.");
     } catch (err: any) {
@@ -546,6 +591,63 @@ export class JUMODBEngine {
           }));
         }
 
+        const rParties = await this.pool.query("SELECT * FROM ueos_parties");
+        if (rParties.rows.length > 0) {
+          this.data["parties"] = rParties.rows.map((r: any) => ({
+            id: r.id,
+            tenantId: r.tenant_id,
+            routingCode: r.routing_code,
+            name: r.name,
+            type: r.type,
+            status: r.status,
+            createdAt: r.created_at
+          }));
+        }
+
+        const rOpenItems = await this.pool.query("SELECT * FROM ueos_open_items");
+        if (rOpenItems.rows.length > 0) {
+          this.data["open_items"] = rOpenItems.rows.map((r: any) => ({
+            id: r.id,
+            tenantId: r.tenant_id,
+            partyId: r.party_id,
+            amountMinor: parseInt(r.amount_minor),
+            allocatedAmountMinor: parseInt(r.allocated_amount_minor),
+            currency: r.currency,
+            type: r.type,
+            dueDate: r.due_date,
+            createdAt: r.created_at,
+            status: r.status
+          }));
+        }
+
+        const rWallets = await this.pool.query("SELECT * FROM ueos_wallets");
+        if (rWallets.rows.length > 0) {
+          this.data["wallets"] = rWallets.rows.map((r: any) => ({
+            id: r.id,
+            tenantId: r.tenant_id,
+            partyId: r.party_id,
+            currency: r.currency,
+            balanceMinor: parseInt(r.balance_minor),
+            status: r.status,
+            updatedAt: r.updated_at
+          }));
+        }
+
+        const rProcessedPayments = await this.pool.query("SELECT * FROM ueos_processed_payments");
+        if (rProcessedPayments.rows.length > 0) {
+          this.data["processed_payments"] = rProcessedPayments.rows.map((r: any) => ({
+            id: r.id,
+            tenantId: r.tenant_id,
+            partyId: r.party_id,
+            amountMinor: parseInt(r.amount_minor),
+            currency: r.currency,
+            allocatedMinor: parseInt(r.allocated_minor),
+            residualMinor: parseInt(r.residual_minor),
+            status: r.status,
+            createdAt: r.created_at
+          }));
+        }
+
         console.log("[DATABASE] Loaded state from PostgreSQL successfully.");
       } catch (err: any) {
         console.error("[DATABASE_ERROR] PostgreSQL sync load failed:", err.message);
@@ -685,6 +787,26 @@ export class JUMODBEngine {
           "INSERT INTO ueos_ledger_entries (id, journal_id, account_id, debit, credit, currency) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO NOTHING",
           [record.id, record.journalId, record.accountId, record.debit, record.credit, record.currency]
         );
+      } else if (tableName === "parties") {
+        await this.pool.query(
+          "INSERT INTO ueos_parties (id, tenant_id, routing_code, name, type, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.tenantId, record.routingCode, record.name, record.type, record.status, record.createdAt]
+        );
+      } else if (tableName === "open_items") {
+        await this.pool.query(
+          "INSERT INTO ueos_open_items (id, tenant_id, party_id, amount_minor, allocated_amount_minor, currency, type, due_date, created_at, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.tenantId, record.partyId, record.amountMinor, record.allocatedAmountMinor, record.currency, record.type, record.dueDate, record.createdAt, record.status]
+        );
+      } else if (tableName === "wallets") {
+        await this.pool.query(
+          "INSERT INTO ueos_wallets (id, tenant_id, party_id, currency, balance_minor, status, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.tenantId, record.partyId, record.currency, record.balanceMinor, record.status, record.updatedAt]
+        );
+      } else if (tableName === "processed_payments") {
+        await this.pool.query(
+          "INSERT INTO ueos_processed_payments (id, tenant_id, party_id, amount_minor, currency, allocated_minor, residual_minor, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (id) DO NOTHING",
+          [record.id, record.tenantId, record.partyId, record.amountMinor, record.currency, record.allocatedMinor, record.residualMinor, record.status, record.createdAt]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres insert sync failed for ${tableName}:`, err.message);
@@ -803,6 +925,26 @@ export class JUMODBEngine {
           "UPDATE ueos_ledger_entries SET journal_id = $2, account_id = $3, debit = $4, credit = $5, currency = $6 WHERE id = $1",
           [record.id, record.journalId, record.accountId, record.debit, record.credit, record.currency]
         );
+      } else if (tableName === "parties") {
+        await this.pool.query(
+          "UPDATE ueos_parties SET tenant_id = $2, routing_code = $3, name = $4, type = $5, status = $6, created_at = $7 WHERE id = $1",
+          [record.id, record.tenantId, record.routingCode, record.name, record.type, record.status, record.createdAt]
+        );
+      } else if (tableName === "open_items") {
+        await this.pool.query(
+          "UPDATE ueos_open_items SET tenant_id = $2, party_id = $3, amount_minor = $4, allocated_amount_minor = $5, currency = $6, type = $7, due_date = $8, created_at = $9, status = $10 WHERE id = $1",
+          [record.id, record.tenantId, record.partyId, record.amountMinor, record.allocatedAmountMinor, record.currency, record.type, record.dueDate, record.createdAt, record.status]
+        );
+      } else if (tableName === "wallets") {
+        await this.pool.query(
+          "UPDATE ueos_wallets SET tenant_id = $2, party_id = $3, currency = $4, balance_minor = $5, status = $6, updated_at = $7 WHERE id = $1",
+          [record.id, record.tenantId, record.partyId, record.currency, record.balanceMinor, record.status, record.updatedAt]
+        );
+      } else if (tableName === "processed_payments") {
+        await this.pool.query(
+          "UPDATE ueos_processed_payments SET tenant_id = $2, party_id = $3, amount_minor = $4, currency = $5, allocated_minor = $6, residual_minor = $7, status = $8, created_at = $9 WHERE id = $1",
+          [record.id, record.tenantId, record.partyId, record.amountMinor, record.currency, record.allocatedMinor, record.residualMinor, record.status, record.createdAt]
+        );
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres update sync failed for ${tableName}:`, err.message);
@@ -865,6 +1007,14 @@ export class JUMODBEngine {
         await this.pool.query("DELETE FROM ueos_journals WHERE id = $1", [record.id]);
       } else if (tableName === "ledger_entries") {
         await this.pool.query("DELETE FROM ueos_ledger_entries WHERE id = $1", [record.id]);
+      } else if (tableName === "parties") {
+        await this.pool.query("DELETE FROM ueos_parties WHERE id = $1", [record.id]);
+      } else if (tableName === "open_items") {
+        await this.pool.query("DELETE FROM ueos_open_items WHERE id = $1", [record.id]);
+      } else if (tableName === "wallets") {
+        await this.pool.query("DELETE FROM ueos_wallets WHERE id = $1", [record.id]);
+      } else if (tableName === "processed_payments") {
+        await this.pool.query("DELETE FROM ueos_processed_payments WHERE id = $1", [record.id]);
       }
     } catch (err: any) {
       console.error(`[DATABASE_ERROR] Async Postgres delete sync failed for ${tableName}:`, err.message);
@@ -887,7 +1037,11 @@ export class JUMODBEngine {
                         tableName === "secrets_vault" ? "ueos_secrets_vault" :
                         tableName === "journals" ? "ueos_journals" :
                         tableName === "ledger_entries" ? "ueos_ledger_entries" :
-                        tableName === "accounting_periods" ? "ueos_accounting_periods" : null;
+                        tableName === "accounting_periods" ? "ueos_accounting_periods" :
+                        tableName === "parties" ? "ueos_parties" :
+                        tableName === "open_items" ? "ueos_open_items" :
+                        tableName === "wallets" ? "ueos_wallets" :
+                        tableName === "processed_payments" ? "ueos_processed_payments" : null;
         if (pgTable) {
           this.pool.query(`TRUNCATE TABLE ${pgTable}`).catch((err: any) => {
             console.error(`[DATABASE_ERROR] Async PostgreSQL truncate failed for ${tableName}:`, err.message);

@@ -11,6 +11,7 @@ export interface PlatformLedgerEvent {
 
 export class KafkaErpSubscriber {
   private activeSubscribers: Map<string, (event: PlatformLedgerEvent) => Promise<void>> = new Map();
+  private static processedKafkaEvents: Set<string> = new Set();
 
   constructor() {
     console.log("[KafkaEventSubscriber] Initializing Event Loop Listener...");
@@ -50,6 +51,14 @@ export class KafkaErpSubscriber {
 
     try {
       const event: PlatformLedgerEvent = JSON.parse(rawPayload);
+      
+      // Enforce strong idempotency boundary on Kafka consumer channel
+      if (KafkaErpSubscriber.processedKafkaEvents.has(event.eventId)) {
+        console.log(`[KafkaEventSubscriber] Idempotency hit: Event ID ${event.eventId} already processed in topic ${topic}. Bypassing.`);
+        return;
+      }
+      KafkaErpSubscriber.processedKafkaEvents.add(event.eventId);
+
       console.log(`[KafkaEventSubscriber] Processing event stream [${topic}] ID: ${event.eventId}`);
       
       // Execute transaction coordination handler with robust retry strategy
