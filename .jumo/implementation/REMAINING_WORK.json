@@ -1,0 +1,79 @@
+{
+  "totalRemainingArtifacts": 3226,
+  "breakdown": {
+    "partiallyRecovered": 1332,
+    "missingBacklog": 1894
+  },
+  "priorityExecutionQueue": [
+    {
+      "priority": 1,
+      "id": "QUEUE-FAAP-CORE",
+      "target": "JUMO FAAP (Financial Accounting Platform)",
+      "scope": "Statutory General Ledger, Single/Double/Triple Cash Books, Vote Book Commitments, 3-Way Match Voucher Engine, Multi-Currency FX, 1.5% Fee Split Clearing",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "priority": 2,
+      "id": "QUEUE-DIGITAL-PAY-CORE",
+      "target": "JUMO DIGITAL PAY (Payment Switch)",
+      "scope": "Universal Payment Orchestrator, Sovereign PayCodes Registry, Multi-Rail Gateway (MoMo, EFT, Cards, QR), Institutional Ingestion, 3-Way Settlement Reconciler",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 3,
+      "id": "QUEUE-AEGIS-SECURITY",
+      "target": "JUMO AEGIS",
+      "scope": "Zero-Trust Policy Engine, RBAC/ABAC Matrix, Cryptographic HSM Signing, Audit Merkle Proofs",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 4,
+      "id": "QUEUE-AI-HYBRID-MESH",
+      "target": "JUMO AI DIGITAL HYBRID",
+      "scope": "Cognitive Mesh Gateway, Multi-Model Router, Local Fallback Agent, Vector RAG Store, AI Agent Registry",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 5,
+      "id": "QUEUE-PRODUCT-FINTECH",
+      "target": "JUMO FINTECH (SACCO & Core Banking)",
+      "scope": "32 Modules full vertical slice (Credit Appraisal, Savings, Fixed Deposits, Shares, Member Mobile Portal, AGM Voting)",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 6,
+      "id": "QUEUE-PRODUCT-NURSERY-PRIMARY",
+      "target": "JUMO NURSERY & PRIMARY ERP",
+      "scope": "28 Modules full vertical slice (Early Years, Competency Assessment, Term Invoicing, School Bus GPS, Matron Sickbay)",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 7,
+      "id": "QUEUE-PRODUCT-SECONDARY",
+      "target": "JUMO SECONDARY SCHOOL ERP",
+      "scope": "36 Modules full vertical slice (Sciences Labs, Boarding House Beds, Digital Exeat, Master Timetable, National Exam Indexing)",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 8,
+      "id": "QUEUE-PRODUCT-UNIVERSITY",
+      "target": "JUMO UNIVERSITY & TERTIARY ERP",
+      "scope": "44 Modules full vertical slice (Senate CGPA, Cryptographic Transcripts, Faculty Workload, Grant Proposal, E-Library RFID)",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 9,
+      "id": "QUEUE-PRODUCT-CHURCH",
+      "target": "JUMO CHURCH & FAITH ERP",
+      "scope": "30 Modules full vertical slice (Member Pastoral Care, Tithe Pledges, Cell Fellowship, Benevolence, Sound/Video Media Vault)",
+      "status": "QUEUED"
+    },
+    {
+      "priority": 10,
+      "id": "QUEUE-PRODUCT-ALUMNI",
+      "target": "JUMO ALUMNI & COMMUNITY ERP",
+      "scope": "26 Modules full vertical slice (Chapter Network, Mentorship, Endowment Fund, Career Job Board, Reunion Ticketing)",
+      "status": "QUEUED"
+    }
+  ]
+}

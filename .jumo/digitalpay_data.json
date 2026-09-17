@@ -1,0 +1,487 @@
+{
+  "applications": [
+    {
+      "id": "APP-EDU-01",
+      "name": "SchoolPay Educational Gateway",
+      "status": "ACTIVE",
+      "permissions": [
+        "CREATE_PRN",
+        "PROCESS_PAYMENT",
+        "REFUND"
+      ],
+      "supported_currencies": [
+        "UGX",
+        "USD"
+      ],
+      "channels": [
+        "MTN_MOMO",
+        "AIRTEL_MONEY",
+        "BANK_EFT",
+        "VISA_MASTERCARD"
+      ],
+      "created_at": "2026-01-10T08:00:00Z"
+    },
+    {
+      "id": "APP-GOV-01",
+      "name": "URA E-Tax Portal",
+      "status": "ACTIVE",
+      "permissions": [
+        "CREATE_PRN",
+        "PROCESS_PAYMENT"
+      ],
+      "supported_currencies": [
+        "UGX"
+      ],
+      "channels": [
+        "BANK_EFT",
+        "MTN_MOMO",
+        "AIRTEL_MONEY"
+      ],
+      "created_at": "2026-01-15T09:00:00Z"
+    }
+  ],
+  "merchants": [
+    {
+      "id": "MERCH-991",
+      "name": "Uganda Martyrs High School",
+      "type": "Institution",
+      "status": "ACTIVE",
+      "created_at": "2026-01-20T10:00:00Z"
+    },
+    {
+      "id": "MERCH-992",
+      "name": "Jumo Cloud Services",
+      "type": "Merchant",
+      "status": "ACTIVE",
+      "created_at": "2026-02-01T11:00:00Z"
+    },
+    {
+      "id": "MERCH-MU5ST8VG",
+      "name": "Acme Corp",
+      "type": "Merchant",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:23:24.844Z"
+    },
+    {
+      "id": "MERCH-MU5SV44K",
+      "name": "Acme Corp",
+      "type": "Merchant",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:24:52.004Z"
+    },
+    {
+      "id": "MERCH-MU5SW9G5",
+      "name": "Acme Corp",
+      "type": "Merchant",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:25:45.557Z"
+    },
+    {
+      "id": "MERCH-MU5SWN5Q",
+      "name": "Acme Corp",
+      "type": "Merchant",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:26:03.326Z"
+    }
+  ],
+  "institutions": [
+    {
+      "id": "INST-001",
+      "name": "Uganda Martyrs High School & University Campus",
+      "code": "UMHS-101",
+      "category": "Education",
+      "status": "ACTIVE",
+      "created_at": "2026-01-20T10:00:00Z"
+    },
+    {
+      "id": "INST-002",
+      "name": "Kampala Metropolitan Medical Clinic",
+      "code": "KMMC-202",
+      "category": "Healthcare",
+      "status": "ACTIVE",
+      "created_at": "2026-02-01T11:00:00Z"
+    }
+  ],
+  "payers": [
+    {
+      "id": "PAYER-001",
+      "name": "Mbabazi John",
+      "email": "mbabazi.john@example.org",
+      "phone": "+256 701 442 890",
+      "status": "ACTIVE",
+      "created_at": "2026-02-01T10:00:00Z"
+    },
+    {
+      "id": "PAYER-002",
+      "name": "Nalubega Sarah Grace",
+      "email": "sarah.nalubega@example.org",
+      "phone": "+256 772 190 281",
+      "status": "ACTIVE",
+      "created_at": "2026-02-05T11:20:00Z"
+    },
+    {
+      "id": "PAYER-MU5ST8W3",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+256700000000",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:23:24.867Z"
+    },
+    {
+      "id": "PAYER-MU5SV4CQ",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+256700000000",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:24:52.298Z"
+    },
+    {
+      "id": "PAYER-MU5SW9GT",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+256700000000",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:25:45.581Z"
+    },
+    {
+      "id": "PAYER-MU5SWN6F",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+256700000000",
+      "status": "ACTIVE",
+      "created_at": "2026-09-17T17:26:03.351Z"
+    }
+  ],
+  "mandates": [
+    {
+      "id": "MND-1001",
+      "payer": "Mbabazi John",
+      "merchant": "Uganda Martyrs High School",
+      "amount": 1500000,
+      "currency": "UGX",
+      "frequency": "Per Term",
+      "status": "ACTIVE"
+    }
+  ],
+  "payCodes": [
+    {
+      "payCode": "PRN-MU5SWN71-9825",
+      "obligationId": "OBL-MU5SWN71",
+      "institutionName": "Acme Corp",
+      "merchantName": "Acme Corp",
+      "payerName": "John Doe",
+      "studentCustomer": "John Doe",
+      "purpose": "Testing PRN Flow",
+      "amount": 150000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "TUITION_EDUCATION",
+      "active": true,
+      "status": "RECONCILED",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO"
+      ],
+      "paymentChannel": "MTN_MOMO",
+      "reconciliationStatus": "RECONCILED",
+      "created_at": "2026-09-17T17:26:03.373Z",
+      "expiry_date": "2026-12-16T17:26:03.373Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      },
+      "transactionRef": "tx-sw-1789665963416-847",
+      "receiptRef": "JDP-MU5SWN88-XYLP",
+      "settlementRef": "BATCH-REC-1789665963467"
+    },
+    {
+      "payCode": "PRN-MU5SW9HC-3403",
+      "obligationId": "OBL-MU5SW9HC",
+      "institutionName": "Acme Corp",
+      "merchantName": "Acme Corp",
+      "payerName": "John Doe",
+      "studentCustomer": "John Doe",
+      "purpose": "Testing PRN Flow",
+      "amount": 150000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "TUITION_EDUCATION",
+      "active": true,
+      "status": "RECONCILED",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO"
+      ],
+      "paymentChannel": "MTN_MOMO",
+      "reconciliationStatus": "RECONCILED",
+      "created_at": "2026-09-17T17:25:45.600Z",
+      "expiry_date": "2026-12-16T17:25:45.600Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      },
+      "transactionRef": "tx-sw-1789665945638-93",
+      "receiptRef": "JDP-MU5SW9IE-TLEB",
+      "settlementRef": "BATCH-REC-1789665963467"
+    },
+    {
+      "payCode": "PRN-MU5SV4DN-4726",
+      "obligationId": "OBL-MU5SV4DN",
+      "institutionName": "Acme Corp",
+      "merchantName": "Acme Corp",
+      "payerName": "John Doe",
+      "studentCustomer": "John Doe",
+      "purpose": "Testing PRN Flow",
+      "amount": 150000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "TUITION_EDUCATION",
+      "active": true,
+      "status": "RECONCILED",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO"
+      ],
+      "paymentChannel": "MTN_MOMO",
+      "reconciliationStatus": "RECONCILED",
+      "created_at": "2026-09-17T17:24:52.331Z",
+      "expiry_date": "2026-12-16T17:24:52.331Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      },
+      "transactionRef": "tx-sw-1789665892511-935",
+      "receiptRef": "JDP-MU5SV4IN-SNU3",
+      "settlementRef": "BATCH-REC-1789665963467"
+    },
+    {
+      "payCode": "PRN-MU5ST8WM-6772",
+      "obligationId": "OBL-MU5ST8WM",
+      "institutionName": "Acme Corp",
+      "merchantName": "Acme Corp",
+      "payerName": "John Doe",
+      "studentCustomer": "John Doe",
+      "purpose": "Testing PRN Flow",
+      "amount": 150000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "TUITION_EDUCATION",
+      "active": true,
+      "status": "RECONCILED",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO"
+      ],
+      "paymentChannel": "MTN_MOMO",
+      "reconciliationStatus": "RECONCILED",
+      "created_at": "2026-09-17T17:23:24.886Z",
+      "expiry_date": "2026-12-16T17:23:24.886Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      },
+      "transactionRef": "tx-sw-1789665804930-547",
+      "receiptRef": "JDP-MU5ST8XU-6HY1",
+      "settlementRef": "BATCH-REC-1789665963467"
+    },
+    {
+      "payCode": "PAY-EDU-2026",
+      "obligationId": "OBL-EDU-2026-01",
+      "institutionName": "Uganda Martyrs High School & University Campus",
+      "merchantName": "Uganda Martyrs High School",
+      "payerName": "Mbabazi John",
+      "studentCustomer": "Kato Emmanuel Mukasa",
+      "purpose": "Term 1 Tuition Fees",
+      "amount": 2000000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "TUITION_EDUCATION",
+      "active": true,
+      "status": "RECONCILED",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO",
+        "AIRTEL_MONEY",
+        "BANK_EFT",
+        "DYNAMIC_QR"
+      ],
+      "paymentChannel": "MTN_MOMO",
+      "reconciliationStatus": "RECONCILED",
+      "created_at": "2026-02-01T10:00:00Z",
+      "expiry_date": "2026-04-30T23:59:59Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      },
+      "settlementRef": "BATCH-REC-1789665963467"
+    },
+    {
+      "payCode": "PAY-MED-8834",
+      "obligationId": "OBL-MED-2026-02",
+      "institutionName": "Kampala Metropolitan Medical Clinic",
+      "merchantName": "Kampala Metropolitan Medical Clinic",
+      "payerName": "Nalubega Sarah Grace",
+      "studentCustomer": "Nalubega Sarah Grace",
+      "purpose": "Clinical Consultation & Telemetry",
+      "amount": 350000,
+      "currency": "UGX",
+      "defaultCurrency": "UGX",
+      "domain": "HEALTH_CLINICAL",
+      "active": true,
+      "status": "ACTIVE",
+      "settlementAccountId": "acct-4010",
+      "allowedRails": [
+        "MTN_MOMO",
+        "AIRTEL_MONEY",
+        "VISA_MASTERCARD"
+      ],
+      "paymentChannel": "AIRTEL_MONEY",
+      "reconciliationStatus": "PENDING",
+      "created_at": "2026-02-05T11:20:00Z",
+      "expiry_date": "2026-04-30T23:59:59Z",
+      "splitConfig": {
+        "platformFeeRate": 0.015,
+        "merchantNetRate": 0.985
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "transactionId": "tx-sw-1789665963416-847",
+      "publicReference": "JDP-MU5SWN88-XYLP",
+      "payCode": "PRN-MU5SWN71-9825",
+      "institutionName": "Acme Corp",
+      "domain": "TUITION_EDUCATION",
+      "rail": "MTN_MOMO",
+      "grossAmount": 150000,
+      "platformFee": 2250,
+      "merchantNetAmount": 147750,
+      "currency": "UGX",
+      "status": "SETTLED",
+      "faapJournalRef": "CLEAR-JDP-MU5SWN88-XYLP",
+      "timestamp": "2026-09-17T17:26:03.416Z",
+      "isDuplicate": false,
+      "isOfflineQueued": false
+    },
+    {
+      "transactionId": "tx-sw-1789665945638-93",
+      "publicReference": "JDP-MU5SW9IE-TLEB",
+      "payCode": "PRN-MU5SW9HC-3403",
+      "institutionName": "Acme Corp",
+      "domain": "TUITION_EDUCATION",
+      "rail": "MTN_MOMO",
+      "grossAmount": 150000,
+      "platformFee": 2250,
+      "merchantNetAmount": 147750,
+      "currency": "UGX",
+      "status": "SETTLED",
+      "faapJournalRef": "CLEAR-JDP-MU5SW9IE-TLEB",
+      "timestamp": "2026-09-17T17:25:45.638Z",
+      "isDuplicate": false,
+      "isOfflineQueued": false
+    },
+    {
+      "transactionId": "tx-sw-1789665892511-935",
+      "publicReference": "JDP-MU5SV4IN-SNU3",
+      "payCode": "PRN-MU5SV4DN-4726",
+      "institutionName": "Acme Corp",
+      "domain": "TUITION_EDUCATION",
+      "rail": "MTN_MOMO",
+      "grossAmount": 150000,
+      "platformFee": 2250,
+      "merchantNetAmount": 147750,
+      "currency": "UGX",
+      "status": "SETTLED",
+      "faapJournalRef": "CLEAR-JDP-MU5SV4IN-SNU3",
+      "timestamp": "2026-09-17T17:24:52.511Z",
+      "isDuplicate": false,
+      "isOfflineQueued": false
+    },
+    {
+      "transactionId": "tx-sw-1789665804930-547",
+      "publicReference": "JDP-MU5ST8XU-6HY1",
+      "payCode": "PRN-MU5ST8WM-6772",
+      "institutionName": "Acme Corp",
+      "domain": "TUITION_EDUCATION",
+      "rail": "MTN_MOMO",
+      "grossAmount": 150000,
+      "platformFee": 2250,
+      "merchantNetAmount": 147750,
+      "currency": "UGX",
+      "status": "SETTLED",
+      "faapJournalRef": "CLEAR-JDP-MU5ST8XU-6HY1",
+      "timestamp": "2026-09-17T17:23:24.930Z",
+      "isDuplicate": false,
+      "isOfflineQueued": false
+    },
+    {
+      "transactionId": "tx-sw-1001",
+      "publicReference": "JDP-UGX-9901-A",
+      "payCode": "PAY-EDU-2026",
+      "institutionName": "Uganda Martyrs High School & University Campus",
+      "domain": "TUITION_EDUCATION",
+      "rail": "MTN_MOMO",
+      "grossAmount": 2000000,
+      "platformFee": 30000,
+      "merchantNetAmount": 1970000,
+      "currency": "UGX",
+      "status": "SETTLED",
+      "faapJournalRef": "CLEAR-JDP-UGX-9901-A",
+      "timestamp": "2026-02-10T14:30:00Z",
+      "isDuplicate": false,
+      "isOfflineQueued": false
+    }
+  ],
+  "settlementBatches": [
+    {
+      "batchId": "BATCH-REC-1789665963467",
+      "date": "2026-09-17",
+      "totalTransactions": 5,
+      "totalGrossVolume": 2600000,
+      "totalPlatformFees": 39000,
+      "totalMerchantNetSettled": 2561000,
+      "status": "BALANCED_SETTLED",
+      "faapBatchRef": "FAAP-REC-MU5SWN9N"
+    },
+    {
+      "batchId": "BATCH-REC-1789665945681",
+      "date": "2026-09-17",
+      "totalTransactions": 4,
+      "totalGrossVolume": 2450000,
+      "totalPlatformFees": 36750,
+      "totalMerchantNetSettled": 2413250,
+      "status": "BALANCED_SETTLED",
+      "faapBatchRef": "FAAP-REC-MU5SW9JL"
+    },
+    {
+      "batchId": "BATCH-REC-1789665892698",
+      "date": "2026-09-17",
+      "totalTransactions": 3,
+      "totalGrossVolume": 2300000,
+      "totalPlatformFees": 34500,
+      "totalMerchantNetSettled": 2265500,
+      "status": "BALANCED_SETTLED",
+      "faapBatchRef": "FAAP-REC-MU5SV4NU"
+    },
+    {
+      "batchId": "BATCH-REC-1789665804983",
+      "date": "2026-09-17",
+      "totalTransactions": 2,
+      "totalGrossVolume": 2150000,
+      "totalPlatformFees": 32250,
+      "totalMerchantNetSettled": 2117750,
+      "status": "BALANCED_SETTLED",
+      "faapBatchRef": "FAAP-REC-MU5ST8ZB"
+    },
+    {
+      "batchId": "BATCH-REC-1001",
+      "date": "2026-02-10",
+      "totalTransactions": 1,
+      "totalGrossVolume": 2000000,
+      "totalPlatformFees": 30000,
+      "totalMerchantNetSettled": 1970000,
+      "status": "BALANCED_SETTLED",
+      "faapBatchRef": "FAAP-REC-1001"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "app": "SchoolPay",
+    "version": "v2.4.0",
+    "authority": "National Institutional Payment Switch",
+    "last_updated": "2026-09-16T19:22:04.605Z"
+  },
+  "schools": [
+    {
+      "id": "SCH-001",
+      "name": "Namiryango Secondary College",
+      "code": "SCH-NAM-101",
+      "district": "Mukono",
+      "studentCount": 1420,
+      "totalCollections": 2840000000,
+      "activeTerm": "Term 1 - 2026",
+      "created_at": "2026-01-10T08:00:00Z"
+    },
+    {
+      "id": "SCH-002",
+      "name": "Hillside Primary School Nalya",
+      "code": "SCH-HIL-202",
+      "district": "Wakiso",
+      "studentCount": 1850,
+      "totalCollections": 3120000000,
+      "activeTerm": "Term 1 - 2026",
+      "created_at": "2026-01-12T09:15:00Z"
+    },
+    {
+      "id": "SCH-003",
+      "name": "St. Mary's Boarding Academy",
+      "code": "SCH-STM-303",
+      "district": "Kampala",
+      "studentCount": 960,
+      "totalCollections": 1440000000,
+      "activeTerm": "Term 1 - 2026",
+      "created_at": "2026-01-15T14:30:00Z"
+    }
+  ],
+  "students": [
+    {
+      "id": "STU-8801",
+      "name": "Kato Emmanuel Mukasa",
+      "school_id": "SCH-001",
+      "school_name": "Namiryango Secondary College",
+      "pay_code": "PAY-NAM-8801",
+      "class_grade": "Senior 4 East",
+      "term_fee": 2000000,
+      "paid_amount": 2000000,
+      "balance": 0,
+      "status": "CLEARED",
+      "created_at": "2026-02-01T10:00:00Z"
+    },
+    {
+      "id": "STU-8802",
+      "name": "Nalubega Sarah Grace",
+      "school_id": "SCH-001",
+      "school_name": "Namiryango Secondary College",
+      "pay_code": "PAY-NAM-8802",
+      "class_grade": "Senior 5 Science",
+      "term_fee": 2400000,
+      "paid_amount": 1400000,
+      "balance": 1000000,
+      "status": "PARTIAL",
+      "created_at": "2026-02-05T11:20:00Z"
+    },
+    {
+      "id": "STU-8803",
+      "name": "Ochen David Okot",
+      "school_id": "SCH-002",
+      "school_name": "Hillside Primary School Nalya",
+      "pay_code": "PAY-HIL-8803",
+      "class_grade": "Primary 7 Blue",
+      "term_fee": 1680000,
+      "paid_amount": 0,
+      "balance": 1680000,
+      "status": "UNPAID",
+      "created_at": "2026-02-10T14:30:00Z"
+    },
+    {
+      "id": "STU-8804",
+      "name": "Auma Brenda Faith",
+      "school_id": "SCH-002",
+      "school_name": "Hillside Primary School Nalya",
+      "pay_code": "PAY-HIL-8804",
+      "class_grade": "Primary 6 Green",
+      "term_fee": 1680000,
+      "paid_amount": 1680000,
+      "balance": 0,
+      "status": "CLEARED",
+      "created_at": "2026-02-12T09:00:00Z"
+    }
+  ],
+  "transactions": []
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>JUMO DIGITAL HYBRID PLATFORM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'enterprise-blue': '#0f62fe',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900 min-h-screen flex flex-col">
+  <div id="app" class="flex flex-col min-h-screen">
+    <div class="flex items-center justify-center min-h-screen bg-slate-50 text-slate-800 font-mono">
+      <div class="text-center max-w-md w-full px-6 py-8 flex flex-col items-center">
+        
+        <h1 class="font-bold tracking-tight text-xl mb-16">JUMO ENTERPRISE PLATFORM</h1>
+        
+        <p class="text-[11px] text-slate-500 mb-8 uppercase tracking-wider">Powered by</p>
+        
+        <div class="mb-16 text-center">
+          <p class="font-bold text-2xl tracking-wide mb-1">JUMO</p>
+          <p class="text-slate-600 text-[13px] tracking-wide">Universal Enterprise Operating System</p>
+        </div>
+
+        <div id="boot-progress" class="w-full text-left bg-white border border-slate-200 shadow-sm rounded-lg p-6 text-sm text-slate-600 hidden opacity-0 transition-opacity duration-300">
+          <p class="font-semibold text-slate-800 mb-5 pb-3 border-b border-slate-100">Initializing secure enterprise environment...</p>
+          <ul id="boot-steps" class="space-y-3 font-medium text-[13px]">
+            <!-- Steps injected by app.js -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__UEOS_FATAL_ERROR__ = function(err, filename, lineno, colno) {
+      const app = document.getElementById('app');
+      const msg = err?.message || err;
+      const stack = err?.stack || 'No stack trace available';
+      const file = filename || err?.filename || 'Unknown file';
+      const line = lineno || err?.lineno || 'Unknown line';
+      const col = colno || err?.colno || 'Unknown col';
+
+      if (app) {
+        app.innerHTML = `
+          <div class="fixed inset-0 bg-slate-900 text-white flex flex-col items-center justify-center p-6 font-mono text-xs z-50">
+            <div class="max-w-2xl w-full bg-slate-800 p-8 rounded-2xl border border-rose-500 shadow-2xl space-y-4">
+              <h1 class="text-rose-500 font-bold text-base mb-1">JUMO UEOS FATAL BOOT EXCEPTION</h1>
+              <p class="text-slate-400">Application startup halted due to an unhandled script or module error.</p>
+              
+              <div class="bg-slate-950 p-4 rounded text-rose-300 overflow-x-auto text-[11px] space-y-2">
+                <div><span class="text-slate-500">Message:</span> <span class="font-bold text-rose-400">${msg}</span></div>
+                <div><span class="text-slate-500">File:</span> ${file}</div>
+                <div><span class="text-slate-500">Location:</span> Line ${line}, Col ${col}</div>
+                ${stack ? `<div><span class="text-slate-500">Stack:</span><pre class="text-[10px] text-slate-400 mt-1">${stack}</pre></div>` : ''}
+              </div>
+              <button onclick="window.location.reload()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg transition-colors cursor-pointer">Hard Reload Platform</button>
+            </div>
+          </div>
+        `;
+      }
+    };
+    window.addEventListener('error', (e) => {
+      if (window.__UEOS_FATAL_ERROR__) window.__UEOS_FATAL_ERROR__(e.error || e.message, e.filename, e.lineno, e.colno);
+    });
+  </script>
+
+  <script type="module" src="/experience/gateway/app.js"></script>
+</body>
+</html>

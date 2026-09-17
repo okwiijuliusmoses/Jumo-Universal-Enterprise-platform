@@ -1,0 +1,214 @@
+<?php
+/*
+Gibbon: the flexible, open school platform
+Founded by Ross Parker at ICHK Secondary. Built by Ross Parker, Sandra Kuipers and the Gibbon community (https://gibbonedu.org/about/)
+Copyright © 2010, Gibbon Foundation
+Gibbon™, Gibbon Education Ltd. (Hong Kong)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Prefab\ClassGroupTable;
+use Gibbon\Tables\View\GridView;
+
+//Module includes
+require_once __DIR__ . '/moduleFunctions.php';
+
+$settingGateway = $container->get(SettingGateway::class);
+$courseGateway = $container->get(CourseGateway::class);
+$courseClassGateway = $container->get(CourseClassGateway::class);
+
+$makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
+if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
+} else {
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
+    $currentDate = $_GET['currentDate'] ?? Format::date(date('Y-m-d'));
+
+    if (empty($gibbonCourseClassID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+    } else {
+        if (!empty($gibbonDepartmentID)) {
+            $result = $courseGateway->getCourseClassDetails($gibbonCourseClassID);
+        } else {
+            $result = $courseGateway->getCourseClassInfoByID($gibbonCourseClassID);
+        }
+
+        $row = $result;
+
+        if (empty($row)) {
+            $page->addError(__('The specified record does not exist.'));
+        } else {
+            //Get role within learning area
+            $role = null;
+            if ($gibbonDepartmentID != '' and ($session->get('username'))) {
+                $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
+            }
+
+            $extra = '';
+            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) {
+                $extra = ' '.$row['year'];
+            }
+            if ($gibbonDepartmentID != '') {
+                $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
+                $page->breadcrumbs
+                    ->add($row['department'], 'department.php', $urlParams)
+                    ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
+                    ->add(Format::courseClassName($row['course'], $row['class']));
+            } else {
+                $page->breadcrumbs
+                    ->add(__('Departments'), 'departments.php')
+                    ->add(Format::courseClassName($row['course'], $row['class']));
+            }
+
+            // CHECK & STORE WHAT TO DISPLAY
+            $menuItems = [];
+
+            // Attendance
+            if ($row['attendance'] == 'Y' && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+                $menuItems[] = [
+                    'name' => __('Attendance'),
+                    'url'  => './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.$currentDate,
+                    'icon' => 'users',
+                ];
+            }
+            // Planner
+            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+                $menuItems[] = [
+                    'name' => __('Planner'),
+                    'url'  => './index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$gibbonCourseClassID.'&viewBy=class',
+                    'icon' => 'calendar',
+                ];
+            }
+            // Markbook
+            if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
+                $menuItems[] = [
+                    'name' => __('Markbook'),
+                    'url'  => './index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$gibbonCourseClassID,
+                    'icon' => 'markbook',
+                ];
+            }
+            // Homework
+            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
+                $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
+                $menuItems[] = [
+                    'name' => __($homeworkNamePlural),
+                    'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
+                    'icon' => 'homework',
+                ];
+            }
+            // Internal Assessment
+            if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
+                $menuItems[] = [
+                    'name' => __('Internal Assessment'),
+                    'url'  => './index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID='.$gibbonCourseClassID,
+                    'icon' => 'internal-assessment',
+                ];
+            }
+            
+            // Menu Items Table
+            if (!empty($menuItems)) {
+                $gridRenderer = new GridView($container->get('twig'));
+                $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+                $table->setTitle($row['courseLong']." - ".$row['classLong']);
+                $table->setDescription(Format::courseClassName($row['course'], $row['class']));
+
+                $table->addMetaData('gridClass', 'rounded-md bg-gray-100 border py-4 gap-6 sm:flex-nowrap justify-around');
+                $table->addMetaData('gridItemClass', 'w-24 sm:flex-1 text-center text-gray-500 hover:text-gray-700');
+                $table->addMetaData('hidePagination', true);
+
+                $table->addColumn('icon')
+                    ->format(function ($menu) {
+                        return Format::link($menu['url'], icon('solid', $menu['icon'], 'size-8 sm:size-12'), ['class' => 'no-underline text-inherit']);
+                    });
+
+                $table->addColumn('name')
+                    ->setClass('font-bold text-xs')
+                    ->format(function ($menu) {
+                        return Format::link($menu['url'], $menu['name'], ['class' => 'no-underline text-gray-700']);
+                    });
+
+                echo $table->render(new DataSet($menuItems));
+            }
+
+            // Custom fields
+            $table = DataTable::createDetails('fields');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Class', [], $row['fields']);
+            echo $table->render([$row]);
+
+            // Participants
+            $table = $container->get(ClassGroupTable::class);
+            $table->build($session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
+
+            echo $table->getOutput();
+
+            //Print sidebar
+            if ($session->get('username')) {
+                $sidebarExtra = '';
+
+                //Print related class list
+                $resultCourse = $courseClassGateway->selectClassesByCourseID($row['gibbonCourseID']);
+
+                if ($resultCourse->rowCount() > 0) {
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h2>';
+                    $sidebarExtra .= __('Related Classes');
+                    $sidebarExtra .= '</h2>';
+
+                    $sidebarExtra .= '<ul>';
+                    while ($rowCourse = $resultCourse->fetch()) {
+                        $sidebarExtra .= "<li><a href='".$session->get('absoluteURL')."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonCourseClassID='.$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
+                    }
+                    $sidebarExtra .= '</ul>';
+                    $sidebarExtra .= '</div>';
+                }
+
+                //Print list of all classes
+                $sidebarExtra .= '<div class="column-no-break">';
+
+                $form = Form::create('classSelect', $session->get('absoluteURL').'/index.php', 'get');
+                $form->setTitle(__('Current Classes'));
+                $form->setClass('smallIntBorder w-full');
+
+                $form->addHiddenValue('q', '/modules/'.$session->get('module').'/department_course_class.php');
+
+                $resultClasses = $courseGateway->selectCoursesAndClassesBySchoolYear($session->get('gibbonSchoolYearID'));
+
+                $row = $form->addRow();
+                    $row->addSelect('gibbonCourseClassID')
+                        ->fromResults($resultClasses)
+                        ->selected($gibbonCourseClassID)
+                        ->placeholder()
+                        ->setClass('w-full');
+                    $row->addSubmit(__('Go'));
+
+                $sidebarExtra .= $form->getOutput();
+                $sidebarExtra .= '</div>';
+
+                $session->set('sidebarExtra', $session->get('sidebarExtra'). $sidebarExtra);
+            }
+        }
+    }
+}

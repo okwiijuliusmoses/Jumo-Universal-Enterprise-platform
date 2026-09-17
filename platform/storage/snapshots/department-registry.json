@@ -1,0 +1,42 @@
+[
+  {
+    "id": "education-erp-1785752300316-department-0",
+    "name": "Administration",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-1",
+    "name": "Finance",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-2",
+    "name": "Operations",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-3",
+    "name": "Human Resources",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-4",
+    "name": "Technology",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-5",
+    "name": "Compliance",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-6",
+    "name": "Research & Innovation",
+    "erpId": "education-erp-1785752300316"
+  },
+  {
+    "id": "education-erp-1785752300316-department-7",
+    "name": "Institutional ERP Department",
+    "erpId": "education-erp-1785752300316"
+  }
+]
